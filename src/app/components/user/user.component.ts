@@ -9,9 +9,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { CustomHttpRespone } from '../../model/custom-http-response';
 import { AuthenticationService } from '../../service/authentication.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FileUploadStatus } from '../../model/file-upload.status';
 import { Rol } from '../../class/role.enum';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user',
@@ -33,7 +34,8 @@ export class UserComponent implements OnInit, OnDestroy {
   public fileStatus = new FileUploadStatus();
 
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
-              private userService: UsuarioService, private notificationService: NotificationService) {}
+              private userService: UsuarioService, private notificationService: NotificationService,
+              protected route: ActivatedRoute, protected toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache();

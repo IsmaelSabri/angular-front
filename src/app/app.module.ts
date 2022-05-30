@@ -22,6 +22,10 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { MainNavComponent } from './components/main-nav/main-nav.component';
+import { NgxStarRatingModule } from 'ngx-star-rating';
+import { MarkerService } from './service/marker.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { AutosizeModule } from 'ngx-autosize';
 
 @NgModule({
   declarations: [
@@ -44,12 +48,16 @@ import { MainNavComponent } from './components/main-nav/main-nav.component';
     IvyCarouselModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    NgxStarRatingModule,
+    MatFormFieldModule,
+    AutosizeModule,
   ],
   providers: [
     NotificationService,
     AuthenticationGuard,
     AuthenticationService,
     UsuarioService,
+    MarkerService,
     NgbCarouselConfig,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],

@@ -41,7 +41,7 @@
           <a href="#" class="nav-link disabled"> Vlog </a>
         </li>
         <li class="nav-item pr-3">
-          <a href="#" class="nav-link" (click)="createMarker2()"> Nuevo Marker2 </a>
+          <a [routerLink]="" class="nav-link" *ngIf='this.state' (click)="createLocationMarker()"> Nuevo Marker2 </a>
         </li>
         <li class="nav-item pr-3">
           <a href="#" class="nav-link" *ngIf='this.state' data-toggle="modal" data-target="#addMarkerModal" > Nuevo Marker </a>
@@ -63,7 +63,7 @@
       <div class="modal-dialog" rol="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title text-center">Nuevo marker</h5>
+            <h5 class="modal-title text-center">Nuevo Edificio</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -72,12 +72,42 @@
             <div>
               <form method="post" (ngSubmit)="createMarker()" id="markerForm">
                 <div class="form-group">
-                  <label for="lat">Latitud</label>
-                  <input type="text" name="lat" required [(ngModel)]="marker.lat" placeholder="latitud" class="form-control">
+                  <label for="fotos">Sube una foto del edificio</label><br>
+                  <input required (change)="saveImage($event)" type="file" />
+                </div>
+                <!-- previsualización -->
+                <div class="form-group" *ngIf="prev">
+                  <img [src]="prev" alt="" height="75px" width="75" style="border-radius:5px;">
+                </div>
+                <!--textarea-->
+                <div class="form-group">
+                  <label for="descripcion">Descripción</label>
+                  <textarea required style="resize:none; border-radius:5px; height:100px; width:465px; background-color:white;color:black;" [(ngModel)]='edificio.descripcion' rows="30" cols="120">
+                  </textarea>
                 </div>
                 <div class="form-group">
-                  <label for="lng">Longitud</label>
-                  <input type="text" name="lng" required [(ngModel)]="marker.lng" placeholder="longitud" class="form-control">
+                  <label for="calle">Calle</label>
+                  <input type="text" name="calle" required [(ngModel)]="edificio.calle" placeholder="calle" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="numero">Número</label>
+                  <input type="text" ngModel pattern="\d*" maxlength="3" name="numero" (keypress)="numberOnly($event)" required [(ngModel)]="edificio.numero" placeholder="Numero" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="cp">Código postal</label>
+                  <input type="text" ngModel pattern="\d*" maxlength="5" (keypress)="numberOnly($event)" name="cp" required [(ngModel)]="edificio.cp" placeholder="Código postal" class="form-control">
+                </div>
+
+
+                <div class="form-group">
+                  <label for="puertas">Puertas</label>
+                  <input type="text" ngModel pattern="\d*" maxlength="3" name="puertas" (keypress)="numberOnly($event)" required [(ngModel)]="puertasEdificio" placeholder="puertas" class="form-control">
+                </div>
+                <div class="d-flex rating-list align-items-center">
+                    <p class="w-50">Valoración global</p>
+                    <div class="star w-50 rating-star">
+                      <ngb-rating [max]="5" [(rate)]="edificio.valoracion" [readonly]="false"></ngb-rating>
+                    </div>
                 </div>
                <!-- <div class="form-group">
                   <label for="username">Nombre de Usuario</label>
