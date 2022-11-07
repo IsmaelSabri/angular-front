@@ -1,8 +1,14 @@
+<<<<<<< HEAD
+import { Component, OnInit } from '@angular/core';
+import { Map, marker, popup, LatLng, Icon } from 'leaflet';
+import "leaflet.locatecontrol";
+=======
 import { EdificioService } from './../service/edificio.service';
 import { Edificio } from './../model/edificio';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Map, marker, popup, LatLng, Icon } from 'leaflet';
 import 'leaflet.locatecontrol';
+>>>>>>> c96ab33 (contact-form)
 import {
   tileLayerSelect,
   tileLayerCP,
@@ -13,7 +19,11 @@ import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
 import { AuthenticationService } from '../service/authentication.service';
 import { UsuarioService } from '../service/usuario.service';
+<<<<<<< HEAD
+import { Router, ActivatedRoute } from '@angular/router';
+=======
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+>>>>>>> c96ab33 (contact-form)
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MarkerService } from 'src/app/service/marker.service';
 import { Marker } from '../model/marker';
@@ -23,6 +33,10 @@ import { map, mergeMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/Rx';
 import * as L from 'leaflet';
+<<<<<<< HEAD
+import { Edificio } from '../model/edificio';
+=======
+>>>>>>> c96ab33 (contact-form)
 import { Vivienda } from '../model/vivienda';
 import { ToastrService } from 'ngx-toastr';
 //import 'leaflet.BounceMarker'
@@ -35,9 +49,12 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent extends UserComponent implements OnInit {
+<<<<<<< HEAD
+=======
 
   @Output() edificioParam =new EventEmitter<Edificio>();
 
+>>>>>>> c96ab33 (contact-form)
   imagenes = [
     'img/background.png',
     'img/background2.png',
@@ -51,9 +68,14 @@ export class HomeComponent extends UserComponent implements OnInit {
     notificationService: NotificationService,
     private markerService: MarkerService,
     route: ActivatedRoute,
+<<<<<<< HEAD
+    toastr:ToastrService,
+    private sanitizer: DomSanitizer
+=======
     toastr: ToastrService,
     private sanitizer: DomSanitizer,
     private edificioService: EdificioService
+>>>>>>> c96ab33 (contact-form)
   ) {
     super(
       router,
@@ -63,6 +85,16 @@ export class HomeComponent extends UserComponent implements OnInit {
       route,
       toastr
     );
+<<<<<<< HEAD
+
+    
+  }
+
+  map!: L.map;
+  lg!: L.LayerGroup;
+  vivienda:Vivienda=new Vivienda();
+  edificio:Edificio=new Edificio();
+=======
   }
 
   map!: L.map;
@@ -71,6 +103,7 @@ export class HomeComponent extends UserComponent implements OnInit {
   edificio: Edificio = new Edificio();
   //private edificio$=new BehaviorSubject<Edificio>(this.edificio);
   edificios:any=[];
+>>>>>>> c96ab33 (contact-form)
   marker: Marker = new Marker();
   state: boolean = this.authenticationService.isUserLoggedIn();
   opt = {};
@@ -87,6 +120,14 @@ export class HomeComponent extends UserComponent implements OnInit {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
+<<<<<<< HEAD
+  mp!: L.Marker;
+  fg= L.featureGroup();
+  fotos:any=[];
+  prev!:string;
+  puertasEdificio!:string;
+  
+=======
   greenIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -102,14 +143,19 @@ export class HomeComponent extends UserComponent implements OnInit {
   prev!: string;
   doorsMainProperty!: string;
   propertyImage: File;
+>>>>>>> c96ab33 (contact-form)
 
   /************************************************************/
   ngOnInit(): void {
     this.userMarkerEvents(); // inicializar opciones
+<<<<<<< HEAD
+    this.map=L.map('map',{renderer:L.canvas()}).setView([39.46975, -0.37739], 25);
+=======
     this.map = L.map('map', { renderer: L.canvas() }).setView(
       [39.46975, -0.37739],
       25
     );
+>>>>>>> c96ab33 (contact-form)
     this.getLocation();
     //tileLayerSelect().addTo(map);
     //tileLayerWMSSelect().addTo(map);
@@ -124,11 +170,17 @@ export class HomeComponent extends UserComponent implements OnInit {
             { icon: this.grayIcon },
             this.opt
           ).addTo(this.map);
+<<<<<<< HEAD
+
+=======
+>>>>>>> c96ab33 (contact-form)
           //marker.on("click", ()=> console.log(""));
         });
       })
     );
 
+<<<<<<< HEAD
+=======
     this.subscriptions.push(
       this.markerService.getBuildings().subscribe((data) => {
         data.map((Edificio) => {
@@ -162,6 +214,7 @@ export class HomeComponent extends UserComponent implements OnInit {
     
 //            <button type="button" class="btn btn-secondary" data-toggle="modal" onclick="${this.viewAdd(Edificio.edificioId)}">Ver</button>
 
+>>>>>>> c96ab33 (contact-form)
     /*  fitbounds para centrar el foco en los marcadores
     const markerItem = marker([39.46975, -0.37739]) // marker de prueba. Los usuarios podrán crear sus markers
       .addTo(map)
@@ -173,6 +226,10 @@ export class HomeComponent extends UserComponent implements OnInit {
     //
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> c96ab33 (contact-form)
   /*
       Si el usuario logueado en sesión coincide con el usuario que creó el marker
       se activarán todos los eventos de ratón, arrastre etc.
@@ -180,6 +237,19 @@ export class HomeComponent extends UserComponent implements OnInit {
       */
   userMarkerEvents() {
     if (this.state) {
+<<<<<<< HEAD
+      this.opt = { draggable: true, locateControl:true, bounceOnAdd:true };
+    } else {
+      this.opt = { draggable: false, locateControl: true, bounceOnAdd: true };
+    }
+  }
+
+  getLocation() {
+    this.map.on('locationfound', (e: { accuracy: number; latlng: LatLng }) => {
+      this.coords = e.latlng;//Object.assign({}, e.latlng);
+      this.map.setView(this.coords,25); // poner el foco en el mapa
+      this.map.fitBounds([[this.coords.lat, this.coords.lng]]);// por si acaso..
+=======
       this.opt = { draggable: true, locateControl: true, bounceOnAdd: true };
     } else {
       this.opt = { draggable: false, locateControl: true, bounceOnAdd: true };
@@ -191,12 +261,26 @@ export class HomeComponent extends UserComponent implements OnInit {
       this.coords = e.latlng; //Object.assign({}, e.latlng);
       this.map.setView(this.coords, 25); // poner el foco en el mapa
       this.map.fitBounds([[this.coords.lat, this.coords.lng]]); // por si acaso..
+>>>>>>> c96ab33 (contact-form)
     });
     this.map.on('locationerror', this.notFoundLocation); // si el usuario no activa la geolocalización
     this.map.locate({ setView: true, maxZoom: 25 }); // llamada para que la geolocalización funcione
   }
 
   notFoundLocation() {
+<<<<<<< HEAD
+    alert('No podemos saber donde se encuentra si no habilita la Geolocalización.');
+  }
+
+  createLocationMarker() {
+    console.log(this.coords);
+
+    this.toastr.success(
+      'Arrastra el marcador!', 'Mueve el marcador hasta su propiedad!'
+            );
+  
+   this.mp= new L.marker(this.coords, {
+=======
     alert(
       'No podemos saber donde se encuentra si no habilita la Geolocalización.'
     );
@@ -211,6 +295,7 @@ export class HomeComponent extends UserComponent implements OnInit {
     );
 
     this.mp = new L.marker(this.coords, {
+>>>>>>> c96ab33 (contact-form)
       draggable: true,
       bounceOnAdd: true,
       //bounceOnAddOptions: {duration: 500, height: 100, loop: 2}
@@ -219,6 +304,31 @@ export class HomeComponent extends UserComponent implements OnInit {
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMarkerModal"  >Hecho</button>
     
     `);
+<<<<<<< HEAD
+    this.lg= new L.LayerGroup([this.mp]);
+    this.lg.addTo(this.map);
+    
+    /*const popupItem=L.popup().setLatLng(this.coords)
+    .setContent('<h5>Arrastrame a mi sitio</h5>')
+    .openOn(this.mp);*/
+    this.mp.on('move', () => (this.markerCoords = this.mp.getLatLng()));
+    this.mp.on('moveend', () => console.log(this.markerCoords));
+    this.mp.on('dragend', () => this.mp.openPopup());
+  }
+
+  // Revisar - en el html -> oninput="textAreaResize(this)"
+  textAreaResize(e) {
+    e.style.height = '5px';
+    e.style.height = e.scrollHeight + 'px';
+  }
+
+  saveImage(event): any {
+    this.propertyImage = event.target.files[0];
+  }
+
+  numberOnly(event): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+=======
     this.lg = new L.LayerGroup([this.mp]);
     this.lg.addTo(this.map);
     
@@ -242,10 +352,32 @@ export class HomeComponent extends UserComponent implements OnInit {
 
   numberOnly(event): boolean {
     const charCode = event.which ? event.which : event.keyCode;
+>>>>>>> c96ab33 (contact-form)
     if (charCode >= 31 && (charCode < 48 || charCode > 57)) {
       return false;
     }
     return true;
+<<<<<<< HEAD
+
+  }
+
+  createEdificio() {
+    //this.lg.remove(this.mp);
+    const formData = new FormData();
+    formData.append('lat', this.markerCoords.lat);
+    formData.append('lng', this.markerCoords.lng);
+    formData.append('foto', this.propertyImage);
+    formData.append('descripcion', this.edificio.descripcion);
+    formData.append('calle', this.edificio.calle);
+    formData.append('numero', this.edificio.numero);
+    formData.append('cp', this.edificio.cp);
+    formData.append('puertas', this.edificio.puertas);
+    formData.append('starRating', this.edificio.valoracion);
+    this.subscriptions.push(
+      this.markerService.addBuilding(formData).subscribe((res) => {
+        this.router.navigate(['/home']),
+          this.sendNotification(NotificationType.SUCCESS, ` Marker creado.`);
+=======
   }
 
   createEdificio() {
@@ -264,12 +396,16 @@ export class HomeComponent extends UserComponent implements OnInit {
       this.markerService.addBuilding(formData).subscribe((res) => {
         this.router.navigate(['/home']),
           this.sendNotification(NotificationType.SUCCESS, ` Edificio creado.`);
+>>>>>>> c96ab33 (contact-form)
         var resetForm = <HTMLFormElement>document.getElementById('markerForm');
         resetForm.reset();
         this.clickButton('new-marker-close');
       })
     );
+<<<<<<< HEAD
+=======
     this.map.removeLayer(this.lg);
+>>>>>>> c96ab33 (contact-form)
   }
 
   ngOnDestroy(): void {

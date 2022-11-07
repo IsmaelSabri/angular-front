@@ -1,4 +1,7 @@
+<<<<<<< HEAD
+=======
 import { Edificio } from './../model/edificio';
+>>>>>>> c96ab33 (contact-form)
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
@@ -29,6 +32,8 @@ export class MarkerService {
     return this.http.post<Marker>(`${this.host}/map/new`, formData);
   }
 
+<<<<<<< HEAD
+=======
   public addBuilding(formData: FormData): Observable<Edificio>{
     return this.http.post<Edificio>(`${this.host}/buildings/new`, formData);
   }
@@ -37,6 +42,7 @@ export class MarkerService {
     return this.http.get<Edificio[]>(`${this.host}/buildings/list`);
   }
 
+>>>>>>> c96ab33 (contact-form)
   public addMarkersToLocalCache(markers: Marker[]): void {
     localStorage.setItem('markers', JSON.stringify(markers));
   }
