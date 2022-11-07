@@ -4,7 +4,11 @@
 
 export const environment = {
   production: false,
+<<<<<<< HEAD
   apiUrl: 'http://localhost:8081'
+=======
+  apiUrl: 'http://localhost:8082'
+>>>>>>> c96ab33 (contact-form)
 
 
 

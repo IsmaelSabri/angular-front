@@ -1,3 +1,4 @@
+import { Edificio } from './../model/edificio';
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
@@ -26,6 +27,14 @@ export class MarkerService {
 //, {headers:this.httpHeaders}
   public addMarker(formData: FormData): Observable<Marker> {
     return this.http.post<Marker>(`${this.host}/map/new`, formData);
+  }
+
+  public addBuilding(formData: FormData): Observable<Edificio>{
+    return this.http.post<Edificio>(`${this.host}/buildings/new`, formData);
+  }
+
+  public getBuildings(): Observable<Edificio[]> {
+    return this.http.get<Edificio[]>(`${this.host}/buildings/list`);
   }
 
   public addMarkersToLocalCache(markers: Marker[]): void {

@@ -27,7 +27,7 @@ export class UserComponent implements OnInit, OnDestroy {
   public refreshing: boolean;
   public selectedUser: Usuario;
   public fileName: string;
-  public profileImage: File;
+  public propertyImage: File;
   protected subscriptions: Subscription[] = [];
   public editUser = new Usuario();
   private currentUsername: string;
@@ -74,7 +74,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   public onProfileImageChange(fileName: string, profileImage: File): void {
     this.fileName =  fileName;
-    this.profileImage = profileImage;
+    this.propertyImage = profileImage;
   }
 
   public saveNewUser(): void {
@@ -82,39 +82,39 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   public onAddNewUser(userForm: NgForm): void {
-    const formData = this.userService.createUsuarioFormDate(null, userForm.value, this.profileImage);
+    const formData = this.userService.createUsuarioFormDate(null, userForm.value, this.propertyImage);
     this.subscriptions.push(
       this.userService.addNewUser(formData).subscribe(
         (response: Usuario) => {
           this.clickButton('new-user-close');
           this.getUsers(false);
           this.fileName = null;
-          this.profileImage = null;
+          this.propertyImage = null;
           userForm.reset();
           this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} añadido con éxito`);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-          this.profileImage = null;
+          this.propertyImage = null;
         }
       )
       );
   }
 
   public onUpdateUser(): void {
-    const formData = this.userService.createUsuarioFormDate(this.currentUsername, this.editUser, this.profileImage);
+    const formData = this.userService.createUsuarioFormDate(this.currentUsername, this.editUser, this.propertyImage);
     this.subscriptions.push(
       this.userService.updateUsuario(formData).subscribe(
         (response: Usuario) => {
           this.clickButton('closeEditUserModalButton');
           this.getUsers(false);
           this.fileName = null;
-          this.profileImage = null;
+          this.propertyImage = null;
           this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} actualizado con éxito`);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-          this.profileImage = null;
+          this.propertyImage = null;
         }
       )
       );
@@ -123,20 +123,20 @@ export class UserComponent implements OnInit, OnDestroy {
   public onUpdateCurrentUser(user: Usuario): void {
     this.refreshing = true;
     this.currentUsername = this.authenticationService.getUserFromLocalCache().nombre;
-    const formData = this.userService.createUsuarioFormDate(this.currentUsername, user, this.profileImage);
+    const formData = this.userService.createUsuarioFormDate(this.currentUsername, user, this.propertyImage);
     this.subscriptions.push(
       this.userService.updateUsuario(formData).subscribe(
         (response: Usuario) => {
           this.authenticationService.addUserToLocalCache(response);
           this.getUsers(false);
           this.fileName = null;
-          this.profileImage = null;
+          this.propertyImage = null;
           this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} actualizado con éxito`);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
-          this.profileImage = null;
+          this.propertyImage = null;
         }
       )
       );
@@ -145,7 +145,7 @@ export class UserComponent implements OnInit, OnDestroy {
   public onUpdateProfileImage(): void {
     const formData = new FormData();
     formData.append('username', this.user.username);
-    formData.append('profileImage', this.profileImage);
+    formData.append('profileImage', this.propertyImage);
     this.subscriptions.push(
       this.userService.updateProfileImage(formData).subscribe(
         (event: HttpEvent<any>) => {

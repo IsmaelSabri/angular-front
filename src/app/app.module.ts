@@ -52,6 +52,10 @@ import { AutosizeModule } from 'ngx-autosize';
     MatFormFieldModule,
     AutosizeModule,
   ],
+  exports:[          // para utilizar componentes en otros modulos
+    HomeComponent,
+    MainNavComponent
+  ],
   providers: [
     NotificationService,
     AuthenticationGuard,

@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { EdificioService } from './../service/edificio.service';
+import { Edificio } from './../model/edificio';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Map, marker, popup, LatLng, Icon } from 'leaflet';
-import "leaflet.locatecontrol";
+import 'leaflet.locatecontrol';
 import {
   tileLayerSelect,
   tileLayerCP,
@@ -11,7 +13,7 @@ import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
 import { AuthenticationService } from '../service/authentication.service';
 import { UsuarioService } from '../service/usuario.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MarkerService } from 'src/app/service/marker.service';
 import { Marker } from '../model/marker';
@@ -21,7 +23,6 @@ import { map, mergeMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/Rx';
 import * as L from 'leaflet';
-import { Edificio } from '../model/edificio';
 import { Vivienda } from '../model/vivienda';
 import { ToastrService } from 'ngx-toastr';
 //import 'leaflet.BounceMarker'
@@ -34,6 +35,9 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent extends UserComponent implements OnInit {
+
+  @Output() edificioParam =new EventEmitter<Edificio>();
+
   imagenes = [
     'img/background.png',
     'img/background2.png',
@@ -47,8 +51,9 @@ export class HomeComponent extends UserComponent implements OnInit {
     notificationService: NotificationService,
     private markerService: MarkerService,
     route: ActivatedRoute,
-    toastr:ToastrService,
-    private sanitizer: DomSanitizer
+    toastr: ToastrService,
+    private sanitizer: DomSanitizer,
+    private edificioService: EdificioService
   ) {
     super(
       router,
@@ -58,14 +63,14 @@ export class HomeComponent extends UserComponent implements OnInit {
       route,
       toastr
     );
-
-    
   }
-  
+
   map!: L.map;
   lg!: L.LayerGroup;
-  vivienda:Vivienda=new Vivienda();
-  edificio:Edificio=new Edificio();
+  vivienda: Vivienda = new Vivienda();
+  edificio: Edificio = new Edificio();
+  //private edificio$=new BehaviorSubject<Edificio>(this.edificio);
+  edificios:any=[];
   marker: Marker = new Marker();
   state: boolean = this.authenticationService.isUserLoggedIn();
   opt = {};
@@ -82,17 +87,29 @@ export class HomeComponent extends UserComponent implements OnInit {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
+  greenIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
   mp!: L.Marker;
-  fg= L.featureGroup();
-  fotos:any=[];
-  prev!:string;
-  puertasEdificio!:string;
-  
+  fg = L.featureGroup();
+  popup = L.popup();
+  images: any = [];
+  prev!: string;
+  doorsMainProperty!: string;
+  propertyImage: File;
 
   /************************************************************/
   ngOnInit(): void {
     this.userMarkerEvents(); // inicializar opciones
-    this.map=L.map('map',{renderer:L.canvas()}).setView([39.46975, -0.37739], 25);
+    this.map = L.map('map', { renderer: L.canvas() }).setView(
+      [39.46975, -0.37739],
+      25
+    );
     this.getLocation();
     //tileLayerSelect().addTo(map);
     //tileLayerWMSSelect().addTo(map);
@@ -107,11 +124,43 @@ export class HomeComponent extends UserComponent implements OnInit {
             { icon: this.grayIcon },
             this.opt
           ).addTo(this.map);
-
           //marker.on("click", ()=> console.log(""));
         });
       })
     );
+
+    this.subscriptions.push(
+      this.markerService.getBuildings().subscribe((data) => {
+        data.map((Edificio) => {
+          marker(
+            [Number(Edificio.lat), Number(Edificio.lng)],
+            { icon: this.greenIcon }, this.opt)
+            .bindTooltip(`
+            <div class="container">
+            <div class="row mb-2 mt-2 text-center">
+              <div class="col-md-4">
+                <h6>Calle ${Edificio.calle}</h6>
+                <h6>Número ${Edificio.numero}</h6>
+              </div>     
+                 <img style='height: 100%; width: 100%; object-fit: contain' alt='popupImage' src=${Edificio.imageUrl}>
+            </div>
+
+            `,{maxWidth: 90,maxHeight:60, removable: true, editable: true, direction: 'right',
+            permanent: false,
+            sticky: false,
+            offset: [10, 0],
+            opacity: 0.75,
+            className: 'leaflet-tooltip-own'  })
+            .on('click',()=>(
+            this.edificioService.edificio=Edificio,
+            this.router.navigate(['/add'])
+            )).addTo(this.map);
+        });
+      })
+    );
+
+    
+//            <button type="button" class="btn btn-secondary" data-toggle="modal" onclick="${this.viewAdd(Edificio.edificioId)}">Ver</button>
 
     /*  fitbounds para centrar el foco en los marcadores
     const markerItem = marker([39.46975, -0.37739]) // marker de prueba. Los usuarios podrán crear sus markers
@@ -131,34 +180,37 @@ export class HomeComponent extends UserComponent implements OnInit {
       */
   userMarkerEvents() {
     if (this.state) {
-      this.opt = { draggable: true, locateControl:true, bounceOnAdd:true };
+      this.opt = { draggable: true, locateControl: true, bounceOnAdd: true };
     } else {
-      this.opt = { draggable: false, locateControl:true, bounceOnAdd:true };
+      this.opt = { draggable: false, locateControl: true, bounceOnAdd: true };
     }
   }
 
-  getLocation(){
+  getLocation() {
     this.map.on('locationfound', (e: { accuracy: number; latlng: LatLng }) => {
-      this.coords = e.latlng;//Object.assign({}, e.latlng);
-      this.map.setView(this.coords,25); // poner el foco en el mapa
-      this.map.fitBounds([[this.coords.lat, this.coords.lng]]);// por si acaso..
+      this.coords = e.latlng; //Object.assign({}, e.latlng);
+      this.map.setView(this.coords, 25); // poner el foco en el mapa
+      this.map.fitBounds([[this.coords.lat, this.coords.lng]]); // por si acaso..
     });
     this.map.on('locationerror', this.notFoundLocation); // si el usuario no activa la geolocalización
     this.map.locate({ setView: true, maxZoom: 25 }); // llamada para que la geolocalización funcione
   }
 
   notFoundLocation() {
-    alert('No podemos saber donde se encuentra si no habilita la Geolocalización.');
+    alert(
+      'No podemos saber donde se encuentra si no habilita la Geolocalización.'
+    );
   }
 
   createLocationMarker() {
-  console.log(this.coords);
-  
+    console.log(this.coords);
+
     this.toastr.success(
-      'Arrastra el marcador!', 'Mueve el marcador hasta su propiedad!'
-            );
-  
-   this.mp= new L.marker(this.coords, {
+      'Arrastra el marcador!',
+      'Mueve el marcador hasta su propiedad!'
+    );
+
+    this.mp = new L.marker(this.coords, {
       draggable: true,
       bounceOnAdd: true,
       //bounceOnAddOptions: {duration: 500, height: 100, loop: 2}
@@ -167,85 +219,57 @@ export class HomeComponent extends UserComponent implements OnInit {
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMarkerModal"  >Hecho</button>
     
     `);
-    this.lg= new L.LayerGroup([this.mp]);
+    this.lg = new L.LayerGroup([this.mp]);
     this.lg.addTo(this.map);
+    
     /*const popupItem=L.popup().setLatLng(this.coords)
     .setContent('<h5>Arrastrame a mi sitio</h5>')
     .openOn(this.mp);*/
-    this.mp.on('move', () => 
-    this.markerCoords=this.mp.getLatLng(),
-    );
-    this.mp.on('moveend', () =>
-    console.log(this.markerCoords)
-    );
-    this.mp.on('dragend', () =>
-    this.mp.openPopup()
-    );
-  } 
-  // Revisar
-  closeNewPopup(){
-    this.mp.closePopup();
+    this.mp.on('move', () => (this.markerCoords = this.mp.getLatLng()));
+    this.mp.on('moveend', () => console.log(this.markerCoords));
+    this.mp.on('dragend', () => this.mp.openPopup());
   }
+
   // Revisar - en el html -> oninput="textAreaResize(this)"
-  textAreaResize(e){
-    e.style.height = "5px";
-    e.style.height = (e.scrollHeight)+"px";
+  textAreaResize(e) {
+    e.style.height = '5px';
+    e.style.height = e.scrollHeight + 'px';
   }
 
-  saveImage(event):any{
-      this.edificio.foto=event.target.files[0];
-      this.extraerBase64(this.edificio.foto).then((imagen:any)=>{
-        this.prev=imagen.base;
-      })
-      //this.fotos.push(this.edificio.foto);
+  saveImage(event): any {
+    this.propertyImage = event.target.files[0];
   }
-
-  extraerBase64 = async ($event: any) => new Promise((resolve, reject) => {
-    try {
-      const unsafeImg = window.URL.createObjectURL($event);
-      const image = this.sanitizer.bypassSecurityTrustUrl(unsafeImg);
-      const reader = new FileReader();
-      reader.readAsDataURL($event);
-      reader.onload = () => {
-        resolve({
-          base: reader.result
-        });
-      };
-      reader.onerror = error => {
-        resolve({
-          base: null
-        });
-      };
-
-    } catch (e) {
-      return null;
-    }
-  })
 
   numberOnly(event): boolean {
-    const charCode = (event.which) ? event.which : event.keyCode;
+    const charCode = event.which ? event.which : event.keyCode;
     if (charCode >= 31 && (charCode < 48 || charCode > 57)) {
       return false;
     }
     return true;
-
   }
 
-  createMarker() {
-    //this.lg.remove(this.mp); 
+  createEdificio() {
+    //this.lg.remove(this.mp);
     const formData = new FormData();
-    formData.append('lat', this.coords.lat);
-    formData.append('lng', this.coords.lng);
-    formData.append('starRating',this.edificio.valoracion);
+    formData.append('lat', this.markerCoords.lat);
+    formData.append('lng', this.markerCoords.lng);
+    formData.append('foto', this.propertyImage);
+    formData.append('descripcion', this.edificio.descripcion);
+    formData.append('calle', this.edificio.calle);
+    formData.append('numero', this.edificio.numero);
+    formData.append('cp', this.edificio.cp);
+    formData.append('puertas', this.edificio.puertas);
+    formData.append('starRating', this.edificio.valoracion);
     this.subscriptions.push(
-      this.markerService.addMarker(formData).subscribe((res) => {
+      this.markerService.addBuilding(formData).subscribe((res) => {
         this.router.navigate(['/home']),
-          this.sendNotification(NotificationType.SUCCESS, ` Marker creado.`);
+          this.sendNotification(NotificationType.SUCCESS, ` Edificio creado.`);
         var resetForm = <HTMLFormElement>document.getElementById('markerForm');
         resetForm.reset();
         this.clickButton('new-marker-close');
       })
     );
+    this.map.removeLayer(this.lg);
   }
 
   ngOnDestroy(): void {

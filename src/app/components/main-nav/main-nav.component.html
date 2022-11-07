@@ -1,7 +1,11 @@
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark p-md-3">
   <div class="container">
     <a href="index.html" class="navbar-brand">
+<<<<<<< HEAD
       <img src="img/unknown-house.svg" alt="" width="30" height="30"/>
+=======
+      <img src="img/search-house.png" alt="" width="30" height="30"/>
+>>>>>>> c96ab33 (contact-form)
     </a>
     <button
       class="navbar-toggler"
@@ -22,7 +26,11 @@
           <a class="nav-link text-white" href="#">Crear nuevo</a>
         </li>
         <li class="nav-item">
+<<<<<<< HEAD
           <a class="nav-link text-white" href="#">Reservado</a>
+=======
+          <a class="nav-link text-white" (click)="imprimir()" >Reservado</a>
+>>>>>>> c96ab33 (contact-form)
         </li>
         <li class="nav-item">
           <a class="nav-link active margin-left" (click)="onLogOut()" routerLink="/login">Logout</a>
@@ -37,3 +45,36 @@
     </div>
   </div>
 </nav>
+<<<<<<< HEAD
+=======
+
+<!--- Two Column Section -->
+<div class="container-fluid pb-5">
+   <img class="img-fluid" src={{edificio.imageUrl}} alt="desk image" />
+      <div class="maintxt">
+        <h6>Descripcion:</h6>
+        <span class="overlay-text" style="color:#ccff00">{{edificio.descripcion}}</span>
+        <h6>Calle:</h6>
+        <span class="overlay-text" style="color:#ccff00">{{edificio.calle}}</span>
+        <h6>Codigo postal:</h6>
+        <span class="overlay-text" style="color:#ccff00">{{edificio.cp}}</span>
+        <h6>Valoración:</h6>
+        <div class="d-flex rating-list align-items-center">
+          <div class="star w-50 rating-star">
+            <ngb-rating [max]="5" style="color:#ccff00" [(rate)]="edificio.valoracion" [readonly]="true"></ngb-rating>
+          </div>
+      </div>
+      <div class="col col-md-3 d-flex">
+        <button class="btn btn-primary" type="submit">
+          <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
+          <span *ngIf="refreshing">Cargando...</span>
+          <span *ngIf="!refreshing">Contactar</span>
+        </button>
+      </div>
+    </div>
+      </div>
+
+
+
+
+>>>>>>> c96ab33 (contact-form)
