@@ -1,3 +1,21 @@
 nav a.nav-link {
   font-size: 22px;
 }
+<<<<<<< HEAD
+=======
+
+/*.maintxt {position: relative;}
+.maintxt > img .overlay-text {position: relative; margin-block-start: auto;}*/
+
+.img {
+  width: 100%;
+}
+
+.maintxt {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+}
+
+>>>>>>> c96ab33 (contact-form)

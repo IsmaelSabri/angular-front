@@ -27,7 +27,11 @@ export class UserComponent implements OnInit, OnDestroy {
   public refreshing: boolean;
   public selectedUser: Usuario;
   public fileName: string;
+<<<<<<< HEAD
   public profileImage: File;
+=======
+  public propertyImage: File;
+>>>>>>> c96ab33 (contact-form)
   protected subscriptions: Subscription[] = [];
   public editUser = new Usuario();
   private currentUsername: string;
@@ -74,7 +78,11 @@ export class UserComponent implements OnInit, OnDestroy {
 
   public onProfileImageChange(fileName: string, profileImage: File): void {
     this.fileName =  fileName;
+<<<<<<< HEAD
     this.profileImage = profileImage;
+=======
+    this.propertyImage = profileImage;
+>>>>>>> c96ab33 (contact-form)
   }
 
   public saveNewUser(): void {
@@ -82,39 +90,63 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   public onAddNewUser(userForm: NgForm): void {
+<<<<<<< HEAD
     const formData = this.userService.createUsuarioFormDate(null, userForm.value, this.profileImage);
+=======
+    const formData = this.userService.createUsuarioFormDate(null, userForm.value, this.propertyImage);
+>>>>>>> c96ab33 (contact-form)
     this.subscriptions.push(
       this.userService.addNewUser(formData).subscribe(
         (response: Usuario) => {
           this.clickButton('new-user-close');
           this.getUsers(false);
           this.fileName = null;
+<<<<<<< HEAD
           this.profileImage = null;
+=======
+          this.propertyImage = null;
+>>>>>>> c96ab33 (contact-form)
           userForm.reset();
           this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} añadido con éxito`);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+<<<<<<< HEAD
           this.profileImage = null;
+=======
+          this.propertyImage = null;
+>>>>>>> c96ab33 (contact-form)
         }
       )
       );
   }
 
   public onUpdateUser(): void {
+<<<<<<< HEAD
     const formData = this.userService.createUsuarioFormDate(this.currentUsername, this.editUser, this.profileImage);
+=======
+    const formData = this.userService.createUsuarioFormDate(this.currentUsername, this.editUser, this.propertyImage);
+>>>>>>> c96ab33 (contact-form)
     this.subscriptions.push(
       this.userService.updateUsuario(formData).subscribe(
         (response: Usuario) => {
           this.clickButton('closeEditUserModalButton');
           this.getUsers(false);
           this.fileName = null;
+<<<<<<< HEAD
           this.profileImage = null;
+=======
+          this.propertyImage = null;
+>>>>>>> c96ab33 (contact-form)
           this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} actualizado con éxito`);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+<<<<<<< HEAD
           this.profileImage = null;
+=======
+          this.propertyImage = null;
+>>>>>>> c96ab33 (contact-form)
         }
       )
       );
@@ -123,20 +155,32 @@ export class UserComponent implements OnInit, OnDestroy {
   public onUpdateCurrentUser(user: Usuario): void {
     this.refreshing = true;
     this.currentUsername = this.authenticationService.getUserFromLocalCache().nombre;
+<<<<<<< HEAD
     const formData = this.userService.createUsuarioFormDate(this.currentUsername, user, this.profileImage);
+=======
+    const formData = this.userService.createUsuarioFormDate(this.currentUsername, user, this.propertyImage);
+>>>>>>> c96ab33 (contact-form)
     this.subscriptions.push(
       this.userService.updateUsuario(formData).subscribe(
         (response: Usuario) => {
           this.authenticationService.addUserToLocalCache(response);
           this.getUsers(false);
           this.fileName = null;
+<<<<<<< HEAD
           this.profileImage = null;
+=======
+          this.propertyImage = null;
+>>>>>>> c96ab33 (contact-form)
           this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} actualizado con éxito`);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
+<<<<<<< HEAD
           this.profileImage = null;
+=======
+          this.propertyImage = null;
+>>>>>>> c96ab33 (contact-form)
         }
       )
       );
@@ -145,7 +189,11 @@ export class UserComponent implements OnInit, OnDestroy {
   public onUpdateProfileImage(): void {
     const formData = new FormData();
     formData.append('username', this.user.username);
+<<<<<<< HEAD
     formData.append('profileImage', this.profileImage);
+=======
+    formData.append('profileImage', this.propertyImage);
+>>>>>>> c96ab33 (contact-form)
     this.subscriptions.push(
       this.userService.updateProfileImage(formData).subscribe(
         (event: HttpEvent<any>) => {

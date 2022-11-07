@@ -2,9 +2,12 @@
 export class Edificio{
 lat:string;
 lng:string;
+edificioId:string;
 descripcion:string;
-foto:string;
-puertas:[];
+puertas:string;
+imageUrl:string;
+imageName:string;
+imageId:string;
 calle:string;
 numero:string;
 cp:string;
