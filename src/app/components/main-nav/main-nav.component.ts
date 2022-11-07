@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import { Component, OnInit } from '@angular/core';
-import { AuthenticationService } from '../../service/authentication.service';
-import { NotificationService } from '../../service/notification.service';
-import { NotificationType } from '../../class/notification-type.enum';
-import { Router } from '@angular/router';
-=======
 import { Edificio } from './../../model/edificio';
 import { Component, Input, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../service/authentication.service';
@@ -12,7 +5,6 @@ import { NotificationService } from '../../service/notification.service';
 import { NotificationType } from '../../class/notification-type.enum';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { EdificioService } from '../../service/edificio.service';
->>>>>>> c96ab33 (contact-form)
 
 @Component({
   selector: 'app-main-nav',
@@ -20,17 +12,6 @@ import { EdificioService } from '../../service/edificio.service';
   styleUrls: ['./main-nav.component.css', 'bootstrap.min.css'],
 })
 export class MainNavComponent implements OnInit {
-<<<<<<< HEAD
-  constructor(
-    private router: Router,
-    private authenticationService: AuthenticationService,
-    private notificationService: NotificationService,
-    private activatedRoute: ActivatedRoute,
-    private edificioService: EdificioService
-  ) {}
-
-  ngOnInit(): void {}
-=======
 
   edificio: Edificio = new Edificio();
   aux:string;
@@ -52,7 +33,6 @@ export class MainNavComponent implements OnInit {
   imprimir(){
     console.log(this.edificio);
   }
->>>>>>> c96ab33 (contact-form)
 
   private sendNotification(
     notificationType: NotificationType,

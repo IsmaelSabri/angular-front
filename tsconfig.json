@@ -10,11 +10,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-<<<<<<< HEAD
-    "target": "es2015",
-=======
     "target": "es2020",
->>>>>>> c96ab33 (contact-form)
     "lib": [
       "es2018",
       "dom"

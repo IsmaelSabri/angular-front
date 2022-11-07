@@ -52,13 +52,10 @@ import { AutosizeModule } from 'ngx-autosize';
     MatFormFieldModule,
     AutosizeModule,
   ],
-<<<<<<< HEAD
-=======
   exports:[          // para utilizar componentes en otros modulos
     HomeComponent,
     MainNavComponent
   ],
->>>>>>> c96ab33 (contact-form)
   providers: [
     NotificationService,
     AuthenticationGuard,
