@@ -7,11 +7,13 @@ import { UserComponent } from './components/user/user.component';
 import { AuthenticationGuard } from './guard/authentication.guard';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MainNavComponent } from './components/main-nav/main-nav.component';
+import { VlogComponent } from './components/vlog/vlog.component';
 
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'vlog', component: VlogComponent },
   { path: 'add', component: MainNavComponent },
   { path: 'home', component: HomeComponent },
   { path: 'register', component: RegisterComponent },

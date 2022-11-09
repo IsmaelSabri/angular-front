@@ -117,10 +117,6 @@
       }
     }
   },
-<<<<<<< HEAD
-  "defaultProject": "front-api-rest",
-=======
->>>>>>> c96ab33 (contact-form)
   "cli": {
     "analytics": "19451158-4938-459d-9f57-a149fbe21c4a"
   }

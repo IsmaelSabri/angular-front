@@ -38,12 +38,6 @@ export class HomeComponent extends UserComponent implements OnInit {
 
   @Output() edificioParam =new EventEmitter<Edificio>();
 
-  imagenes = [
-    'img/background.png',
-    'img/background2.png',
-    'img/background3.png',
-  ];
-
   constructor(
     router: Router,
     authenticationService: AuthenticationService,
