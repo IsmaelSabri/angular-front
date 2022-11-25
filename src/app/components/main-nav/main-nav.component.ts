@@ -6,19 +6,20 @@ import { NotificationType } from '../../class/notification-type.enum';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { EdificioService } from '../../service/edificio.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { ContactUser } from 'src/app/model/contact-user';
 
 
 @Component({
   selector: 'app-main-nav',
   templateUrl: './main-nav.component.html',
-  styleUrls: ['./main-nav.component.css', 'bootstrap.min.css'],
+  styleUrls: ['./main-nav.component.css'],
 })
 export class MainNavComponent implements OnInit {
 
   edificio: Edificio = new Edificio();
   aux:string;
   public refreshing: boolean;
-  userContact:any; // data user array
+  contactUser:ContactUser=new ContactUser();
   protected subscriptions: Subscription[] = [];
 
 
@@ -61,17 +62,24 @@ export class MainNavComponent implements OnInit {
     );
   }
 
+  numberOnly(event): boolean {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode >= 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+
   public contactMessage(){
     this.refreshing=true;
     const formData = new FormData();
-    formData.append('nombre',this.contactMessage[0]);
-    formData.append('apellido',this.contactMessage[1]);
-    formData.append('correo',this.contactMessage[2]);
-    formData.append('telefono',this.contactMessage[3]);
-    formData.append('mensaje',this.contactMessage[4]);
+    formData.append('nombre',this.contactUser.nombre);
+    formData.append('correo',this.contactUser.correo);
+    formData.append('telefono',this.contactUser.telefono);
+    formData.append('mensaje',this.contactUser.mensaje);
     this.subscriptions.push(
      /*
-     hay que crear un servicio de usuarios e implementar todo...
+     hay que crearlo en el  servicio de usuarios e implementar todo...
      
      this.markerService.addBuilding(formData).subscribe((res) => {
         this.router.navigate(['/home']),

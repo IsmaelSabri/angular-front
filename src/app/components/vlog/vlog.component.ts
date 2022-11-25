@@ -9,12 +9,6 @@ export class VlogComponent implements OnInit {
 
   constructor() { }
 
-  imagenes = [
-    'img/background.png',
-    'img/background2.png',
-    'img/background3.png',
-  ];
-
   ngOnInit(): void {
   }
 

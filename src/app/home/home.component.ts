@@ -192,7 +192,7 @@ export class HomeComponent extends UserComponent implements OnInit {
 
   notFoundLocation() {
     alert(
-      'No podemos saber donde se encuentra si no habilita la Geolocalización.'
+      'Si ya ha iniciado sesión, habilite la Geolocalización o espere a que el navegador se posicione.'
     );
   }
 
@@ -207,7 +207,7 @@ export class HomeComponent extends UserComponent implements OnInit {
     this.mp = new L.marker(this.coords, {
       draggable: true,
       bounceOnAdd: true,
-      //bounceOnAddOptions: {duration: 500, height: 100, loop: 2}
+      bounceOnAddOptions: {duration: 500, height: 100, loop: 2}
     }).bindPopup(`
     
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMarkerModal"  >Hecho</button>
@@ -217,7 +217,7 @@ export class HomeComponent extends UserComponent implements OnInit {
     this.lg.addTo(this.map);
     
     /*const popupItem=L.popup().setLatLng(this.coords)
-    .setContent('<h5>Arrastrame a mi sitio</h5>')
+    .setContent('<h5>Arrastrame a una ubicación exacta</h5>')
     .openOn(this.mp);*/
     this.mp.on('move', () => (this.markerCoords = this.mp.getLatLng()));
     this.mp.on('moveend', () => console.log(this.markerCoords));

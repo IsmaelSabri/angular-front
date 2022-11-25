@@ -1,7 +1,7 @@
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark p-md-3">
   <div class="container">
     <a href="index.html" class="navbar-brand">
-      <img src="img/search-house.png" alt="" width="30" height="30" />
+      <img src="img/unknown-house.png" alt="" width="30" height="30" />
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,14 +41,14 @@
     <span class="overlay-text" style="color:#ccff00">{{edificio.calle}}</span>
     <h6>Codigo postal:</h6>
     <span class="overlay-text" style="color:#ccff00">{{edificio.cp}}</span>
-    <h6>Valoración:</h6>
+    <h6>Estado de la vivienda:</h6>
     <div class="d-flex rating-list align-items-center">
       <div class="star w-50 rating-star">
         <ngb-rating [max]="5" style="color:#ccff00" [(rate)]="edificio.valoracion" [readonly]="true"></ngb-rating>
       </div>
     </div>
     <div class="col col-md-3 d-flex">
-      <button class="btn btn-primary" type="submit" data-target="#contact_form">
+      <button class="btn btn-outline-light btn-md mx-2 my-1" data-toggle="modal" data-target="#contact_form">
         <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
         <span *ngIf="refreshing">Cargando...</span>
         <span *ngIf="!refreshing">Contactar</span>
@@ -57,37 +57,55 @@
   </div>
 </div>
 
-<!--contact form-->
-<h1>Formulario de contacto</h1>
-<form id="contact_form" name="contact_form" method="post">
-  <div class="mb-5 row">
-    <div class="col">
-      <label>Nombre</label>
-      <input type="text" required maxlength="50" required [(ngModel)]="userContact[0]" class="form-control" id="first_name" name="first_name">
-    </div>
-    <div class="col">
-      <label>Apellidos</label>
-      <input type="text" required maxlength="50" required [(ngModel)]="userContact[1]" class="form-control" id="last_name" name="last_name">
+<!-- model contact form -->
+<div class="modal draggable fade bd-example-modal-lg" id="contact_form" tabindex="-1" rol="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog" rol="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center">Formulario de contacto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <form method="post" (ngSubmit)="contactMessage()" id="contactForm">
+            <div class="form-group">
+              <label for="Nombre">Nombre</label>
+              <input type="text" name="nombre" required [(ngModel)]="contactUser.nombre" placeholder="nombre"
+                class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="correo">Correo electrónico</label>
+              <input type="text" name="correo" required [(ngModel)]="contactUser.correo" placeholder="correo"
+                class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="numero">Teléfono</label>
+              <input type="text" ngModel pattern="\d*" maxlength="12" (keypress)="numberOnly($event)" name="numero"
+                required [(ngModel)]="contactUser.telefono" placeholder="Numero" class="form-control">
+            </div>
+            <!--textarea-->
+            <div class="form-group">
+              <label for="descripcion">Mensaje</label>
+              <textarea required
+                style="resize:none; border-radius:5px; height:100px; width:465px; background-color:white;color:black;"
+                [(ngModel)]='contactUser.mensaje' rows="30" cols="120">
+                  </textarea>
+            </div>
+            <button type="submit" style="display: none;" id="new-user-save"></button>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="new-marker-close">Cerrar</button>
+              <input type="submit" class="btn btn-primary" value="Enviar">
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="mb-5 row">
-    <div class="col">
-      <label for="email_addr">Correo electrónico</label>
-      <input type="email" required maxlength="50" required [(ngModel)]="userContact[2]" class="form-control" id="email_addr" name="email"
-        placeholder="name@example.com">
-    </div>
-    <div class="col">
-      <label for="phone_input">Teléfono</label>
-      <input type="tel" required maxlength="50" required [(ngModel)]="userContact[3]"class="form-control" id="phone_input" name="Phone" placeholder="Phone">
-    </div>
-  </div>
-  <div class="mb-5">
-    <label for="message">Mensaje</label>
-    <textarea class="form-control" id="message" required [(ngModel)]="userContact[4]" name="message" rows="5"></textarea>
-  </div>
-  <button type="submit" class="btn btn-primary px-4 btn-lg">
-    <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
-    <span *ngIf="refreshing">Enviando...</span>
-    <span *ngIf="!refreshing">Enviar</span>  
-  </button>
-</form>
+</div>
+
+
+
+

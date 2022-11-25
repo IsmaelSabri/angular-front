@@ -7,7 +7,7 @@
   ">
   <div class="container-fluid">
     <a href="index.html" class="navbar-brand">
-      <img src="img/wh_ok.png" alt="Logo" width="100" height="75" />
+      <img src="assets/img/unknown-house.png" alt="Logo" width="100" height="75" />
     </a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
@@ -31,13 +31,13 @@
           <a href="#" class="nav-link disabled"> Acerca de nosotros </a>
         </li>
         <li class="nav-item pr-3">
-          <a routerLink="vlog" class="nav-link disabled"> Vlog </a>
+          <a routerLink="/vlog" class="nav-link"> Vlog </a>
         </li>
         <li class="nav-item pr-3">
-          <a [routerLink]="" class="nav-link" *ngIf='this.state' (click)="createLocationMarker()"> Crear anuncio </a>
+          <a [routerLink]="" class="nav-link" *ngIf='this.state' (click)="createLocationMarker()"> Crear edificio </a>
         </li>
         <li class="nav-item pr-3">
-          <a href="#" class="nav-link" *ngIf='this.state' data-toggle="modal" data-target="#addMarkerModal"> Mis Markers
+          <a href="#" class="nav-link" *ngIf='this.state' data-toggle="modal" data-target="#addMarkerModal"> Crear vivienda
           </a>
         </li>
         <li class="nav-item pr-3">
