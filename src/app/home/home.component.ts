@@ -192,7 +192,7 @@ export class HomeComponent extends UserComponent implements OnInit {
 
   notFoundLocation() {
     alert(
-      'Si ya ha iniciado sesión, habilite la Geolocalización o espere a que el navegador se posicione.'
+      'Si ya ha iniciado sesión, habilite la Geolocalización o espere a que el navegador se posicione. Sino recarge la página o inicie esta ventana en otro navegador'
     );
   }
 
