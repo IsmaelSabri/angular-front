@@ -77,16 +77,17 @@ export class MainNavComponent implements OnInit {
     formData.append('correo',this.contactUser.correo);
     formData.append('telefono',this.contactUser.telefono);
     formData.append('mensaje',this.contactUser.mensaje);
+    alert("Mensaje enviado! \n La respuesta del vendedor será enviada a tu correo electrónico!");
     this.subscriptions.push(
      /*
-     hay que crearlo en el  servicio de usuarios e implementar todo...
+     hay que implementarlo en el servicio ...
      
      this.markerService.addBuilding(formData).subscribe((res) => {
         this.router.navigate(['/home']),
-          this.sendNotification(NotificationType.SUCCESS, ` Edificio creado.`);
-        var resetForm = <HTMLFormElement>document.getElementById('markerForm');
+          this.sendNotification(NotificationType.SUCCESS, ` Mensaje enviado.`);
+        var resetForm = <HTMLFormElement>document.getElementById('contactForm');
         resetForm.reset();
-        this.clickButton('new-marker-close');
+        this.clickButton('contact-form-close');
       })*/
     );
 
