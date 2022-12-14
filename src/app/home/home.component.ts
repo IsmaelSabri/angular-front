@@ -124,7 +124,7 @@ export class HomeComponent extends UserComponent implements OnInit {
     );
 
     this.subscriptions.push(
-      this.markerService.getBuildings().subscribe((data) => {
+      this.edificioService.getBuildings().subscribe((data) => {
         data.map((Edificio) => {
           marker(
             [Number(Edificio.lat), Number(Edificio.lng)],
@@ -255,7 +255,7 @@ export class HomeComponent extends UserComponent implements OnInit {
     formData.append('puertas', this.edificio.puertas);
     formData.append('starRating', this.edificio.valoracion);
     this.subscriptions.push(
-      this.markerService.addBuilding(formData).subscribe((res) => {
+      this.edificioService.addBuilding(formData).subscribe((res) => {
         this.router.navigate(['/home']),
           this.sendNotification(NotificationType.SUCCESS, ` Edificio creado.`);
         var resetForm = <HTMLFormElement>document.getElementById('markerForm');

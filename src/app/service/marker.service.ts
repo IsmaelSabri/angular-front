@@ -29,14 +29,6 @@ export class MarkerService {
     return this.http.post<Marker>(`${this.host}/map/new`, formData);
   }
 
-  public addBuilding(formData: FormData): Observable<Edificio>{
-    return this.http.post<Edificio>(`${this.host}/buildings/new`, formData);
-  }
-
-  public getBuildings(): Observable<Edificio[]> {
-    return this.http.get<Edificio[]>(`${this.host}/buildings/list`);
-  }
-
   public addMarkersToLocalCache(markers: Marker[]): void {
     localStorage.setItem('markers', JSON.stringify(markers));
   }

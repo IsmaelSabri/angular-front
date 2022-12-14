@@ -28,4 +28,12 @@ export class EdificioService {
   setEdificio(edificio:Edificio):void{
     this.edificio$.next(edificio);
   }
+
+  public addBuilding(formData: FormData): Observable<Edificio>{
+    return this.http.post<Edificio>(`${this.host}/buildings/new`, formData);
+  }
+
+  public getBuildings(): Observable<Edificio[]> {
+    return this.http.get<Edificio[]>(`${this.host}/buildings/list`);
+  }
 }
