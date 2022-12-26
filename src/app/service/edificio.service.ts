@@ -1,5 +1,5 @@
 import { Edificio } from './../model/edificio';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpResponse,
@@ -8,26 +8,28 @@ import {
   HttpHeaders
 } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { CustomHttpRespone } from '../model/custom-http-response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EdificioService {
-  edificio: Edificio = new Edificio();
-  private edificio$=new BehaviorSubject<Edificio>(this.edificio);
+
+  private edificio$: ReplaySubject<Edificio>=new ReplaySubject<Edificio>();
+  public edificio_:Observable<Edificio>=this.edificio$.asObservable();
   private host = environment.apiUrl;
   private httpHeaders=new HttpHeaders({'Content-Type':"application/json"})
   constructor(private http: HttpClient) {}
 
-  get selectedEdificio$():Observable<Edificio>{
-    return this.edificio$.asObservable();
+  /*  Reservado para emitir nuevos valores
+  get selectedEdificio$(): Observable<Edificio>{ // :Observable<Edificio>
+    return this.edificio_;
   }
 
-  setEdificio(edificio:Edificio):void{
+  setEdificio$(edificio:Edificio):void{
     this.edificio$.next(edificio);
-  }
+  }*/
 
   public addBuilding(formData: FormData): Observable<Edificio>{
     return this.http.post<Edificio>(`${this.host}/buildings/new`, formData);
@@ -36,4 +38,16 @@ export class EdificioService {
   public getBuildings(): Observable<Edificio[]> {
     return this.http.get<Edificio[]>(`${this.host}/buildings/list`);
   }
+
+  public addBuildingsToLocalCache(buildings: Edificio[]): void {
+    localStorage.setItem('buildings', JSON.stringify(buildings));
+  }
+
+  public getBuildingsFromLocalCache(): Edificio[] {
+    if (localStorage.getItem('buildings')) {
+      return JSON.parse(localStorage.getItem('buildings'));
+    }
+    return null;
+  }
+
 }

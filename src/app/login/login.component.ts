@@ -8,6 +8,7 @@ import { Usuario } from '../model/usuario';
 import { NotificationType } from '../class/notification-type.enum';
 import { HeaderType } from '../class/header-type.enum';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
+import { UsuarioService } from '../service/usuario.service';
 
 @Component({
   selector: 'app-login',
@@ -18,10 +19,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
 
-
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService,
+    private userService: UsuarioService,
     private notificationService: NotificationService,
     config: NgbCarouselConfig
   ) {

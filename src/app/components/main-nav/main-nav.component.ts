@@ -1,12 +1,15 @@
 import { Edificio } from './../../model/edificio';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../service/authentication.service';
 import { NotificationService } from '../../service/notification.service';
 import { NotificationType } from '../../class/notification-type.enum';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { EdificioService } from '../../service/edificio.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { ContactUser } from 'src/app/model/contact-user';
+import { Fancied } from 'src/app/model/fancied';
+import { HttpEvent } from '@angular/common/http';
+import { Usuario } from 'src/app/model/usuario';
 
 
 @Component({
@@ -14,29 +17,50 @@ import { ContactUser } from 'src/app/model/contact-user';
   templateUrl: './main-nav.component.html',
   styleUrls: ['./main-nav.component.css'],
 })
-export class MainNavComponent implements OnInit {
-
-  edificio: Edificio = new Edificio();
+export class MainNavComponent implements OnInit, OnDestroy {
+  edificio:Edificio=new Edificio();
+  fancied: Fancied=new Fancied();
   aux:string;
   public refreshing: boolean;
   contactUser:ContactUser=new ContactUser();
   protected subscriptions: Subscription[] = [];
-
+  IsChecked: boolean;
+  IsIndeterminate: boolean;
+  LabelAlign: 'after' | 'before';
+  IsDisabled: boolean;  
 
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService,
     private notificationService: NotificationService,
-    private activatedRoute: ActivatedRoute,
     private edificioService: EdificioService
-  ) {}
+    ) {    
+    this.IsChecked = false;
+    this.IsIndeterminate = false;
+    this.LabelAlign = 'after';
+    this.IsDisabled = false;}
 
   ngOnInit(): void {
-    this.edificio=this.edificioService.edificio;
+    this.edificio=JSON.parse(localStorage.getItem("currentBuilding"));
   }
 
-  imprimir(){
-    console.log(this.edificio);
+  changeEvent($event) {
+    console.log($event.checked);
+    //$event.source.toggle();
+    $event.source.focus();
+    if($event.checked){
+     // this.favourite.userId=
+      //this.favourite.addId=
+    }
+    console.log();
+  }
+
+  imprimir($event): void{
+    /*if(this.checkbox===true){
+        this.favourite.addId=this.edificio.edificioId;
+        //this.favourite.userId=;
+    }*/
+   // console.log('funcionando');
   }
 
   private sendNotification(
@@ -93,7 +117,9 @@ export class MainNavComponent implements OnInit {
 
   }
 
-
+ngOnDestroy(): void {
+  this.subscriptions.forEach(sub => sub.unsubscribe());
+}
 
 
 }

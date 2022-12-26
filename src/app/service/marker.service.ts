@@ -21,9 +21,9 @@ export class MarkerService {
 
   constructor(private http: HttpClient) {}
 
-  public getMarkers(): Observable<Marker[]> {
+  /*public getMarkers(): Observable<Marker[]> {
     return this.http.get<Marker[]>(`${this.host}/map/list`);
-  }
+  }*/
 //, {headers:this.httpHeaders}
   public addMarker(formData: FormData): Observable<Marker> {
     return this.http.post<Marker>(`${this.host}/map/new`, formData);

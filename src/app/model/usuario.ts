@@ -11,6 +11,7 @@ export class Usuario {
              public active: boolean;
              public notLocked: boolean;
              public rol: string;
+             public lastView: string;
              public authorities: [];
            
              constructor() {
@@ -27,6 +28,7 @@ export class Usuario {
                this.notLocked = false;
                this.rol = '';
                this.authorities = [];
+               this.lastView='';
              }
            
            }

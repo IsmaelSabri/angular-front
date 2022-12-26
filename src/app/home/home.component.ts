@@ -1,6 +1,6 @@
 import { EdificioService } from './../service/edificio.service';
 import { Edificio } from './../model/edificio';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { Map, marker, popup, LatLng, Icon } from 'leaflet';
 import 'leaflet.locatecontrol';
 import {
@@ -13,9 +13,7 @@ import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
 import { AuthenticationService } from '../service/authentication.service';
 import { UsuarioService } from '../service/usuario.service';
-import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { MarkerService } from 'src/app/service/marker.service';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Marker } from '../model/marker';
 import { NotificationType } from '../class/notification-type.enum';
 import { pipe, Observable } from 'rxjs';
@@ -25,9 +23,6 @@ import 'rxjs/Rx';
 import * as L from 'leaflet';
 import { Vivienda } from '../model/vivienda';
 import { ToastrService } from 'ngx-toastr';
-//import 'leaflet.BounceMarker'
-import { DomSanitizer } from '@angular/platform-browser';
-import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -36,17 +31,13 @@ import { FormControl, Validators } from '@angular/forms';
 })
 export class HomeComponent extends UserComponent implements OnInit {
 
-  @Output() edificioParam =new EventEmitter<Edificio>();
-
   constructor(
     router: Router,
     authenticationService: AuthenticationService,
     userService: UsuarioService,
     notificationService: NotificationService,
-    private markerService: MarkerService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    private sanitizer: DomSanitizer,
     private edificioService: EdificioService
   ) {
     super(
@@ -63,7 +54,6 @@ export class HomeComponent extends UserComponent implements OnInit {
   lg!: L.LayerGroup;
   vivienda: Vivienda = new Vivienda();
   edificio: Edificio = new Edificio();
-  //private edificio$=new BehaviorSubject<Edificio>(this.edificio);
   edificios:any=[];
   marker: Marker = new Marker();
   state: boolean = this.authenticationService.isUserLoggedIn();
@@ -109,20 +99,8 @@ export class HomeComponent extends UserComponent implements OnInit {
     //tileLayerWMSSelect().addTo(map);
     //tileLayerCP().addTo(map); // Codigos postales
     tileLayerWMSSelectIGN().addTo(this.map);
-    // Cargar markers de forma dinámica
-    this.subscriptions.push(
-      this.markerService.getMarkers().subscribe((data) => {
-        data.map((point) => {
-          marker(
-            [Number(point.lat), Number(point.lng)],
-            { icon: this.grayIcon },
-            this.opt
-          ).addTo(this.map);
-          //marker.on("click", ()=> console.log(""));
-        });
-      })
-    );
 
+      //carga de edificios
     this.subscriptions.push(
       this.edificioService.getBuildings().subscribe((data) => {
         data.map((Edificio) => {
@@ -146,7 +124,8 @@ export class HomeComponent extends UserComponent implements OnInit {
             opacity: 0.75,
             className: 'leaflet-tooltip-own'  })
             .on('click',()=>(
-            this.edificioService.edificio=Edificio,
+            localStorage.removeItem("currentBuilding"),
+            localStorage.setItem("currentBuilding",JSON.stringify(Edificio)),
             this.router.navigate(['/add'])
             )).addTo(this.map);
         });
@@ -167,16 +146,12 @@ export class HomeComponent extends UserComponent implements OnInit {
     //
   }
 
-  /*
-      Si el usuario logueado en sesión coincide con el usuario que creó el marker
-      se activarán todos los eventos de ratón, arrastre etc.
-      Por ahora mientras esté logeado es suficiente
-      */
+  /* marker options */
   userMarkerEvents() {
     if (this.state) {
-      this.opt = { draggable: true, locateControl: true, bounceOnAdd: true };
+      this.opt = { draggable: true, locateControl: true };
     } else {
-      this.opt = { draggable: false, locateControl: true, bounceOnAdd: true };
+      this.opt = { draggable: false, locateControl: true };
     }
   }
 
@@ -205,9 +180,7 @@ export class HomeComponent extends UserComponent implements OnInit {
     );
 
     this.mp = new L.marker(this.coords, {
-      draggable: true,
-      bounceOnAdd: true,
-      bounceOnAddOptions: {duration: 500, height: 100, loop: 2}
+      draggable: true
     }).bindPopup(`
     
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMarkerModal"  >Hecho</button>

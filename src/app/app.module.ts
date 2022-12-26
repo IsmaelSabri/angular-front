@@ -26,6 +26,9 @@ import { NgxStarRatingModule } from 'ngx-star-rating';
 import { MarkerService } from './service/marker.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AutosizeModule } from 'ngx-autosize';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { EdificioService } from './service/edificio.service';
 
 @NgModule({
   declarations: [
@@ -51,6 +54,8 @@ import { AutosizeModule } from 'ngx-autosize';
     NgxStarRatingModule,
     MatFormFieldModule,
     AutosizeModule,
+    MatCardModule,
+    MatCheckboxModule,
   ],
   exports:[          // para utilizar componentes en otros modulos
     HomeComponent,
@@ -61,6 +66,7 @@ import { AutosizeModule } from 'ngx-autosize';
     AuthenticationGuard,
     AuthenticationService,
     UsuarioService,
+    EdificioService,
     MarkerService,
     NgbCarouselConfig,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

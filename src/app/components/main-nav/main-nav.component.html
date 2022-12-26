@@ -15,7 +15,7 @@
           <a class="nav-link" style="color:dodgerblue" href="#">Crear nuevo</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" style="color:dodgerblue" (click)="imprimir()">Guardar anuncio</a>
+          <a class="nav-link" style="color:dodgerblue" >Guardar anuncio</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" style="color:dodgerblue" (click)="onLogOut()" routerLink="/login">Salir</a>
@@ -25,6 +25,24 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" style="color:dodgerblue" href="#">Pricing</a>
+        </li>
+        <li>
+          <mat-card class="result">
+            <mat-card-content>
+            <h2 class="example-h2">Favorito</h2>
+            <section class="example-section">
+            <mat-checkbox class="example-margin"
+            (change)="changeEvent($event)"
+                    (indeterminateChange)="imprimir($event)"
+                    class="example-margin"
+                    [checked]="IsChecked"
+                    [(indeterminate)]="IsIndeterminate"
+                    [labelPosition]="LabelAlign"
+                    [disabled]="IsDisabled">
+            </mat-checkbox>
+            </section>
+            </mat-card-content>
+            </mat-card>
         </li>
       </ul>
     </div>
