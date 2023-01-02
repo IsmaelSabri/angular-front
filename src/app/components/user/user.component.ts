@@ -38,8 +38,8 @@ export class UserComponent implements OnInit, OnDestroy {
               protected route: ActivatedRoute, protected toastr: ToastrService) {}
 
   ngOnInit(): void {
-    this.user = this.authenticationService.getUserFromLocalCache();
-    this.getUsers(true);
+    //this.user = this.authenticationService.getUserFromLocalCache();
+    //this.getUsers(true);
   }
 
   public changeTitle(title: string): void {
