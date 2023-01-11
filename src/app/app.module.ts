@@ -57,7 +57,7 @@ import { EdificioService } from './service/edificio.service';
     MatCardModule,
     MatCheckboxModule,
   ],
-  exports:[          // para utilizar componentes en otros modulos
+  exports:[          // to get component in another modules
     HomeComponent,
     MainNavComponent
   ],

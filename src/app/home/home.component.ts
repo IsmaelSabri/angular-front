@@ -16,8 +16,6 @@ import { UsuarioService } from '../service/usuario.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Marker } from '../model/marker';
 import { NotificationType } from '../class/notification-type.enum';
-import { pipe, Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/Rx';
 import * as L from 'leaflet';
@@ -27,7 +25,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  styleUrls: ['./home.component.css','custom-leaflet.css'],
 })
 export class HomeComponent extends UserComponent implements OnInit {
 
@@ -108,21 +106,23 @@ export class HomeComponent extends UserComponent implements OnInit {
             [Number(Edificio.lat), Number(Edificio.lng)],
             { icon: this.greenIcon }, this.opt)
             .bindTooltip(`
-            <div class="container">
-            <div class="row mb-2 mt-2 text-center">
-              <div class="col-md-4">
+
+            <div class="pane">
+              <div class="col-md-6 text-center info">
                 <h6>Calle ${Edificio.calle}</h6>
-                <h6>Número ${Edificio.numero}</h6>
-              </div>     
-                 <img style='height: 100%; width: 100%; object-fit: contain' alt='popupImage' src=${Edificio.imageUrl}>
+                <h6>NĂºmero ${Edificio.numero}</h6>
+              </div>
+              <div class=" col-md-6 thumb" >  
+                <img class="img-fluid w-100" src=${Edificio.imageUrl}>
+              </div>
             </div>
 
-            `,{maxWidth: 90,maxHeight:60, removable: true, editable: true, direction: 'right',
+            `,{maxWidth: 150,maxHeight:80, removable: true, editable: true, direction: 'top',
             permanent: false,
             sticky: false,
-            offset: [10, 0],
-            opacity: 0.75,
-            className: 'leaflet-tooltip-own'  })
+            offset: [0, -45],
+            opacity: 0.85,
+            className: 'tooltipX'  }) //
             .on('click',()=>(
             localStorage.removeItem("currentBuilding"),
             localStorage.setItem("currentBuilding",JSON.stringify(Edificio)),
