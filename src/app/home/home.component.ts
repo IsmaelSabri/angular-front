@@ -108,12 +108,21 @@ export class HomeComponent extends UserComponent implements OnInit {
             .bindTooltip(`
 
             <div class="pane">
-              <div class="col-md-6 text-center info">
+            <div class="row row-cols-2" main>
+              <div class="col info">
                 <h6>Calle ${Edificio.calle}</h6>
-                <h6>NĂºmero ${Edificio.numero}</h6>
+                <div class="aa-agent-social">
+                <a href="#"><i class="fa fa-facebook"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-linkedin"></i></a>
+                <a href="#"><i class="fa fa-google-plus"></i></a>
+                <a href="#"><i class="fa-thin fa-face-awesome"></i></a>
+                
               </div>
-              <div class=" col-md-6 thumb" >  
-                <img class="img-fluid w-100" src=${Edificio.imageUrl}>
+              </div>
+              <div class="col thumb" >  
+                <img class="img-fluid " src=${Edificio.imageUrl}>
+              </div>
               </div>
             </div>
 
@@ -173,7 +182,8 @@ export class HomeComponent extends UserComponent implements OnInit {
 
   createLocationMarker() {
     console.log(this.coords);
-
+    this.markerCoords=this.coords;
+    
     this.toastr.success(
       'Arrastra el marcador!',
       'Mueve el marcador hasta su propiedad!'

@@ -36,18 +36,23 @@
 	width: 40%;
 }*/
 
-#map .leaflet-pane .leaflet-tooltip-pane .tooltipX .pane .thumb .img {
-	/*width: 100%;
-	height: 100%;*/
+#map .leaflet-pane .leaflet-tooltip-pane .tooltipX .pane .main .thumb .img {
+	height: 100%;
+	width: 100%;
 	object-fit:cover;/*contain to fit, cover by designer*/
 	border-radius: 10px 0 0 10px;
 	vertical-align: top;
 }
 
-#map .leaflet-pane .leaflet-tooltip-pane .tooltipX .pane .info {
+#map .leaflet-pane .leaflet-tooltip-pane .tooltipX .pane .main .info {
 	width: 60%;
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+}
+
+#map .leaflet-pane .leaflet-tooltip-pane .tooltipX .pane .main .info .h6 {
+	font-size: 14px;
+
 }

@@ -37,7 +37,7 @@
           <a routerLink="/vlog" class="nav-link"> Vlog </a>
         </li>
         <li class="nav-item pr-3">
-          <a [routerLink]="" class="nav-link" *ngIf='this.state' (click)="createLocationMarker()"> Crear edificio </a>
+          <a [routerLink]="" class="nav-link" (click)="createLocationMarker()"> Crear edificio </a> <!--*ngIf='this.state'-->
         </li>
         <li class="nav-item pr-3">
           <a href="#" class="nav-link disabled" *ngIf='this.state' data-toggle="modal" data-target="#addMarkerModal"> Crear vivienda
@@ -51,8 +51,9 @@
   </div>
 </nav>
 
-<!-- model add marker -->
-<div *ngIf='this.state' class="modal draggable fade bd-example-modal-lg" id="addMarkerModal" tabindex="-1" rol="dialog"
+
+<!-- modal add marker *ngIf='this.state' -->
+<div  class="modal draggable fade bd-example-modal-lg" id="addMarkerModal" tabindex="-1" rol="dialog"
   aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog" rol="document">
     <div class="modal-content">
