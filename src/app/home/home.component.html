@@ -27,17 +27,20 @@
         <li class="nav-item pr-3">
           <a routerLink="/register" *ngIf='!this.state' class="nav-link"> Registrarse </a>
         </li>
-        <!--<li class="nav-item pr-3">
+        <li class="nav-item pr-3">
           <a href="#" [hidden]="!isAdmin" class="nav-link disabled" routerLink="/user/management"> Usuarios</a>
-        </li>-->
+        </li>
         <li class="nav-item pr-3">
           <a href="#" class="nav-link disabled"> Acerca de nosotros </a>
+        </li>
+        <li class="nav-item pr-3">
+          <a href="#" class="nav-link " routerLink="/list"> Lista </a>
         </li>
         <li class="nav-item pr-3">
           <a routerLink="/vlog" class="nav-link"> Vlog </a>
         </li>
         <li class="nav-item pr-3">
-          <a [routerLink]="" class="nav-link" (click)="createLocationMarker()"> Crear edificio </a> <!--*ngIf='this.state'-->
+          <a [routerLink]="" class="nav-link" *ngIf='!this.state' (click)="createLocationMarker()"> Crear edificio </a>
         </li>
         <li class="nav-item pr-3">
           <a href="#" class="nav-link disabled" *ngIf='this.state' data-toggle="modal" data-target="#addMarkerModal"> Crear vivienda
@@ -51,9 +54,8 @@
   </div>
 </nav>
 
-
-<!-- modal add marker *ngIf='this.state' -->
-<div  class="modal draggable fade bd-example-modal-lg" id="addMarkerModal" tabindex="-1" rol="dialog"
+<!-- modal add marker  -->
+<div *ngIf='!this.state' class="modal draggable fade bd-example-modal-lg" id="addMarkerModal" tabindex="-1" rol="dialog"
   aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog" rol="document">
     <div class="modal-content">

@@ -8,6 +8,7 @@ import { AuthenticationGuard } from './guard/authentication.guard';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MainNavComponent } from './components/main-nav/main-nav.component';
 import { VlogComponent } from './components/vlog/vlog.component';
+import { ListComponent } from './pages/list/list.component';
 
 
 
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'add', component: MainNavComponent },
   { path: 'home', component: HomeComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'list', component: ListComponent },
   { path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard] }, 
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
