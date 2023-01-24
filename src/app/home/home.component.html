@@ -161,6 +161,26 @@
                     </label>
                   </div>
                 </fieldset>-->
+
+                <li>
+                  <mat-card class="result">
+                    <mat-card-content>
+                    <h2 class="example-h2">Favorito</h2>
+                    <section class="example-section">
+                    <mat-checkbox class="example-margin"
+                    (change)="changeEvent($event)"
+                            (indeterminateChange)="checkBox($event)"
+                            class="example-margin"
+                            [checked]="IsChecked"
+                            [(indeterminate)]="IsIndeterminate"
+                            [labelPosition]="LabelAlign"
+                            [disabled]="IsDisabled">
+                    </mat-checkbox>
+                    </section>
+                    </mat-card-content>
+                    </mat-card>
+                </li>
+
             <button type="submit" style="display: none;" id="new-user-save"></button>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal" id="new-marker-close">Cerrar</button>

@@ -1,6 +1,6 @@
 export class ContactUser{
-             nombre:string;
-             correo:string;
-             telefono:string;
-             mensaje:string;
+             userName:string;
+             mail:string;
+             phone:string;
+             msg:string;
 }

@@ -1,6 +1,6 @@
 import { EdificioService } from './../service/edificio.service';
 import { Edificio } from './../model/edificio';
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { Map, marker, popup, LatLng, Icon } from 'leaflet';
 import 'leaflet.locatecontrol';
 import {
@@ -14,12 +14,11 @@ import { NotificationService } from '../service/notification.service';
 import { AuthenticationService } from '../service/authentication.service';
 import { UsuarioService } from '../service/usuario.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Marker } from '../model/marker';
 import { NotificationType } from '../class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/Rx';
 import * as L from 'leaflet';
-import { Vivienda } from '../model/vivienda';
+import { Property } from '../model/property';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -27,7 +26,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css','custom-leaflet.css'],
 })
-export class HomeComponent extends UserComponent implements OnInit {
+export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   constructor(
     router: Router,
@@ -46,18 +45,26 @@ export class HomeComponent extends UserComponent implements OnInit {
       route,
       toastr
     );
+    this.IsChecked = false;
+    this.IsIndeterminate = false;
+    this.LabelAlign = 'after';
+    this.IsDisabled = false;
   }
+
+  IsChecked: boolean;
+  IsIndeterminate: boolean;
+  LabelAlign: 'after' | 'before';
+  IsDisabled: boolean;  
 
   map!: L.map;
   lg!: L.LayerGroup;
-  vivienda: Vivienda = new Vivienda();
+  property: Property = new Property();
   edificio: Edificio = new Edificio();
   edificios:any=[];
-  marker: Marker = new Marker();
   state: boolean = this.authenticationService.isUserLoggedIn();
   opt = {};
-  coords!: L.LatLng; // ubicacion actual del usuario al inicio
-  markerCoords!: L.LatLng;
+  coords!: L.LatLng; // coordenadas de ubicacion actual del usuario al inicio
+  markerCoords!: L.LatLng; // coordenadas de la ubicación donde el usuario desea situar su anuncio
   mydate = new Date().getTime();
   grayIcon = new Icon({
     iconUrl:
@@ -217,14 +224,6 @@ export class HomeComponent extends UserComponent implements OnInit {
     this.propertyImage = event.target.files[0];
   }
 
-  numberOnly(event): boolean {
-    const charCode = event.which ? event.which : event.keyCode;
-    if (charCode >= 31 && (charCode < 48 || charCode > 57)) {
-      return false;
-    }
-    return true;
-  }
-
   createEdificio() {
     //this.lg.remove(this.mp);
     const formData = new FormData();
@@ -247,6 +246,39 @@ export class HomeComponent extends UserComponent implements OnInit {
       })
     );
     this.map.removeLayer(this.lg);
+  }
+
+  // Métodos para los checkboxes
+  changeEvent($event) {
+    console.log($event.checked);
+    //$event.source.toggle();
+    $event.source.focus();
+    if($event.checked){
+     // this.favourite.userId=
+      //this.favourite.addId=
+    }
+    console.log();
+  }
+
+  checkBox($event): void{
+    /*if(this.checkbox===true){
+        this.favourite.addId=this.edificio.edificioId;
+        //this.favourite.userId=;
+    }*/
+   // console.log('funcionando');
+  }
+
+  // Nueva vivienda
+  createProperty(){
+    const formData = new FormData();
+    formData.append('lat', this.markerCoords.lat);
+    formData.append('lng', this.markerCoords.lng);
+    formData.append('foto', this.property.imageUrl);
+    formData.append('descripcion', this.property.descripcion);
+    formData.append('calle', this.property.calle);
+    formData.append('numero', this.property.numero);
+    formData.append('cp', this.property.cp);
+    formData.append('puertas', this.edificio.puertas);
   }
 
   ngOnDestroy(): void {

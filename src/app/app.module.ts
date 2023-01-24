@@ -21,14 +21,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
-import { MainNavComponent } from './components/main-nav/main-nav.component';
 import { NgxStarRatingModule } from 'ngx-star-rating';
-import { MarkerService } from './service/marker.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AutosizeModule } from 'ngx-autosize';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { EdificioService } from './service/edificio.service';
+import { AddComponent } from './pages/add/add.component';
+import { ListComponent } from './pages/list/list.component';
+import { PropertyService } from './service/property.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { EdificioService } from './service/edificio.service';
     RegisterComponent,
     UserComponent,
     HomeComponent,
-    MainNavComponent,
+    ListComponent,
+    AddComponent
   ],
   imports: [
     BrowserModule,
@@ -59,7 +61,8 @@ import { EdificioService } from './service/edificio.service';
   ],
   exports:[          // to get component in another modules
     HomeComponent,
-    MainNavComponent
+    AddComponent,
+    ListComponent
   ],
   providers: [
     NotificationService,
@@ -67,8 +70,8 @@ import { EdificioService } from './service/edificio.service';
     AuthenticationService,
     UsuarioService,
     EdificioService,
-    MarkerService,
     NgbCarouselConfig,
+    PropertyService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],

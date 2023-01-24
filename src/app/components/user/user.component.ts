@@ -273,6 +273,14 @@ export class UserComponent implements OnInit, OnDestroy {
     document.getElementById(buttonId).click();
   }
 
+  numberOnly(event): boolean {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode >= 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
