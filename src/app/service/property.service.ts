@@ -34,20 +34,20 @@ export class PropertyService {
 
 
   public addBuilding(formData: FormData): Observable<Property>{
-    return this.http.post<Property>(`${this.host}/buildings/new`, formData);
+    return this.http.post<Property>(`${this.host}/properties/new`, formData);
   }
 
-  public getBuildings(): Observable<Property[]> {
-    return this.http.get<Property[]>(`${this.host}/buildings/list`);
+  public getProperties(): Observable<Property[]> {
+    return this.http.get<Property[]>(`${this.host}/properties/list`);
   }
 
-  public addBuildingsToLocalCache(buildings: Property[]): void {
-    localStorage.setItem('buildings', JSON.stringify(buildings));
+  public addPropertiesToLocalCache(properties: Property[]): void {
+    localStorage.setItem('properties', JSON.stringify(properties));
   }
 
-  public getBuildingsFromLocalCache(): Property[] {
-    if (localStorage.getItem('buildings')) {
-      return JSON.parse(localStorage.getItem('buildings'));
+  public getPropertiesFromLocalCache(): Property[] {
+    if (localStorage.getItem('properties')) {
+      return JSON.parse(localStorage.getItem('properties'));
     }
     return null;
   }

@@ -7,12 +7,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 import 'rxjs/Rx';
 import { Property } from '../../model/property';
 import { ToastrService } from 'ngx-toastr';
+import { PropertyService } from 'src/app/service/property.service';
+import { HttpErrorResponse } from '@angular/common/http';
+
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css']
 })
 export class ListComponent extends UserComponent implements OnInit, OnDestroy{
+
+  public properties: Property[];
 
   constructor(
     router: Router,
@@ -21,6 +26,7 @@ export class ListComponent extends UserComponent implements OnInit, OnDestroy{
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
+    public propertyService:PropertyService
   ) {
     super(
       router,
@@ -36,9 +42,25 @@ export class ListComponent extends UserComponent implements OnInit, OnDestroy{
       
   }
 
+  public getBuildings(): void {
+    this.refreshing = true;
+    this.subscriptions.push(
+      this.propertyService.getBuildings().subscribe(
+        (response: Property[]) => {
+          this.propertyService.addBuildingsToLocalCache(response);
+          this.properties = response;
+          this.refreshing = false;
+        }
+      )
+    );
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
+  onSelectedProperty(property:Property){
+    console.log('now we are running');
+  }
 
 }

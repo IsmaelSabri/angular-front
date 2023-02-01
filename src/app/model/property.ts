@@ -8,10 +8,14 @@ cp:string;
 habitaciones:string;
 aseos:string;
 superficie:string;
-piso:string;
+condicion:string;
 tipo:string;
 ascensor:string;
-precio:string;
+// coste y variaciones
+precioInicial:string;
+descuento:number;
+precioFinal:string;
+
 duracion:string;
 descripcion:string;
 aireAcondicionado:boolean;
@@ -48,7 +52,7 @@ video:string;
 
 // alquiler
 mascotas:string;
-fianza:string;
+fianza:string; // tamaño y meses
 disponibilidad:string;
 estanciaMinima:string;
 
