@@ -29,5 +29,5 @@ After drag when you drop the marker a new buttons appears to confirm your locati
 ![alt text](https://github.com/IsmaelSabri/angular-front/blob/master/img04.png?raw=true)
 ![alt text](https://github.com/IsmaelSabri/angular-front/blob/master/img05.png?raw=true)
 
-
+Important: you can test master branch, other branches are in development.
 
