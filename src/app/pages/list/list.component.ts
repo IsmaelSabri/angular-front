@@ -42,7 +42,7 @@ export class ListComponent extends UserComponent implements OnInit, OnDestroy{
       
   }
 
-  public getBuildings(): void {
+  /*public getBuildings(): void {
     this.refreshing = true;
     this.subscriptions.push(
       this.propertyService.getBuildings().subscribe(
@@ -53,7 +53,7 @@ export class ListComponent extends UserComponent implements OnInit, OnDestroy{
         }
       )
     );
-  }
+  }*/
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
