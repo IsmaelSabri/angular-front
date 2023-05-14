@@ -15,6 +15,8 @@ import { NotificationType } from '../class/notification-type.enum';
 export class RegisterComponent implements OnInit, OnDestroy {
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
+  visible:boolean = true;
+  changetype:boolean =true;
 
   constructor(private router: Router, private authenticationService: AuthenticationService,
               private notificationService: NotificationService) {}
@@ -25,8 +27,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
 
+  viewpass(){
+    this.visible = !this.visible;
+    this.changetype = !this.changetype;
+  }
+
   public onRegister(user:Usuario): void {
     this.showLoading = true;
+    console.log(user);
     this.subscriptions.push(
       this.authenticationService.register(user).subscribe(
         (response: Usuario) => {
@@ -35,6 +43,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.sendNotification(NotificationType.SUCCESS, `Se ha creado una cuenta para ${response.primerApellido}.
           Por favor verifique su correo electrónico y acceda al sitio.`);
           this.router.navigateByUrl('/login');
+          //this.clickButton('emailInfoModal');
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -51,6 +60,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else {
       this.notificationService.notify(notificationType, 'Algo salio mal. Por favor, inténtelo de nuevo.');
     }
+  }
+
+  protected clickButton(buttonId: string): void {
+    document.getElementById(buttonId).click();
   }
 
   ngOnDestroy(): void {

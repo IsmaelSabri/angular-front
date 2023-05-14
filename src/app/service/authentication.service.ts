@@ -13,15 +13,16 @@ export class AuthenticationService {
   private token: string;
   private loggedInUsername: string;
   private jwtHelper = new JwtHelperService();
+  private httpHeaders=new HttpHeaders({'Content-Type':"application/json"})
 
   constructor(private http: HttpClient) {}
 
   public login(user: Usuario): Observable<HttpResponse<Usuario>> {
-    return this.http.post<Usuario>(`${this.host}/user/login`, user, { observe: 'response' });
+    return this.http.post<Usuario>(`${this.host}/api/v1/auth/login`, user, { observe: 'response' });
   }
 
   public register(user: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.host}/user/register`, user);
+    return this.http.post<Usuario>(`${this.host}/api/v1/auth/register`, user, {headers:this.httpHeaders}); //{headers:this.httpHeaders}
   }
 
   public logOut(): void {

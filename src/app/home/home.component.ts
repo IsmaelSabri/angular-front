@@ -16,7 +16,6 @@ import { UsuarioService } from '../service/usuario.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NotificationType } from '../class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
-import 'rxjs/Rx';
 import * as L from 'leaflet';
 import { Property } from '../model/property';
 import { ToastrService } from 'ngx-toastr';

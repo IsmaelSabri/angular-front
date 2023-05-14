@@ -4,7 +4,7 @@ import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
 import { UsuarioService } from '../../service/usuario.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import 'rxjs/Rx';
+//import 'rxjs/Rx';
 import { Property } from '../../model/property';
 import { ToastrService } from 'ngx-toastr';
 import { PropertyService } from 'src/app/service/property.service';

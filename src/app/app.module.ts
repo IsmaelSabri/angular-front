@@ -9,6 +9,7 @@ import { UsuarioService } from './service/usuario.service';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { AuthenticationGuard } from './guard/authentication.guard';
 import { NotificationModule } from './notification.module';
+import { NotifierModule } from 'angular-notifier';
 import { NotificationService } from './service/notification.service';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
@@ -48,9 +49,10 @@ import { PropertyService } from './service/property.service';
     ReactiveFormsModule,
     HttpClientModule,
     NotificationModule,
+    NotifierModule,
     NgbModalModule,
     NgbModule,
-    IvyCarouselModule,
+    //IvyCarouselModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     NgxStarRatingModule,

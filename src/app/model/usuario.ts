@@ -3,6 +3,7 @@ export class Usuario {
              public nombre: string;
              public primerApellido: string;
              public username: string;
+             public password: string;
              public email: string;
              public fechaDeUltimoAcceso: Date;
              public mostrarFechaDeUltimoAcceso: Date;
