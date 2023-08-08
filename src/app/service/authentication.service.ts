@@ -1,36 +1,52 @@
-import { Rol } from '../class/role.enum';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpResponse,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { Usuario } from '../model/usuario';
+import { User } from '../model/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { TokenApiModel } from '../class/TokenApiModel';
 
-
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class AuthenticationService {
   public host = environment.apiUrl;
   private token: string;
-  private loggedInUsername: string;
+  private refreshToken: string;
   private jwtHelper = new JwtHelperService();
-  private httpHeaders=new HttpHeaders({'Content-Type':"application/json"})
+  private httpHeaders = new HttpHeaders({
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer ',
+  });
 
   constructor(private http: HttpClient) {}
 
-  public login(user: Usuario): Observable<HttpResponse<Usuario>> {
-    return this.http.post<Usuario>(`${this.host}/api/v1/auth/login`, user, { observe: 'response' });
+  public login(user: User): Observable<any> {
+    return this.http.post<User>(`${this.host}/api/user/login`, user, {
+      observe: 'response',
+    });
   }
 
-  public register(user: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.host}/api/v1/auth/register`, user, {headers:this.httpHeaders}); //{headers:this.httpHeaders}
+  public register(user: User): Observable<User> {
+    return this.http.post<User>(`${this.host}/api/user/new`, user, {
+      headers: this.httpHeaders,
+    }); 
+  }
+
+  public renewToken(tokenApi: TokenApiModel) {
+    return this.http.post<TokenApiModel>(`${this.host}/api/user/refresh`,
+      tokenApi
+    );
   }
 
   public logOut(): void {
     this.token = null;
-    this.loggedInUsername = null;
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    localStorage.removeItem('users');
+    localStorage.removeItem('refreshToken');
   }
 
   public saveToken(token: string): void {
@@ -38,35 +54,35 @@ export class AuthenticationService {
     localStorage.setItem('token', token);
   }
 
-  public addUserToLocalCache(user: Usuario): void {
+  public saveRefreshToken(token: string): void {
+    this.refreshToken = token;
+    localStorage.setItem('refreshToken', token);
+  }
+
+  public decodedToken() {
+    const jwtHelper = new JwtHelperService();
+    const token = this.getToken()!;
+    return jwtHelper.decodeToken(token);
+  }
+
+  public addUserToLocalCache(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  public getUserFromLocalCache(): Usuario {
+  public getUserFromLocalCache(): User {
     return JSON.parse(localStorage.getItem('user'));
   }
 
-  public loadToken(): void {
-    this.token = localStorage.getItem('token');
+  public getToken(): string {
+    return localStorage.getItem('token');
   }
 
-  public getToken(): string {
-    return this.token;
+  public getRefreshToken() {
+    return localStorage.getItem('refreshToken');
   }
 
   public isUserLoggedIn(): boolean {
-    this.loadToken();
-    if (this.token != null && this.token !== ''){
-      if (this.jwtHelper.decodeToken(this.token).sub != null || '') {
-        if (!this.jwtHelper.isTokenExpired(this.token)) {
-          this.loggedInUsername = this.jwtHelper.decodeToken(this.token).sub;
-          return true;
-        }
-      }
-    } else {
-      this.logOut();
-      return false;
-    }
+    return !!localStorage.getItem('token');
   }
 
 }

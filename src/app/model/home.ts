@@ -1,7 +1,7 @@
-export class HouseTemplate{
+export class Home{
     viviendaId:string;
-    lat:string;
-    lng:string;
+    lat:Number;
+    lng:Number;
     ciudad:string;
     cp:string;
     habitaciones:string;
@@ -9,18 +9,18 @@ export class HouseTemplate{
     superficie:string;
     condicion:string;
     tipo:string;
-    ascensor:string;
+    ascensor:boolean;
     precioInicial:string;
     descuento:string;
     precioFinal:string;
     duracion:string;
     descripcion:string;
-    aireAcondicionado:string;
-    calefaccion:string;
+    aireAcondicionado:boolean;
+    calefaccion:boolean;
     panelesSolares:string;
     armariosEmpotrados:string;
     terraza:string;
-    parquet:string;
+    parquet:boolean;
     balcon:string;
     antiguedad:string;
     garage:string;
@@ -29,11 +29,11 @@ export class HouseTemplate{
     estado:string; // nuevo, usado, a-reformar
     jardin:string;
     piscina:string;
-    trastero:string;
+    trastero:boolean;
     vistasDespejadas:string;
     distanciaAlMar:string;
     bajoOplantabaja:string;
-    instalacionesDiscapacitados:string;
+    instalacionesDiscapacitados:boolean;
     nuevoProyecto:string; // ENUM
     creador:string;
     fechaCreacion:string;
@@ -48,20 +48,20 @@ export class HouseTemplate{
     video:string; // url
 
     // alquiler
-    mascotas:string;
-    fianza:string;
+    mascotas:boolean;
+    fianza:number;
     disponibilidad:string;
-    estanciaMinima:string; // meses
+    estanciaMinima:number; // meses
 
     // compartir
-    sepuedeFumar:string;
-    seadmitenParejas:string;
-    seadmitenMenoresdeedad:string;
+    sepuedeFumar:boolean;
+    seadmitenParejas:boolean;
+    seadmitenMenoresdeedad:boolean;
     perfilCompartir:string; // chico, chica, ambos ENUM
     habitantesActualmente:string;
-    propietarioviveEnlacasa:string;
+    propietarioviveEnlacasa:boolean;
     ambiente:string; // estudiantes, funcionarios, grupo social...
-    internet:string;
+    internet:boolean;
     gastos:string; // incluidos, no incluidos luz etc
 
     // si el usuario lo desea
@@ -69,5 +69,7 @@ export class HouseTemplate{
     puerta:string;
     comentario:string;
     calle:string; // avendida, plaza...
+    valoraciones:number;
+    starRatingAverage:number;
 
 }

@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../service/authentication.service';
 import { NotificationService } from '../service/notification.service';
-import { Usuario } from '../model/usuario';
+import { User } from '../model/user';
 import { NotificationType } from '../class/notification-type.enum';
 
 @Component({
@@ -32,25 +32,24 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.changetype = !this.changetype;
   }
 
-  public onRegister(user:Usuario): void {
+  public onRegister(user:User): void {
     this.showLoading = true;
     console.log(user);
     this.subscriptions.push(
-      this.authenticationService.register(user).subscribe(
-        (response: Usuario) => {
+      this.authenticationService.register(user).subscribe({
+        next:(response: User) => {
           this.showLoading = false;
-          //console.log(user);
-          this.sendNotification(NotificationType.SUCCESS, `Se ha creado una cuenta para ${response.primerApellido}.
+          this.sendNotification(NotificationType.SUCCESS, `Se ha creado una cuenta para ${response.username}.
           Por favor verifique su correo electrónico y acceda al sitio.`);
           this.router.navigateByUrl('/login');
           //this.clickButton('emailInfoModal');
-        },
-        (errorResponse: HttpErrorResponse) => {
+        },error:(errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.showLoading = false;
         }
+      }
       )
-    );
+  );
   }
 
   private sendNotification(notificationType: NotificationType, message: string): void {

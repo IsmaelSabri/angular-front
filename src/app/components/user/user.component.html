@@ -23,7 +23,7 @@
           Ajustes
         </a>
         <a class="nav-item nav-link move-right mr-3" (click)="changeTitle('Profile')" data-toggle="tab" href="#profile">
-          Bienvenid@, {{user?.nombre}}
+          Bienvenid@, {{user?.username}}
           <i class="fa fa-user"></i>
         </a>
       </div>
@@ -71,19 +71,19 @@
             <td (click)="onSelectUser(appUser)">
               <img height="40" width="40" src="{{appUser?.fotoPerfilUrl}}" class="rounded-circle img-fluid img-thumbnail" alt=""/>
             </td>
-            <td (click)="onSelectUser(appUser)">{{appUser?.usuarioId}}</td>
-            <td (click)="onSelectUser(appUser)">{{appUser?.nombre}}</td>
-            <td (click)="onSelectUser(appUser)">{{appUser?.primerApellido}}</td>
+            <td (click)="onSelectUser(appUser)">{{appUser?.userId}}</td>
+            <td (click)="onSelectUser(appUser)">{{appUser?.firstname}}</td>
+            <td (click)="onSelectUser(appUser)">{{appUser?.lastName}}</td>
             <td (click)="onSelectUser(appUser)">{{appUser?.username}}</td>
             <td (click)="onSelectUser(appUser)">{{appUser?.email}}</td>
             <td (click)="onSelectUser(appUser)">
-              <span [hidden]="!appUser?.active" class="badge badge-success">Activo</span>
-              <span [hidden]="appUser?.active" class="badge badge-danger">Inactivo</span>
+              <span [hidden]="!appUser?.isactive" class="badge badge-success">Activo</span>
+              <span [hidden]="appUser?.isactive" class="badge badge-danger">Inactivo</span>
             </td>
             <td class="">
               <div class="btn-group">
                 <button [hidden]="!isAdmin" class="btn btn-outline-info" (click)="onEditUser(appUser)"><i class="fas fa-edit"></i></button>
-                <button [hidden]="!isAdmin" class="btn btn-outline-danger" (click)="onDeleteUder(appUser?.username)"><i class="fas fa-trash"></i></button>
+                <button [hidden]="!isAdmin" class="btn btn-outline-danger" (click)="onDeleteUser(appUser?.userId)"><i class="fas fa-trash"></i></button>
               </div>
             </td>
           </tr>
@@ -141,10 +141,10 @@
                         </div>
                         <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                           <div class="text-center text-sm-left mb-2 mb-sm-0">
-                            <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user?.nombre}} {{user?.primerApellido}}</h4>
+                            <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user?.firstname}} {{user?.lastname}}</h4>
                             <p class="mb-0">{{user?.username}}</p>
-                            <div *ngIf="user?.mostrarFechaDeUltimoAcceso !== null" class="text-muted"><small>Último acceso:
-                                {{user?.mostrarFechaDeUltimoAcceso | date:'medium'}}</small></div>
+                            <div *ngIf="user?.showLastaccessDate !== null" class="text-muted"><small>Último acceso:
+                                {{user?.showLastaccessDate | date:'medium'}}</small></div>
                             <div class="mt-2">
                               <button (click)="updateProfileImage()" class="btn btn-primary" type="button">
                                 <i class="fa fa-fw fa-camera"></i>
@@ -153,7 +153,7 @@
                             </div>
                           </div>
                           <div class="text-center text-sm-right">
-                            <div class="text-muted"><small>Agregado {{user?.fechaRegistro | date:'mediumDate'}}</small></div>
+                            <div class="text-muted"><small>Agregado {{user?.dateRegistry | date:'mediumDate'}}</small></div>
                           </div>
                         </div>
                       </div>
@@ -167,14 +167,14 @@
                                   <div class="col">
                                     <div class="form-group">
                                       <label>Nombre</label>
-                                      <input type="text" name="nombre" required [(ngModel)]="user.nombre"
+                                      <input type="text" name="nombre" required [(ngModel)]="user.firstname"
                                         class="form-control">
                                     </div>
                                   </div>
                                   <div class="col">
                                     <div class="form-group">
                                       <label>Apellido</label>
-                                      <input type="text" name="primerApellido" required [(ngModel)]="user.primerApellido"
+                                      <input type="text" name="Lastname" required [(ngModel)]="user.lastname"
                                         class="form-control">
                                     </div>
                                   </div>
@@ -183,7 +183,7 @@
                                   <div class="col">
                                     <div class="form-group">
                                       <label>Nombre Usuario</label>
-                                      <input type="text" name="username" required [(ngModel)]="user.username"
+                                      <input type="text" name="Username" required [(ngModel)]="user.username"
                                         class="form-control">
                                     </div>
                                   </div>
@@ -201,7 +201,7 @@
                                   <div class="col mb-3">
                                     <div class="form-group">
                                       <label>Rol</label><small [hidden]="isAdmin">(solo lectura)</small>
-                                      <select name="rol" required [(ngModel)]="user.rol" class="form-control">
+                                      <select name="rol" required [(ngModel)]="user.role" class="form-control">
                                           <option [hidden]="!isAdmin" value="ROLE_USER">USER</option>
                                           <option [hidden]="!isAdmin" value="ROLE_HR">HR</option>
                                           <option [hidden]="!isAdmin" value="ROLE_MANAGER">MANAGER</option>
@@ -220,12 +220,12 @@
                                   <div class="col">
                                     <div class="custom-controls-stacked px-2">
                                       <div class="custom-control custom-checkbox">
-                                        <input name="active" type="checkbox" [(ngModel)]="user.active" class="custom-control-input">
+                                        <input name="active" type="checkbox" [(ngModel)]="user.isactive" class="custom-control-input">
                                         <label class="custom-control-label">Activo</label>
                                       </div>
                                       <div class="custom-control custom-checkbox">
                                         <input name="notLocked" type="checkbox"
-                                          [(ngModel)]="user.notLocked" class="custom-control-input">
+                                          [(ngModel)]="user.isnotLocked" class="custom-control-input">
                                         <label class="custom-control-label">Bloqueado</label>
                                       </div>
                                     </div>
@@ -279,8 +279,8 @@
       <div class="modal-dialog" rol="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title text-center" id="exampleModalLongTitle">{{selectedUser?.nombre}}
-              {{selectedUser?.primerApellido}}
+            <h5 class="modal-title text-center" id="exampleModalLongTitle">{{selectedUser?.firstname}}
+              {{selectedUser?.lastname}}
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -294,45 +294,45 @@
                     <div class="col-12 col-sm-auto">
                       <div class="mx-auto" style="width: 120px;">
                         <div class="d-flex justify-content-center align-items-center rounded">
-                          <img class="rounded" height="120" width="120" src="{{selectedUser?.fotoPerfilUrl}}" alt="{{selectedUser?.nombre}}">
+                          <img class="rounded" height="120" width="120" src="{{selectedUser?.fotoPerfilUrl}}" alt="{{selectedUser?.firstname}}">
                         </div>
                       </div>
                     </div>
                     <div class="col d-flex flex-column flex-sm-row justify-content-between">
                       <div class="text-center text-sm-left mb-sm-0">
-                        <h6 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{selectedUser?.nombre}}
-                          {{selectedUser?.primerApellido}}</h6>
+                        <h6 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{selectedUser?.firstname}}
+                          {{selectedUser?.lastname}}</h6>
                         <p class="mb-1">{{selectedUser?.username}}</p>
                         <div class="">Status:
-                          <span [hidden]="!selectedUser?.active" class="badge badge-success">Activo</span>
-                          <span [hidden]="selectedUser?.active" class="badge badge-danger">Inactivo</span>
+                          <span [hidden]="!selectedUser?.isactive" class="badge badge-success">Activo</span>
+                          <span [hidden]="selectedUser?.isactive" class="badge badge-danger">Inactivo</span>
                         </div>
-                        <div *ngIf="selectedUser?.mostrarFechaDeUltimoAcceso" class="text-muted"><small>Último Login: {{selectedUser?.mostrarFechaDeUltimoAcceso | date: 'medium'}}</small>
+                        <div *ngIf="selectedUser?.showLastaccessDate" class="text-muted"><small>Último Login: {{selectedUser?.showLastaccessDate | date: 'medium'}}</small>
                         </div>
                       </div>
                       <div class="text-center text-sm-right">
-                        <div class="text-muted"><small>Se unió {{selectedUser?.fechaRegistro | date: 'mediumDate'}}</small></div>
+                        <div class="text-muted"><small>Se unió {{selectedUser?.dateRegistry | date: 'mediumDate'}}</small></div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item"></li>
-                  <li class="list-group-item"><i class="fa fa-id-badge float-right"></i>{{selectedUser?.usuarioId}}
+                  <li class="list-group-item"><i class="fa fa-id-badge float-right"></i>{{selectedUser?.userId}}
                   </li>
                   <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{selectedUser?.email}}
                   </li>
-                  <li class="list-group-item"><i class="fas fa-shield-alt float-right"></i>{{selectedUser?.rol.substring(5)}}
-                  <li *ngIf="selectedUser?.mostrarFechaDeUltimoAcceso" class="list-group-item"><i
-                      class="fas fa-sign-in-alt float-right"></i>{{selectedUser?.mostrarFechaDeUltimoAcceso | date: 'medium'}}
+                  <li class="list-group-item"><i class="fas fa-shield-alt float-right"></i>{{selectedUser?.role.substring(5)}}
+                  <li *ngIf="selectedUser?.showLastaccessDate" class="list-group-item"><i
+                      class="fas fa-sign-in-alt float-right"></i>{{selectedUser?.showLastaccessDate | date: 'medium'}}
                   </li>
                   <li class="list-group-item">
-                    <span [hidden]="selectedUser?.notLocked">
+                    <span [hidden]="selectedUser?.isnotLocked">
                       <i class="fa fa-lock float-right" style="color: red;">
                       </i>
                       Cuenta Bloqueada
                     </span>
-                    <span [hidden]="!selectedUser?.notLocked">
+                    <span [hidden]="!selectedUser?.isnotLocked">
                       <i class="fa fa-unlock float-right" style="color: green;">
                       </i>
                       Cuenta Desbloqueada
@@ -368,12 +368,12 @@
                   <input type="text" name="nombre" required ngModel class="form-control">
                 </div>
                 <div class="form-group">
-                  <label for="primerApellido">Apellido</label>
-                  <input type="text" name="primerApellido" required ngModel class="form-control">
+                  <label for="Lastname">Apellido</label>
+                  <input type="text" name="Lastname" required ngModel class="form-control">
                 </div>
                 <div class="form-group">
-                  <label for="username">Nombre de Usuario</label>
-                  <input type="text" name="username" required ngModel class="form-control">
+                  <label for="Username">Nombre de Usuario</label>
+                  <input type="text" name="Username" required ngModel class="form-control">
                 </div>
                 <div class="form-group">
                   <label for="email">Email</label>
@@ -438,8 +438,8 @@
   <div class="modal-dialog" rol="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-center">Edit {{editUser?.nombre}}
-          {{editUser?.primerApellido}} <small [hidden]="isAdminOrManager">
+        <h5 class="modal-title text-center">Edit {{editUser?.firstname}}
+          {{editUser?.lastname}} <small [hidden]="isAdminOrManager">
             (solo lectura)
           </small></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -452,16 +452,16 @@
             <div class="form-group">
               <label for="nombre">Nombre</label>
               <input type="text" name="nombre" [disabled]="!isAdminOrManager" required
-                [(ngModel)]="editUser.nombre" class="form-control">
+                [(ngModel)]="editUser.firstname" class="form-control">
             </div>
             <div class="form-group">
-              <label for="primerApellido">Apellido</label>
-              <input type="text" name="primerApellido" [disabled]="!isAdminOrManager" required
-                [(ngModel)]="editUser.primerApellido" class="form-control">
+              <label for="Lastname">Apellido</label>
+              <input type="text" name="Lastname" [disabled]="!isAdminOrManager" required
+                [(ngModel)]="editUser.lastname" class="form-control">
             </div>
             <div class="form-group">
-              <label for="username">Nombre de Usuario</label>
-              <input type="text" name="username" [disabled]="!isAdminOrManager" required
+              <label for="Username">Nombre de Usuario</label>
+              <input type="text" name="Username" [disabled]="!isAdminOrManager" required
                 [(ngModel)]="editUser.username" class="form-control">
             </div>
             <div class="form-group">
@@ -471,7 +471,7 @@
             </div>
             <div class="form-group">
               <label for="authority">Rol <small [hidden]="isAdmin">(solo lectura)</small></label>
-                <select name="rol" [disabled]="!isAdmin" required [(ngModel)]="editUser.rol" class="form-control">
+                <select name="rol" [disabled]="!isAdmin" required [(ngModel)]="editUser.role" class="form-control">
                   <option value="ROLE_USER">USER</option>
                   <option value="ROLE_HR">HR</option>
                   <option value="ROLE_MANAGER">MANAGER</option>
@@ -495,14 +495,14 @@
             <fieldset class="form-group">
               <div class="form-check">
                 <label class="form-check-label">
-                  <input name="active" type="checkbox" [disabled]="!isManager" [(ngModel)]="editUser.active"
+                  <input name="active" type="checkbox" [disabled]="!isManager" [(ngModel)]="editUser.isactive"
                     class="form-check-input">
                   Activo <small [hidden]="isManager">(solo lectura)</small>
                 </label>
               </div>
               <div class="form-check disabled">
                 <label class="form-check-label">
-                  <input name="locked" type="checkbox" [disabled]="!isManager" [(ngModel)]="editUser.notLocked"
+                  <input name="locked" type="checkbox" [disabled]="!isManager" [(ngModel)]="editUser.isnotLocked"
                     class="form-check-input">
                   Desbloqueado <small [hidden]="isManager">(solo lectura)</small>
                 </label>
@@ -525,8 +525,8 @@ rol="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 <div class="modal-dialog" rol="document">
   <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title text-center">Editar {{editUser?.nombre}}
-        {{editUser?.primerApellido}}</h5>
+      <h5 class="modal-title text-center">Editar {{editUser?.firstname}}
+        {{editUser?.lastname}}</h5>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -537,16 +537,16 @@ rol="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
           <div class="form-group">
             <label for="nombre">Nombre</label>
             <input type="text" name="nombre" required
-              [(ngModel)]="editUser.nombre" class="form-control">
+              [(ngModel)]="editUser.firstname" class="form-control">
           </div>
           <div class="form-group">
-            <label for="primerApellido">Apellido</label>
-            <input type="text" name="primerApellido" required
-              [(ngModel)]="editUser.primerApellido" class="form-control">
+            <label for="Lastname">Apellido</label>
+            <input type="text" name="Lastname" required
+              [(ngModel)]="editUser.lastname" class="form-control">
           </div>
           <div class="form-group">
-            <label for="username">Nombre de Usuario</label>
-            <input type="text" name="username" required
+            <label for="Username">Nombre de Usuario</label>
+            <input type="text" name="Username" required
               [(ngModel)]="editUser.username" class="form-control">
           </div>
           <div class="form-group">
@@ -556,7 +556,7 @@ rol="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
           </div>
           <div class="form-group">
             <label for="authority">Rol</label>
-              <select name="rol" required [(ngModel)]="editUser.rol" class="form-control">
+              <select name="rol" required [(ngModel)]="editUser.role" class="form-control">
                 <option value="ROLE_USER">USER</option>
                 <option value="ROLE_HR">HR</option>
                 <option value="ROLE_MANAGER">MANAGER</option>
@@ -580,14 +580,14 @@ rol="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
           <fieldset class="form-group">
             <div class="form-check">
               <label class="form-check-label">
-                <input name="active" type="checkbox" [(ngModel)]="editUser.active"
+                <input name="active" type="checkbox" [(ngModel)]="editUser.isactive"
                   class="form-check-input">
                 Activo
               </label>
             </div>
             <div class="form-check disabled">
               <label class="form-check-label">
-                <input name="locked" type="checkbox" [(ngModel)]="editUser.notLocked"
+                <input name="locked" type="checkbox" [(ngModel)]="editUser.isnotLocked"
                   class="form-check-input">
                 Desbloqueado
               </label>

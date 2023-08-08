@@ -1,4 +1,4 @@
-export interface CustomHttpRespone {
+export interface CustomHttpResponse {
   httpStatusCode: number;
   httpStatus: string;
   reson: string;

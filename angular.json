@@ -13,6 +13,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "leaflet"
+            ],
             "outputPath": "dist/front-api-rest",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -23,8 +26,8 @@
               "src/wh_ico_.ico",
               "src/assets",
               {"glob": "**/*",
-                "input": "src/app/landing-page/images",
-                "output": "./img"},
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"},
                 {"glob": "**/*",
                   "input": "src/app/home/img",
                   "output": "./img"}
@@ -39,7 +42,8 @@
               "src/assets/css/font-awesome.css",
               "src/assets/css/default-theme.css",
               "src/assets/css/bootstrap.css",
-              "src/app/home/custom-leaflet.css"
+              "src/app/home/custom-leaflet.css",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
             ],
             "scripts": [
             ]

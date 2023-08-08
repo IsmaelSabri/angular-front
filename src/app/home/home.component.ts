@@ -1,5 +1,4 @@
-import { EdificioService } from './../service/edificio.service';
-import { Edificio } from './../model/edificio';
+import { UserService } from './../service/user.service';
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { Map, marker, popup, LatLng, Icon } from 'leaflet';
 import 'leaflet.locatecontrol';
@@ -12,29 +11,28 @@ import {
 import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
 import { AuthenticationService } from '../service/authentication.service';
-import { UsuarioService } from '../service/usuario.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NotificationType } from '../class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as L from 'leaflet';
-import { Property } from '../model/property';
+import { HomeService } from '../service/home.service';
+import { Home } from '../model/home';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css','custom-leaflet.css'],
+  styleUrls: ['./home.component.css', 'custom-leaflet.css'],
 })
 export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
-
   constructor(
     router: Router,
     authenticationService: AuthenticationService,
-    userService: UsuarioService,
+    userService: UserService,
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    private edificioService: EdificioService
+    private homeService: HomeService
   ) {
     super(
       router,
@@ -53,13 +51,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   IsChecked: boolean;
   IsIndeterminate: boolean;
   LabelAlign: 'after' | 'before';
-  IsDisabled: boolean;  
-
+  IsDisabled: boolean;
   map!: L.map;
   lg!: L.LayerGroup;
-  property: Property = new Property();
-  edificio: Edificio = new Edificio();
-  edificios:any=[];
+  home: Home = new Home();
+  edificios: any = [];
   state: boolean = this.authenticationService.isUserLoggedIn();
   opt = {};
   coords!: L.LatLng; // coordenadas de ubicacion actual del usuario al inicio
@@ -76,12 +72,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     shadowSize: [41, 41],
   });
   greenIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconUrl:
+      'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl:
+      'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+    shadowSize: [41, 41],
   });
   mp!: L.Marker;
   fg = L.featureGroup();
@@ -104,19 +102,21 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     //tileLayerCP().addTo(map); // Codigos postales
     tileLayerWMSSelectIGN().addTo(this.map);
 
-      //carga de edificios
+    //carga dinamica
     this.subscriptions.push(
-      this.edificioService.getBuildings().subscribe((data) => {
-        data.map((Edificio) => {
+      this.homeService.getHomes().subscribe((data) => {
+        data.map((Home) => {
           marker(
-            [Number(Edificio.lat), Number(Edificio.lng)],
-            { icon: this.greenIcon }, this.opt)
-            .bindTooltip(`
-
+            [Number(Home.lat), Number(Home.lng)],
+            { icon: this.greenIcon },
+            this.opt
+          )
+            .bindTooltip(
+              `
             <div class="pane">
             <div class="row row-cols-2" main>
               <div class="col info">
-                <h6>Calle ${Edificio.calle}</h6>
+                <h6>Calle ${Home.calle}</h6>
                 <div class="aa-agent-social">
                 <a href="#"><i class="fa fa-facebook"></i></a>
                 <a href="#"><i class="fa fa-twitter"></i></a>
@@ -127,28 +127,39 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
               </div>
               </div>
               <div class="col thumb" >  
-                <img class="img-fluid " src=${Edificio.imageUrl}>
+                <img class="img-fluid " src=${Home.imageUrl}>
               </div>
               </div>
             </div>
 
-            `,{maxWidth: 150,maxHeight:80, removable: true, editable: true, direction: 'top',
-            permanent: false,
-            sticky: false,
-            offset: [0, -45],
-            opacity: 0.85,
-            className: 'tooltipX'  }) //
-            .on('click',()=>(
-            localStorage.removeItem("currentBuilding"),
-            localStorage.setItem("currentBuilding",JSON.stringify(Edificio)),
-            this.router.navigate(['/add'])
-            )).addTo(this.map);
+            `,
+              {
+                maxWidth: 150,
+                maxHeight: 80,
+                removable: true,
+                editable: true,
+                direction: 'top',
+                permanent: false,
+                sticky: false,
+                offset: [0, -45],
+                opacity: 0.85,
+                className: 'tooltipX',
+              }
+            ) //
+            .on(
+              'click',
+              () => (
+                localStorage.removeItem('currentBuilding'),
+                localStorage.setItem('currentBuilding', JSON.stringify(Home)),
+                this.router.navigate(['/add'])
+              )
+            )
+            .addTo(this.map);
         });
       })
     );
 
-    
-//            <button type="button" class="btn btn-secondary" data-toggle="modal" onclick="${this.viewAdd(Edificio.edificioId)}">Ver</button>
+    //            <button type="button" class="btn btn-secondary" data-toggle="modal" onclick="${this.viewAdd(Edificio.edificioId)}">Ver</button>
 
     /*  fitbounds para centrar el foco en los marcadores
     const markerItem = marker([39.46975, -0.37739]) // marker de prueba. Los usuarios podrán crear sus markers
@@ -164,7 +175,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   /* marker options */
   userMarkerEvents() {
     if (this.state) {
-      this.opt = { draggable: true, locateControl: true };
+      this.opt = { draggable: true, locateControl: true, bounceOnAdd: true };
     } else {
       this.opt = { draggable: false, locateControl: true };
     }
@@ -187,30 +198,28 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   createLocationMarker() {
-    console.log(this.coords);
-    this.markerCoords=this.coords;
-    
-    this.toastr.success(
-      'Arrastra el marcador!',
-      'Mueve el marcador hasta su propiedad!'
-    );
+      console.log(this.coords);
+      this.markerCoords = this.coords;
+      this.toastr.success(
+        'Arrastra el marcador!',
+        'Mueve el marcador hasta su propiedad!'
+      );
+      this.mp = new L.marker(this.coords, {
+        draggable: true,
+      }).bindPopup(`
+      
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMarkerModal" >Hecho</button>
+      
+      `);
+      this.lg = new L.LayerGroup([this.mp]);
+      this.lg.addTo(this.map);
 
-    this.mp = new L.marker(this.coords, {
-      draggable: true
-    }).bindPopup(`
-    
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMarkerModal"  >Hecho</button>
-    
-    `);
-    this.lg = new L.LayerGroup([this.mp]);
-    this.lg.addTo(this.map);
-    
-    /*const popupItem=L.popup().setLatLng(this.coords)
-    .setContent('<h5>Arrastrame a una ubicación exacta</h5>')
-    .openOn(this.mp);*/
-    this.mp.on('move', () => (this.markerCoords = this.mp.getLatLng()));
-    this.mp.on('moveend', () => console.log(this.markerCoords));
-    this.mp.on('dragend', () => this.mp.openPopup());
+      /*const popupItem=L.popup().setLatLng(this.coords)
+      .setContent('<h5>Arrastrame a una ubicación exacta</h5>')
+      .openOn(this.mp);*/
+      this.mp.on('move', () => (this.markerCoords = this.mp.getLatLng()));
+      this.mp.on('moveend', () => console.log(this.markerCoords));
+      this.mp.on('dragend', () => this.mp.openPopup());
   }
 
   // Revisar - en el html -> oninput="textAreaResize(this)"
@@ -223,13 +232,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.propertyImage = event.target.files[0];
   }
 
-  createEdificio() {
+  createHome2() {
     //this.lg.remove(this.mp);
-    const formData = new FormData();
+    /*  const formData = new FormData();
     formData.append('lat', this.markerCoords.lat);
     formData.append('lng', this.markerCoords.lng);
     formData.append('foto', this.propertyImage);
-    formData.append('descripcion', this.edificio.descripcion);
+    formData.append('descripcion', this.home.descripcion);
     formData.append('calle', this.edificio.calle);
     formData.append('numero', this.edificio.numero);
     formData.append('cp', this.edificio.cp);
@@ -244,7 +253,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         this.clickButton('new-marker-close');
       })
     );
-    this.map.removeLayer(this.lg);
+    this.map.removeLayer(this.lg);*/
   }
 
   // Métodos para los checkboxes
@@ -252,32 +261,31 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     console.log($event.checked);
     //$event.source.toggle();
     $event.source.focus();
-    if($event.checked){
-     // this.favourite.userId=
+    if ($event.checked) {
+      // this.favourite.userId=
       //this.favourite.addId=
     }
     console.log();
   }
 
-  checkBox($event): void{
+  checkBox($event): void {
     /*if(this.checkbox===true){
         this.favourite.addId=this.edificio.edificioId;
         //this.favourite.userId=;
     }*/
-   // console.log('funcionando');
+    // console.log('funcionando');
   }
 
   // Nueva vivienda
-  createProperty(){
+  createHome() {
     const formData = new FormData();
     formData.append('lat', this.markerCoords.lat);
     formData.append('lng', this.markerCoords.lng);
-    formData.append('foto', this.property.imageUrl);
-    formData.append('descripcion', this.property.descripcion);
-    formData.append('calle', this.property.calle);
-    formData.append('numero', this.property.numero);
-    formData.append('cp', this.property.cp);
-    formData.append('puertas', this.edificio.puertas);
+    formData.append('foto', this.home.imageUrl);
+    formData.append('descripcion', this.home.descripcion);
+    formData.append('calle', this.home.calle);
+    formData.append('numero', this.home.numero);
+    formData.append('cp', this.home.cp);
   }
 
   ngOnDestroy(): void {

@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { Usuario } from '../../model/usuario';
-import { UsuarioService } from '../../service/usuario.service';
+import { User } from '../../model/user';
+import { UserService } from '../../service/user.service';
 import { NotificationService } from '../../service/notification.service';
 import { NotificationType } from '../../class/notification-type.enum';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { CustomHttpRespone } from '../../model/custom-http-response';
+import { CustomHttpResponse } from '../../model/custom-http-response';
 import { AuthenticationService } from '../../service/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FileUploadStatus } from '../../model/file-upload.status';
@@ -22,24 +22,24 @@ import { ToastrService } from 'ngx-toastr';
 export class UserComponent implements OnInit, OnDestroy {
   private titleSubject = new BehaviorSubject<string>('Usuarios');
   public titleAction$ = this.titleSubject.asObservable();
-  public users: Usuario[];
-  public user: Usuario;
+  public users: User[];
+  public user: User;
   public refreshing: boolean;
-  public selectedUser: Usuario;
+  public selectedUser: User;
   public fileName: string;
   public propertyImage: File;
   protected subscriptions: Subscription[] = [];
-  public editUser = new Usuario();
+  public editUser = new User();
   private currentUsername: string;
   public fileStatus = new FileUploadStatus();
 
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
-              private userService: UsuarioService, private notificationService: NotificationService,
-              protected route: ActivatedRoute, protected toastr: ToastrService) {}
+    private userService: UserService, private notificationService: NotificationService,
+    protected route: ActivatedRoute, protected toastr: ToastrService) { }
 
   ngOnInit(): void {
-    //this.user = this.authenticationService.getUserFromLocalCache();
-    //this.getUsers(true);
+    this.user = this.authenticationService.getUserFromLocalCache();
+    this.getUsers(true);
   }
 
   public changeTitle(title: string): void {
@@ -49,31 +49,31 @@ export class UserComponent implements OnInit, OnDestroy {
   public getUsers(showNotification: boolean): void {
     this.refreshing = true;
     this.subscriptions.push(
-      this.userService.getUsuarios().subscribe(
-        (response: Usuario[]) => {
-          this.userService.addUsuariosToLocalCache(response);
+      this.userService.getUsers().subscribe({
+        next: (response: User[]) => {
+          this.userService.addUsersToLocalCache(response);
           this.users = response;
           this.refreshing = false;
           if (showNotification) {
             this.sendNotification(NotificationType.SUCCESS, `${response.length} usuario(s) cargados con éxito.`);
           }
         },
-        (errorResponse: HttpErrorResponse) => {
+        error: (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
         }
-      )
+      })
     );
 
   }
 
-  public onSelectUser(selectedUser: Usuario): void {
+  public onSelectUser(selectedUser: User): void {
     this.selectedUser = selectedUser;
     this.clickButton('openUserInfo');
   }
 
   public onProfileImageChange(fileName: string, profileImage: File): void {
-    this.fileName =  fileName;
+    this.fileName = fileName;
     this.propertyImage = profileImage;
   }
 
@@ -82,64 +82,64 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   public onAddNewUser(userForm: NgForm): void {
-    const formData = this.userService.createUsuarioFormDate(null, userForm.value, this.propertyImage);
+    const formData = this.userService.createUserFormDate(null, userForm.value, this.propertyImage);
     this.subscriptions.push(
-      this.userService.addNewUser(formData).subscribe(
-        (response: Usuario) => {
+      this.userService.addNewUser(formData).subscribe({
+        next: (response: User) => {
           this.clickButton('new-user-close');
           this.getUsers(false);
           this.fileName = null;
           this.propertyImage = null;
           userForm.reset();
-          this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} añadido con éxito`);
+          this.sendNotification(NotificationType.SUCCESS, `${response.firstname} ${response.lastname} añadido con éxito`);
         },
-        (errorResponse: HttpErrorResponse) => {
+        error: (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.propertyImage = null;
         }
-      )
-      );
+      })
+    );
   }
 
   public onUpdateUser(): void {
-    const formData = this.userService.createUsuarioFormDate(this.currentUsername, this.editUser, this.propertyImage);
+    const formData = this.userService.createUserFormDate(this.currentUsername, this.editUser, this.propertyImage);
     this.subscriptions.push(
-      this.userService.updateUsuario(formData).subscribe(
-        (response: Usuario) => {
+      this.userService.updateUser(formData, this.user.userId).subscribe({
+        next: (response: User) => {
           this.clickButton('closeEditUserModalButton');
           this.getUsers(false);
           this.fileName = null;
           this.propertyImage = null;
-          this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} actualizado con éxito`);
+          this.sendNotification(NotificationType.SUCCESS, `${response.firstname} ${response.lastname} actualizado con éxito`);
         },
-        (errorResponse: HttpErrorResponse) => {
+        error: (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.propertyImage = null;
         }
-      )
-      );
+      })
+    );
   }
 
-  public onUpdateCurrentUser(user: Usuario): void {
+  public onUpdateCurrentUser(user: User): void {
     this.refreshing = true;
-    this.currentUsername = this.authenticationService.getUserFromLocalCache().nombre;
-    const formData = this.userService.createUsuarioFormDate(this.currentUsername, user, this.propertyImage);
+    this.currentUsername = this.authenticationService.getUserFromLocalCache().firstname;
+    const formData = this.userService.createUserFormDate(this.currentUsername, user, this.propertyImage);
     this.subscriptions.push(
-      this.userService.updateUsuario(formData).subscribe(
-        (response: Usuario) => {
+      this.userService.updateUser(formData, user.userId).subscribe({
+        next: (response: User) => {
           this.authenticationService.addUserToLocalCache(response);
           this.getUsers(false);
           this.fileName = null;
           this.propertyImage = null;
-          this.sendNotification(NotificationType.SUCCESS, `${response.nombre} ${response.primerApellido} actualizado con éxito`);
+          this.sendNotification(NotificationType.SUCCESS, `${response.firstname} ${response.lastname} actualizado con éxito`);
         },
-        (errorResponse: HttpErrorResponse) => {
+        error: (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
           this.propertyImage = null;
         }
-      )
-      );
+      })
+    );
   }
 
   public onUpdateProfileImage(): void {
@@ -147,15 +147,15 @@ export class UserComponent implements OnInit, OnDestroy {
     formData.append('username', this.user.username);
     formData.append('profileImage', this.propertyImage);
     this.subscriptions.push(
-      this.userService.updateProfileImage(formData).subscribe(
-        (event: HttpEvent<any>) => {
+      this.userService.updateProfileImage(formData).subscribe({
+        next: (event: HttpEvent<any>) => {
           this.reportUploadProgress(event);
         },
-        (errorResponse: HttpErrorResponse) => {
+        error: (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.fileStatus.status = 'done';
         }
-      )
+      })
     );
   }
 
@@ -187,6 +187,7 @@ export class UserComponent implements OnInit, OnDestroy {
   public onLogOut(): void {
     this.authenticationService.logOut();
     this.router.navigate(['/home']);
+    window.location.reload();
     this.sendNotification(NotificationType.SUCCESS, `Has cerrado sesión`);
   }
 
@@ -194,59 +195,60 @@ export class UserComponent implements OnInit, OnDestroy {
     this.refreshing = true;
     const emailAddress = emailForm.value['reset-password-email'];
     this.subscriptions.push(
-      this.userService.resetPassword(emailAddress).subscribe(
-        (response: CustomHttpRespone) => {
+      this.userService.resetPassword(emailAddress).subscribe({
+        next: (response: CustomHttpResponse) => {
           this.sendNotification(NotificationType.SUCCESS, response.message);
           this.refreshing = false;
+          () => emailForm.reset()
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.sendNotification(NotificationType.WARNING, error.error.message);
           this.refreshing = false;
-        },
-        () => emailForm.reset()
+        }
+      },
       )
     );
   }
 
-  public onDeleteUder(username: string): void {
+  public onDeleteUser(id: string): void {
     //console.log(username);
     this.subscriptions.push(
-      this.userService.deleteUsuario(username).subscribe(
-        (response: CustomHttpRespone) => {
+      this.userService.deleteUser(id).subscribe({
+        next: (response: CustomHttpResponse) => {
           this.sendNotification(NotificationType.SUCCESS, response.message);
           this.getUsers(false);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, error.error.message);
         }
-      )
+      })
     );
   }
 
-  public onEditUser(editUser: Usuario): void {
+  public onEditUser(editUser: User): void {
     this.editUser = editUser;
     this.currentUsername = editUser.username;
     this.clickButton('openUserEdit');
   }
 
   public searchUsers(searchTerm: string): void {
-    const results: Usuario[] = [];
-    for (const user of this.userService.getUsuariosFromLocalCache()) {
-      if (user.nombre.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
-          user.primerApellido.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
-          user.username.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
-          user.usuarioId.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) {
-          results.push(user);
+    const results: User[] = [];
+    for (const user of this.userService.getUsersFromLocalCache()) {
+      if (user.firstname.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+        user.lastname.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+        user.username.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+        user.userId.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) {
+        results.push(user);
       }
     }
     this.users = results;
     if (results.length === 0 || !searchTerm) {
-      this.users = this.userService.getUsuariosFromLocalCache();
+      this.users = this.userService.getUsersFromLocalCache();
     }
   }
 
   public get isAdmin(): boolean {
-    return this.getUserRole() === Rol.ADMIN || this.getUserRole() === Rol.SUPER_ADMIN;
+    return this.getUserRole() === Rol.ADMIN || this.getUserRole() === Rol.GOD;
   }
 
   public get isManager(): boolean {
@@ -258,7 +260,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   private getUserRole(): string {
-    return this.authenticationService.getUserFromLocalCache().rol;
+    return this.authenticationService.getUserFromLocalCache().role;
   }
 
   protected sendNotification(notificationType: NotificationType, message: string): void {

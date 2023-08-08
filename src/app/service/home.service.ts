@@ -1,4 +1,4 @@
-import { Property } from '../model/property';
+import { Home } from '../model/home';
 import { EventEmitter, Injectable } from '@angular/core';
 import {
   HttpClient,
@@ -9,43 +9,43 @@ import {
 } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { CustomHttpRespone } from '../model/custom-http-response';
+import { CustomHttpResponse } from '../model/custom-http-response';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class PropertyService {
+export class HomeService {
 
-  private property$: ReplaySubject<Property>=new ReplaySubject<Property>();
-  public vivienda_:Observable<Property>=this.property$.asObservable();
+  private property$: ReplaySubject<Home>=new ReplaySubject<Home>();
+  public vivienda_:Observable<Home>=this.property$.asObservable();
   private host = environment.apiUrl;
   private httpHeaders=new HttpHeaders({'Content-Type':"application/json"})
   constructor(private http: HttpClient) {}
 
   /*  Reservado para emitir nuevos valores
-  get selectedProperty$(): Observable<Property>{ // :Observable<Property>
+  get selectedHome$(): Observable<Home>{ // :Observable<Home>
     return this.property_;
   }
 
-  setProperty$(property:Property):void{
+  setHome$(property:Home):void{
     this.property$.next(property);
   }*/
 
 
-  public addBuilding(formData: FormData): Observable<Property>{
-    return this.http.post<Property>(`${this.host}/properties/new`, formData);
+  public addHome(formData: FormData): Observable<Home>{
+    return this.http.post<Home>(`${this.host}/api/home/new`, formData);
   }
 
-  public getProperties(): Observable<Property[]> {
-    return this.http.get<Property[]>(`${this.host}/properties/list`);
+  public getHomes(): Observable<Home[]> {
+    return this.http.get<Home[]>(`${this.host}/api/home/all`);
   }
 
-  public addPropertiesToLocalCache(properties: Property[]): void {
+  public addHomesToLocalCache(properties: Home[]): void {
     localStorage.setItem('properties', JSON.stringify(properties));
   }
 
-  public getPropertiesFromLocalCache(): Property[] {
+  public getHomesFromLocalCache(): Home[] {
     if (localStorage.getItem('properties')) {
       return JSON.parse(localStorage.getItem('properties'));
     }

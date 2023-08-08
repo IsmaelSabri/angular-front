@@ -314,28 +314,28 @@
                  </div>
                  <div class="aa-latest-properties-content">
                    <div class="row">
-                     <div class="col-md-4"  *ngFor="let selectedProperty of properties;index as i">
-                       <article class="aa-properties-item" (click)="onSelectedProperty(selectedProperty)">
+                     <div class="col-md-4"  *ngFor="let selectedHome of homes;index as i">
+                       <article class="aa-properties-item" (click)="onSelectedHome(selectedHome)">
                          <a routerLink="/add" class="aa-properties-item-img">
-                           <img style="height: 220px; width: 370px; display: block;" src="{{selectedProperty?.imageUrl}}" alt="img">
+                           <img style="height: 220px; width: 370px; display: block;" src="{{selectedHome?.ImageUrl}}" alt="img">
                          </a>
                          <div class="aa-tag for-sale">
-                          {{selectedProperty?.condicion}}
+                          {{selectedHome?.Condicion}}
                          </div>
-                         <div class="aa-properties-item-content" (click)="onSelectedProperty(i)">
+                         <div class="aa-properties-item-content" (click)="onSelectedHome(i)">
                            <div class="aa-properties-info">
-                             <span><i class="fa fa-car" aria-hidden="true"></i> {{selectedProperty?.garage}}</span>
-                             <span><i class="fa fa-bed" aria-hidden="true"></i> {{selectedProperty?.habitaciones}}</span>
-                             <span><i class="fa fa-bath" aria-hidden="true"></i> {{selectedProperty?.aseos}} </span>
-                             <span><i class="fa fa-arrows" aria-hidden="true"></i> {{selectedProperty?.superficie}} m²</span>
+                             <span><i class="fa fa-car" aria-hidden="true"></i> {{selectedHome?.Garage}}</span>
+                             <span><i class="fa fa-bed" aria-hidden="true"></i> {{selectedHome?.Habitaciones}}</span>
+                             <span><i class="fa fa-bath" aria-hidden="true"></i> {{selectedHome?.Aseos}} </span>
+                             <span><i class="fa fa-arrows" aria-hidden="true"></i> {{selectedHome?.Superficie}} m²</span>
                            </div>
                            <div class="aa-properties-about">
-                             <h3><a routerLink="/add">{{selectedProperty?.tipo}}</a></h3>
-                             <p>{{selectedProperty?.descripcion}}</p>                      
+                             <h3><a routerLink="/add">{{selectedHome?.Tipo}}</a></h3>
+                             <p>{{selectedHome?.Descripcion}}</p>                      
                            </div>
                            <div class="aa-properties-detail">
                              <span class="aa-price">
-                              {{selectedProperty?.precio}}
+                              {{selectedHome?.Precio}}
                              </span>
                            </div>
                          </div>

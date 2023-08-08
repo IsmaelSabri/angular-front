@@ -3,26 +3,72 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, switchMap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 import { AuthenticationService } from '../service/authentication.service';
+import { TokenApiModel } from '../class/TokenApiModel';
+import { ToastrService } from 'ngx-toastr';
 
-@Injectable() 
+@Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  constructor(
+    private authenticationService: AuthenticationService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
-  constructor(private authenticationService: AuthenticationService) {}
+  intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler
+  ): Observable<HttpEvent<unknown>> {
+    const myToken = this.authenticationService.getToken();
 
-  intercept(httpRequest: HttpRequest<any>, httpHandler: HttpHandler): Observable<HttpEvent<any>> {
-    if (httpRequest.url.includes(`${this.authenticationService.host}/user/login`)) {
-      return httpHandler.handle(httpRequest);
+    // this.start.load();
+    if (myToken) {
+      request = request.clone({
+        setHeaders: { Authorization: `Bearer ${myToken}` },
+      });
     }
-    if (httpRequest.url.includes(`${this.authenticationService.host}/user/register`)) {
-      return httpHandler.handle(httpRequest);
-    }
-    this.authenticationService.loadToken();
-    const token = this.authenticationService.getToken();
-    const request = httpRequest.clone({ setHeaders: { Authorization: `Bearer ${token}` }});
-    return httpHandler.handle(request);
+
+    return next.handle(request).pipe(
+      catchError((err: any) => {
+        if (err instanceof HttpErrorResponse) {
+          if (err.status === 401) {
+            //this.toast.warning({detail:"Warning", summary:"Token is expired, Please Login again"});
+            //this.router.navigate(['login'])
+            //handle
+            return this.handleUnAuthorizedError(request, next);
+          }
+        }
+        return throwError(() => err);
+      })
+    );
+  }
+  handleUnAuthorizedError(req: HttpRequest<any>, next: HttpHandler) {
+    let tokeApiModel = new TokenApiModel();
+    tokeApiModel.AccessToken = this.authenticationService.getToken()!;
+    tokeApiModel.RefreshToken = this.authenticationService.getRefreshToken()!;
+    return this.authenticationService.renewToken(tokeApiModel).pipe(
+      switchMap((data: TokenApiModel) => {
+        this.authenticationService.saveRefreshToken(data.RefreshToken);
+        this.authenticationService.saveToken(data.AccessToken);
+        req = req.clone({
+          setHeaders: { Authorization: `Bearer ${data.AccessToken}` },
+        });
+        return next.handle(req);
+      }),
+      catchError((err) => {
+        return throwError(() => {
+          this.toastr.warning(
+            'Warning',
+            'Token is expired, Please Login again'
+          );
+          this.router.navigate(['login']);
+        });
+      })
+    );
   }
 }

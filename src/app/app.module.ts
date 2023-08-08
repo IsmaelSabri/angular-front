@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthenticationService } from './service/authentication.service';
-import { UsuarioService } from './service/usuario.service';
+import { UserService } from './service/user.service';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { AuthenticationGuard } from './guard/authentication.guard';
 import { NotificationModule } from './notification.module';
@@ -27,10 +27,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AutosizeModule } from 'ngx-autosize';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { EdificioService } from './service/edificio.service';
 import { AddComponent } from './pages/add/add.component';
 import { ListComponent } from './pages/list/list.component';
-import { PropertyService } from './service/property.service';
+import { HomeService } from './service/home.service';
+import { CookieService } from 'ngx-cookie-service';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @NgModule({
   declarations: [
@@ -60,6 +63,9 @@ import { PropertyService } from './service/property.service';
     AutosizeModule,
     MatCardModule,
     MatCheckboxModule,
+    NzIconModule,
+    NzFormModule,
+    NzInputModule
   ],
   exports:[          // to get component in another modules
     HomeComponent,
@@ -70,10 +76,10 @@ import { PropertyService } from './service/property.service';
     NotificationService,
     AuthenticationGuard,
     AuthenticationService,
-    UsuarioService,
-    EdificioService,
+    UserService,
     NgbCarouselConfig,
-    PropertyService,
+    CookieService,
+    HomeService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],

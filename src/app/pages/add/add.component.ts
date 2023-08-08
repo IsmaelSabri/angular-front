@@ -2,12 +2,11 @@ import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
-import { UsuarioService } from '../../service/usuario.service';
+import { UserService } from '../../service/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
 //import 'rxjs/Rx';
-import { Property } from '../../model/property';
+import { Home } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
-import { Edificio } from './../../model/edificio';
 import { Fancied } from 'src/app/model/fancied';
 import { ContactUser } from 'src/app/model/contact-user';
 
@@ -18,7 +17,7 @@ import { ContactUser } from 'src/app/model/contact-user';
 })
 export class AddComponent extends UserComponent implements OnInit, OnDestroy{
 
-  edificio:Edificio=new Edificio();
+  home:Home=new Home();
   fancied: Fancied=new Fancied();
   aux:string;
   public refreshing: boolean;
@@ -27,7 +26,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy{
   constructor(
     router: Router,
     authenticationService: AuthenticationService,
-    userService: UsuarioService,
+    userService: UserService,
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
@@ -71,7 +70,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy{
 
 
   ngOnInit(): void {
-    this.edificio=JSON.parse(localStorage.getItem("currentBuilding"));
+    this.home=JSON.parse(localStorage.getItem("currentBuilding"));
   }
 
   ngOnDestroy(): void {
