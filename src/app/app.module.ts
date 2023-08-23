@@ -22,7 +22,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
-import { NgxStarRatingModule } from 'ngx-star-rating';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AutosizeModule } from 'ngx-autosize';
 import { MatCardModule } from '@angular/material/card';
@@ -34,6 +33,16 @@ import { CookieService } from 'ngx-cookie-service';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { IonicModule } from '@ionic/angular';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import {MatSelectModule} from '@angular/material/select'; 
 
 @NgModule({
   declarations: [
@@ -43,7 +52,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     UserComponent,
     HomeComponent,
     ListComponent,
-    AddComponent
+    AddComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,19 +67,30 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     //IvyCarouselModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
-    NgxStarRatingModule,
     MatFormFieldModule,
     AutosizeModule,
     MatCardModule,
     MatCheckboxModule,
     NzIconModule,
     NzFormModule,
-    NzInputModule
+    NzInputModule,
+    NzCollapseModule,
+    NzModalModule,
+    NzDropDownModule,
+    MatToolbarModule,
+    NzTabsModule,
+    NzGridModule,
+    IonicModule,
+    MDBBootstrapModule.forRoot(),
+    NzSelectModule,
+    MatSelectModule,
+    
   ],
-  exports:[          // to get component in another modules
+  exports: [
+    // to get component in another modules
     HomeComponent,
     AddComponent,
-    ListComponent
+    ListComponent,
   ],
   providers: [
     NotificationService,

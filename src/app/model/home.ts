@@ -67,6 +67,7 @@ export class Home{
     // si el usuario lo desea
     numero:string; // del portal, del bajo
     puerta:string;
+    piso:string;
     comentario:string;
     calle:string; // avendida, plaza...
     valoraciones:number;

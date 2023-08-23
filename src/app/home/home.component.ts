@@ -1,12 +1,16 @@
+import { PropertyType, HouseType, Bedrooms, Bathrooms, Badge, PropertyState } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
-import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { Map, marker, popup, LatLng, Icon } from 'leaflet';
 import 'leaflet.locatecontrol';
 import {
   tileLayerSelect,
   tileLayerCP,
   tileLayerWMSSelect,
+  tileLayerHere,
   tileLayerWMSSelectIGN,
+  grayIcon,
+  greenIcon,
 } from '../model/functions';
 import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
@@ -18,11 +22,21 @@ import * as L from 'leaflet';
 import { HomeService } from '../service/home.service';
 import { Home } from '../model/home';
 import { ToastrService } from 'ngx-toastr';
+import { DomSanitizer } from '@angular/platform-browser';
+import {
+  OpenStreetMapProvider,
+  GeoSearchControl,
+  SearchControl,
+} from 'leaflet-geosearch';
+import { BehaviorSubject } from 'rxjs';
+import { FormControl, NgModel } from '@angular/forms';
+
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css', 'custom-leaflet.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   constructor(
@@ -32,7 +46,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    private homeService: HomeService
+    private homeService: HomeService,
+    private sanitizer: DomSanitizer
   ) {
     super(
       router,
@@ -52,42 +67,112 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   IsIndeterminate: boolean;
   LabelAlign: 'after' | 'before';
   IsDisabled: boolean;
-  map!: L.map;
+
+  map!: L.map; // map allocates homes
+  map2!: L.Map; // map geocoding search location
   lg!: L.LayerGroup;
-  home: Home = new Home();
-  edificios: any = [];
-  state: boolean = this.authenticationService.isUserLoggedIn();
-  opt = {};
-  coords!: L.LatLng; // coordenadas de ubicacion actual del usuario al inicio
-  markerCoords!: L.LatLng; // coordenadas de la ubicación donde el usuario desea situar su anuncio
-  mydate = new Date().getTime();
-  grayIcon = new Icon({
-    iconUrl:
-      'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png',
-    shadowUrl:
-      'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-  });
-  greenIcon = new L.Icon({
-    iconUrl:
-      'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-    shadowUrl:
-      'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-  });
   mp!: L.Marker;
   fg = L.featureGroup();
   popup = L.popup();
+  coords!: L.LatLng; // coordenadas de ubicacion actual del usuario al inicio
+  markerCoords!: L.LatLng; // coordenadas de la ubicación donde el usuario desea situar su anuncio
+
+  home: Home = new Home();
+  state: boolean = this.authenticationService.isUserLoggedIn();
+  opt = {};
+  mydate = new Date().getTime();
+  condicion:string[]=Object.values(PropertyType);
+  tipo:string[]=Object.values(HouseType);
+  bedrooms:string[]=Object.values(Bedrooms);
+  bathrooms:string[]=Object.values(Bathrooms);
+  badge:string[]=Object.values(Badge);
+  propertyState:string[]=Object.values(PropertyState);
+
+
   images: any = [];
   prev!: string;
   doorsMainProperty!: string;
   propertyImage: File;
+  // textfield geosearch
+  provincia: string;
+
+  // modal antdsgn
+  isVisible = false;
+  isOkLoading = false;
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  protected setTextfieldValue(optionSelected:string, optionMatch:string ,textfieldIdOrngModel: NgModel, value:any): any{
+    if(optionSelected.match(optionMatch)){
+      textfieldIdOrngModel.reset();
+    }else{
+      return false;
+    }
+  }
+
+  getSanitized(){
+    return this.sanitizer.bypassSecurityTrustHtml('');
+  }
+
+  handleOk(): void {
+    this.isOkLoading = true;
+    setTimeout(() => {
+      this.isVisible = false;
+      this.isOkLoading = false;
+    }, 3000);
+  }
+
+  handleCancel(): void {
+    this.isVisible = false;
+  }
+
+  showCityResult() {
+    if (this.provincia == null) {
+      alert('Introduzca la provincia!');
+    } else {
+      var x = document.getElementById('provButton2');
+      x.style.display = 'none';
+      x = document.getElementById('map_2');
+      x.style.display = 'none';
+      x = document.getElementById('provButton');
+      x.style.display = 'block';
+      x.innerHTML = this.provincia;
+      this.map2.remove();
+      this.home.ciudad=this.provincia.split(" ")[0].replace(",","");
+      console.log(this.home.ciudad);
+    }
+  }
+
+  locationMap() {
+    const search = GeoSearchControl({
+      provider: new OpenStreetMapProvider(),
+      popupFormat: ({ result }) => (this.provincia = result.label),
+      searchLabel: 'Ciudad',
+      resultFormat: ({ result }) => result.label,
+      marker: {
+        icon: new L.Icon.Default(),
+        draggable: false,
+      },
+    });
+    var x = document.getElementById('map_2');
+    x.style.display = 'flex';
+    this.map2 = L.map('map_2', { renderer: L.canvas() }).setView(
+      [40.4380986, -3.8443428],
+      5
+    );
+    this.getLocation();
+    //tileLayerSelect().addTo(map2);
+    //tileLayerWMSSelect().addTo(map2);
+    //tileLayerCP().addTo(map2); // Codigos postales
+    tileLayerWMSSelectIGN().addTo(this.map2);
+    //tileLayerHere().addTo(this.map2);
+    this.map2.addControl(search);
+    var x = document.getElementById('provButton');
+    x.style.display = 'none';
+    var x = document.getElementById('provButton2');
+    x.style.display = 'block';
+  }
 
   /************************************************************/
   ngOnInit(): void {
@@ -101,6 +186,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     //tileLayerWMSSelect().addTo(map);
     //tileLayerCP().addTo(map); // Codigos postales
     tileLayerWMSSelectIGN().addTo(this.map);
+    //tileLayerHere().addTo(this.map);
 
     //carga dinamica
     this.subscriptions.push(
@@ -108,7 +194,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         data.map((Home) => {
           marker(
             [Number(Home.lat), Number(Home.lng)],
-            { icon: this.greenIcon },
+            { icon: greenIcon },
             this.opt
           )
             .bindTooltip(
@@ -198,28 +284,34 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   createLocationMarker() {
-      console.log(this.coords);
-      this.markerCoords = this.coords;
-      this.toastr.success(
-        'Arrastra el marcador!',
-        'Mueve el marcador hasta su propiedad!'
-      );
-      this.mp = new L.marker(this.coords, {
-        draggable: true,
-      }).bindPopup(`
+    // hay que recorrer layergroup para borrarlo si existe y que no se solape
+    if (this.map.hasLayer(this.lg)) {
+      return true;
+    }else{
+      return false;
+    }
+    console.log(this.coords);
+    this.markerCoords = this.coords;
+    this.toastr.success(
+      'Arrastra el marcador!',
+      'Mueve el marcador hasta su propiedad!'
+    );
+    this.mp = new L.marker(this.coords, {
+      draggable: true,
+    }).bindPopup(`
       
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMarkerModal" >Hecho</button>
       
       `);
-      this.lg = new L.LayerGroup([this.mp]);
-      this.lg.addTo(this.map);
+    this.lg = new L.LayerGroup([this.mp]);
+    this.lg.addTo(this.map);
 
-      /*const popupItem=L.popup().setLatLng(this.coords)
+    /*const popupItem=L.popup().setLatLng(this.coords)
       .setContent('<h5>Arrastrame a una ubicación exacta</h5>')
       .openOn(this.mp);*/
-      this.mp.on('move', () => (this.markerCoords = this.mp.getLatLng()));
-      this.mp.on('moveend', () => console.log(this.markerCoords));
-      this.mp.on('dragend', () => this.mp.openPopup());
+    this.mp.on('move', () => (this.markerCoords = this.mp.getLatLng()));
+    this.mp.on('moveend', () => console.log(this.markerCoords));
+    this.mp.on('dragend', () => this.mp.openPopup());
   }
 
   // Revisar - en el html -> oninput="textAreaResize(this)"
