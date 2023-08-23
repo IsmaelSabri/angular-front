@@ -285,11 +285,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   createLocationMarker() {
     // hay que recorrer layergroup para borrarlo si existe y que no se solape
-    if (this.map.hasLayer(this.lg)) {
-      return true;
-    }else{
-      return false;
-    }
     console.log(this.coords);
     this.markerCoords = this.coords;
     this.toastr.success(
