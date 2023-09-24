@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../model/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { TokenApiModel } from '../class/TokenApiModel';
+import { TokenApiModel } from '../model/performance/TokenApiModel';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {

@@ -9,7 +9,7 @@ import {
 } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { CustomHttpResponse } from '../model/custom-http-response';
+import { CustomHttpResponse } from '../model/performance/custom-http-response';
 
 
 @Injectable({

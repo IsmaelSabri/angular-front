@@ -9,7 +9,7 @@ import {
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../service/authentication.service';
-import { TokenApiModel } from '../class/TokenApiModel';
+import { TokenApiModel } from '../model/performance/TokenApiModel';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable()

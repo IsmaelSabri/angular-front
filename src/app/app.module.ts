@@ -42,7 +42,9 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { IonicModule } from '@ionic/angular';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTableModule } from 'ng-zorro-antd/table';
 import {MatSelectModule} from '@angular/material/select'; 
+import {MatTableModule} from '@angular/material/table'; 
 
 @NgModule({
   declarations: [
@@ -84,7 +86,8 @@ import {MatSelectModule} from '@angular/material/select';
     MDBBootstrapModule.forRoot(),
     NzSelectModule,
     MatSelectModule,
-    
+    MatTableModule,
+    NzTableModule,
   ],
   exports: [
     // to get component in another modules

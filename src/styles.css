@@ -1,41 +1,183 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css';
-@import 'https://use.fontawesome.com/releases/v5.8.1/css/all.css';
+@import "https://use.fontawesome.com/releases/v5.8.1/css/all.css";
 @import "node_modules/angular-notifier/styles";
-@import url("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"); 
-@import url("https://fonts.googleapis.com/css2?family=Righteous&display=swap");
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+@import url("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 
-/*td {
-  cursor: pointer;
+/* Gelion */
+@font-face {
+  font-family: "Gelion Regular Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Regular Italic"),
+    url("src/assets/fonts/Gelion Regular Italic.woff") format("woff");
 }
-.move-right {
-    position: absolute;
-    right: 0;
-  }
 
-  .move-left {
-    position: absolute;
-    left: 0;
-  }
+@font-face {
+  font-family: "Gelion Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Regular"),
+    url("src/assets/fonts/Gelion Regular.woff") format("woff");
+}
 
-  .btn-file {
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-file input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    outline: none;
-    background: white;
-    cursor: inherit;
-    display: block;
-  }*/
- 
+@font-face {
+  font-family: "Gelion Light";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Light"),
+    url("src/assets/fonts/Gelion Light.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Thin Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Thin Italic"),
+    url("src/assets/fonts/Gelion Thin Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Light Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Light Italic"),
+    url("src/assets/fonts/Gelion Light Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Thin";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Thin"),
+    url("src/assets/fonts/Gelion Thin.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Medium Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Medium Italic"),
+    url("src/assets/fonts/Gelion Medium Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Medium";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Medium"),
+    url("src/assets/fonts/Gelion Medium.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Semi Bold Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Semi Bold Italic"),
+    url("src/assets/fonts/Gelion SemiBold Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Semi Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Semi Bold"),
+    url("src/assets/fonts/Gelion SemiBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Bold Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Bold Italic"),
+    url("src/assets/fonts/Gelion Bold Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Bold"),
+    url("src/assets/fonts/Gelion Bold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Black Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Black Italic"),
+    url("src/assets/fonts/Gelion Black Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Gelion Black";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Gelion Black"),
+    url("src/assets/fonts/Gelion Black.woff") format("woff");
+}
+/* End Gelion */
+
+/* Pangea African Text */
+@font-face {
+  font-family: "Pangea Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Regular"), url("src/assets/fonts/PangeaAfrikanTextTrial-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Pangea SemiBold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Semibold"), url("src/assets/fonts/PangeaAfrikanTextTrial-SemiBold.woff") format("woff");
+}
+@font-face {
+  font-family: "Pangea SemiBold Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Semibold Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-SemiBoldItalic.woff") format("woff");
+}
+@font-face {
+  font-family: "Pangea Light";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Light"), url("src/assets/fonts/PangeaAfrikanTextTrial-Light.woff") format("woff");
+}
+@font-face {
+  font-family: "Pangea Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-Italic.woff") format("woff");
+}
+@font-face {
+  font-family: "Pangea Light Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Light Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-LightItalic.woff") format("woff");
+}
+@font-face {
+  font-family: "Pangea Medium";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Medium"), url("src/assets/fonts/PangeaAfrikanTextTrial-Medium.woff") format("woff");
+}
+@font-face {
+  font-family: "Pangea Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Bold"), url("src/assets/fonts/PangeaAfrikanTextTrial-Bold.woff") format("woff");
+}
+@font-face {
+  font-family: "Pangea Bold Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Bold Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-BoldItalic.woff") format("woff");
+}
+@font-face {
+  font-family: "Pangea Medium Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Pangea Medim Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-MediumItalic.woff") format("woff");
+}
+/* End Pangea */

@@ -1,6 +1,24 @@
-import { PropertyType, HouseType, Bedrooms, Bathrooms, Badge, PropertyState } from './../class/property-type.enum';
+import {
+  PropertyType,
+  HouseType,
+  Bedrooms,
+  Bathrooms,
+  Badge,
+  PropertyState,
+  Enseñanza,
+  Institucion,
+  RamasConocimiento,
+} from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
-import { Component, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { Map, marker, popup, LatLng, Icon } from 'leaflet';
 import 'leaflet.locatecontrol';
 import {
@@ -9,9 +27,14 @@ import {
   tileLayerWMSSelect,
   tileLayerHere,
   tileLayerWMSSelectIGN,
+  tileLayerTransportes,
+} from '../model/maps/functions';
+import {
   grayIcon,
   greenIcon,
-} from '../model/functions';
+  grayPointerIcon,
+  blackMarker,
+} from '../model/maps/icons';
 import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
 import { AuthenticationService } from '../service/authentication.service';
@@ -19,8 +42,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NotificationType } from '../class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as L from 'leaflet';
+//import H from '@here/maps-api-for-javascript';
 import { HomeService } from '../service/home.service';
-import { Home } from '../model/home';
+import { Bus, Home, Metro, Supermercado, Universidad } from '../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { DomSanitizer } from '@angular/platform-browser';
 import {
@@ -30,13 +54,15 @@ import {
 } from 'leaflet-geosearch';
 import { BehaviorSubject } from 'rxjs';
 import { FormControl, NgModel } from '@angular/forms';
-
+import { Colegio } from '../model/home';
+import { NzSelectSizeType } from 'ng-zorro-antd/select';
+import 'leaflet-routing-machine';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css', 'custom-leaflet.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   constructor(
@@ -46,7 +72,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    private homeService: HomeService,
+    protected homeService: HomeService,
     private sanitizer: DomSanitizer
   ) {
     super(
@@ -70,24 +96,31 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   map!: L.map; // map allocates homes
   map2!: L.Map; // map geocoding search location
-  lg!: L.LayerGroup;
+  map3!: L.Map; // map to set nearly services
+  //hereMap!: H.Map;
+  lg = new L.LayerGroup();
   mp!: L.Marker;
+  markerHouse!: L.Marker; // punto de referencia para los servicios
+  markerSchool!: L.Marker;
   fg = L.featureGroup();
   popup = L.popup();
-  coords!: L.LatLng; // coordenadas de ubicacion actual del usuario al inicio
-  markerCoords!: L.LatLng; // coordenadas de la ubicación donde el usuario desea situar su anuncio
+  beforeCoords!: L.LatLng; // coordenadas de ubicacion actual del usuario al inicio
+  afterCoords!: L.LatLng; // coordenadas de la ubicación donde el usuario desea situar su anuncio
+  nextCoords!: L.LatLng; // coordenadas temporales para situar cada servicio
 
   home: Home = new Home();
   state: boolean = this.authenticationService.isUserLoggedIn();
   opt = {};
   mydate = new Date().getTime();
-  condicion:string[]=Object.values(PropertyType);
-  tipo:string[]=Object.values(HouseType);
-  bedrooms:string[]=Object.values(Bedrooms);
-  bathrooms:string[]=Object.values(Bathrooms);
-  badge:string[]=Object.values(Badge);
-  propertyState:string[]=Object.values(PropertyState);
-
+  condicion: string[] = Object.values(PropertyType);
+  tipo: string[] = Object.values(HouseType);
+  bedrooms: string[] = Object.values(Bedrooms);
+  bathrooms: string[] = Object.values(Bathrooms);
+  badge: string[] = Object.values(Badge);
+  propertyState: string[] = Object.values(PropertyState);
+  ensenyanza: string[] = Object.values(Enseñanza);
+  institucion: string[] = Object.values(Institucion);
+  ramas: string[] = Object.values(RamasConocimiento);
 
   images: any = [];
   prev!: string;
@@ -96,6 +129,89 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   // textfield geosearch
   provincia: string;
 
+  // para introducir servicios proximos
+  //<div class="accordion-item" *ngIf="isEmptyArray(this.colegios)">
+  colegiosPrimaria: Colegio[];
+  colegiosSecundaria: Colegio[];
+  universidad: Universidad[];
+  autobuses: Bus[];
+  lineasMetro: Metro[];
+  supermercados: Supermercado[];
+
+  // funcion que muestra/esconde el modal
+  @ViewChild('element') element: ElementRef;
+  @ViewChild('map_3') map_3?: ElementRef;
+  openToogleModal(flag: boolean) {
+    if (flag) {
+      if (this.afterCoords == null || this.afterCoords == undefined) {
+        // remove to production
+        this.afterCoords = this.beforeCoords;
+      }
+      this.nextCoords=this.afterCoords;
+      
+      this.element.nativeElement.classList.add('modal-open');
+      // cargar el siguiente mapa
+      this.map3 = L.map('map_3', { renderer: L.canvas() }).setView(
+        [this.afterCoords.lat, this.afterCoords.lng],
+        15
+      );
+      //tileLayerSelect().addTo(this.map3);
+      //tileLayerTransportes().addTo(this.map3);
+      //tileLayerWMSSelect().addTo(this.map3);
+      tileLayerWMSSelectIGN().addTo(this.map3);
+      //tileLayerHere().addTo(this.map3);
+      this.markerHouse = new L.marker(this.afterCoords, {
+        draggable: false,
+        icon: grayPointerIcon,
+      });
+      this.markerHouse.addTo(this.map3);
+    } else {
+      this.element.nativeElement.classList.remove('modal-open');
+    }
+  }
+
+  // rutas próximas
+  setRoute() {
+    var control = L.Routing.control({
+      waypoints: [L.latLng(this.afterCoords), L.latLng(this.nextCoords)],
+      createMarker: function (i, wp, nWps) {
+        if (i === 0) {
+          // Servicio (destino)
+          return L.marker(wp.latLng, {
+            icon: grayIcon, 
+            draggable: true,
+            name:'destiny'
+          }).bindPopup(`
+      
+          <button type="button" class="btn btn-secondary" >Guardar</button>
+          
+          `).on('moveend', () => console.log())
+          
+        } else if(i == nWps -1) {
+          // Casa (origen)
+          return L.marker(wp.latLng, {
+            icon: grayPointerIcon,
+            draggable: false,
+          });
+        }
+      },
+      routeWhileDragging: true,
+      lineOptions: {
+        styles: [
+          {
+            color: '#3a3b3c',
+            weight: 4,
+          },
+        ],
+      },
+    }).addTo(this.map3);
+    /*this.mp.on('move', () => (this.afterCoords = this.mp.getLatLng()));
+    this.mp.on('moveend', () => console.log(this.afterCoords));
+    this.mp.on('dragend', () => this.mp.openPopup());*/
+  }
+
+  printRoute() {}
+
   // modal antdsgn
   isVisible = false;
   isOkLoading = false;
@@ -103,16 +219,32 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.isVisible = true;
   }
 
-  protected setTextfieldValue(optionSelected:string, optionMatch:string ,textfieldIdOrngModel: NgModel, value:any): any{
-    if(optionSelected.match(optionMatch)){
+  // tamaño de los select para las tablas de proximidades
+  size: NzSelectSizeType = 'small';
+
+  protected setTextfieldValue(
+    optionSelected: string,
+    optionMatch: string,
+    textfieldIdOrngModel: NgModel,
+    value: any
+  ): any {
+    if (optionSelected.match(optionMatch)) {
       textfieldIdOrngModel.reset();
-    }else{
+    } else {
       return false;
     }
   }
 
-  getSanitized(){
+  getSanitized() {
     return this.sanitizer.bypassSecurityTrustHtml('');
+  }
+
+  isEmptyArray(array: unknown): array is Array<unknown> {
+    if (Array.isArray(array) && array.length) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   handleOk(): void {
@@ -139,7 +271,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       x.style.display = 'block';
       x.innerHTML = this.provincia;
       this.map2.remove();
-      this.home.ciudad=this.provincia.split(" ")[0].replace(",","");
+      this.home.ciudad = this.provincia.split(' ')[0].replace(',', '');
       console.log(this.home.ciudad);
     }
   }
@@ -269,9 +401,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   getLocation() {
     this.map.on('locationfound', (e: { accuracy: number; latlng: LatLng }) => {
-      this.coords = e.latlng; //Object.assign({}, e.latlng);
-      this.map.setView(this.coords, 25); // poner el foco en el mapa
-      this.map.fitBounds([[this.coords.lat, this.coords.lng]]); // por si acaso..
+      this.beforeCoords = e.latlng; //Object.assign({}, e.latlng);
+      this.map.setView(this.beforeCoords, 25); // poner el foco en el mapa
+      this.map.fitBounds([[this.beforeCoords.lat, this.beforeCoords.lng]]); // por si acaso..
     });
     this.map.on('locationerror', this.notFoundLocation); // si el usuario no activa la geolocalización
     this.map.locate({ setView: true, maxZoom: 25 }); // llamada para que la geolocalización funcione
@@ -285,13 +417,19 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   createLocationMarker() {
     // hay que recorrer layergroup para borrarlo si existe y que no se solape
-    console.log(this.coords);
-    this.markerCoords = this.coords;
-    this.toastr.success(
+    this.lg.clearLayers();
+    //this.map.flyTo([this.beforeCoords],25,{ animate:true,duration:1.5 });
+    console.log(this.beforeCoords);
+    this.afterCoords = this.beforeCoords;
+    this.notificationService.notify(
+      NotificationType.INFO,
+      'Mueve el marcador hasta su propiedad'
+    );
+    /*this.toastr.success(
       'Arrastra el marcador!',
       'Mueve el marcador hasta su propiedad!'
-    );
-    this.mp = new L.marker(this.coords, {
+    );*/
+    this.mp = new L.marker(this.beforeCoords, {
       draggable: true,
     }).bindPopup(`
       
@@ -301,12 +439,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.lg = new L.LayerGroup([this.mp]);
     this.lg.addTo(this.map);
 
-    /*const popupItem=L.popup().setLatLng(this.coords)
+    /*const popupItem=L.popup().setLatLng(this.beforeCoords)
       .setContent('<h5>Arrastrame a una ubicación exacta</h5>')
       .openOn(this.mp);*/
-    this.mp.on('move', () => (this.markerCoords = this.mp.getLatLng()));
-    this.mp.on('moveend', () => console.log(this.markerCoords));
+    this.mp.on('move', () => (this.afterCoords = this.mp.getLatLng()));
+    this.mp.on('moveend', () => console.log(this.afterCoords));
     this.mp.on('dragend', () => this.mp.openPopup());
+    this.map.flyTo([this.beforeCoords.lat, this.beforeCoords.lng], 20);
   }
 
   // Revisar - en el html -> oninput="textAreaResize(this)"
@@ -322,8 +461,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   createHome2() {
     //this.lg.remove(this.mp);
     /*  const formData = new FormData();
-    formData.append('lat', this.markerCoords.lat);
-    formData.append('lng', this.markerCoords.lng);
+    formData.append('lat', this.afterCoords.lat);
+    formData.append('lng', this.afterCoords.lng);
     formData.append('foto', this.propertyImage);
     formData.append('descripcion', this.home.descripcion);
     formData.append('calle', this.edificio.calle);
@@ -366,8 +505,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   // Nueva vivienda
   createHome() {
     const formData = new FormData();
-    formData.append('lat', this.markerCoords.lat);
-    formData.append('lng', this.markerCoords.lng);
+    formData.append('lat', this.afterCoords.lat);
+    formData.append('lng', this.afterCoords.lng);
     formData.append('foto', this.home.imageUrl);
     formData.append('descripcion', this.home.descripcion);
     formData.append('calle', this.home.calle);

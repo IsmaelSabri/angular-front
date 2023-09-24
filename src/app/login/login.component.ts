@@ -7,7 +7,6 @@ import { AuthenticationService } from '../service/authentication.service';
 import { NotificationService } from '../service/notification.service';
 import { User } from '../model/user';
 import { NotificationType } from '../class/notification-type.enum';
-import { HeaderType } from '../class/header-type.enum';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { FormGroup } from '@angular/forms';
@@ -58,7 +57,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           const tokenPayload = this.authenticationService.decodedToken();
           this.userService.setFullName(tokenPayload.name);
           this.userService.setRole(tokenPayload.role);
-          this.authenticationService.addUserToLocalCache(response.body);
+          this.authenticationService.addUserToLocalCache(response);
           this.router.navigateByUrl('/home');
           this.showLoading = false;
         },

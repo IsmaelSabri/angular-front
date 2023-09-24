@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse, HttpErrorResponse, HttpEvent } from '@angular
 import { environment } from '../../environments/environment';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from '../model/user';
-import { CustomHttpResponse } from '../model/custom-http-response';
+import { CustomHttpResponse } from '../model/performance/custom-http-response';
 
 @Injectable({providedIn: 'root'})
 export class UserService {

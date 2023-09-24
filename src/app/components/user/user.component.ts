@@ -7,10 +7,10 @@ import { NotificationType } from '../../class/notification-type.enum';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { CustomHttpResponse } from '../../model/custom-http-response';
+import { CustomHttpResponse } from '../../model/performance/custom-http-response';
 import { AuthenticationService } from '../../service/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FileUploadStatus } from '../../model/file-upload.status';
+import { FileUploadStatus } from '../../model/performance/file-upload.status';
 import { Rol } from '../../class/role.enum';
 import { ToastrService } from 'ngx-toastr';
 
@@ -34,10 +34,11 @@ export class UserComponent implements OnInit, OnDestroy {
   public fileStatus = new FileUploadStatus();
 
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
-    private userService: UserService, private notificationService: NotificationService,
+    private userService: UserService, protected notificationService: NotificationService,
     protected route: ActivatedRoute, protected toastr: ToastrService) { }
 
   ngOnInit(): void {
+    //console.log(this.user.isactive);
     this.user = this.authenticationService.getUserFromLocalCache();
     this.getUsers(true);
   }

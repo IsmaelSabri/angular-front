@@ -9,13 +9,15 @@ import { Home } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { HomeService } from 'src/app/service/home.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HomeComponent } from 'src/app/home/home.component';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css'],
 })
-export class ListComponent extends UserComponent implements OnInit, OnDestroy {
+export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
   public homes: Home[];
 
   constructor(
@@ -25,7 +27,8 @@ export class ListComponent extends UserComponent implements OnInit, OnDestroy {
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    homeService: HomeService
+    homeService: HomeService,
+    sanitizer: DomSanitizer
   ) {
     super(
       router,
@@ -33,7 +36,9 @@ export class ListComponent extends UserComponent implements OnInit, OnDestroy {
       userService,
       notificationService,
       route,
-      toastr
+      toastr,
+      homeService,
+      sanitizer
     );
   }
 
@@ -51,6 +56,11 @@ export class ListComponent extends UserComponent implements OnInit, OnDestroy {
       )
     );
   }*/
+
+search(){
+
+}
+
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

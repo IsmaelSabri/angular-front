@@ -3,7 +3,7 @@
     <div class="col-md-4">
     </div>
     <div class="col-md-4">
-      <h5>Portal de usuarios</h5>
+      <h5>Control social</h5>
       <small *ngIf="titleAction$ | async as title">{{ title }}</small>
     </div>
     <div class="col-md-4">
@@ -76,9 +76,9 @@
             <td (click)="onSelectUser(appUser)">{{appUser?.lastName}}</td>
             <td (click)="onSelectUser(appUser)">{{appUser?.username}}</td>
             <td (click)="onSelectUser(appUser)">{{appUser?.email}}</td>
-            <td (click)="onSelectUser(appUser)">
-              <span [hidden]="!appUser?.isactive" class="badge badge-success">Activo</span>
-              <span [hidden]="appUser?.isactive" class="badge badge-danger">Inactivo</span>
+            <td (click)="onSelectUser(appUser)"><!-- Tabla -->
+              <span [hidden]="!appUser?.isactive" class="chip primary">Activo</span>
+              <span [hidden]="appUser?.isactive" class="chip danger">Inactivo</span>
             </td>
             <td class="">
               <div class="btn-group">
@@ -303,9 +303,9 @@
                         <h6 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{selectedUser?.firstname}}
                           {{selectedUser?.lastname}}</h6>
                         <p class="mb-1">{{selectedUser?.username}}</p>
-                        <div class="">Status:
-                          <span [hidden]="!selectedUser?.isactive" class="badge badge-success">Activo</span>
-                          <span [hidden]="selectedUser?.isactive" class="badge badge-danger">Inactivo</span>
+                        <div class="">Status:<!-- Tarjeta  -->
+                          <h6><span [hidden]="!selectedUser?.isactive" class="chip primary">Activo</span></h6>
+                          <span [hidden]="selectedUser?.isactive" class="chip danger">Inactivo</span>
                         </div>
                         <div *ngIf="selectedUser?.showLastaccessDate" class="text-muted"><small>Último Login: {{selectedUser?.showLastaccessDate | date: 'medium'}}</small>
                         </div>

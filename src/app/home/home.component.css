@@ -2,6 +2,15 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css");
 @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js");*/
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Gelion Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-variation-settings: "XTDR" 50, "APRT" 100, "SPAC" 40;
+}
+
 #map {
   width: auto;
   margin: auto;
@@ -46,9 +55,23 @@ star:hover {
   width: auto;
 }
 
+.modal-header {
+  display: flex;
+  -moz-box-pack: justify;
+  justify-content: space-between;
+  background-color: #ffffff;
+  position: sticky;
+  bottom: 0px;
+  padding: 1rem;
+  width: 60vh;
+  border-radius: 14px 14px 0% 0%;
+}
+
 .modal-body {
   height: 84vh;
   overflow-y: scroll;
+
+  width: 60vh;
 }
 
 .modal-footer {
@@ -60,7 +83,8 @@ star:hover {
   bottom: 0px;
   padding: 1rem;
   border-top: 1px solid #bcd1c6;
-  border-radius: 14px;
+  width: 60vh;
+  border-radius: 0% 0% 14px 14px;
 }
 
 .modal-content {
@@ -107,34 +131,32 @@ star:hover {
 
 .header .nav-links a {
   font-size: 700;
-  color: hsl(204, 77%, 22%);
+  color: #404040;
   text-decoration: none;
 }
 
 .header .nav-links li a:hover {
-  color: #ffbc0e;
+  color: #3a3b3c;
 }
 
 .header .btn button {
   margin-right: 20px;
   font-weight: 700;
-  color: #1b3039;
+  /*color: #3a3b3c;*/
   padding: 9px 25px;
-  background: #eceff1;
+  background: none;
   border: none;
-  border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease 0s;
 }
 
-.header .btn button:hover {
-  background-color: #e2f1f8;
-  color: #ffbc0e;
+/*.header .btn button:hover {
+  background-color: #ffffff;
+  color: #676767;
   transform: scale(1.1);
-}
+}*/
 
 /* custom leaflet-pane */
-
 .header .nav-links2 {
   list-style: none;
 }
@@ -338,7 +360,7 @@ star:hover {
 }
 
 .inputValue {
-  font-size: 1.4rem;
+  font-size: 1rem;
   text-indent: 12px;
   /*line-height: 1.5rem;*/
   font-family: "Pangea", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -348,8 +370,8 @@ star:hover {
   color: #3a3b3c;
   -moz-box-flex: 1;
   flex-grow: 1;
-  height: 3.2rem;
-  min-width: 16rem;
+  height: 1.9rem;
+  min-width: 13.3rem;
   outline: none;
   box-shadow: none;
   padding: 0px;
@@ -362,7 +384,7 @@ star:hover {
 
 .inputValue:focus {
   outline: none !important;
-  border: 1px solid #9aa0a6;
+  border: 2px solid black;
   box-shadow: 0 0 10px #dadce0;
 }
 
@@ -401,4 +423,496 @@ star:hover {
   scrollbar-width: none;
 }
 
+/* Hamburger */
+.menuHM {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  padding: 0;
+  outline: none;
+}
+.line {
+  fill: none;
+  stroke: #3a3b3c;
+  stroke-width: 3;
+  transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+    stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.line1 {
+  stroke-dasharray: 60 207;
+  stroke-width: 3;
+}
+.line2 {
+  stroke-dasharray: 60 60;
+  stroke-width: 3;
+}
+.line3 {
+  stroke-dasharray: 60 207;
+  stroke-width: 3;
+}
+.opened .line1 {
+  stroke-dasharray: 90 207;
+  stroke-dashoffset: -134;
+  stroke-width: 3;
+}
+.opened .line2 {
+  stroke-dasharray: 1 60;
+  stroke-dashoffset: -30;
+  stroke-width: 3;
+}
+.opened .line3 {
+  stroke-dasharray: 90 207;
+  stroke-dashoffset: -134;
+  stroke-width: 3;
+}
+/* end Hamburger */
+
+/* Checkboxes */
+
+.c-material-che {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.c-material-che__hidden {
+  display: none;
+}
+.c-material-che__hidden:checked + .c-material-che__el:before {
+  animation-name: md-area-checkbox-on;
+  animation-duration: 500ms;
+}
+.c-material-che__hidden:checked + .c-material-che__el:after {
+  opacity: 1;
+}
+.c-material-che__el {
+  display: block;
+  position: relative;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  border-radius: 100%;
+  border: 1px solid #d9d9d9;
+  margin-right: 10px;
+}
+.c-material-che__el:before {
+  content: "";
+  display: block;
+  position: absolute;
+  background-color: rgba(102, 153, 255, 0.3);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 100%;
+  animation-name: md-area-checkbox-off;
+  animation-duration: 500ms;
+}
+.c-material-che__el:after {
+  content: "";
+  display: block;
+  position: absolute;
+  background-color: #474747;
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+}
+.c-material-che__label {
+  display: block;
+  color: #636363;
+  font-weight: lighter;
+}
+@-moz-keyframes md-area-checkbox-on {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  to {
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+  }
+}
+@-webkit-keyframes md-area-checkbox-on {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  to {
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+  }
+}
+@-o-keyframes md-area-checkbox-on {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  to {
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+  }
+}
+@keyframes md-area-checkbox-on {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  to {
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+  }
+}
+@-moz-keyframes md-area-checkbox-off {
+  from {
+    width: 50px;
+    height: 50px;
+    opacity: 0.8;
+  }
+  to {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+}
+@-webkit-keyframes md-area-checkbox-off {
+  from {
+    width: 50px;
+    height: 50px;
+    opacity: 0.8;
+  }
+  to {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+}
+@-o-keyframes md-area-checkbox-off {
+  from {
+    width: 50px;
+    height: 50px;
+    opacity: 0.8;
+  }
+  to {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+}
+@keyframes md-area-checkbox-off {
+  from {
+    width: 50px;
+    height: 50px;
+    opacity: 0.8;
+  }
+  to {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+}
+br {
+  display: block; /* makes it have a width */
+  content: ""; /* clears default height */
+  margin-top: 10px; /* change this to whatever height you want it */
+}
+
+.brboom {
+  /* Margin top between checkboxes */
+  margin-top: 16px;
+}
+/* End checkboxes */
+
+/* Expanding cards */
+.accordion-animation-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows var(--transitionLength) var(--transitionTiming);
+}
+
+.accordion-trigger-input:checked ~ .accordion-animation-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.accordion-animation {
+  min-height: 0;
+}
+
+.accordion-transform-wrapper {
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition: transform var(--transitionLength) var(--transitionTiming),
+    visibility 0s var(--transitionLength) var(--transitionTiming);
+}
+
+.accordion-trigger-input:checked
+  ~ .accordion-animation-wrapper
+  .accordion-transform-wrapper {
+  transform: translateY(0);
+  visibility: visible;
+  transition: transform var(--transitionLength) var(--transitionTiming),
+    visibility 0s linear;
+}
+
+/* Margins inside the container will throw animation height calculations off, better use paddings */
+.accordion-content * {
+  margin: 0;
+}
+
+/* The styles */
+/* Acordeon */
+:root {
+  --transitionLength: 0.4s;
+  --transitionTiming: ease;
+  /* fancy select (filters)
+  --fs-400: 16px;
+	--color-text: #000000;
+	--color-accent: #000000;
+  --color-border: #DDDDDD;
+	--gap-700: 48px;
+	--gap-400: 16px;
+	--gap-300: 12px;
+	--gap-200: 8px;
+	--transform-arrow-down: rotate(-180deg);
+	--trans: all 250ms ease-in-out;
+  --br-100: 10px;*/
+}
+
+.accordion {
+  min-width: 940px;
+  width: 80%;
+  margin: 0 auto;
+  background: white;
+}
+
+.accordion-item {
+  border-top: 2px solid #676767;
+  border-bottom: 2px solid #676767;
+  margin-bottom: -2px;
+  overflow: hidden;
+}
+
+.accordion-trigger-input {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.accordion-trigger {
+  display: block;
+  position: relative;
+  padding: 16px;
+  transition: box-shadow var(--transitionLength) var(--transitionTiming);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.accordion-trigger-input:focus-visible ~ .accordion-trigger {
+  outline: 2px solid;
+  outline-offset: -2px;
+}
+
+.accordion-trigger::after {
+  display: block;
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  content: "";
+  width: 8px;
+  height: 8px;
+  border: 2px solid #676767;
+  border-bottom: transparent;
+  border-left: transparent;
+  transform: rotate(135deg);
+  transition: transform var(--transitionLength) var(--transitionTiming);
+}
+
+.accordion-trigger-input:checked ~ .accordion-trigger::after {
+  transform: rotate(135deg) rotateX(180deg) rotateY(180deg) translateY(4px)
+    translateX(-4px);
+}
+
+.accordion-trigger-input:checked ~ .accordion-trigger {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: box-shadow calc(var(--transitionLength) / 4)
+    var(--transitionTiming);
+}
+
+.accordion-content {
+  padding: 16px;
+  background: #dcdcdc;
+}
+
+/*.accordion-content h2 {
+  padding-bottom: 0.75em;
+}*/
+
+.accordion-content label {
+  padding-bottom: 1.5em;
+}
+
+.accordion-content p:last-of-type {
+  padding-bottom: 0;
+}
+
+/* End expanding cards */
+
+/* Start Modal movility */
+.ctnrmovility > .btnmov {
+  margin: 60px;
+  padding: 20px 40px;
+  font-size: 30px;
+  border-radius: 40px;
+}
+.modalmov {
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  transition: all 600ms cubic-bezier(0.86, 0, 0.07, 1);
+  top: 100%;
+  position: fixed;
+  left: 0;
+  text-align: left;
+  border-top-right-radius: 20px 20px;
+  border-top-left-radius: 20px 20px;
+  overflow-y: scroll;
+
+  z-index: 10000 !important;
+
+  .header {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    font: 300 24px;
+    position: relative; /*fixed=stuck ==> quitar este header y meter un mat-toolbar*/
+  }
+  .body {
+    padding: 20px;
+    font: 300 16px;    
+    }
+}
+
+.btnmov {
+  background: linear-gradient(to right, #eeeeee, #3a3b3c);
+  padding: 10px 25px;
+  display: inline-block;
+  border-radius: 25px;
+  margin: 20px 0;
+  color: #fff;
+  position: relative;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.ctnrmovility.modal-open .modalmov {
+  top: 50px;
+}
+
+.mdb-select {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #bdbdbd;
+  border-radius: 0;
+  outline: 0;
+  height: 1.4rem;
+  width: 100%;
+  font-size: 1rem;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.mdb-select:active {
+  border-bottom: 1px solid #3a3a3a;
+  -webkit-box-shadow: 0 1px 0 0 #3a3a3a;
+  box-shadow: 0 1px 0 0 #3a3a3a;
+}
+
+.btnDistancia {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  border: none;
+  border-radius: 50px;
+  background-color: #908d8e;
+  color: #ffffff;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btnDistancia:hover {
+  transform: translateY(-3px);
+  /*transform: rotate(-10deg) scale(1.1);*/
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+}
+.btnDistancia:active {
+  transform: rotate(0) scale(1);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.nzInput {
+  height: 24px;
+}
+/* End Modal movility */
+
+/* Css select v2 */
+.nzSelect {
+  width: 120px;
+}
+
+.nzOption {
+  width: 120px;
+}
+
+.nzSelectR {
+  width: 170px;
+}
+
+.nzOptionR {
+  width: 170px;
+}
+
+/* Css select v2 */
+
+/* Hide routin machine window */
+.leaflet-routing-alternatives-container {
+  display: none;
+}
 

@@ -18,6 +18,7 @@
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "enableI18nLegacyMessageIdFormat": false,
     "strictInputAccessModifiers": true,
     "fullTemplateTypeCheck": true,

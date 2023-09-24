@@ -47,7 +47,25 @@ jQuery(function($){
   /*  2. AGENTS SLIDER
   /* ----------------------------------------------------------- */    
 
-    jQuery('.aa-agents-slider').slick({
+  jQuery(function($) {
+    jQuery(document).on("ready",function(){  
+      var slickContainer 	= document.querySelector('.aa-agents-slider');
+      slickContainer.slick({
+        infinite: true,
+        slidesToShow: 3,
+        slidesToScroll: 3
+    });
+       /*$('.aa-agents-slider').slick({
+           infinite: true,
+           slidesToShow: 3,
+           slidesToScroll: 3
+       });*/
+    }); 
+});
+
+
+
+    /*jQuery('.aa-agents-slider').slick({
       dots: false,
       arrows: false,
       infinite: true,
@@ -84,24 +102,78 @@ jQuery(function($){
         // settings: "unslick"
         // instead of a settings object
       ]
-    });
+    });*/
 
   /* ----------------------------------------------------------- */
   /*  3. TESTIMONIAL SLIDER 
   /* ----------------------------------------------------------- */    
 
-    jQuery('.aa-testimonial-slider').slick({
+    /*jQuery('.aa-testimonial-slider').slick({
         dots: false,      
         infinite: true,
         speed: 500,      
         cssEase: 'linear'
+      });*/
+
+      jQuery(function($) {
+        jQuery(document).on("ready",function(){  
+           $('.aa-testimonial-slider').slick({
+            dots: false,      
+            infinite: true,
+            speed: 500,      
+            cssEase: 'linear'
+           });
+        }); 
       });
 
   /* ----------------------------------------------------------- */
   /*  4. CLIENT BRAND SLIDER (SLICK SLIDER)
   /* ----------------------------------------------------------- */  
 
-   jQuery('.aa-client-brand-slider').slick({
+  jQuery(function($) {
+    jQuery(document).on("ready",function(){  
+       $('.aa-client-brand-slider').slick({
+        dots: false,
+      arrows: false,
+      infinite: true,
+      speed: 300,
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2500,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 4,
+            infinite: true,
+            dots: true
+          }
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1
+          }
+        }
+        // You can unslick at a given breakpoint now by adding:
+        // settings: "unslick"
+        // instead of a settings object
+      ]
+       });
+    }); 
+  });
+
+   /*jQuery('.aa-client-brand-slider').slick({
       dots: false,
       arrows: false,
       infinite: true,
@@ -138,33 +210,58 @@ jQuery(function($){
         // settings: "unslick"
         // instead of a settings object
       ]
-    });
+    });*/
 
   
   /* ----------------------------------------------------------- */
   /*  5. TOP SLIDER (SLICK SLIDER)
   /* ----------------------------------------------------------- */    
 
-    jQuery('.aa-top-slider').slick({
+  jQuery(function($) {
+    jQuery(document).on("ready",function(){  
+       $('.aa-top-slider').slick({
+        dots: false,
+      infinite: true,
+      arrows: true,
+      speed: 500,
+      fade: true,
+      cssEase: 'linear'
+       });
+    }); 
+  });
+
+    /*jQuery('.aa-top-slider').slick({
       dots: false,
       infinite: true,
       arrows: true,
       speed: 500,
       fade: true,
       cssEase: 'linear'
-    });
+    });*/
     
   /* ----------------------------------------------------------- */
   /*  6. LATEST PRODUCT SLIDER (SLICK SLIDER)
   /* ----------------------------------------------------------- */      
 
-    jQuery('.aa-properties-details-img').slick({
+  jQuery(function($) {
+    jQuery(document).on("ready",function(){  
+       $('.aa-properties-details-img').slick({
+        dots: false,
+        infinite: true,
+        arrows: true,
+        speed: 500,      
+        cssEase: 'linear'
+       });
+    }); 
+  });
+
+    /*jQuery('.aa-properties-details-img').slick({
       dots: false,
       infinite: true,
       arrows: true,
       speed: 500,      
       cssEase: 'linear'
-    });
+    });*/
 
       
   /* ----------------------------------------------------------- */
@@ -172,7 +269,7 @@ jQuery(function($){
   /* ----------------------------------------------------------- */ 
   
   // for hover dropdown menu
-    jQuery('ul.nav li.dropdown').hover(function() {
+    jQuery('ul.nav li.dropdown').on("hover",function() {
       jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(200);
     }, function() {
       jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(200);
@@ -252,16 +349,36 @@ jQuery(function($){
   /*  9. MIXIT FILTER ( FOR GALLERY ) 
   /* ----------------------------------------------------------- */  
 
+  /*jQuery(function($) {
+    jQuery(document).on("ready",function(){  
+       $('#mixit-container').slick({
+        dots: false,
+        infinite: true,
+        arrows: true,
+        speed: 500,      
+        cssEase: 'linear'
+       });
+    }); 
+  });*/
+
     jQuery(function(){
-      jQuery('#mixit-container').mixItUp();
+      var containerMx=document.getElementById('#mixit-container')
+      if (containerMx) {
+      var mixer = mixitup(containerMx);
+      }
+      /*jQuery('#mixit-container').mixItUp();*/
     });
 
   /* ----------------------------------------------------------- */
   /*  10. FANCYBOX ( FOR PORTFOLIO POPUP VIEW ) 
   /* ----------------------------------------------------------- */ 
       
-    jQuery(document).ready(function() {
-      jQuery(".fancybox").fancybox();
+    jQuery(document).on("ready",function() {
+      var containerFc=document.querySelector('.fancybox');
+      if (containerFc) {
+        var fc=fancybox(containerFc);
+      }
+      /*jQuery(".fancybox").fancybox();*/
     });  
    
     
@@ -271,7 +388,7 @@ jQuery(function($){
 
   //Check to see if the window is top if not then display button
 
-    jQuery(window).scroll(function(){
+    jQuery(window).on("scroll",function(){
       if (jQuery(this).scrollTop() > 300) {
         jQuery('.scrollToTop').fadeIn();
       } else {
@@ -281,7 +398,7 @@ jQuery(function($){
      
     //Click event to scroll to top
 
-    jQuery('.scrollToTop').click(function(){
+    jQuery('.scrollToTop').on("click",function(){
       jQuery('html, body').animate({scrollTop : 0},800);
       return false;
     });
@@ -290,7 +407,7 @@ jQuery(function($){
   /*  12. PRELOADER
   /* ----------------------------------------------------------- */
 
-   jQuery(window).load(function() { // makes sure the whole site is loaded      
+   jQuery(window).load(function() { // makes sure the whole site is loaded  
       jQuery('#aa-preloader-area').delay(300).fadeOut('slow'); // will fade out      
     })
    
@@ -300,11 +417,11 @@ jQuery(function($){
   /*  13. GRID AND LIST LAYOUT CHANGER 
   /* ----------------------------------------------------------- */
 
-  jQuery("#aa-list-properties").click(function(e){
+  jQuery("#aa-list-properties").on("click",function(e){
     e.preventDefault(e);
     jQuery(".aa-properties-nav").addClass("aa-list-view");
   });
-  jQuery("#aa-grid-properties").click(function(e){
+  jQuery("#aa-grid-properties").on("click",function(e){
     e.preventDefault(e);
     jQuery(".aa-properties-nav").removeClass("aa-list-view");
   });
@@ -313,8 +430,20 @@ jQuery(function($){
   /* ----------------------------------------------------------- */
   /*  14. RELATED ITEM SLIDER (SLICK SLIDER)
   /* ----------------------------------------------------------- */      
+  jQuery(function($) {
+    jQuery(document).on("ready",function(){  
+       $('.aa-related-item-slider').slick({
+        dots: false,
+        infinite: true,
+        arrows: true,
+        speed: 500,      
+        cssEase: 'linear'
+       });
+    }); 
+  });
 
-    jQuery('.aa-related-item-slider').slick({
+  
+    /*jQuery('.aa-related-item-slider').slick({
       dots: false,
       infinite: false,
       speed: 300,
@@ -348,7 +477,7 @@ jQuery(function($){
         // settings: "unslick"
         // instead of a settings object
       ]
-    }); 
+    }); */
 
  
 });

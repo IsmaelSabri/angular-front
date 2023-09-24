@@ -43,9 +43,12 @@
               "src/assets/css/default-theme.css",
               "src/assets/css/bootstrap.css",
               "src/app/home/custom-leaflet.css",
-              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
             ],
             "scripts": [
+              "src/assets/js/home.utils.js",
+              "node_modules/jquery/dist/jquery.min.js"
             ]
           },
           "configurations": {
@@ -75,6 +78,14 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           }
         },
@@ -86,8 +97,12 @@
           "configurations": {
             "production": {
               "browserTarget": "front-api-rest:build:production"
+            },
+            "development": {
+              "browserTarget": "front-api-rest:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
