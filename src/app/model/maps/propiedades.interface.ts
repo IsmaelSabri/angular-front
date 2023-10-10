@@ -12,4 +12,6 @@ export interface IPropertiesOptions {
   format?: string;
   transparent?: boolean;
   attribution?: string;
+  apikey?: string;
+  accessToken? :string;
 }

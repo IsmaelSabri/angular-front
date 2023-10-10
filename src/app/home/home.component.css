@@ -6,7 +6,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Gelion Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Gelion Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-variation-settings: "XTDR" 50, "APRT" 100, "SPAC" 40;
 }
@@ -423,6 +423,16 @@ star:hover {
   scrollbar-width: none;
 }
 
+/* Geosearch */
+.results {
+  background: white;
+}
+
+.geosearch {
+  background: white;
+}
+/* end geosearch */
+
 /* Hamburger */
 .menuHM {
   background-color: transparent;
@@ -469,7 +479,6 @@ star:hover {
 /* end Hamburger */
 
 /* Checkboxes */
-
 .c-material-che {
   display: flex;
   align-items: center;
@@ -655,6 +664,10 @@ br {
   grid-template-rows: 0fr;
   overflow: hidden;
   transition: grid-template-rows var(--transitionLength) var(--transitionTiming);
+  /* Full responsive */
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
 
 .accordion-trigger-input:checked ~ .accordion-animation-wrapper {
@@ -706,8 +719,8 @@ br {
 }
 
 .accordion {
-  min-width: 940px;
-  width: 80%;
+  /*min-width: 940px;default 940px*/
+  width: 100%;
   margin: 0 auto;
   background: white;
 }
@@ -820,8 +833,8 @@ br {
   }
   .body {
     padding: 20px;
-    font: 300 16px;    
-    }
+    font: 300 16px;
+  }
 }
 
 .btnmov {
@@ -915,4 +928,3 @@ br {
 .leaflet-routing-alternatives-container {
   display: none;
 }
-

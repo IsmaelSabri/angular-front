@@ -1,6 +1,6 @@
 
 
-
+/* Falta meterle el js */
  #map .leaflet-pane .leaflet-tooltip-pane .tooltipX {
 	display: flex;
 	position: absolute;
@@ -56,3 +56,77 @@
 	font-size: 14px;
 
 }
+/* Falta terminar */
+
+/* Strong markers */
+.marker-pin {
+	width: 30px;
+	height: 30px;
+	border-radius: 50% 50% 50% 0;
+	background: #3a3b3c;
+	position: absolute;
+	transform: rotate(-45deg);
+	left: 50%;
+	top: 50%;
+	margin: -15px 0 0 -15px;
+           }
+           
+           .marker-pin::after {
+	  content: '';
+	  width: 24px;
+	  height: 24px;
+	  margin: 3px 0 0 3px;
+	  background: #fff;
+	  position: absolute;
+	  border-radius: 50%;
+            }
+           
+           .custom-div-icon i {
+	 position: absolute;
+	 width: 22px;
+	 font-size: 22px;
+	 left: 0;
+	 right: 0;
+	 margin: 10px auto;
+	 text-align: center;
+           }
+           /*F.awesome*/
+           .custom-div-icon i.awesome {
+	 margin: 12px auto;
+	 font-size: 17px;
+           }
+          /*Bootstrap*/
+          .custom-div-icon i.bi {
+	padding: 0 0px 16px 0;
+	font-size: 17px;
+          }
+          /* Ionic */
+          .custom-div-icon ion-icon {
+	position: absolute;
+	width: 22px;
+	font-size: 22px;
+	left: 0;
+	right: 0;
+	margin: 10px auto;
+	text-align: center;
+          }
+
+          .custom-div-icon ion-icon.ionicon {
+	margin: 12px auto;
+	font-size: 17px;
+          }
+          /* Angular material */
+          .custom-div-icon mat-icon {
+	position: absolute;
+	width: 22px;
+	font-size: 22px;
+	left: 0;
+	right: 0;
+	margin: 10px auto;
+	text-align: center;
+          }
+
+          .custom-div-icon i.maticon {
+	margin: 12px auto;
+	font-size: 17px;
+          }

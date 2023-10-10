@@ -32,9 +32,11 @@ export class UserComponent implements OnInit, OnDestroy {
   public editUser = new User();
   private currentUsername: string;
   public fileStatus = new FileUploadStatus();
+  public showLoading: boolean;
+
 
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
-    private userService: UserService, protected notificationService: NotificationService,
+    protected userService: UserService, protected notificationService: NotificationService,
     protected route: ActivatedRoute, protected toastr: ToastrService) { }
 
   ngOnInit(): void {
@@ -83,16 +85,16 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   public onAddNewUser(userForm: NgForm): void {
-    const formData = this.userService.createUserFormDate(null, userForm.value, this.propertyImage);
+    //const formData = this.userService.createUserFormDate(null, userForm.value, this.propertyImage);
     this.subscriptions.push(
-      this.userService.addNewUser(formData).subscribe({
-        next: (response: User) => {
+      this.userService.addNewUser(userForm.value).subscribe({ // ? formdata
+        next: () => {
           this.clickButton('new-user-close');
           this.getUsers(false);
           this.fileName = null;
           this.propertyImage = null;
           userForm.reset();
-          this.sendNotification(NotificationType.SUCCESS, `${response.firstname} ${response.lastname} añadido con éxito`);
+          this.sendNotification(NotificationType.SUCCESS, `Añadido con éxito`);
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);

@@ -21,15 +21,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   visible: boolean = true;
   changetype: boolean = true;
-  registerForm:any = FormGroup;
-  get f() { return this.registerForm.controls; }
+  registerForm: any = FormGroup;
+  get f() {
+    return this.registerForm.controls;
+  }
 
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService,
     private cookieService: CookieService,
     private notificationService: NotificationService,
-    private userService:UserService,
+    private userService: UserService,
     config: NgbCarouselConfig
   ) {
     config.interval = 2200;
@@ -53,7 +55,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           localStorage.clear();
           console.log(response);
           this.authenticationService.saveToken(response.body.token);
-          this.authenticationService.saveRefreshToken(response.body.refreshToken);
+          this.authenticationService.saveRefreshToken(
+            response.body.refreshToken
+          );
           const tokenPayload = this.authenticationService.decodedToken();
           this.userService.setFullName(tokenPayload.name);
           this.userService.setRole(tokenPayload.role);

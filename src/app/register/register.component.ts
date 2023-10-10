@@ -10,20 +10,21 @@ import { NotificationType } from '../class/notification-type.enum';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css','bootstrap.min.css']
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
   visible:boolean = true;
   changetype:boolean =true;
+  userRegister:User;
 
   constructor(private router: Router, private authenticationService: AuthenticationService,
               private notificationService: NotificationService) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
     if (this.authenticationService.isUserLoggedIn()) {
-      this.router.navigateByUrl('/user/management');
+      this.router.navigateByUrl('/home');
     }
   }
 
@@ -37,10 +38,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
     console.log(user);
     this.subscriptions.push(
       this.authenticationService.register(user).subscribe({
-        next:(response: User) => {
+        next:() => {
           this.showLoading = false;
-          this.sendNotification(NotificationType.SUCCESS, `Se ha creado una cuenta para ${response.username}.
-          Por favor verifique su correo electrónico y acceda al sitio.`);
+          this.sendNotification(NotificationType.SUCCESS, `Se ha creado tu cuenta ${user.firstname + " " + user.lastname}.
+          Verifica tu correo electrónico para acceder.`);
           this.router.navigateByUrl('/login');
           //this.clickButton('emailInfoModal');
         },error:(errorResponse: HttpErrorResponse) => {

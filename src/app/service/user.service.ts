@@ -17,8 +17,8 @@ export class UserService {
     return this.http.get<User[]>(`${this.host}/api/user/all`);
   }
 
-  public addNewUser(formData: FormData): Observable<User> {
-    return this.http.post<User>(`${this.host}/api/user/new`, formData);
+  public addNewUser(user: User): Observable<User> {
+    return this.http.post<User>(`${this.host}/api/user/new`, user);
   }
 
   public updateUser(formData: FormData, id:string): Observable<User> {
@@ -30,10 +30,18 @@ export class UserService {
   }
 
   public updateProfileImage(formData: FormData): Observable<HttpEvent<User>> {
-    return this.http.post<User>(`${this.host}/user/updateProfileImage`, formData,
+    return this.http.post<User>(`${this.host}/api/user/updateProfileImage`, formData,
     {reportProgress: true,
       observe: 'events'
     });
+  }
+
+  public completeRegistry(user:User): Observable<CustomHttpResponse> {
+    return this.http.post<CustomHttpResponse>(`${this.host}/api/user/fullRegistry`, user);
+  }
+
+  public checkEmailExists(userId:string) : Observable<User>{
+    return this.http.get<User>(`${this.host}/api/user/check/${userId}`);
   }
 
   public deleteUser(id: string): Observable<CustomHttpResponse> {

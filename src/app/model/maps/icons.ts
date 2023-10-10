@@ -54,3 +54,59 @@ export const blackMarker = L.AwesomeMarkers.icon({
   markerColor: 'black',
   className: 'awesome-marker awesome-marker-square',
 });
+
+export const homeicon= L.divIcon({
+  className: 'custom-div-icon',
+  html: "<div style='background-color:#3a3b3c;' class='marker-pin'></div><i class='fa fa-home'>",
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});
+
+export const beachIcon= L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div style='background-color:dodgerblue;' class='marker-pin'></div><i style="color: dodgerblue; " class="bi bi-sun-fill"></i>` ,
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});
+
+export const airportIcon= L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div style='background-color:#3200ff;' class='marker-pin'></div><ion-icon class="ionicon" style="color: #3200ff;" name="airplane-outline"></ion-icon>` ,
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});
+
+export const marketIcon= L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div style='background-color: #6f5e53;' class='marker-pin'></div><i style="color: #6f5e53;" class="bi bi-cart3"></i>` ,
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});
+
+export const subwayIcon= L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div style='background-color: #d6a323;' class='marker-pin'></div><i style="color: #d6a323;" class="bi bi-train-lightrail-front"></i>` ,
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});
+
+export const busIcon= L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div style='background-color: #960018;' class='marker-pin'></div><ion-icon class="ionicon" style="color: #960018;" name="bus-outline"></ion-icon>` ,
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});
+
+export const schoolIcon= L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div style='background-color: #808080;' class='marker-pin'></div><i style="color: #808080;" class="bi bi-mortarboard-fill"></i>` ,
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});
+
+export const universityIcon= L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div style='background-color: #128c7e;' class='marker-pin'></div><ion-icon style="color: #128c7e;" class="ionicon" name="mail-outline"></ion-icon>` ,
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});

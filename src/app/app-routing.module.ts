@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { VlogComponent } from './components/vlog/vlog.component';
 import { ListComponent } from './pages/list/list.component';
 import { AddComponent } from './pages/add/add.component';
+import { PasswordComponent } from './components/password/password.component';
 
 
 
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'add', component: AddComponent },
   { path: 'home', component: HomeComponent },
   { path: 'list', component: ListComponent },
+  { path: 'pass', component: PasswordComponent },
   { path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard] }, 
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];

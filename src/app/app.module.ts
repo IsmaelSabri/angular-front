@@ -44,7 +44,10 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import {MatSelectModule} from '@angular/material/select'; 
-import {MatTableModule} from '@angular/material/table'; 
+import {MatTableModule} from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { PasswordComponent } from './components/password/password.component';
+
 
 @NgModule({
   declarations: [
@@ -55,6 +58,7 @@ import {MatTableModule} from '@angular/material/table';
     HomeComponent,
     ListComponent,
     AddComponent,
+    PasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,6 +92,7 @@ import {MatTableModule} from '@angular/material/table';
     MatSelectModule,
     MatTableModule,
     NzTableModule,
+    MatIconModule,
   ],
   exports: [
     // to get component in another modules

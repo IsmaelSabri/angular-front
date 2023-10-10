@@ -19,7 +19,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { Map, marker, popup, LatLng, Icon } from 'leaflet';
+import { marker, LatLng } from 'leaflet';
 import 'leaflet.locatecontrol';
 import {
   tileLayerSelect,
@@ -28,12 +28,25 @@ import {
   tileLayerHere,
   tileLayerWMSSelectIGN,
   tileLayerTransportes,
+  Stadia_OSMBright,
+  OpenStreetMap_Mapnik,
+  CartoDB_Voyager,
+  Thunderforest_OpenCycleMap,
+  Jawg_Sunny,
 } from '../model/maps/functions';
 import {
   grayIcon,
   greenIcon,
   grayPointerIcon,
   blackMarker,
+  homeicon,
+  beachIcon,
+  airportIcon,
+  marketIcon,
+  subwayIcon,
+  busIcon,
+  schoolIcon,
+  universityIcon,
 } from '../model/maps/icons';
 import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
@@ -57,6 +70,10 @@ import { FormControl, NgModel } from '@angular/forms';
 import { Colegio } from '../model/home';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import 'leaflet-routing-machine';
+import 'leaflet-routing-machine-here';
+import 'leaflet.awesome-markers';
+import { APIKEY } from 'src/environments/environment.prod';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-home',
@@ -102,11 +119,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   mp!: L.Marker;
   markerHouse!: L.Marker; // punto de referencia para los servicios
   markerSchool!: L.Marker;
-  fg = L.featureGroup();
+  fg = L.featureGroup(); // template for services
   popup = L.popup();
-  beforeCoords!: L.LatLng; // coordenadas de ubicacion actual del usuario al inicio
-  afterCoords!: L.LatLng; // coordenadas de la ubicación donde el usuario desea situar su anuncio
-  nextCoords!: L.LatLng; // coordenadas temporales para situar cada servicio
+  beforeCoords!: L.LatLng; // app coordinates at the beggining
+  afterCoords!: L.LatLng; // coordinates where the user wants to put his house
+  nextCoords!: L.LatLng; // temp coordinates to put any service
 
   home: Home = new Home();
   state: boolean = this.authenticationService.isUserLoggedIn();
@@ -129,16 +146,25 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   // textfield geosearch
   provincia: string;
 
-  // para introducir servicios proximos
+  // to set nearly services
   //<div class="accordion-item" *ngIf="isEmptyArray(this.colegios)">
-  colegiosPrimaria: Colegio[];
-  colegiosSecundaria: Colegio[];
-  universidad: Universidad[];
-  autobuses: Bus[];
-  lineasMetro: Metro[];
-  supermercados: Supermercado[];
+  colegios = new Map<string, Colegio>();
+  universidad = new Map<string, Universidad>();
+  autobuses = new Map<string, Bus>();
+  lineasMetro = new Map<string, Metro>();
+  supermercados = new Map<string, Supermercado>();
 
-  // funcion que muestra/esconde el modal
+  mapEvents = new Set<string>();
+
+  // icons
+  bch = beachIcon;
+  airp = airportIcon;
+  mki = marketIcon;
+  swi = subwayIcon;
+  busic = busIcon;
+  sc = schoolIcon;
+  uni = universityIcon;
+  // show/hide modal
   @ViewChild('element') element: ElementRef;
   @ViewChild('map_3') map_3?: ElementRef;
   openToogleModal(flag: boolean) {
@@ -147,70 +173,106 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         // remove to production
         this.afterCoords = this.beforeCoords;
       }
-      this.nextCoords=this.afterCoords;
-      
+      this.nextCoords = this.afterCoords;
       this.element.nativeElement.classList.add('modal-open');
       // cargar el siguiente mapa
-      this.map3 = L.map('map_3', { renderer: L.canvas() }).setView(
-        [this.afterCoords.lat, this.afterCoords.lng],
-        15
-      );
-      //tileLayerSelect().addTo(this.map3);
-      //tileLayerTransportes().addTo(this.map3);
-      //tileLayerWMSSelect().addTo(this.map3);
-      tileLayerWMSSelectIGN().addTo(this.map3);
-      //tileLayerHere().addTo(this.map3);
-      this.markerHouse = new L.marker(this.afterCoords, {
-        draggable: false,
-        icon: grayPointerIcon,
-      });
-      this.markerHouse.addTo(this.map3);
+      if (this.map3 == undefined) {
+        this.map3 = L.map('map_3', { renderer: L.canvas() }).setView(
+          [this.afterCoords.lat, this.afterCoords.lng],
+          15
+        );
+        //Stadia_OSMBright().addTo(this.map3);
+        //tileLayerHere().addTo(this.map3);
+        //OpenStreetMap_Mapnik().addTo(this.map3);
+        //CartoDB_Voyager().addTo(this.map3);
+        //Thunderforest_OpenCycleMap().addTo(this.map3);
+        Jawg_Sunny().addTo(this.map3);
+        this.markerHouse = new L.marker(this.afterCoords, {
+          draggable: false,
+          icon: homeicon,
+        });
+        this.markerHouse.addTo(this.map3);
+      }
     } else {
       this.element.nativeElement.classList.remove('modal-open');
     }
   }
 
   // rutas próximas
-  setRoute() {
+  setRoute(color: string, customIcon: any) {
+    if (this.mapEvents.has('control')) {
+      this.map3.eachLayer(function (layer) { 
+        layer.remove();
+      });
+      Jawg_Sunny().addTo(this.map3);
+      this.mapEvents.delete('control');
+    }
     var control = L.Routing.control({
-      waypoints: [L.latLng(this.afterCoords), L.latLng(this.nextCoords)],
+      router: new L.Routing.Here(APIKEY.hereToken, {
+        alternatives: [1],
+        routeRestriction: {
+          transportMode: 'pedestrian',
+          routingMode: 'short',
+        },
+        urlParameters: {
+          avoid: {
+            tollTransponders: 'all',
+          },
+        },
+      }),
+      waypoints: [
+        L.latLng(this.afterCoords.lat, this.afterCoords.lng),
+        L.latLng(this.nextCoords.lat - 0.001, this.nextCoords.lng + 0.001),
+      ],
       createMarker: function (i, wp, nWps) {
         if (i === 0) {
-          // Servicio (destino)
+          // start
           return L.marker(wp.latLng, {
-            icon: grayIcon, 
-            draggable: true,
-            name:'destiny'
-          }).bindPopup(`
-      
-          <button type="button" class="btn btn-secondary" >Guardar</button>
-          
-          `).on('moveend', () => console.log())
-          
-        } else if(i == nWps -1) {
-          // Casa (origen)
-          return L.marker(wp.latLng, {
-            icon: grayPointerIcon,
+            icon: homeicon,
             draggable: false,
+            bounceOnAdd: true,
+            name: 'start',
           });
+        } else if (i == nWps - 1) {
+          // finish
+          return L.marker(wp.latLng, {
+            icon: customIcon,
+            draggable: true,
+            bounceOnAdd: true,
+          }).bindPopup(
+            '<button type="button" class="popupopen btn btn-secondary" onclick="foo()">Guardar</button>'
+          );
         }
       },
       routeWhileDragging: true,
+      language: 'es',
+      showAlternatives: true,
       lineOptions: {
-        styles: [
-          {
-            color: '#3a3b3c',
-            weight: 4,
-          },
-        ],
+        styles: [{ color: color, weight: 4 }],
       },
-    }).addTo(this.map3);
+    });
+    this.map3.addControl(control);
+    control.on('routesfound', (e) => {
+      var routes = e.routes;
+      var summary = routes[0].summary;
+      //this.nextCoords=e.waypoints;
+      console.log(
+        (summary.totalDistance / 1000).toFixed(2) +
+          ' km. ' +
+          Math.round((summary.totalTime % 3600) / 60) +
+          ' minutos'
+      );
+    });
+    this.mapEvents.add('control');
+    //control.on('waypointschanged', ()=>);
     /*this.mp.on('move', () => (this.afterCoords = this.mp.getLatLng()));
     this.mp.on('moveend', () => console.log(this.afterCoords));
     this.mp.on('dragend', () => this.mp.openPopup());*/
   }
 
-  printRoute() {}
+  printRoute() {
+    console.log('Estás en ts !!!');
+  }
 
   // modal antdsgn
   isVisible = false;
@@ -283,7 +345,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       searchLabel: 'Ciudad',
       resultFormat: ({ result }) => result.label,
       marker: {
-        icon: new L.Icon.Default(),
+        icon: grayPointerIcon,
         draggable: false,
       },
     });
@@ -294,10 +356,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       5
     );
     this.getLocation();
-    //tileLayerSelect().addTo(map2);
-    //tileLayerWMSSelect().addTo(map2);
-    //tileLayerCP().addTo(map2); // Codigos postales
-    tileLayerWMSSelectIGN().addTo(this.map2);
+    Stadia_OSMBright().addTo(this.map2);
     //tileLayerHere().addTo(this.map2);
     this.map2.addControl(search);
     var x = document.getElementById('provButton');
@@ -308,7 +367,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   /************************************************************/
   ngOnInit(): void {
-    this.userMarkerEvents(); // inicializar opciones
+    this.userMarkerEvents();
     this.map = L.map('map', { renderer: L.canvas() }).setView(
       [39.46975, -0.37739],
       25
@@ -317,10 +376,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     //tileLayerSelect().addTo(map);
     //tileLayerWMSSelect().addTo(map);
     //tileLayerCP().addTo(map); // Codigos postales
-    tileLayerWMSSelectIGN().addTo(this.map);
+    //tileLayerWMSSelectIGN().addTo(this.map);
+    Stadia_OSMBright().addTo(this.map);
     //tileLayerHere().addTo(this.map);
 
-    //carga dinamica
     this.subscriptions.push(
       this.homeService.getHomes().subscribe((data) => {
         data.map((Home) => {
