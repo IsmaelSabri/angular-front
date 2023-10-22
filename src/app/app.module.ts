@@ -47,7 +47,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatTableModule} from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { PasswordComponent } from './components/password/password.component';
-
+import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, GoogleSigninButtonDirective,
+  GoogleSigninButtonModule, FacebookLoginProvider } from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [
@@ -93,6 +94,8 @@ import { PasswordComponent } from './components/password/password.component';
     MatTableModule,
     NzTableModule,
     MatIconModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule,
   ],
   exports: [
     // to get component in another modules
@@ -108,7 +111,28 @@ import { PasswordComponent } from './components/password/password.component';
     NgbCarouselConfig,
     CookieService,
     HomeService,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true,  },
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '791302205764-3n3lhec3dr1qeqcaglllk72j95cjaas1.apps.googleusercontent.com'
+            )
+          },
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider('clientId')
+          }
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    }
   ],
   bootstrap: [AppComponent],
 })

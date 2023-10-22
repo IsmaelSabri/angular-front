@@ -106,7 +106,7 @@ export const schoolIcon= L.divIcon({
 
 export const universityIcon= L.divIcon({
   className: 'custom-div-icon',
-  html: `<div style='background-color: #128c7e;' class='marker-pin'></div><ion-icon style="color: #128c7e;" class="ionicon" name="mail-outline"></ion-icon>` ,
+  html: `<div style='background-color: #128c7e;' class='marker-pin'></div><ion-icon style="color: #128c7e;" class="ionicon" name="american-football-outline"></ion-icon>` ,
   iconSize: [30, 42],
   iconAnchor: [15, 42]
 });

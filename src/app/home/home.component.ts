@@ -8,6 +8,8 @@ import {
   Enseñanza,
   Institucion,
   RamasConocimiento,
+  EmisionesCO2,
+  ConsumoEnergetico,
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
 import {
@@ -57,7 +59,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 import * as L from 'leaflet';
 //import H from '@here/maps-api-for-javascript';
 import { HomeService } from '../service/home.service';
-import { Bus, Home, Metro, Supermercado, Universidad } from '../model/home';
+import {
+  Aeropuerto,
+  Beach,
+  Bus,
+  Home,
+  Metro,
+  Supermercado,
+  Universidad,
+} from '../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { DomSanitizer } from '@angular/platform-browser';
 import {
@@ -66,7 +76,7 @@ import {
   SearchControl,
 } from 'leaflet-geosearch';
 import { BehaviorSubject } from 'rxjs';
-import { FormControl, NgModel } from '@angular/forms';
+import { FormControl, NgForm, NgModel } from '@angular/forms';
 import { Colegio } from '../model/home';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import 'leaflet-routing-machine';
@@ -121,9 +131,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   markerSchool!: L.Marker;
   fg = L.featureGroup(); // template for services
   popup = L.popup();
-  beforeCoords!: L.LatLng; // app coordinates at the beggining
+  beforeCoords!: L.LatLng; // app user coordinates at the beggining
   afterCoords!: L.LatLng; // coordinates where the user wants to put his house
   nextCoords!: L.LatLng; // temp coordinates to put any service
+  streetView!: L.LatLng;
 
   home: Home = new Home();
   state: boolean = this.authenticationService.isUserLoggedIn();
@@ -138,6 +149,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   ensenyanza: string[] = Object.values(Enseñanza);
   institucion: string[] = Object.values(Institucion);
   ramas: string[] = Object.values(RamasConocimiento);
+  calificacion_emisiones: string[] = Object.values(EmisionesCO2);
+  calificacion_consumo: string[] = Object.values(ConsumoEnergetico);
 
   images: any = [];
   prev!: string;
@@ -146,15 +159,169 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   // textfield geosearch
   provincia: string;
 
+  // method must know what array needs to work
+  serviceGoal: string; // aim service
+  indexGoal: number; // array index
+  buttonBefore: string; // button calls to save
+  buttonAfter: string; // show route
+  buttonDelete: string; // invert buttons load save
+  row: number; // index save load matrix
+  col: number;
+
   // to set nearly services
   //<div class="accordion-item" *ngIf="isEmptyArray(this.colegios)">
-  colegios = new Map<string, Colegio>();
-  universidad = new Map<string, Universidad>();
-  autobuses = new Map<string, Bus>();
-  lineasMetro = new Map<string, Metro>();
-  supermercados = new Map<string, Supermercado>();
 
+  colegio: Colegio[] = [
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      ensenyanza: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      ensenyanza: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      ensenyanza: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      ensenyanza: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      ensenyanza: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      ensenyanza: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+  ];
+  universidad: Universidad[] = [
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      rama: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      rama: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      rama: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      rama: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      rama: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+    {
+      lat: '',
+      lng: '',
+      nombre: '',
+      rama: '',
+      institucion: '',
+      web: '',
+      distancia: '',
+      tiempo: '',
+    },
+  ];
+  autobus: Bus[] = [
+    { lat: '', lng: '', parada: '', lineas: '', distancia: '', tiempo: '' },
+    { lat: '', lng: '', parada: '', lineas: '', distancia: '', tiempo: '' },
+    { lat: '', lng: '', parada: '', lineas: '', distancia: '', tiempo: '' },
+  ];
+  metro: Metro[] = [
+    { lat: '', lng: '', parada: '', lineas: '', distancia: '', tiempo: '' },
+  ];
+  mercados: Supermercado[] = [
+    { lat: '', lng: '', nombre: '', distancia: '', tiempo: '' },
+    { lat: '', lng: '', nombre: '', distancia: '', tiempo: '' },
+    { lat: '', lng: '', nombre: '', distancia: '', tiempo: '' },
+  ];
+  aeropuerto: Aeropuerto[] = [
+    { lat: '', lng: '', nombre: '', distancia: '', tiempo: '' },
+  ];
+  beach: Beach[] = [
+    { lat: '', lng: '', nombre: '', distancia: '', tiempo: '' },
+  ];
+
+  // enable-disable textfields
+  stateTexfields = Array.from({ length: 4 }, () => new Array(6).fill(false));
+
+  // add-delete temp routes
   mapEvents = new Set<string>();
+  // save points
+  nearlyMarkers = new Map<string, L.Marker>();
 
   // icons
   bch = beachIcon;
@@ -164,7 +331,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   busic = busIcon;
   sc = schoolIcon;
   uni = universityIcon;
-  // show/hide modal
+  customIcon: any;
+
+  @ViewChild('openselect') openselect: ElementRef;
+  showSelect() {
+    this.openselect.nativeElement.classList.toggle('active');
+  }
+
+  // show/hide 2nd modal
   @ViewChild('element') element: ElementRef;
   @ViewChild('map_3') map_3?: ElementRef;
   openToogleModal(flag: boolean) {
@@ -177,10 +351,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.element.nativeElement.classList.add('modal-open');
       // cargar el siguiente mapa
       if (this.map3 == undefined) {
-        this.map3 = L.map('map_3', { renderer: L.canvas() }).setView(
-          [this.afterCoords.lat, this.afterCoords.lng],
-          15
-        );
+        this.map3 = L.map('map_3', {
+          renderer: L.canvas(),
+          invalidateSize: true,
+        }).setView([this.afterCoords.lat, this.afterCoords.lng], 15);
         //Stadia_OSMBright().addTo(this.map3);
         //tileLayerHere().addTo(this.map3);
         //OpenStreetMap_Mapnik().addTo(this.map3);
@@ -199,9 +373,28 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   // rutas próximas
-  setRoute(color: string, customIcon: any) {
+  setRoute(
+    color: string,
+    customIcon: any,
+    serviceParam: string,
+    index: number,
+    idButtonBefore: string,
+    idButtonAfter: string,
+    idButtonDelete: string,
+    iRow: number,
+    jCol: number
+  ) {
+    this.nextCoords = this.afterCoords;
+    this.serviceGoal = serviceParam;
+    this.indexGoal = index;
+    this.buttonBefore = idButtonBefore;
+    this.buttonAfter = idButtonAfter;
+    this.buttonDelete = idButtonDelete;
+    this.row = iRow;
+    this.col = jCol;
+    this.customIcon = customIcon;
     if (this.mapEvents.has('control')) {
-      this.map3.eachLayer(function (layer) { 
+      this.map3.eachLayer(function (layer) {
         layer.remove();
       });
       Jawg_Sunny().addTo(this.map3);
@@ -240,7 +433,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             draggable: true,
             bounceOnAdd: true,
           }).bindPopup(
-            '<button type="button" class="popupopen btn btn-secondary" onclick="foo()">Guardar</button>'
+            `
+            <div class="col">
+            <button type="button" class="popupopen btn btn-secondary" onclick="saveService()">Guardar</button>
+            </div>
+            `
           );
         }
       },
@@ -262,6 +459,68 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
           Math.round((summary.totalTime % 3600) / 60) +
           ' minutos'
       );
+      var waypoints = e.waypoints || [];
+      var destination = waypoints[waypoints.length - 1];
+      this.nextCoords = destination.latLng;
+      console.log(this.nextCoords);
+      switch (this.serviceGoal) {
+        case 'colegio':
+          this.colegio[this.indexGoal].lat = this.nextCoords.lat;
+          this.colegio[this.indexGoal].lng = this.nextCoords.lng;
+          this.colegio[this.indexGoal].distancia =
+            (summary.totalDistance / 1000).toFixed(2) + ' km.';
+          this.colegio[this.indexGoal].tiempo =
+            Math.round((summary.totalTime % 3600) / 60) + ' minutos';
+          break;
+        case 'universidad':
+          this.universidad[this.indexGoal].lat = this.nextCoords.lat;
+          this.universidad[this.indexGoal].lng = this.nextCoords.lng;
+          this.universidad[this.indexGoal].distancia =
+            (summary.totalDistance / 1000).toFixed(2) + ' km.';
+          this.universidad[this.indexGoal].tiempo =
+            Math.round((summary.totalTime % 3600) / 60) + ' minutos';
+          break;
+        case 'autobus':
+          this.autobus[this.indexGoal].lat = this.nextCoords.lat;
+          this.autobus[this.indexGoal].lng = this.nextCoords.lng;
+          this.autobus[this.indexGoal].distancia =
+            (summary.totalDistance / 1000).toFixed(2) + ' km.';
+          this.autobus[this.indexGoal].tiempo =
+            Math.round((summary.totalTime % 3600) / 60) + ' minutos';
+          break;
+        case 'metro':
+          this.metro[this.indexGoal].lat = this.nextCoords.lat;
+          this.metro[this.indexGoal].lng = this.nextCoords.lng;
+          this.metro[this.indexGoal].distancia =
+            (summary.totalDistance / 1000).toFixed(2) + ' km.';
+          this.metro[this.indexGoal].tiempo =
+            Math.round((summary.totalTime % 3600) / 60) + ' minutos';
+          break;
+        case 'mercados':
+          this.mercados[this.indexGoal].lat = this.nextCoords.lat;
+          this.mercados[this.indexGoal].lng = this.nextCoords.lng;
+          this.mercados[this.indexGoal].distancia =
+            (summary.totalDistance / 1000).toFixed(2) + ' km.';
+          this.mercados[this.indexGoal].tiempo =
+            Math.round((summary.totalTime % 3600) / 60) + ' minutos';
+          break;
+        case 'aeropuerto':
+          this.aeropuerto[this.indexGoal].lat = this.nextCoords.lat;
+          this.aeropuerto[this.indexGoal].lng = this.nextCoords.lng;
+          this.aeropuerto[this.indexGoal].distancia =
+            (summary.totalDistance / 1000).toFixed(2) + ' km.';
+          this.aeropuerto[this.indexGoal].tiempo =
+            Math.round((summary.totalTime % 3600) / 60) + ' minutos';
+          break;
+        case 'beach':
+          this.beach[this.indexGoal].lat = this.nextCoords.lat;
+          this.beach[this.indexGoal].lng = this.nextCoords.lng;
+          this.beach[this.indexGoal].distancia =
+            (summary.totalDistance / 1000).toFixed(2) + ' km.';
+          this.beach[this.indexGoal].tiempo =
+            Math.round((summary.totalTime % 3600) / 60) + ' minutos';
+          break;
+      }
     });
     this.mapEvents.add('control');
     //control.on('waypointschanged', ()=>);
@@ -270,8 +529,66 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.mp.on('dragend', () => this.mp.openPopup());*/
   }
 
-  printRoute() {
-    console.log('Estás en ts !!!');
+  saveService() {
+    var x = document.getElementById(this.buttonBefore);
+    x.style.display = 'none';
+    x = document.getElementById(this.buttonAfter);
+    x.style.display = 'block';
+    x = document.getElementById(this.buttonDelete);
+    x.style.display = 'block';
+    this.stateTexfields[this.row][this.col] = true;
+    console.log(this.stateTexfields);
+    if (this.mapEvents.has('control')) {
+      this.map3.eachLayer(function (layer) {
+        layer.remove();
+      });
+      Jawg_Sunny().addTo(this.map3);
+      this.mapEvents.delete('control');
+    }
+    this.markerHouse.addTo(this.map3);
+    /*auxMarker: L.Marker([this.nextCoords.lat,this.nextCoords.lng],{icon:this.customIcon, draggable:false});
+      this.nearlyMarkers.set(this.indexGoal.toString()+this.serviceGoal.toString(),this.mp);
+      this.nearlyMarkers.forEach((key:string,value:L.marker)=>{
+         marker:L.marker([value.lat,value.lng]).addTo(this.map3);
+      })*/
+    //this.map3.flyTo([this.afterCoords.lat, this.afterCoords.lng], 20);
+    //console.log(this.row + ' ' );
+    /*switch(this.serviceGoal){
+      case 'colegio':
+        this.colegio[this.indexGoal]
+    }*/
+    // this.colegio[0].distancia=;
+    /*console.log('Estás en ts !!!');
+     console.log();
+     var x = JSON.stringify(this.colegio)
+     var y = JSON.parse(x);*/
+
+    /*for (let i = 0; i < this.aeropuerto.length; i++) {
+      console.log(this.aeropuerto[i])
+     }*/
+  }
+
+  reRackService(
+    row: number,
+    col: number,
+    btnBeforeId: string,
+    btnAfterId: string,
+    btnDltId: string
+  ) {
+    var x = document.getElementById(btnBeforeId); //  array:string, index:number,
+    x.style.display = 'block';
+    x = document.getElementById(btnAfterId);
+    x.style.display = 'none';
+    x = document.getElementById(btnDltId);
+    x.style.display = 'none';
+    this.stateTexfields[row][col] = false;
+    console.log(row + ' ' + col);
+  }
+
+  resizeMap() {
+    let timer = setTimeout(() => {
+      this.map3.invalidateSize();
+    }, 300);
   }
 
   // modal antdsgn

@@ -37,7 +37,7 @@ export class UserService {
   }
 
   public completeRegistry(user:User): Observable<CustomHttpResponse> {
-    return this.http.post<CustomHttpResponse>(`${this.host}/api/user/fullRegistry`, user);
+    return this.http.put<CustomHttpResponse>(`${this.host}/api/user/fullregistry/${user.id}`, user);
   }
 
   public checkEmailExists(userId:string) : Observable<User>{

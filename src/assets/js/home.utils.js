@@ -1,3 +1,3 @@
-function foo() {
+function saveService() {
   document.getElementById("oculto").click();
 }

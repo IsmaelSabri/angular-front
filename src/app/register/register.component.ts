@@ -17,7 +17,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   visible:boolean = true;
   changetype:boolean =true;
-  userRegister:User;
 
   constructor(private router: Router, private authenticationService: AuthenticationService,
               private notificationService: NotificationService) {}

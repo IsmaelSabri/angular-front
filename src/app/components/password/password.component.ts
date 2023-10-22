@@ -53,23 +53,48 @@ export class PasswordComponent
   passwordsMatching = false;
   isConfirmPasswordDirty = false;
   confirmPasswordClass = 'form-control';
+  psw:string;
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.router.events.subscribe((res) => {
+      this.router.events.subscribe(() => {
         this.luckyId = this.router.url.toString().substring(6, 23);
         console.log(this.luckyId);
-        /*this.userService.checkEmailExists(this.luckyId).subscribe({
+        this.userService.checkEmailExists(this.luckyId).subscribe({
           next: (res:any)=>{
-            if (res && res.length > 0) {
-              
-            }else{
-
-            }
+              this.user=res;
+              this.sendNotification(NotificationType.SUCCESS, `Introduce tu nueva contraseña`);
+              console.log(this.user);
+          },
+          error: (error: HttpErrorResponse) => {
+            this.sendNotification(NotificationType.WARNING, error.error.message);
+            this.refreshing = false;
           }
-        });*/
+        });
       })
     );
+  }
+
+  onSubmit(): void {
+    console.log(this.resetPasswordForm);
+    this.user.password=this.psw;
+    console.log(this.user);
+    this.subscriptions.push(
+      this.userService.completeRegistry(this.user).subscribe({
+        next: (res: CustomHttpResponse) => {
+          this.sendNotification(NotificationType.SUCCESS, res.message);
+          this.refreshing = false;
+          this.router.navigate(['/login']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, error.error.message);
+        },
+      })
+    );
+
+    /*if (!this.resetPasswordForm?.valid) {
+      return;
+    }*/
   }
 
   newPassword = new FormControl(null, [
@@ -119,25 +144,7 @@ export class PasswordComponent
     console.log('funciona');
   }
 
-  onSubmit(): void {
-    console.log(this.resetPasswordForm);
-    this.subscriptions.push(
-      this.userService.completeRegistry(this.user).subscribe({
-        next: (res: CustomHttpResponse) => {
-          this.sendNotification(NotificationType.SUCCESS, res.message);
-          this.refreshing = false;
-          this.router.navigate(['/login']);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, error.error.message);
-        }
-      })
-    );
 
-    /*if (!this.resetPasswordForm?.valid) {
-      return;
-    }*/
-  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

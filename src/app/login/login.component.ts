@@ -1,5 +1,5 @@
 import { UserService } from '../service/user.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,7 @@ import { NotificationType } from '../class/notification-type.enum';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { FormGroup } from '@angular/forms';
+import { SocialAuthService, FacebookLoginProvider, GoogleLoginProvider, SocialLoginModule, GoogleSigninButtonDirective } from "@abacritt/angularx-social-login";
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   visible: boolean = true;
   changetype: boolean = true;
   registerForm: any = FormGroup;
+  user:any;
+
   get f() {
     return this.registerForm.controls;
   }
@@ -32,7 +35,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private cookieService: CookieService,
     private notificationService: NotificationService,
     private userService: UserService,
-    config: NgbCarouselConfig
+    config: NgbCarouselConfig,
+    private socialAuthService: SocialAuthService,
   ) {
     config.interval = 2200;
     config.keyboard = true;
@@ -61,7 +65,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           const tokenPayload = this.authenticationService.decodedToken();
           this.userService.setFullName(tokenPayload.name);
           this.userService.setRole(tokenPayload.role);
-          this.authenticationService.addUserToLocalCache(response);
+          this.authenticationService.addUserToLocalCache(response.body);
           this.router.navigateByUrl('/home');
           this.showLoading = false;
         },
@@ -74,6 +78,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         },
       })
     );
+  }
+
+  signInWithFB(): void {
+      // falta el apikey de fc en módule
+    this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID);
   }
 
   private sendErrorNotification(

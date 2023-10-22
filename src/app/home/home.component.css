@@ -704,18 +704,13 @@ br {
 :root {
   --transitionLength: 0.4s;
   --transitionTiming: ease;
-  /* fancy select (filters)
-  --fs-400: 16px;
-	--color-text: #000000;
-	--color-accent: #000000;
-  --color-border: #DDDDDD;
-	--gap-700: 48px;
-	--gap-400: 16px;
-	--gap-300: 12px;
-	--gap-200: 8px;
-	--transform-arrow-down: rotate(-180deg);
-	--trans: all 250ms ease-in-out;
-  --br-100: 10px;*/
+
+
+
+  --arrow-bg: #fff;
+  --arrow-icon: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTcuNDEsOC41OEwxMiwxMy4xN0wxNi41OSw4LjU4TDE4LDEwTDEyLDE2TDYsMTBMNy40MSw4LjU4WiIgLz48L3N2Zz4=");
+  --option-bg: #666;
+  --select-bg: rgba(255, 255, 255, 0.2);
 }
 
 .accordion {
@@ -829,7 +824,10 @@ br {
     padding: 20px;
     border-bottom: 1px solid #ddd;
     font: 300 24px;
-    position: relative; /*fixed=stuck ==> quitar este header y meter un mat-toolbar*/
+
+    z-index: 10000 !important;
+    top: 0;
+    position: sticky; /* default: relative */
   }
   .body {
     padding: 20px;
@@ -838,7 +836,7 @@ br {
 }
 
 .btnmov {
-  background: linear-gradient(to right, #eeeeee, #3a3b3c);
+  background:#404040; /*linear-gradient(to right, #eeeeee, #3a3b3c);*/
   padding: 10px 25px;
   display: inline-block;
   border-radius: 25px;
@@ -899,6 +897,26 @@ br {
   transform: rotate(0) scale(1);
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
+.btndlt {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  border: none;
+  border-radius: 50px;
+  background-color: #fb6966;
+  color: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btndlt:hover {
+  transform: translateY(-3px);
+  /*transform: rotate(-10deg) scale(1.1);*/
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+}
+.btndlt:active {
+  transform: rotate(0) scale(1);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
 
 .nzInput {
   height: 24px;
@@ -922,9 +940,88 @@ br {
   width: 170px;
 }
 
+.nzSelectL {
+  width: 380px;
+  left: 13px;
+}
+
+.nzOptionL {
+  width: 380px;
+  left: 13px;
+}
 /* Css select v2 */
 
 /* Hide routin machine window */
 .leaflet-routing-alternatives-container {
   display: none;
 }
+
+.chip {
+  padding: 8px 10px;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  margin: 0 10px;
+
+  cursor: pointer;
+}
+
+.chip.primary {
+  background: #59ce72;
+  color: whitesmoke;
+}
+
+
+
+
+
+/* Checkboxes 2nd version - 2nd page */
+.item {
+  display: flex;
+  flex-direction: row;
+
+  padding: 5px 14px;
+  float: left;
+  /*margin-left: -25px;*/
+  
+  gap: 16px;
+}
+
+.labelsCh2 {
+  display: flex;
+  margin: auto;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+
+}
+
+.inputCheckbox2 {
+  
+  position: absolute;
+  transform: scale(0);
+}
+
+input:checked ~ .checkbox2 {
+  transform: rotate(45deg);
+  width: 20px;
+  margin: -5px 7px 0 8px;
+  border-color: #3a3b3c; /*24c78e*/
+  border-width: 4px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-radius: 0;
+}
+
+.checkbox2 {
+  display: block;
+  width: inherit;
+  height: inherit;
+  border: 1.5px solid #999;
+  border-radius: 4px;
+  transition: all 0.2s cubic-bezier(0, 0.01, 0.23, 0.8);
+}
+/* end checkboxes 2 */
+
+/* Select para las emisiones y el consume sin js :> */

@@ -40,6 +40,10 @@ export class Home {
   foto: File;
   // video -> vip
   video: string; // url
+  amueblado:boolean;
+  streetView:string;
+  direccionAproximada:boolean;
+  gasNatural:boolean;
 
   // House profile
   alarma: boolean;
@@ -50,12 +54,14 @@ export class Home {
   aireAcondicionado: boolean;
   calefaccion: boolean;
   panelesSolares: boolean;
-  altaEficienciaEnergetica: boolean;
+  eficienciaEnergetica: boolean;
   colegios: string;
   universidades:string;
   supermercados:string;
   metro: string;
   bus: string;
+  consumo:string;
+  emisiones:string;
 
   // Flat profile
   ascensor: boolean;
@@ -66,6 +72,8 @@ export class Home {
   puerta: string;
   piso: string;
   balcon: string;
+  videoPortero: string;
+  plantaMasAlta:boolean;
   // Gated community ameninites
   jardin: boolean;
   piscinaComp: boolean;
@@ -131,45 +139,75 @@ export class Home {
 }
 
 export interface Colegio{
+  lat:string;
+  lng:string;
   nombre:string;
-  enseñanza:string;
+  ensenyanza:string;
   institucion:string;
   web:string;
   distancia:string;
+  tiempo:string;
 }
 
 export interface Universidad{
+  lat:string;
+  lng:string;
   nombre:string;
+  rama:string;
   institucion:string;
+  web:string
   distancia:string;
+  tiempo:string;
 }
 
 export interface Bus{
+  lat:string;
+  lng:string;
   lineas:string;
   parada:string;
   distancia:string;
+  tiempo:string;
 }
 
 export interface Metro{
+  lat:string;
+  lng:string;
   lineas:string;
   parada:string;
   distancia:string;
+  tiempo:string;
 }
 
 export interface Supermercado{
+  lat:string;
+  lng:string;
   nombre:string;
   distancia:string;
+  tiempo:string;
+}
+
+export interface Aeropuerto{
+  lat:string;
+  lng:string;
+  nombre:string;
+  distancia:string;
+  tiempo:string;
+}
+
+export interface Beach{
+  lat:string;
+  lng:string;
+  nombre:string;
+  distancia:string;
+  tiempo:string;
 }
 
 var COLEGIO: Colegio[] = [
-  {nombre: '', enseñanza: 'Hydrogen', institucion: '', web: 'H',distancia:''},
-  {nombre: '', enseñanza: 'Helium', institucion: '', web: 'He',distancia:''},
-  {nombre: '', enseñanza: 'Lithium', institucion: '', web: 'Li',distancia:''},
-  {nombre: '', enseñanza: 'Beryllium', institucion: '', web: 'Be',distancia:''},
-  {nombre: '', enseñanza: 'Boron', institucion: '', web: 'B',distancia:''},
-  {nombre: '', enseñanza: 'Carbon', institucion: '', web: 'C',distancia:''},
-  {nombre: '', enseñanza: 'Nitrogen', institucion: '', web: 'N',distancia:''},
-  {nombre: '', enseñanza: 'Oxygen', institucion: '', web: 'O',distancia:''},
-  {nombre: '', enseñanza: 'Fluorine', institucion: '', web: 'F',distancia:''},
-  {nombre: '', enseñanza: 'Neon', institucion: '', web: 'Ne',distancia:''},
+  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
+  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
+  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
+  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
+  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
+  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
+
 ];

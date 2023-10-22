@@ -200,7 +200,7 @@
                 </div>
               </div>
               <!-- Superficie y Garage -->
-              <div class="form-group row" style="margin-top: 32px;">
+              <div class="form-group row" style="margin-top: 30px;">
                 <div class="col" style="padding-left: 21px;">
                   <label for="superficie">Superficie</label>
                   <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
@@ -215,7 +215,7 @@
                 </div>
               </div>
               <!-- Opción a la que se destina y tipo -->
-              <div class="form-group row" style="margin-top: 32px;">
+              <div class="form-group row" style="margin-top: 30px;">
                 <div class="col" style="padding-left: 21px;">
                   <label for="opcion">Alquiler - Venta ...</label>
                   <mat-form-field floatLabel="never" appearance="outline" class="search no-label">
@@ -264,7 +264,7 @@
                 </div>
               </div>
               <!-- Estado en el que se encuentra y a destacar -->
-              <div class="form-group row" style="margin-top: 32px;">
+              <div class="form-group row" style="margin-top: 30px;">
                 <div class="col" style="padding-left: 21px;">
                   <label for="estado">Estado</label>
                   <mat-form-field floatLabel="never" appearance="outline" class="search no-label">
@@ -338,7 +338,7 @@
                   <div class="col"></div>
                 </div>
                 <div class="row row-cols-2 "
-                  style="padding-left: 21px; margin-top: 17px; border-bottom: 1px solid rgb(206, 203, 203);">
+                  style="padding-left: 21px; margin-top: 17px; ">
                   <div class="col ">
                     <label class="c-material-che">
                       <input type="checkbox" class="c-material-che__hidden" value="1" />
@@ -349,7 +349,7 @@
                     <label class="c-material-che">
                       <input type="checkbox" class="c-material-che__hidden" value="2" />
                       <span class="c-material-che__el"></span>
-                      <span class="c-material-che__label">Alta eficiencia energética</span>
+                      <span class="c-material-che__label">Gas natural</span>
                     </label>
                     <br>
                   </div>
@@ -365,6 +365,24 @@
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Calefacción</span>
                     </label>
+                    <br>
+                  </div>
+                  <br>
+                </div>
+                <div class="row row-cols-12" style="padding-left: 16px; border-bottom: 1px solid rgb(206, 203, 203);">
+                  <div class="col-10">
+                    <nz-select class="nzSelectL" nzPlaceHolder="Emisiones" [nzSize]="size" [(ngModel)]="this.home.emisiones" >
+                      <nz-option class="nzOptionL" *ngFor="let opt of calificacion_emisiones"
+                      [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                    <br>
+                    <nz-select class="nzSelectL" nzPlaceHolder="Consumo" [nzSize]="size" [(ngModel)]="this.home.consumo">
+                      <nz-option class="nzOptionL" *ngFor="let opt of calificacion_consumo"
+                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                  </div>
+                  <div class="col-2">
+                    <img src="assets/svg/eco/Escala_Certificacion.png" style="width: 50px; height: 58px; float: right;" alt="">
                   </div>
                   <br class="brboom">
                 </div>
@@ -378,6 +396,12 @@
                 <div class="row row-cols-2 "
                   style="padding-left: 21px; margin-top: 17px; border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col">
+                    <label class="c-material-che">
+                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <span class="c-material-che__el"></span>
+                      <span class="c-material-che__label">Ascensor</span>
+                    </label>
+                    <br>
                     <label class="c-material-che">
                       <input type="checkbox" class="c-material-che__hidden" value="1" />
                       <span class="c-material-che__el"></span>
@@ -410,6 +434,12 @@
                     <br>
                   </div>
                   <div class="col">
+                    <label class="c-material-che">
+                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <span class="c-material-che__el"></span>
+                      <span class="c-material-che__label">Videoportero</span>
+                    </label>
+                    <br>
                     <label class="c-material-che">
                       <input type="checkbox" class="c-material-che__hidden" value="1" />
                       <span class="c-material-che__el"></span>
@@ -471,19 +501,6 @@
                       <span class="c-material-che__label">Alarma de incendios</span>
                     </label>
                     <br>
-                    <!--<li>
-                      <mat-card class="result">
-                        <mat-card-content >
-                          
-                          <section class="example-section">
-                            <mat-checkbox class="example-margin" (change)="changeEvent($event)" style="float: left;"
-                              (indeterminateChange)="checkBox($event)" class="example-margin" [checked]="IsChecked"
-                              [(indeterminate)]="IsIndeterminate" [labelPosition]="LabelAlign" [disabled]="IsDisabled">
-                              <label for="" style="">Favorito</label></mat-checkbox>
-                          </section>
-                        </mat-card-content>
-                      </mat-card>
-                    </li>-->
                   </div>
                   <div class="col">
                     <label class="c-material-che">
@@ -505,44 +522,136 @@
                     </label>
                   </div>
                   <br class="brboom">
+                 </div>
+                 
+                
+                    <!--<li>
+                      <mat-card class="result">
+                        <mat-card-content >
+                          
+                          <section class="example-section">
+                            <mat-checkbox class="example-margin" (change)="changeEvent($event)" style="float: left;"
+                              (indeterminateChange)="checkBox($event)" class="example-margin" [checked]="IsChecked"
+                              [(indeterminate)]="IsIndeterminate" [labelPosition]="LabelAlign" [disabled]="IsDisabled">
+                              <label for="" style="">Favorito</label></mat-checkbox>
+                          </section>
+                        </mat-card-content>
+                      </mat-card>
+                    </li>-->
+                  
+              </div>
+            </nz-tab>
+
+
+
+
+
+
+
+
+
+
+            <!-- Acabados -->
+              <nz-tab [nzTitle]="'Acabados'" nz-col nzSpan="8">
+              <div class="form-group">
+              <div class="row row-cols-2" style="margin-top: 10px;">
+                 <div class="col">
+                  <label for="extras" style="padding-left: 21px;">Extras</label>
+                 </div>
+                 <div class="col"></div>
+              </div>
+                <div class="row row-cols-2 "
+                style="padding-left: 10px; margin-top: 17px; border-bottom: 1px solid rgb(206, 203, 203);">
+                <div class="col">
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Terraza</span>
+                  </div>
+                  <br>
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Amueblado completo</span>
+                  </div>
+                  <br>
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Parquet</span>
+                  </div>
+                  <br>
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Planta mas alta del edificio</span>
+                  </div>
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Trastero</span>
+                  </div>
                 </div>
+                <div class="col">
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Armarios empotrados</span>
+                  </div>
+                  <br>
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Piscina privada</span>
+                  </div>
+                  <br>
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2" id="checkboxAseoEnsuite"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <label for="checkboxAseoEnsuite">Aseo ensuite</label>
+                  </div>
+                  <br>
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Balcón</span>
+                  </div>
+                  <br>
+                  <div class="item">
+                    <label class="labelsCh2">
+                      <input type="checkbox" class="inputCheckbox2"/>
+                      <span class="checkbox2"></span>
+                    </label>
+                    <span>Vistas despejadas</span>
+                  </div>
+                </div>
+                  <br class="brboom">
+               </div>
               </div>
-            </nz-tab>
+              
+          </nz-tab>
 
 
 
 
-
-
-
-
-
-
-            <!---->
-            <nz-tab [nzTitle]="'Acabados'" nz-col nzSpan="8">
-              <div class="form-group">
-                <label for="fotos">Sube una foto</label><br>
-                <input required (change)="saveImage($event)" type="file" />
-              </div>
-              <!-- previsualización -->
-              <div class="form-group" *ngIf="prev">
-                <img [src]="prev" alt="" height="75px" width="75" style="border-radius:5px;">
-              </div>
-              <!--textarea-->
-              <div class="form-group">
-                <label for="descripcion">Descripción</label>
-                <textarea required
-                  style="resize:none; border-radius:5px; height:100px; width:465px; background-color:white;color:black;"
-                  [(ngModel)]='home.descripcion' rows="30" cols="120">
-                 </textarea>
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                  id="new-marker-close">Cerrar</button>
-                <input type="submit" class="btn btn-primary" value="Crear">
-              </div>
-            </nz-tab>
 
             <!-- Vivienda -->
             <nz-tab [nzTitle]="'Piso'" nz-col nzSpan="8" [nzDisabled]="home.tipo=='Piso'">
@@ -579,11 +688,20 @@
               <div class="container-fluid">
                 <h3 class="text-center">Servicios próximos</h3>
                 <p>Puedes añadir servicios próximos a tu vivienda como colegios, universidades o supermercados.</p>
+                <div class="row">
+                  <div class="col">
+                  </div>
+                  <div class="col">
+                    <img src="assets/svg/main-distance.svg" style="width: 120px; height: 70; padding-top: 25px; left: 120px;">
+                  </div>
+                  <div class="col">
+                  </div>
+                </div>
                 <div class="ctnrmovility" #element>
                   <a class="btnmov js-click-modal" (click)="openToogleModal(true)">Empezar</a>
                   <div class="modalmov">
                     <div class="header" style="border-top-right-radius: 20px 20px; border-top-left-radius: 20px 20px;">
-                      <a class="btnmov js-close-modal" (click)="openToogleModal(false)">Guardar</a>
+                     <a class="btnmov js-close-modal" (click)="openToogleModal(false)">Guardar</a>
                     </div>
                     <div class="body">
                       <div class="container-fluid">
@@ -591,8 +709,14 @@
                           <div class="col-7">
                             <div class="accordion">
                               <div class="accordion-item">
-                                <input id="accordion-trigger-1" class="accordion-trigger-input" type="checkbox">
-                                <label class="accordion-trigger" for="accordion-trigger-1">Colegios
+                                <input id="accordion-trigger-1" (click)="resizeMap()" class="accordion-trigger-input" type="checkbox">
+                                <label class="accordion-trigger" for="accordion-trigger-1">Colegios           
+                                  <span [attr.hidden]="!this.stateTexfields[0][0]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span>
+                                  <span [attr.hidden]="!this.stateTexfields[0][1]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span>
+                                  <span [attr.hidden]="!this.stateTexfields[0][2]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[0][3]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[0][4]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[0][5]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span>                 
                                 </label>
                                 <section class="accordion-animation-wrapper">
                                   <div class="accordion-animation">
@@ -615,133 +739,163 @@
                                                 <tbody>
                                                   <tr>
                                                     <th scope="row">1</th>
-                                                    <td><input nz-input type="text" class="nzInput"
-                                                        placeholder="Nombre"></td>
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][0]?true:null" [(ngModel)]="this.colegio[0].nombre"
+                                                        placeholder="Nombre" id="f1c1n"></td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
-                                                        <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][0]" [(ngModel)]="this.colegio[0].ensenyanza">
+                                                        <nz-option class="nzOption" id="f1c1e" *ngFor="let opt of ensenyanza" 
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
-                                                        <nz-option class="nzOption" *ngFor="let opt of institucion"
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][0]" [(ngModel)]="this.colegio[0].institucion">
+                                                        <nz-option class="nzOption" *ngFor="let opt of institucion" 
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][0]?true:null" placeholder="www" [(ngModel)]="this.colegio[0].web" >
                                                     </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc)">Distancia</button>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="colegio0" type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc, 'colegio',0,'colegio0','colegio0ok','btndltColegio0',0,0)">Distancia</button>
+                                                        <button id="colegio0ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.colegio[0].distancia}}</button>
+                                                        <button class="btndlt" id="btndltColegio0" style="display: none;" (click)="reRackService(0,0,'colegio0','colegio0ok','btndltColegio0')"><i class="fas fa-trash"></i></button>
+                                                      </div>
                                                     </td>
                                                   </tr>
 
                                                   <tr>
                                                     <th scope="row">2</th>
-                                                    <td><input nz-input type="text" class="nzInput"
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][1]?true:null" [(ngModel)]="this.colegio[1].nombre"
                                                         placeholder="Nombre"></td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][1]" [(ngModel)]="this.colegio[1].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][1]" [(ngModel)]="this.colegio[1].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
+                                                    <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][1]?true:null" [(ngModel)]="this.colegio[1].web">
                                                     </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc)">Distancia</button>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="colegio1" type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc, 'colegio',1,'colegio1','colegio1ok','btndltColegio1',0,1)">Distancia</button>
+                                                        <button id="colegio1ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.colegio[1].distancia}}</button>
+                                                        <button class="btndlt" id="btndltColegio1" style="display: none;" (click)="reRackService(0,1,'colegio1','colegio1ok','btndltColegio1')"><i class="fas fa-trash"></i></button>
+                                                      </div>
                                                     </td>
                                                   </tr>
 
                                                   <tr>
                                                     <th scope="row">3</th>
-                                                    <td><input nz-input type="text" class="nzInput"
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][2]?true:null" [(ngModel)]="this.colegio[2].nombre"
                                                         placeholder="Nombre"></td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][2]" [(ngModel)]="this.colegio[2].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][2]" [(ngModel)]="this.colegio[2].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
+                                                    <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][2]?true:null"  [(ngModel)]="this.colegio[2].web">
                                                     </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc)">Distancia</button>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="colegio2" type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc, 'colegio',2,'colegio2','colegio2ok','btndltColegio2',0,2)">Distancia</button>
+                                                        <button id="colegio2ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.colegio[2].distancia}}</button>
+                                                        <button class="btndlt" id="btndltColegio2" style="display: none;" (click)="reRackService(0,2,'colegio2','colegio2ok','btndltColegio2')"><i class="fas fa-trash"></i></button>
+                                                      </div>
                                                     </td>
                                                   </tr>
 
                                                   <tr>
                                                     <th scope="row">4</th>
-                                                    <td><input nz-input type="text" class="nzInput"
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][3]?true:null" [(ngModel)]="this.colegio[3].nombre"
                                                         placeholder="Nombre"></td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][3]" [(ngModel)]="this.colegio[3].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][3]" [(ngModel)]="this.colegio[3].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
+                                                    <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][3]?true:null" [(ngModel)]="this.colegio[3].web">
                                                     </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc)">Distancia</button>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="colegio3" type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc, 'colegio',3,'colegio3','colegio3ok','btndltColegio3',0,3)">Distancia</button>
+                                                        <button id="colegio3ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.colegio[3].distancia}}</button>
+                                                        <button class="btndlt" id="btndltColegio3" style="display: none;" (click)="reRackService(0,3,'colegio3','colegio3ok','btndltColegio3')"><i class="fas fa-trash"></i></button>
+                                                      </div>
                                                     </td>
                                                   </tr>
 
                                                   <tr>
                                                     <th scope="row">5</th>
-                                                    <td><input nz-input type="text" class="nzInput"
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][4]?true:null" [(ngModel)]="this.colegio[4].nombre"
                                                         placeholder="Nombre"></td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][4]" [(ngModel)]="this.colegio[4].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][4]" [(ngModel)]="this.colegio[4].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
+                                                    <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][4]?true:null" [(ngModel)]="this.colegio[4].web">
                                                     </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc)">Distancia</button>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="colegio4" type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc, 'colegio',4,'colegio4','colegio4ok','btndltColegio4',0,4)">Distancia</button>
+                                                        <button id="colegio4ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.colegio[4].distancia}}</button>
+                                                        <button class="btndlt" id="btndltColegio4" style="display: none;" (click)="reRackService(0,4,'colegio4','colegio4ok','btndltColegio4')"><i class="fas fa-trash"></i></button>
+                                                      </div>
                                                     </td>
                                                   </tr>
 
                                                   <tr>
                                                     <th scope="row">6</th>
-                                                    <td><input nz-input type="text" class="nzInput"
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][5]?true:null" [(ngModel)]="this.colegio[5].nombre"
                                                         placeholder="Nombre"></td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][5]" [(ngModel)]="this.colegio[5].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][5]" [(ngModel)]="this.colegio[5].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
+                                                    <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][5]?true:null" [(ngModel)]="this.colegio[5].web">
                                                     </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc)">Distancia</button>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="colegio5" type="button" class="btnDistancia" (click)="setRoute('#808080', this.sc, 'colegio',5,'colegio5','colegio5ok','btndltColegio5',0,5)">Distancia</button>
+                                                        <button id="colegio5ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.colegio[5].distancia}}</button>
+                                                        <button class="btndlt" id="btndltColegio5" style="display: none;" (click)="reRackService(0,5,'colegio5','colegio5ok','btndltColegio5')"><i class="fas fa-trash"></i></button>
+                                                      </div>
                                                     </td>
                                                   </tr>
                                                 </tbody>
@@ -756,8 +910,11 @@
                               </div>
 
                               <div class="accordion-item">
-                                <input id="accordion-trigger-2" class="accordion-trigger-input" type="checkbox">
+                                <input id="accordion-trigger-2" (click)="resizeMap()" class="accordion-trigger-input" type="checkbox">
                                 <label class="accordion-trigger" for="accordion-trigger-2">Universidades
+                                  <span [attr.hidden]="!this.stateTexfields[1][0]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[1][1]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[1][2]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
                                 </label>
                                 <section class="accordion-animation-wrapper">
                                   <div class="accordion-animation">
@@ -780,68 +937,83 @@
                                                 <tbody>
                                                   <tr>
                                                     <th scope="row">1</th>
-                                                    <td><input nz-input type="text" class="nzInput"
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[1][0]?true:null" [(ngModel)]="this.universidad[0].nombre"
                                                         placeholder="Nombre"></td>
                                                     <td>
-                                                      <nz-select class="nzSelectR" [nzSize]="size">
+                                                      <nz-select class="nzSelectR" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][0]" [(ngModel)]="this.universidad[0].rama">
                                                         <nz-option class="nzOptionR" *ngFor="let opt of ramas"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
+                                                      <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][0]" [(ngModel)]="this.universidad[0].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
+                                                    <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[1][0]?true:null"  [(ngModel)]="this.universidad[0].web">
                                                     </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#128c7e', this.uni)">Distancia</button>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="univ0" type="button" class="btnDistancia" (click)="setRoute('#128c7e', this.uni, 'universidad',0,'univ0','univ0ok','btndltUniv0',1,0)">Distancia</button>
+                                                        <button id="univ0ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.universidad[0].distancia}}</button>
+                                                        <button class="btndlt" id="btndltUniv0" style="display: none;" (click)="reRackService(1,0,'univ0','univ0ok','btndltUniv0')"><i class="fas fa-trash"></i></button>
+                                                      </div>
                                                     </td>
                                                   </tr>
 
                                                   <tr>
                                                     <th scope="row">2</th>
-                                                    <td><input nz-input type="text" class="nzInput"
-                                                        placeholder="Nombre"></td>
-                                                    <td>
-                                                      <nz-select class="nzSelectR" [nzSize]="size">
-                                                        <nz-option class="nzOptionR" *ngFor="let opt of ramas"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
-                                                      </nz-select>
-                                                    </td>
-                                                    <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
-                                                        <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
-                                                      </nz-select>
-                                                    </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
-                                                    </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#128c7e', this.uni)">Distancia</button>
-                                                    </td>
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[1][1]?true:null" [(ngModel)]="this.universidad[1].nombre"
+                                                      placeholder="Nombre"></td>
+                                                  <td>
+                                                    <nz-select class="nzSelectR" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][1]" [(ngModel)]="this.universidad[1].rama">
+                                                      <nz-option class="nzOptionR" *ngFor="let opt of ramas"
+                                                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                    </nz-select>
+                                                  </td>
+                                                  <td>
+                                                    <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][1]" [(ngModel)]="this.universidad[1].institucion">
+                                                      <nz-option class="nzOption" *ngFor="let opt of institucion"
+                                                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                    </nz-select>
+                                                  </td>
+                                                  <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[1][1]?true:null" [(ngModel)]="this.universidad[1].web">
+                                                  </td>
+                                                  <td>
+                                                    <div class="btn-group">
+                                                      <button id="univ1" type="button" class="btnDistancia" (click)="setRoute('#128c7e', this.uni, 'universidad',1,'univ1','univ1ok','btndltUniv1',1,1)">Distancia</button>
+                                                      <button id="univ1ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.universidad[1].distancia}}</button>
+                                                      <button class="btndlt" id="btndltUniv1" style="display: none;" (click)="reRackService(1,1,'univ1','univ1ok','btndltUniv1')"><i class="fas fa-trash"></i></button>
+                                                    </div>
+                                                  </td>
                                                   </tr>
 
                                                   <tr>
                                                     <th scope="row">3</th>
-                                                    <td><input nz-input type="text" class="nzInput"
-                                                        placeholder="Nombre"></td>
-                                                    <td>
-                                                      <nz-select class="nzSelectR" [nzSize]="size">
-                                                        <nz-option class="nzOptionR" *ngFor="let opt of ramas"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
-                                                      </nz-select>
-                                                    </td>
-                                                    <td>
-                                                      <nz-select class="nzSelect" [nzSize]="size">
-                                                        <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
-                                                      </nz-select>
-                                                    </td>
-                                                    <td><input nz-input type="text" class="nzInput" placeholder="www">
-                                                    </td>
-                                                    <td><button type="button" class="btnDistancia" (click)="setRoute('#128c7e', this.uni)">Distancia</button>
-                                                    </td>
+                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[1][2]?true:null" [(ngModel)]="this.universidad[2].nombre"
+                                                      placeholder="Nombre"></td>
+                                                  <td>
+                                                    <nz-select class="nzSelectR" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][2]" [(ngModel)]="this.universidad[2].rama">
+                                                      <nz-option class="nzOptionR" *ngFor="let opt of ramas"
+                                                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                    </nz-select>
+                                                  </td>
+                                                  <td>
+                                                    <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][2]" [(ngModel)]="this.universidad[2].institucion">
+                                                      <nz-option class="nzOption" *ngFor="let opt of institucion"
+                                                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                    </nz-select>
+                                                  </td>
+                                                  <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[1][2]?true:null" [(ngModel)]="this.universidad[2].web">
+                                                  </td>
+                                                  <td>
+                                                    <div class="btn-group">
+                                                      <button id="univ2" type="button" class="btnDistancia" (click)="setRoute('#128c7e', this.uni, 'universidad',2,'univ2','univ2ok','btndltUniv2',1,2)">Distancia</button>
+                                                      <button id="univ2ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.universidad[2].distancia}}</button>
+                                                      <button class="btndlt" id="btndltUniv2" style="display: none;" (click)="reRackService(1,2,'univ2','univ2ok','btndltUniv2')"><i class="fas fa-trash"></i></button>
+                                                    </div>
+                                                  </td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -855,8 +1027,11 @@
                               </div>
 
                               <div class="accordion-item">
-                                <input id="accordion-trigger-3" class="accordion-trigger-input" type="checkbox">
+                                <input id="accordion-trigger-3" (click)="resizeMap()" class="accordion-trigger-input" type="checkbox">
                                 <label class="accordion-trigger" for="accordion-trigger-3">Autobuses
+                                  <span [attr.hidden]="!this.stateTexfields[2][0]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[2][1]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[2][2]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
                                 </label>
                                 <section class="accordion-animation-wrapper">
                                   <div class="accordion-animation">
@@ -878,30 +1053,45 @@
                                                   <tbody>
                                                     <tr>
                                                       <th scope="row">1</th>
-                                                      <td><input nz-input type="text" class="nzInput"
+                                                      <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][0]?true:null" [(ngModel)]="this.autobus[0].parada"
                                                           placeholder="Parada"></td>
-                                                      <td><input nz-input type="text" class="nzInput"
+                                                      <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][0]?true:null" [(ngModel)]="this.autobus[0].lineas"
                                                           placeholder="Líneas"></td>
-                                                      <td><button type="button" class="btnDistancia" (click)="setRoute('#960018', this.busic)">Distancia</button>
+                                                      <td>
+                                                        <div class="btn-group">
+                                                          <button id="bus0" type="button" class="btnDistancia" (click)="setRoute('#960018', this.busic,'autobus',0,'bus0','bus0ok','btndltBus0',2,0)">Distancia</button>
+                                                          <button id="bus0ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.autobus[0].distancia}}</button>
+                                                          <button class="btndlt" id="btndltBus0" style="display: none;" (click)="reRackService(2,0,'bus0','bus0ok','btndltBus0')"><i class="fas fa-trash"></i></button>
+                                                        </div>
                                                       </td>
                                                     </tr>
                                                     <tr>
                                                       <th scope="row">2</th>
-                                                      <td><input nz-input type="text" class="nzInput"
-                                                          placeholder="Parada"></td>
-                                                      <td><input nz-input type="text" class="nzInput"
-                                                          placeholder="Líneas"></td>
-                                                      <td><button type="button" class="btnDistancia" (click)="setRoute('#960018', this.busic)">Distancia</button>
-                                                      </td>
+                                                      <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][1]?true:null" [(ngModel)]="this.autobus[1].parada"
+                                                        placeholder="Parada"></td>
+                                                      <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][1]?true:null" [(ngModel)]="this.autobus[1].lineas"
+                                                        placeholder="Líneas"></td>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="bus1" type="button" class="btnDistancia" (click)="setRoute('#960018', this.busic,'autobus',1,'bus1','bus1ok','btndltBus1',2,1)">Distancia</button>
+                                                        <button id="bus1ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.autobus[1].distancia}}</button>
+                                                        <button class="btndlt" id="btndltBus1" style="display: none;" (click)="reRackService(2,1,'bus1','bus1ok','btndltBus1')"><i class="fas fa-trash"></i></button>
+                                                      </div>
+                                                    </td>
                                                     </tr>
                                                     <tr>
                                                       <th scope="row">3</th>
-                                                      <td><input nz-input type="text" class="nzInput"
-                                                          placeholder="Parada"></td>
-                                                      <td><input nz-input type="text" class="nzInput"
-                                                          placeholder="Líneas"></td>
-                                                      <td><button type="button" class="btnDistancia" (click)="setRoute('#960018', this.busic)">Distancia</button>
-                                                      </td>
+                                                      <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][2]?true:null" [(ngModel)]="this.autobus[2].parada"
+                                                        placeholder="Parada"></td>
+                                                      <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][2]?true:null" [(ngModel)]="this.autobus[2].lineas"
+                                                        placeholder="Líneas"></td>
+                                                    <td>
+                                                      <div class="btn-group">
+                                                        <button id="bus2" type="button" class="btnDistancia" (click)="setRoute('#960018', this.busic,'autobus',2,'bus2','bus2ok','btndltBus2',2,2)">Distancia</button>
+                                                        <button id="bus2ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.autobus[2].distancia}}</button>
+                                                        <button class="btndlt" id="btndltBus2" style="display: none;" (click)="reRackService(2,2,'bus2','bus2ok','btndltBus2')"><i class="fas fa-trash"></i></button>
+                                                      </div>
+                                                    </td>
                                                     </tr>
                                                   </tbody>
                                                 </table>
@@ -916,8 +1106,9 @@
                               </div>
 
                               <div class="accordion-item">
-                                <input id="accordion-trigger-4" class="accordion-trigger-input" type="checkbox">
+                                <input id="accordion-trigger-4" (click)="resizeMap()" class="accordion-trigger-input" type="checkbox">
                                 <label class="accordion-trigger" for="accordion-trigger-4">Metro
+                                  <span [attr.hidden]="!this.stateTexfields[3][0]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
                                 </label>
                                 <section class="accordion-animation-wrapper">
                                   <div class="accordion-animation">
@@ -939,11 +1130,16 @@
                                                   <tbody>
                                                     <tr>
                                                       <th scope="row">1</th>
-                                                      <td><input nz-input type="text" class="nzInput"
+                                                      <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[3][0]?true:null" [(ngModel)]="this.metro[0].parada"
                                                           placeholder="Parada"></td>
-                                                      <td><input nz-input type="text" class="nzInput"
+                                                      <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[3][0]?true:null" [(ngModel)]="this.metro[0].lineas"
                                                           placeholder="Líneas"></td>
-                                                      <td><button type="button" class="btnDistancia" (click)="setRoute('#d6a323', this.swi)">Distancia</button>
+                                                      <td>
+                                                        <div class="btn-group">
+                                                          <button id="metro0" type="button" class="btnDistancia" (click)="setRoute('#d6a323', this.swi,'metro',0,'metro0','metro0ok','btndltMetro0',3,0)">Distancia</button>
+                                                          <button id="metro0ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.metro[0].distancia}}</button>
+                                                          <button class="btndlt" id="btndltMetro0" style="display: none;" (click)="reRackService(3,0,'metro0','metro0ok','btndltMetro0')"><i class="fas fa-trash"></i></button>
+                                                        </div>
                                                       </td>
                                                     </tr>
                                                   </tbody>
@@ -959,8 +1155,11 @@
                               </div>
 
                               <div class="accordion-item">
-                                <input id="accordion-trigger-5" class="accordion-trigger-input" type="checkbox">
+                                <input id="accordion-trigger-5" (click)="resizeMap()" class="accordion-trigger-input" type="checkbox">
                                 <label class="accordion-trigger" for="accordion-trigger-5">Supermercados
+                                  <span [attr.hidden]="!this.stateTexfields[2][3]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[2][4]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
+                                  <span [attr.hidden]="!this.stateTexfields[2][5]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
                                 </label>
                                 <section class="accordion-animation-wrapper">
                                   <div class="accordion-animation">
@@ -982,24 +1181,39 @@
                                                     <tbody>
                                                       <tr>
                                                         <th scope="row">1</th>
-                                                        <td><input nz-input type="text" class="nzInput"
+                                                        <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][3]?true:null" [(ngModel)]="this.mercados[0].nombre"
                                                             placeholder="Nombre"></td>
-                                                        <td><button type="button"
-                                                            class="btnDistancia" (click)="setRoute('#6f5e53', this.mki)">Distancia</button></td>
+                                                        <td>
+                                                          <div class="btn-group">
+                                                            <button id="mercado0" type="button" class="btnDistancia" (click)="setRoute('#6f5e53', this.mki,'mercados',0,'mercado0','mercado0ok','btndltMercado0',2,3)">Distancia</button>
+                                                            <button id="mercado0ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.mercados[0].distancia}}</button>
+                                                            <button class="btndlt" id="btndltMercado0" style="display: none;" (click)="reRackService(2,3,'mercado0','mercado0ok','btndltMercado0')"><i class="fas fa-trash"></i></button>
+                                                          </div>
+                                                        </td>
                                                       </tr>
                                                       <tr>
                                                         <th scope="row">2</th>
-                                                        <td><input nz-input type="text" class="nzInput"
-                                                            placeholder="Nombre"></td>
-                                                        <td><button type="button"
-                                                            class="btnDistancia" (click)="setRoute('#6f5e53', this.mki)">Distancia</button></td>
+                                                        <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][4]?true:null" [(ngModel)]="this.mercados[1].nombre"
+                                                          placeholder="Nombre"></td>
+                                                      <td>
+                                                        <div class="btn-group">
+                                                          <button id="mercado1" type="button" class="btnDistancia" (click)="setRoute('#6f5e53', this.mki,'mercados',1,'mercado1','mercado1ok','btndltMercado1',2,4)">Distancia</button>
+                                                          <button id="mercado1ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.mercados[1].distancia}}</button>
+                                                          <button class="btndlt" id="btndltMercado1" style="display: none;" (click)="reRackService(2,4,'mercado1','mercado1ok','btndltMercado1')"><i class="fas fa-trash"></i></button>
+                                                        </div>
+                                                      </td>
                                                       </tr>
                                                       <tr>
                                                         <th scope="row">3</th>
-                                                        <td><input nz-input type="text" class="nzInput"
-                                                            placeholder="Nombre"></td>
-                                                        <td><button type="button"
-                                                            class="btnDistancia" (click)="setRoute('#6f5e53', this.mki)">Distancia</button></td>
+                                                        <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[2][5]?true:null" [(ngModel)]="this.mercados[2].nombre"
+                                                          placeholder="Nombre"></td>
+                                                      <td>
+                                                        <div class="btn-group">
+                                                          <button id="mercado2" type="button" class="btnDistancia" (click)="setRoute('#6f5e53', this.mki,'mercados',2,'mercado2','mercado2ok','btndltMercado2',2,5)">Distancia</button>
+                                                          <button id="mercado2ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.mercados[2].distancia}}</button>
+                                                          <button class="btndlt" id="btndltMercado2" style="display: none;" (click)="reRackService(2,5,'mercado2','mercado2ok','btndltMercado2')"><i class="fas fa-trash"></i></button>
+                                                        </div>
+                                                      </td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -1015,8 +1229,9 @@
                               </div>
 
                               <div class="accordion-item">
-                                <input id="accordion-trigger-6" class="accordion-trigger-input" type="checkbox">
+                                <input id="accordion-trigger-6" (click)="resizeMap()" class="accordion-trigger-input" type="checkbox">
                                 <label class="accordion-trigger" for="accordion-trigger-6">Aeropuerto
+                                  <span [attr.hidden]="!this.stateTexfields[3][1]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
                                 </label>
                                 <section class="accordion-animation-wrapper">
                                   <div class="accordion-animation">
@@ -1039,10 +1254,15 @@
                                                     <tbody>
                                                       <tr>
                                                         <th scope="row">1</th>
-                                                        <td><input nz-input type="text" class="nzInput"
+                                                        <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[3][1]?true:null" [(ngModel)]="this.aeropuerto[0].nombre"
                                                             placeholder="Nombre"></td>
-                                                        <td><button type="button"
-                                                            class="btnDistancia" (click)="setRoute('#3200ff', this.airp)">Distancia</button></td>
+                                                        <td>
+                                                            <div class="btn-group">
+                                                              <button id="aero0" type="button" class="btnDistancia" (click)="setRoute('#3200ff', this.airp,'aeropuerto',0,'aero0','aero0ok','btndltAero0',3,1)">Distancia</button>
+                                                              <button id="aero0ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.aeropuerto[0].distancia}}</button>
+                                                              <button class="btndlt" id="btndltAero0" style="display: none;"  (click)="reRackService(3,1,'aero0','aero0ok','btndltAero0')"><i class="fas fa-trash"></i></button>
+                                                            </div>
+                                                          </td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -1057,9 +1277,10 @@
                                 </section>
                               </div>
                               <!--  -->
-                              <div class="accordion-item">
-                                <input id="accordion-trigger-7" class="accordion-trigger-input" type="checkbox">
+                              <div class="accordion-item" style="padding-bottom: 10px;">
+                                <input id="accordion-trigger-7" (click)="resizeMap()" class="accordion-trigger-input" type="checkbox">
                                 <label class="accordion-trigger" for="accordion-trigger-7">Playa
+                                  <span [attr.hidden]="!this.stateTexfields[3][2]?true:null" class="chip primary"><img src="assets/svg/white-tick-ok.svg" style="width: 10px; height: 10px;"></span> 
                                 </label>
                                 <section class="accordion-animation-wrapper">
                                   <div class="accordion-animation">
@@ -1084,10 +1305,14 @@
                                                     <tbody>
                                                       <tr>
                                                         <th scope="row">1</th>
-                                                        <td><input nz-input type="text" class="nzInput"
+                                                        <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[3][2]?true:null" [(ngModel)]="this.beach[0].nombre"
                                                             placeholder="Nombre"></td>
-                                                        <td><button type="button"
-                                                            class="btnDistancia" (click)="setRoute('dodgerblue', this.bch)">Distancia</button>
+                                                        <td>
+                                                            <div class="btn-group">
+                                                              <button id="beach0" type="button" class="btnDistancia" (click)="setRoute('dodgerblue', this.bch,'beach',0,'beach0','beach0ok','btndltBeach0',3,2)">Distancia</button>
+                                                              <button id="beach0ok" type="button" style="display: none; background:#1ebea5" class="btnDistancia" >{{this.beach[0].distancia}}</button>
+                                                              <button class="btndlt" id="btndltBeach0" style="display: none;" (click)="reRackService(3,2,'beach0','beach0ok','btndltBeach0')"><i class="fas fa-trash"></i></button>
+                                                            </div>
                                                         </td>
                                                       </tr>
                                                     </tbody>
@@ -1142,4 +1367,5 @@
 
 <!-- Leaflet map -->
 <div id="map"></div>
-<button id="oculto" class="oculto" style="display: none;" (click)="printRoute()"></button>
+
+<button id="oculto" class="oculto" style="display: none;" (click)="saveService()"></button>
