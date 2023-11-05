@@ -333,11 +333,9 @@ star:hover {
 }
 
 /* Bootstrap buttons */
-.btn-custom {
+/*.btn-custom {
   font-size: 1.3rem;
   line-height: 1.5rem;
-  font-family: "Pangea", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-variation-settings: "XTDR" 0, "APRT" 0, "SPAC" 0;
   font-weight: 500;
   display: flex;
   -moz-box-align: center;
@@ -357,6 +355,26 @@ star:hover {
   text-decoration: none;
   min-height: 3rem;
   min-width: 3rem;
+}*/
+
+.button_custom{
+  display : block;
+  width : auto;
+  font-family : Arial, Helvetica, sans-serif;
+  font-weight : 700;
+  background-color : #3a3b3c;
+  border-radius : 10px;
+  padding : 15px 30px;
+  /*margin : 150px 130px;*/
+  color : #fff;
+  text-decoration : none;
+  box-shadow : 2px 2px 8px #000;
+}
+
+.button_custom:hover{
+  background-color : transparent;
+  border : 2px solid #3a3b3c;
+  color : #3a3b3c;
 }
 
 .inputValue {
@@ -1024,4 +1042,10 @@ input:checked ~ .checkbox2 {
 }
 /* end checkboxes 2 */
 
+/* Lista horizontal */
+.lista1 li{
+  display:inline;
+  padding-left:3px;
+  padding-right:3px;
+}
 /* Select para las emisiones y el consume sin js :> */

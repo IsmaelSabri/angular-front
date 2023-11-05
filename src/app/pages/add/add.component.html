@@ -1,50 +1,71 @@
-<p>add works!</p>
-
-
-<!-- modal contact form --><!--
-<div class="modal draggable fade bd-example-modal-lg" id="contact_form" tabindex="-1" rol="dialog"
-  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog" rol="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-center">Formulario de contacto</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+<!-- Header Start -->
+<div class="header-wrap">
+  <header>
+    <div class="container">
+      <!-- Logo Start -->
+      <div class="logo">
+        <a href="#">
+          <img
+            src="assets/img/tmp/unknown-house.png"
+            width="80px;"
+            height="80px"
+            alt="Real Estate"
+          />
+        </a>
       </div>
-      <div class="modal-body">
-        <div>
-          <form method="post" (ngSubmit)="contactMessage()" id="contactForm">
-            <div class="form-group">
-              <label for="Nombre">Nombre</label>
-              <input type="text" name="nombre" required [(ngModel)]="contactUser.nombre" placeholder="nombre"
-                class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="correo">Correo electrónico</label>
-              <input type="text" name="correo" required [(ngModel)]="contactUser.correo" placeholder="correo"
-                class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="numero">Teléfono</label>
-              <input type="text" ngModel pattern="\d*" maxlength="12" (keypress)="numberOnly($event)" name="numero"
-                required [(ngModel)]="contactUser.telefono" placeholder="Numero" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="descripcion">Mensaje</label>
-              <textarea required
-                style="resize:none; border-radius:5px; height:100px; width:465px; background-color:white;color:black;"
-                [(ngModel)]='contactUser.mensaje' rows="30" cols="120">
-                  </textarea>
-            </div>
-            <button type="submit" style="display: none;" id="new-user-save"></button>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="contact-form-close">Cerrar</button>
-              <input type="submit" class="btn btn-primary" value="Enviar">
-            </div>
-          </form>
+      <!-- Logo End -->
+      <button class="menu-toggle">
+        <i class="ri-menu-fill bar-icon"></i>
+        <i class="ri-close-fill close-icon"></i>
+      </button>
+      <div class="header-right">
+        <!-- Header Menu Start -->
+        <div class="menu">
+          <ul>
+            <li><a routerLink="/home">Mapa</a></li>
+            <li><a href="#">Propiedades</a></li>
+            <li><a href="#">Agentes</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
         </div>
+        <!-- Header Menu End -->
+        <!-- Header Cta Start -->
+        <div class="cta">
+          <a href="#" class="btn btn-outline-primary">Entrar</a>
+        </div>
+        <!-- Header Cta End -->
       </div>
     </div>
+  </header>
+</div>
+<!-- Header End -->
+
+<!-- view property section starts  -->
+<section>
+  <div class="row">
+    <div class="col-8 colcontainer">
+      <div class="gallery">
+        <div class="gallery__item">
+          <ng-container *ngFor="let image of _albums; let i = index">
+            <img *ngIf="i<3" class="image" [src]="image.thumb" (click)="open(i)" />
+          </ng-container>
+        </div>
+      </div>
+      <div class="gallery">
+      <div class="gallery__item">
+         <ng-container *ngFor="let image of _albums.slice(3); let i = index">
+           <img *ngIf="i<3" class="image" [src]="image.thumb" (click)="open(i+3)" />
+         </ng-container>
+       </div>
+       </div>
+    </div>
+    <div class="col-4 colcontainer">
+         <div class="gallery__item_2" style="display: flex;">
+            <ng-container *ngFor="let image of _albums.slice(6); let i = index" style="height: 100%;">
+              <img *ngIf="i<1" class="image" [src]="image.thumb" (click)="open(i+6)" style="border-radius: 0.25rem;"/>
+            </ng-container>
+          </div>
+    </div>
   </div>
-</div>-->
+</section>
+<!-- view property section ends -->

@@ -43,12 +43,14 @@ import { IonicModule } from '@ionic/angular';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import {MatSelectModule} from '@angular/material/select'; 
-import {MatTableModule} from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select'; 
+import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { PasswordComponent } from './components/password/password.component';
 import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, GoogleSigninButtonDirective,
-  GoogleSigninButtonModule, FacebookLoginProvider } from '@abacritt/angularx-social-login';
+          GoogleSigninButtonModule, FacebookLoginProvider } from '@abacritt/angularx-social-login';
+import { CloudinaryModule } from '@cloudinary/ng';
+import { LightboxModule } from 'ngx-lightbox';
 
 @NgModule({
   declarations: [
@@ -96,6 +98,8 @@ import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, Google
     MatIconModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
+    CloudinaryModule,
+    LightboxModule,
   ],
   exports: [
     // to get component in another modules

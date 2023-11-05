@@ -57,7 +57,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.authenticationService.login(user).subscribe({
         next: (response) => {
           localStorage.clear();
-          console.log(response);
+          //console.log(response);
+          //console.log(response.body);
+          this.authenticationService.addUserToLocalCache(response.body);
           this.authenticationService.saveToken(response.body.token);
           this.authenticationService.saveRefreshToken(
             response.body.refreshToken
@@ -65,7 +67,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           const tokenPayload = this.authenticationService.decodedToken();
           this.userService.setFullName(tokenPayload.name);
           this.userService.setRole(tokenPayload.role);
-          this.authenticationService.addUserToLocalCache(response.body);
           this.router.navigateByUrl('/home');
           this.showLoading = false;
         },

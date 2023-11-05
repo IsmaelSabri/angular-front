@@ -1,3 +1,4 @@
+import { HomeService } from 'src/app/service/home.service';
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
@@ -9,6 +10,7 @@ import { Home } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { Fancied } from 'src/app/model/fancied';
 import { ContactUser } from 'src/app/model/contact-user';
+import { Lightbox } from 'ngx-lightbox';
 
 @Component({
   selector: 'app-add',
@@ -17,7 +19,6 @@ import { ContactUser } from 'src/app/model/contact-user';
 })
 export class AddComponent extends UserComponent implements OnInit, OnDestroy{
 
-  home:Home=new Home();
   fancied: Fancied=new Fancied();
   aux:string;
   public refreshing: boolean;
@@ -30,6 +31,8 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy{
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
+    private homeService: HomeService,
+    private _lightbox: Lightbox,
   ) {
     super(
       router,
@@ -41,6 +44,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy{
     );
   }
 
+  home:Home=this.homeService.getHomeFromLocalCache();
 
   public contactMessage(){
     this.refreshing=true;
@@ -68,10 +72,30 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy{
 
   }
 
-
+_albums:any = [];
   ngOnInit(): void {
     this.home=JSON.parse(localStorage.getItem("currentBuilding"));
+    setTimeout(()=>{
+      for (let i = 0; i <this.home.images.length; i++) {
+        const src = this.home.images[i].imageUrl + i + '.jpg';
+        const caption = i + ' / ' + this.home.images.length;
+        const thumb = this.home.images[i].imageUrl + i + '.jpg';
+        const album = {
+           src: src,
+           caption: caption,
+           thumb: thumb
+        };
+        this._albums.push(album);
+      }
+    },1000);
   }
+
+  open(index: number): void {
+    // open lightbox
+    this._lightbox.open(this._albums, index);
+  }
+
+  submitHouseDetails() {}
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

@@ -8,7 +8,7 @@ export class Home {
   cp: string;
   habitaciones: string;
   aseos: string;
-  aseoEnsuite: boolean;
+  aseoEnsuite: boolean = false;
   superficie: string;
   condicion: string;
   tipo: string;
@@ -18,90 +18,91 @@ export class Home {
   precioM2: string;
   duracion: string;
   descripcion: string;
-  armariosEmpotrados: string;
-  terraza: boolean;
-  piscinaPrivada: boolean;
-  parquet: boolean;
+  armariosEmpotrados: boolean = false;
+  terraza: boolean = false;
+  piscinaPrivada: boolean = false;
+  parquet: boolean = false;
   antiguedad: string;
   garage: string;
   estado: string; // nuevo, usado, a-reformar
   distanciaAlMar: string;
-  creador: string;
+  creador: string; // userId
+  nombreCreador:string; // username
   fechaCreacion: string;
   fechaUltimaModificacion: string;
   numeroVisitas: string;
   comentario: string;
   destacar: string;
   model:string;
-  // foto
-  imageUrl: string;
-  imageName: string;
-  imageId: string;
-  foto: File;
-  // video -> vip
-  video: string; // url
-  amueblado:boolean;
+  imagesAsString:string
+  images=new Array<HomeImage>(30);
+  video: string;
+  amueblado:boolean = false;
   streetView:string;
-  direccionAproximada:boolean;
-  gasNatural:boolean;
-
-  // House profile
-  alarma: boolean;
-  recepcion24_7: boolean;
-  videoVigilancia: boolean;
-  alarmaIncendios: boolean;
-  extintores: boolean;
-  aireAcondicionado: boolean;
-  calefaccion: boolean;
-  panelesSolares: boolean;
-  eficienciaEnergetica: boolean;
-  colegios: string;
+  direccionAproximada:boolean = false;
+  gasNatural:boolean = false;
   universidades:string;
-  supermercados:string;
   metro: string;
   bus: string;
+
+  // House profile
+  alarma: boolean = false;
+  recepcion24_7: boolean = false;
+  videoVigilancia: boolean = false;
+  alarmaIncendios: boolean = false;
+  extintores: boolean = false;
+  aireAcondicionado: boolean = false;
+  calefaccion: boolean = false;
+  panelesSolares: boolean = false;
+  eficienciaEnergetica: boolean = false;
+  colegios: string;
+  supermercados:string;
   consumo:string;
   emisiones:string;
+  generadorEmergencia:boolean = false;
+  aeropuerto:string;
+
 
   // Flat profile
-  ascensor: boolean;
-  trastero: boolean;
-  vistasDespejadas: string;
-  bajoOplantabaja: string;
-  instalacionesDiscapacitados: boolean;
+  ascensor: boolean = false;
+  trastero: boolean = false;
+  vistasDespejadas: boolean = false;
+  bajoOplantabaja: boolean = false;
+  instalacionesDiscapacitados: boolean = false;
   puerta: string;
   piso: string;
-  balcon: string;
-  videoPortero: string;
-  plantaMasAlta:boolean;
+  balcon: boolean = false;
+  videoPortero: boolean = false;
+  plantaMasAlta:boolean = false;
   // Gated community ameninites
-  jardin: boolean;
-  piscinaComp: boolean;
-  columpios: boolean;
-  gym: boolean;
-  tenis: boolean;
-  padel: boolean;
-  sauna: boolean;
-  jacuzzi: boolean;
-  golf: boolean;
+  jardin: boolean = false;
+  piscinaComp: boolean = false;
+  columpios: boolean = false;
+  gym: boolean = false;
+  tenis: boolean = false;
+  padel: boolean = false;
+  sauna: boolean = false;
+  jacuzzi: boolean = false;
+  golf: boolean = false;
+  zonaDeOcio:boolean = false
 
   // Home4rent profile
-  mascotas: boolean;
+  mascotas: boolean = false;
   fianza: number;
   disponibilidad: string;
   estanciaMinima: number; // meses
 
   // Room profile
   // We accept:
-  sepuedeFumar: boolean;
-  seadmitenParejas: boolean;
-  seadmitenMenoresdeedad: boolean;
-  seadmitenMochileros: boolean;
-  seadmitenJubilados: boolean;
-  seadmiteLGTBI: boolean;
+  sepuedeFumar: boolean = false;
+  seadmitenParejas: boolean = false;
+  seadmitenMenoresdeedad: boolean = false;
+  seadmitenMochileros: boolean = false;
+  seadmitenJubilados: boolean = false;
+  seadmiteLGTBI: boolean = false;
   perfilCompartir: string; // chico, chica, ambos ENUM
   habitantesActualmente: string;
-  propietarioviveEnlacasa: boolean;
+  propietarioviveEnlacasa: boolean = false;
   ambiente: string; // estudiantes, funcionarios, grupo social...
   gastos: string; // incluidos, no incluidos, luz aparte etc
 
@@ -115,23 +116,23 @@ export class Home {
   numeroRegistro: string;
   personas: string;
   camas: string;
-  toallas: boolean;
-  sabanas: boolean;
-  tv: boolean;
-  tvCable: boolean;
-  microondas: boolean;
-  lavavajillas: boolean;
-  lavadora: boolean;
-  secadora: boolean;
-  cafetera: boolean;
-  plancha: boolean;
-  cuna: boolean;
-  secadorDePelo: boolean;
-  wifi: boolean;
-  primeraLineaPlaya: boolean;
-  chimenea: boolean;
-  mueblesJardin: boolean;
-  barbacoa:boolean;
+  toallas: boolean = false;
+  sabanas: boolean = false;
+  tv: boolean = false;
+  tvCable: boolean = false;
+  microondas: boolean = false;
+  lavavajillas: boolean = false;
+  lavadora: boolean = false;
+  secadora: boolean = false;
+  cafetera: boolean = false;
+  plancha: boolean = false;
+  cuna: boolean = false;
+  secadorDePelo: boolean = false;
+  wifi: boolean = false;
+  primeraLineaPlaya: boolean = false;
+  chimenea: boolean = false;
+  mueblesJardin: boolean = false;
+  barbacoa:boolean = false;
 
   valoracionesUsuarios: string;
   valoraciones: number;
@@ -202,12 +203,9 @@ export interface Beach{
   tiempo:string;
 }
 
-var COLEGIO: Colegio[] = [
-  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
-  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
-  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
-  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
-  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
-  {lat:'',lng:'', nombre: '', ensenyanza: '', institucion: '', web: 'H',distancia:'',tiempo:''},
-
-];
+export interface HomeImage{
+    imageUrl: string;
+    imageName: string;
+    imageId: string;
+    imageDeleteUrl:string;
+}

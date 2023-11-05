@@ -278,12 +278,20 @@ export class UserComponent implements OnInit, OnDestroy {
     document.getElementById(buttonId).click();
   }
 
-  numberOnly(event): boolean {
+  protected numberOnly(event): boolean {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode >= 31 && (charCode < 48 || charCode > 57)) {
       return false;
     }
     return true;
+  }
+
+  isEmptyArray(array: unknown): array is Array<unknown> {
+    if (Array.isArray(array) && array.length) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   ngOnDestroy(): void {

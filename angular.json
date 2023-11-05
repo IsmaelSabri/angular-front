@@ -35,19 +35,20 @@
             "styles": [
               "node_modules/ngx-toastr/toastr.css",
               "src/styles.css",
-              "src/assets/css/slick.css",
-              "src/assets/css/style.css",
               "src/assets/css/nouislider.css",
-              "src/assets/css/jquery.fancybox.css",
               "src/assets/css/font-awesome.css",
               "src/assets/css/default-theme.css",
+              "src/assets/css/style.css",
+              "src/assets/css/style.min.css",
               "src/assets/css/bootstrap.css",
               "src/app/home/custom-leaflet.css",
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+              "node_modules/ngx-lightbox/lightbox.css"
             ],
             "scripts": [
               "src/assets/js/home.utils.js",
+              "src/assets/js/script.min.js",
               "node_modules/jquery/dist/jquery.min.js"
             ]
           },

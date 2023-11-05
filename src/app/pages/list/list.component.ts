@@ -18,8 +18,6 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./list.component.css'],
 })
 export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
-  public homes: Home[];
-
   constructor(
     router: Router,
     authenticationService: AuthenticationService,
@@ -42,25 +40,18 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnInit(): void {}
-
-  /*public getBuildings(): void {
-    this.refreshing = true;
-    this.subscriptions.push(
-      this.propertyService.getBuildings().subscribe(
-        (response: Property[]) => {
-          this.propertyService.addBuildingsToLocalCache(response);
-          this.properties = response;
-          this.refreshing = false;
-        }
-      )
-    );
-  }*/
-
-search(){
-
-}
-
+  ngOnInit(): void {
+    if(!this.isEmptyArray(this.homes)){
+      this.subscriptions.push(
+        this.homeService.getHomes().subscribe((response: Home[]) => {
+          this.homeService.addHomesToLocalCache(response);
+          this.homes = response;
+          this.refreshing = false;    
+          console.log(JSON.stringify(this.homes));
+        })
+      );
+    }
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

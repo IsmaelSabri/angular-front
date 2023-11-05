@@ -52,7 +52,7 @@
       </li>
       <li>
         <a class="nav-link"><button class="navbar-toggler menuHM shadow-none" data-bs-toggle="collapse"
-            data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+            data-bs-target=".collapse" aria-controls="navbarToggleExternalContent"
             aria-expanded="false" aria-label="Toggle navigation"
             onclick="this.classList.toggle('opened');this.setAttribute('aria-expanded', this.classList.contains('opened'))"
             aria-label="Main Menu">
@@ -68,31 +68,27 @@
       </li>
     </ul>
   </nav>
-
 </header>
 
 <!--collapse navbar-->
 <div class="collapse" id="navbarToggleExternalContent">
   <div class="container-fluid">
     <nav style="display: block;">
-      <ul class="nav-links nav  "
-        style="padding-right:2%;list-style:none;padding:0;margin:0;display:inline-block;overflow-x:auto;white-space:nowrap;flex-wrap:inherit;">
+      <ul class="nav-links nav lista1">
         <li class="nav-item active pr-3">
           <a routerLink="/home" class="nav-link"> Comprar </a>
           <!--<li class="nav-item pr-3">
-            <a href="#" [hidden]="!isAdmin" class="nav-link disabled" routerLink="/user/management"> Usuarios</a>
+            <a  [hidden]="!isAdmin" class="nav-link disabled" routerLink="/user/management"> Usuarios</a>
           </li>-->
         <li class="nav-item pr-3">
-          <a href="#" class="nav-link disabled"> Vender </a>
+          <a  class="nav-link disabled"> Vender </a>
         </li>
         <li class="nav-item pr-3">
-          <a href="#" class="nav-link " routerLink="/list"> Vendido </a>
+          <a  class="nav-link " routerLink="/list"> Vendido </a>
         </li>
         <li class="nav-item pr-3">
           <a routerLink="/vlog" class="nav-link"> Compartir </a>
         </li>
-
-
         <li class="nav-item pr-3">
           <a [routerLink]="" class="nav-link"> Buscar agentes
           </a>
@@ -102,10 +98,10 @@
           </a>
         </li>
         <li class="nav-item pr-3">
-          <a href="#" class="nav-link" routerLink=""> Comercial </a>
+          <a  class="nav-link" routerLink=""> Comercial </a>
         </li>
         <li class="nav-item pr-3">
-          <a href="#" class="nav-link" routerLink=""> Vivir en España </a>
+          <a  class="nav-link" routerLink=""> Vivir en España </a>
         </li>
       </ul>
     </nav>
@@ -126,17 +122,17 @@
       <a routerLink="" class="nav-link nav-border"> Precio </a>
     </li>
     <!--<li class="nav-item pr-3">
-          <a href="#" [hidden]="!isAdmin" class="nav-link disabled" routerLink="/user/management"> Usuarios</a>
+          <a  [hidden]="!isAdmin" class="nav-link disabled" routerLink="/user/management"> Usuarios</a>
         </li>-->
     <li class="nav-item pr-3">
-      <a href="#" class="nav-link nav-border"> Habitaciones </a>
+      <a class="nav-link nav-border"> Habitaciones </a>
     </li>
     <li class="nav-item pr-3">
       <a routerLink="/vlog" class="nav-link nav-border"><span nz-icon nzType="sliders" nzTheme="outline"
           style="position: relative; bottom: 3px;"></span> Filtros </a>
     </li>
     <li class="nav-item pr-3">
-      <a href="#" class="nav-link nav-border" routerLink="/list"><span nz-icon nzType="bars" nzTheme="outline"
+      <a class="nav-link nav-border" routerLink="/list"><span nz-icon nzType="bars" nzTheme="outline"
           style="position: relative; bottom: 3px;"></span> Lista </a>
     </li>
   </ul>
@@ -161,21 +157,21 @@
       </div>
       <div class="modal-body scrollspy-example bg-light p-3 rounded-2" data-bs-spy="scroll" data-bs-smooth-scroll="true"
         tabindex="0">
-        <form #newMarkerForm="ngForm" method="post" (ngSubmit)="createHome2()" id="markerForm"
+        <form #newMarkerForm="ngForm" method="post" (ngSubmit)="newHome()" id="markerForm"
           style="margin-top: 15px;">
           <nz-tabset [nzTabBarExtraContent]="" [nzSize]="'large'" nz-row [nzTabBarStyle]=""
             style="color: #3a3b3c; display: block; align-items: center; justify-content: space-between; width: 100%; ">
             <nz-tab [nzTitle]="'Ubicación '" nz-col nzSpan="8">
               <!--introducir provincia-->
               <div class="container-fluid">
-                <button class="btn btn-custom" id="provButton"
+                <a class=" button_custom" id="provButton"
                   style=" align-items: center; display: block; width: 100%;" (click)="locationMap()">
                   Provincia
-                </button>
-                <button class="btn btn-custom" id="provButton2"
+              </a>
+                <a class=" button_custom" id="provButton2"
                   style=" align-items: center; display: none; width: 100%;" (click)="showCityResult()">
                   Ok
-                </button>
+            </a>
               </div>
               <div id="map_2" style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
               </div>
@@ -183,20 +179,20 @@
               <div class="form-group" style="margin-top: 20px; padding-left: 4px;">
                 <label for="calle">Calle</label>
                 <input style="border:1px solid #bcd1c6;" class="form-control inputValue" id="" type="text" name="calle"
-                  required [(ngModel)]="home.calle" placeholder="Calle, avenida, plaza...">
+                  required [(ngModel)]="this.home.calle" placeholder="Calle, avenida, plaza...">
               </div>
               <div class="form-group row" style="margin-top: 38px;">
                 <div class="col" style="padding-left: 21px;">
                   <label for="numero">Número</label>
                   <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
                     type="text" ngModel pattern="\d*" maxlength="3" (keypress)="numberOnly($event)" name="numero"
-                    required [(ngModel)]="home.numero" placeholder="Numero">
+                    required [(ngModel)]="this.home.numero" placeholder="Numero">
                 </div>
                 <div class="col" style="padding-left: 21px;">
                   <label for="cp">Código postal</label>
                   <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
                     type="text" ngModel pattern="\d*" maxlength="5" (keypress)="numberOnly($event)" name="cp" required
-                    [(ngModel)]="home.cp" placeholder="Código postal">
+                    [(ngModel)]="this.home.cp" placeholder="Código postal">
                 </div>
               </div>
               <!-- Superficie y Garage -->
@@ -205,13 +201,13 @@
                   <label for="superficie">Superficie</label>
                   <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
                     type="text" ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)" name="superfice"
-                    required [(ngModel)]="home.superficie" placeholder="M²">
+                    required [(ngModel)]="this.home.superficie" placeholder="M²">
                 </div>
                 <div class="col" style="padding-left: 21px;">
                   <label for="garage">Aparcamientos</label>
                   <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
                     type="text" ngModel pattern="\d*" maxlength="5" (keypress)="numberOnly($event)" name="garage"
-                    required [(ngModel)]="home.garage" placeholder="Nº">
+                    required [(ngModel)]="this.home.garage" placeholder="Nº">
                 </div>
               </div>
               <!-- Opción a la que se destina y tipo -->
@@ -220,7 +216,7 @@
                   <label for="opcion">Alquiler - Venta ...</label>
                   <mat-form-field floatLabel="never" appearance="outline" class="search no-label">
                     <!--<mat-label>Opción</mat-label>-->
-                    <mat-select #optionInput="ngModel" [(ngModel)]="home.condicion" panelClass="example-panel" required>
+                    <mat-select #optionInput="ngModel" [(ngModel)]="this.home.condicion" panelClass="example-panel" required>
                       <mat-option *ngFor="let opt of condicion" [value]="opt">
                         {{opt}}
                       </mat-option>
@@ -234,7 +230,7 @@
                   <label for="Tipo">Tipo de inmueble</label>
                   <mat-form-field [floatLabel]="'never'" appearance="outline" class="search no-label">
                     <!--<mat-label>Tipo</mat-label>-->
-                    <mat-select #typeInput="ngModel" [(ngModel)]="home.tipo" panelClass="example-panel" required>
+                    <mat-select #typeInput="ngModel" [(ngModel)]="this.home.tipo" panelClass="example-panel" required>
                       <mat-option *ngFor="let opt of tipo" [value]="opt">
                         {{opt}}
                       </mat-option>
@@ -252,14 +248,14 @@
                     <label for="habitaciones">Habitaciones</label>
                     <input #roomsInput="ngModel" style="border:1px solid #bcd1c6; width: 212px;"
                       class="form-control inputValue" id="rooms" type="text" ngModel pattern="\d*" maxlength="3"
-                      (keypress)="numberOnly($event)" name="habitaciones" required [(ngModel)]="home.habitaciones"
+                      (keypress)="numberOnly($event)" name="habitaciones" required [(ngModel)]="this.home.habitaciones"
                       placeholder="0-999">
                   </div>
                   <div class="col" style="padding-left: 21px;">
                     <label for="baños">Baños</label>
                     <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
                       type="text" ngModel pattern="\d*" maxlength="3" (keypress)="numberOnly($event)" name="baños"
-                      required [(ngModel)]="home.aseos" placeholder="Aseos">
+                      required [(ngModel)]="this.home.aseos" placeholder="Aseos">
                   </div>
                 </div>
               </div>
@@ -269,7 +265,7 @@
                   <label for="estado">Estado</label>
                   <mat-form-field floatLabel="never" appearance="outline" class="search no-label">
                     <!--<mat-label>Opción</mat-label>-->
-                    <mat-select #stateInput="ngModel" [(ngModel)]="home.estado" panelClass="example-panel" required>
+                    <mat-select #stateInput="ngModel" [(ngModel)]="this.home.estado" panelClass="example-panel" required>
                       <mat-option *ngFor="let opt of propertyState" [value]="opt">
                         {{opt}}
                       </mat-option>
@@ -283,7 +279,7 @@
                   <label for="badge">Destacar</label>
                   <mat-form-field [floatLabel]="'never'" appearance="outline" class="search no-label">
                     <!--<mat-label>Tipo</mat-label>-->
-                    <mat-select #badgeInput="ngModel" [(ngModel)]="home.destacar" panelClass="example-panel" required>
+                    <mat-select #badgeInput="ngModel" [(ngModel)]="this.home.destacar" panelClass="example-panel" required>
                       <mat-option *ngFor="let opt of badge" [value]="opt">
                         {{opt}}
                       </mat-option>
@@ -301,33 +297,19 @@
                     <label for="antiguedad">Año de construcción</label>
                     <input #antiguedadInput="ngModel" style="border:1px solid #bcd1c6; width: 212px;"
                       class="form-control inputValue" id="antiguedad" type="text" ngModel pattern="\d*" maxlength="4"
-                      (keypress)="numberOnly($event)" name="antiguedad" required [(ngModel)]="home.antiguedad"
+                      (keypress)="numberOnly($event)" name="antiguedad" required [(ngModel)]="this.home.antiguedad"
                       placeholder="AC-2023">
                   </div>
                   <div class="col" style="padding-left: 21px;">
                     <label for="precio">Precio</label>
                     <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id="precio"
                       type="text" ngModel pattern="\d*" maxlength="9" (keypress)="numberOnly($event)" name="precio"
-                      required [(ngModel)]="home.precioFinal" placeholder="€">
+                      required [(ngModel)]="this.home.precioFinal" placeholder="€">
                   </div>
                 </div>
               </div>
             </nz-tab>
-            <!-- 
 
-                <li>
-                  <mat-card class="result">
-                    <mat-card-content>
-                      <h2 class="example-h2">Favorito</h2>
-                      <section class="example-section">
-                        <mat-checkbox class="example-margin" (change)="changeEvent($event)"
-                          (indeterminateChange)="checkBox($event)" class="example-margin" [checked]="IsChecked"
-                          [(indeterminate)]="IsIndeterminate" [labelPosition]="LabelAlign" [disabled]="IsDisabled">
-                        </mat-checkbox>
-                      </section>
-                    </mat-card-content>
-                  </mat-card>
-                </li>-->
             <nz-tab [nzTitle]="'General'" nz-col nzSpan="8">
               <div class="form-group ">
                 <!-- Energía y climatización -->
@@ -341,13 +323,13 @@
                   style="padding-left: 21px; margin-top: 17px; ">
                   <div class="col ">
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <input type="checkbox" [(ngModel)]="this.home.aireAcondicionado" (change)="checkBox(this.home.aireAcondicionado?true:false)" class="c-material-che__hidden form-check-input"  />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Aire acondicionado</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="2" />
+                      <input type="checkbox" [(ngModel)]="this.home.gasNatural"  class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Gas natural</span>
                     </label>
@@ -355,13 +337,13 @@
                   </div>
                   <div class="col ">
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <input type="checkbox" [(ngModel)]="this.home.panelesSolares" class="c-material-che__hidden form-check-input" value="1" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Paneles solares</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="2" />
+                      <input type="checkbox" [(ngModel)]="this.home.calefaccion" class="c-material-che__hidden form-check-input" value="2" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Calefacción</span>
                     </label>
@@ -371,12 +353,12 @@
                 </div>
                 <div class="row row-cols-12" style="padding-left: 16px; border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col-10">
-                    <nz-select class="nzSelectL" nzPlaceHolder="Emisiones" [nzSize]="size" [(ngModel)]="this.home.emisiones" >
+                    <nz-select class="nzSelectL form-control" required nzPlaceHolder="Emisiones" [nzSize]="size" [(ngModel)]="this.home.emisiones" >
                       <nz-option class="nzOptionL" *ngFor="let opt of calificacion_emisiones"
                       [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
                     <br>
-                    <nz-select class="nzSelectL" nzPlaceHolder="Consumo" [nzSize]="size" [(ngModel)]="this.home.consumo">
+                    <nz-select class="nzSelectL form-control" required nzPlaceHolder="Consumo" [nzSize]="size" [(ngModel)]="this.home.consumo">
                       <nz-option class="nzOptionL" *ngFor="let opt of calificacion_consumo"
                         [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
@@ -397,37 +379,37 @@
                   style="padding-left: 21px; margin-top: 17px; border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col">
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <input type="checkbox" [(ngModel)]="this.home.ascensor" class="c-material-che__hidden form-check-input"/>
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Ascensor</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <input type="checkbox" [(ngModel)]="this.home.gym" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Gimnasio</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="2" />
+                      <input type="checkbox" [(ngModel)]="this.home.tenis" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Tenis</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="3" />
+                      <input type="checkbox" [(ngModel)]="this.home.padel" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Padel</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="3" />
+                      <input type="checkbox" [(ngModel)]="this.home.piscinaComp" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Piscina</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="3" />
+                      <input type="checkbox" [(ngModel)]="this.home.zonaDeOcio" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Zona de ocio</span>
                     </label>
@@ -435,37 +417,37 @@
                   </div>
                   <div class="col">
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <input type="checkbox" [(ngModel)]="this.home.videoPortero" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Videoportero</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <input type="checkbox" [(ngModel)]="this.home.sauna" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Sauna</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="2" />
+                      <input type="checkbox" [(ngModel)]="this.home.jacuzzi"  class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Jacuzzi</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="3" />
+                      <input type="checkbox" [(ngModel)]="this.home.golf"  class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Golf</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="3" />
+                      <input type="checkbox" [(ngModel)]="this.home.jardin"  class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Jardín</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="3" />
+                      <input type="checkbox" [(ngModel)]="this.home.columpios"  class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Columpios</span>
                     </label>
@@ -484,19 +466,19 @@
                   style="padding-left: 21px; margin-top: 17px; border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col">
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <input type="checkbox" [(ngModel)]="this.home.recepcion24_7"  class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Recepción 24/7</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="2" />
+                      <input type="checkbox" [(ngModel)]="this.home.videoVigilancia"  class="c-material-che__hidden form-check-input"/>
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Video vigilancia</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="3" />
+                      <input type="checkbox" [(ngModel)]="this.home.alarmaIncendios" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Alarma de incendios</span>
                     </label>
@@ -504,19 +486,19 @@
                   </div>
                   <div class="col">
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="1" />
+                      <input type="checkbox" [(ngModel)]="this.home.extintores"  class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Extintores</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="2" />
+                      <input type="checkbox" [(ngModel)]="this.home.generadorEmergencia" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
-                      <span class="c-material-che__label">Generador de emergencia</span>
+                      <span class="c-material-che__label">Generador de emergencia <i class="bi bi-lightning-charge"></i></span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" class="c-material-che__hidden" value="3" />
+                      <input type="checkbox" [(ngModel)]="this.home.instalacionesDiscapacitados" class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <span class="c-material-che__label">Vivienda accesible</span>
                     </label>
@@ -543,14 +525,6 @@
             </nz-tab>
 
 
-
-
-
-
-
-
-
-
             <!-- Acabados -->
               <nz-tab [nzTitle]="'Acabados'" nz-col nzSpan="8">
               <div class="form-group">
@@ -565,63 +539,63 @@
                 <div class="col">
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.terraza" (change)="checkBox(this.home.terraza?true:false)" id="checkboxTerraza"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Terraza</span>
+                    <label for="checkboxTerraza">Terraza</label>
                   </div>
                   <br>
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.amueblado" id="checkboxAmueblado"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Amueblado completo</span>
+                    <label for="checkboxAmueblado">Amueblado completo</label>
                   </div>
                   <br>
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.parquet" id="checkboxParquet"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Parquet</span>
+                    <label for="checkboxParquet">Parquet</label>
                   </div>
                   <br>
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.plantaMasAlta" id="checkboxPlantaAlta"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Planta mas alta del edificio</span>
+                    <label for="checkboxPlantaAlta">Planta mas alta del edificio</label>
                   </div>
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.trastero" id="checkboxTrastero"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Trastero</span>
+                    <label for="checkboxTrastero">Trastero</label>
                   </div>
                 </div>
                 <div class="col">
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" [(ngModel)]="this.home.armariosEmpotrados" class="inputCheckbox2 form-check-input" id="checkboxAEmpotrados"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Armarios empotrados</span>
+                    <label for="checkboxAEmpotrados">Armarios empotrados</label>
                   </div>
                   <br>
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.piscinaPrivada" id="checkboxPP"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Piscina privada</span>
+                    <label for="checkboxPP">Piscina privada</label>
                   </div>
                   <br>
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2" id="checkboxAseoEnsuite"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.aseoEnsuite" id="checkboxAseoEnsuite"/>
                       <span class="checkbox2"></span>
                     </label>
                     <label for="checkboxAseoEnsuite">Aseo ensuite</label>
@@ -629,46 +603,87 @@
                   <br>
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.balcon" id="checkboxBalcon"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Balcón</span>
+                    <label for="checkboxBalcon">Balcón</label>
                   </div>
                   <br>
                   <div class="item">
                     <label class="labelsCh2">
-                      <input type="checkbox" class="inputCheckbox2"/>
+                      <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.vistasDespejadas" id="checkboxVistas"/>
                       <span class="checkbox2"></span>
                     </label>
-                    <span>Vistas despejadas</span>
+                    <label for="checkboxVistas">Vistas despejadas</label>
                   </div>
                 </div>
                   <br class="brboom">
                </div>
               </div>
-              
           </nz-tab>
 
-
-
-
-
-            <!-- Vivienda -->
-            <nz-tab [nzTitle]="'Piso'" nz-col nzSpan="8" [nzDisabled]="home.tipo=='Piso'">
-              <div class="form-group">
+           <!-- Vivienda -->
+            <nz-tab [nzTitle]="'Piso'" nz-col nzSpan="8" [nzDisabled]="false">
+              <div *ngFor="let progressInfo of progressInfos" class="mb-2">
+                <span>{{ progressInfo.fileName }}</span>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                    attr.aria-valuenow="{{ progressInfo.value }}" aria-valuemin="0" aria-valuemax="100" 
+                    [ngStyle]="{ width: progressInfo.value + '%' }" >
+                    {{ progressInfo.value }}%
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-8">
+                  <label class="btn btn-default p-0">
+                    <input type="file" accept="image/*" multiple (change)="selectFiles($event)" />
+                  </label>
+                </div>
+                <!--<div class="col-4">
+                  <button class="btn btn-success btn-sm" [disabled]="!selectedFiles" (click)="uploadFiles()">
+                    Guardar
+                  </button>
+                </div>-->
+              </div>
+              
+              <div>
+                <img *ngFor='let preview of previews' [src]=this.preview class="preview" style="max-width: 60px; padding:5px; border-radius: 4px;">
+              </div>
+              
+              <div *ngIf="message.length" class="alert alert-secondary my-3" role="alert">
+                <ul *ngFor="let msg of message; let i = index">
+                  <li>{{ msg }}</li>
+                </ul>
+              </div>
+              
+              <div class="card mt-3">
+                <div class="card-header">List of Images</div>
+                <ul
+                  class="list-group list-group-flush"
+                  *ngFor="let image of imageInfos | async"
+                >
+                  <li class="list-group-item">
+                    <p><a href="{{ image.url }}">{{ image.name }}</a></p>
+                    <img src="{{ image.url }}" alt="{{ image.name }}" height="80px" />
+                  </li>
+                </ul>
+              </div>
+              
+              <!--<div class="form-group">
                 <label for="fotos">Sube una foto</label><br>
-                <input required (change)="saveImage($event)" type="file" />
-              </div>
-              <!-- previsualización -->
-              <div class="form-group" *ngIf="prev">
-                <img [src]="prev" alt="" height="75px" width="75" style="border-radius:5px;">
-              </div>
+                <input required (change)="saveImage($event)" type="file" class="" />
+              </div>-->
+              <!-- previsualización 
+              <div class="form-group" *ngIf="this.prev">
+                <img [src]="this.prev" alt="" height="75px" width="75" style="border-radius:5px;">
+              </div>-->
               <!--textarea-->
               <div class="form-group">
                 <label for="descripcion">Descripción</label>
-                <textarea required
+                <textarea required class="form-control"
                   style="resize:none; border-radius:5px; height:100px; width:465px; background-color:white;color:black;"
-                  [(ngModel)]='home.descripcion' rows="30" cols="120">
+                  [(ngModel)]='this.home.descripcion' rows="30" cols="120">
                  </textarea>
               </div>
 
@@ -679,16 +694,12 @@
               </div>
             </nz-tab>
 
-
-
-
-
-            <!-- Movilidad -->
+          <!-- Movilidad -->
             <nz-tab [nzTitle]="'Movilidad'" nz-col nzSpan="8" [nzDisabled]="" id="tagScript">
               <div class="container-fluid">
                 <h3 class="text-center">Servicios próximos</h3>
                 <p>Puedes añadir servicios próximos a tu vivienda como colegios, universidades o supermercados.</p>
-                <div class="row">
+                <div class="row row-cols-3">
                   <div class="col">
                   </div>
                   <div class="col">
@@ -739,7 +750,7 @@
                                                 <tbody>
                                                   <tr>
                                                     <th scope="row">1</th>
-                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][0]?true:null" [(ngModel)]="this.colegio[0].nombre"
+                                                    <td><input nz-input type="text" class="nzInput " [attr.disabled]="this.stateTexfields[0][0]?true:null" [(ngModel)]="this.colegio[0].nombre"
                                                         placeholder="Nombre" id="f1c1n"></td>
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][0]" [(ngModel)]="this.colegio[0].ensenyanza">
@@ -753,7 +764,7 @@
                                                           [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
-                                                    <td><input nz-input type="text" class="nzInput" [attr.disabled]="this.stateTexfields[0][0]?true:null" placeholder="www" [(ngModel)]="this.colegio[0].web" >
+                                                    <td><input nz-input type="text" class="nzInput form-control" [attr.disabled]="this.stateTexfields[0][0]?true:null" placeholder="www" [(ngModel)]="this.colegio[0].web" >
                                                     </td>
                                                     <td>
                                                       <div class="btn-group">

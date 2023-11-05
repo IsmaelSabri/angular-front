@@ -201,7 +201,7 @@
                                   <div class="col mb-3">
                                     <div class="form-group">
                                       <label>Rol</label><small [hidden]="isAdmin">(solo lectura)</small>
-                                      <select name="rol" required [(ngModel)]="user.role" class="form-control">
+                                      <select name="rol" required [(ngModel)]="this.user.role" class="form-control">
                                           <option [hidden]="!isAdmin" value="ROLE_USER">USER</option>
                                           <option [hidden]="!isAdmin" value="ROLE_HR">HR</option>
                                           <option [hidden]="!isAdmin" value="ROLE_MANAGER">MANAGER</option>
