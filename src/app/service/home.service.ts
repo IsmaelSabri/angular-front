@@ -40,6 +40,13 @@ export class HomeService {
     return this.http.post<FormData>(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${this.foto.name}`,file);
   }*/
 
+
+  public gethome(id:string,home:string): Observable<Home> {
+    return this.http.post<Home>(`${this.host}/api/home/${id}`,home, {
+      headers: this.httpHeaders,
+    });
+  }
+
   public addHome(home: string): Observable<Home> {
     return this.http.post<Home>(`${this.host}/api/home/new`, home, {
       headers: this.httpHeaders,

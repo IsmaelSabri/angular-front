@@ -1,4 +1,5 @@
 export class Home {
+  id:string;
   viviendaId: string;
   lat: Number;
   lng: Number;
@@ -16,6 +17,7 @@ export class Home {
   descuento: string;
   precioFinal: string;
   precioM2: string;
+  precioAlquiler:string;
   duracion: string;
   descripcion: string;
   armariosEmpotrados: boolean = false;
@@ -35,7 +37,7 @@ export class Home {
   destacar: string;
   model:string;
   imagesAsString:string
-  images=new Array<HomeImage>(30);
+  images=new Array<HomeImage>();
   video: string;
   amueblado:boolean = false;
   streetView:string;
@@ -44,6 +46,9 @@ export class Home {
   universidades:string;
   metro: string;
   bus: string;
+  tipoDeVia:string;
+  distrito:string;
+  orientacion:string;
 
   // House profile
   alarma: boolean = false;
@@ -66,7 +71,7 @@ export class Home {
   // Flat profile
   ascensor: boolean = false;
   trastero: boolean = false;
-  vistasDespejadas: boolean = false;
+  vistasDespejadas: string;
   bajoOplantabaja: boolean = false;
   instalacionesDiscapacitados: boolean = false;
   puerta: string;
@@ -87,10 +92,10 @@ export class Home {
   zonaDeOcio:boolean = false
 
   // Home4rent profile
-  mascotas: boolean = false;
-  fianza: number;
+  mascotas: string;
+  fianza:string;
   disponibilidad: string;
-  estanciaMinima: number; // meses
+  estanciaMinima: string; // meses
 
   // Room profile
   // We accept:

@@ -1,5 +1,4 @@
 import * as L from 'leaflet';
-import 'leaflet.awesome-markers/dist/leaflet.awesome-markers';
 import { tileLayer, Icon, divIcon } from 'leaflet';
 
 export const grayIcon = new Icon({
@@ -40,17 +39,10 @@ export const grayPointerIcon = new divIcon({
 
 export const fancyGreen = new Icon({
   iconUrl: '../assets/svg/marker/ic-pin-2.svg',
-  iconSize: [29, 31],
+  iconSize: [30, 30],
   iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
+  popupAnchor: [0, -0],
   shadowSize: [41, 41],
-});
-
-/* Awesome markers to set services */
-export const blackMarker = L.AwesomeMarkers.icon({
-  icon: 'coffe',
-  markerColor: 'black',
-  className: 'awesome-marker awesome-marker-square',
 });
 
 export const homeicon= L.divIcon({

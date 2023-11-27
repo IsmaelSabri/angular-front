@@ -10,11 +10,13 @@ import { VlogComponent } from './components/vlog/vlog.component';
 import { ListComponent } from './pages/list/list.component';
 import { AddComponent } from './pages/add/add.component';
 import { PasswordComponent } from './components/password/password.component';
+import { AdminComponent } from './components/admin/admin.component';
 
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'admin', component: AdminComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'vlog', component: VlogComponent },
   { path: 'add', component: AddComponent },

@@ -7,14 +7,681 @@
   font-variation-settings: "XTDR" 50, "APRT" 100, "SPAC" 40;
 }
 
-/* Falta meterle el js */
-.leaflet-pane {
-  position:relative;
+.leaflet-popup-tip {
+  display: none;
 }
 
+:root {
+  --antd-wave-shadow-color: #1890ff;
+  --scroll-bar: 0;
+  --bs-skyblue: #53d8fb;
+  --bs-skyblue-rgb: 83, 216, 251;
+  --animate-duration: 1s;
+  --animate-delay: 1s;
+  --animate-repeat: 1;
+  --nav-headbg: rgb(232 234 236);
+  --sidebar-bg: rgb(232 234 236);
+  --headerbg: rgb(232 234 236);
+  --font-family-base: Roboto, sans-serif;
+  --font-family-title: Roboto, sans-serif;
+  --title: #000;
+  --primary: #6610f2;
+  --secondary: #709fba;
+  --primary-hover: #510bc4;
+  --primary-dark: #290564;
+  --rgba-primary-1: rgba(102, 16, 242, 0.1);
+  --rgba-primary-2: rgba(102, 16, 242, 0.2);
+  --rgba-primary-3: rgba(102, 16, 242, 0.3);
+  --rgba-primary-4: rgba(102, 16, 242, 0.4);
+  --rgba-primary-5: rgba(102, 16, 242, 0.5);
+  --rgba-primary-6: rgba(102, 16, 242, 0.6);
+  --rgba-primary-7: rgba(102, 16, 242, 0.7);
+  --rgba-primary-8: rgba(102, 16, 242, 0.8);
+  --rgba-primary-9: rgba(102, 16, 242, 0.9);
+  --fa-style-family-brands: "Font Awesome 6 Brands";
+  --fa-font-brands: normal 400 1em/1 "Font Awesome 6 Brands";
+  --fa-font-regular: normal 400 1em/1 "Font Awesome 6 Free";
+  --fa-style-family-classic: "Font Awesome 6 Free";
+  --fa-font-solid: normal 900 1em/1 "Font Awesome 6 Free";
+  --bs-blue: #0d6efd;
+  --bs-indigo: #6610f2;
+  --bs-purple: #6f42c1;
+  --bs-pink: #d63384;
+  --bs-red: #dc3545;
+  --bs-orange: #fd7e14;
+  --bs-yellow: #ffc107;
+  --bs-green: #198754;
+  --bs-teal: #20c997;
+  --bs-cyan: #0dcaf0;
+  --bs-black: #000;
+  --bs-white: #fff;
+  --bs-gray: #6c757d;
+  --bs-gray-dark: #343a40;
+  --bs-gray-100: #f8f9fa;
+  --bs-gray-200: #e9ecef;
+  --bs-gray-300: #dee2e6;
+  --bs-gray-400: #ced4da;
+  --bs-gray-500: #adb5bd;
+  --bs-gray-600: #6c757d;
+  --bs-gray-700: #495057;
+  --bs-gray-800: #343a40;
+  --bs-gray-900: #212529;
+  --bs-primary: #0d6efd;
+  --bs-secondary: #6c757d;
+  --bs-success: #198754;
+  --bs-info: #0dcaf0;
+  --bs-warning: #ffc107;
+  --bs-danger: #dc3545;
+  --bs-light: #f8f9fa;
+  --bs-dark: #212529;
+  --bs-primary-rgb: 13, 110, 253;
+  --bs-secondary-rgb: 108, 117, 125;
+  --bs-success-rgb: 25, 135, 84;
+  --bs-info-rgb: 13, 202, 240;
+  --bs-warning-rgb: 255, 193, 7;
+  --bs-danger-rgb: 220, 53, 69;
+  --bs-light-rgb: 248, 249, 250;
+  --bs-dark-rgb: 33, 37, 41;
+  --bs-primary-text-emphasis: #052c65;
+  --bs-secondary-text-emphasis: #2b2f32;
+  --bs-success-text-emphasis: #0a3622;
+  --bs-info-text-emphasis: #055160;
+  --bs-warning-text-emphasis: #664d03;
+  --bs-danger-text-emphasis: #58151c;
+  --bs-light-text-emphasis: #495057;
+  --bs-dark-text-emphasis: #495057;
+  --bs-primary-bg-subtle: #cfe2ff;
+  --bs-secondary-bg-subtle: #e2e3e5;
+  --bs-success-bg-subtle: #d1e7dd;
+  --bs-info-bg-subtle: #cff4fc;
+  --bs-warning-bg-subtle: #fff3cd;
+  --bs-danger-bg-subtle: #f8d7da;
+  --bs-light-bg-subtle: #fcfcfd;
+  --bs-dark-bg-subtle: #ced4da;
+  --bs-primary-border-subtle: #9ec5fe;
+  --bs-secondary-border-subtle: #c4c8cb;
+  --bs-success-border-subtle: #a3cfbb;
+  --bs-info-border-subtle: #9eeaf9;
+  --bs-warning-border-subtle: #ffe69c;
+  --bs-danger-border-subtle: #f1aeb5;
+  --bs-light-border-subtle: #e9ecef;
+  --bs-dark-border-subtle: #adb5bd;
+  --bs-white-rgb: 255, 255, 255;
+  --bs-black-rgb: 0, 0, 0;
+  --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --bs-gradient: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0)
+  );
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-size: 1rem;
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: 1.5;
+  --bs-body-color: #212529;
+  --bs-body-color-rgb: 33, 37, 41;
+  --bs-body-bg: #fff;
+  --bs-body-bg-rgb: 255, 255, 255;
+  --bs-emphasis-color: #000;
+  --bs-emphasis-color-rgb: 0, 0, 0;
+  --bs-secondary-color: rgba(33, 37, 41, 0.75);
+  --bs-secondary-color-rgb: 33, 37, 41;
+  --bs-secondary-bg: #e9ecef;
+  --bs-secondary-bg-rgb: 233, 236, 239;
+  --bs-tertiary-color: rgba(33, 37, 41, 0.5);
+  --bs-tertiary-color-rgb: 33, 37, 41;
+  --bs-tertiary-bg: #f8f9fa;
+  --bs-tertiary-bg-rgb: 248, 249, 250;
+  --bs-heading-color: inherit;
+  --bs-link-color: #0d6efd;
+  --bs-link-color-rgb: 13, 110, 253;
+  --bs-link-decoration: underline;
+  --bs-link-hover-color: #0a58ca;
+  --bs-link-hover-color-rgb: 10, 88, 202;
+  --bs-code-color: #d63384;
+  --bs-highlight-color: #212529;
+  --bs-highlight-bg: #fff3cd;
+  --bs-border-width: 1px;
+  --bs-border-style: solid;
+  --bs-border-color: #dee2e6;
+  --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
+  --bs-border-radius: 0.375rem;
+  --bs-border-radius-sm: 0.25rem;
+  --bs-border-radius-lg: 0.5rem;
+  --bs-border-radius-xl: 1rem;
+  --bs-border-radius-xxl: 2rem;
+  --bs-border-radius-2xl: var(--bs-border-radius-xxl);
+  --bs-border-radius-pill: 50rem;
+  --bs-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --bs-box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  --bs-box-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+  --bs-focus-ring-width: 0.25rem;
+  --bs-focus-ring-opacity: 0.25;
+  --bs-focus-ring-color: rgba(13, 110, 253, 0.25);
+  --bs-form-valid-color: #198754;
+  --bs-form-valid-border-color: #198754;
+  --bs-form-invalid-color: #dc3545;
+  --bs-form-invalid-border-color: #dc3545;
+  --bs-breakpoint-xs: 0;
+  --bs-breakpoint-sm: 576px;
+  --bs-breakpoint-md: 768px;
+  --bs-breakpoint-lg: 992px;
+  --bs-breakpoint-xl: 1200px;
+  --bs-breakpoint-xxl: 1400px;
+  --transitionLength: 0.4s;
+  --transitionTiming: ease;
+  --arrow-bg: #fff;
+  --arrow-icon: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTcuNDEsOC41OEwxMiwxMy4xN0wxNi41OSw4LjU4TDE4LDEwTDEyLDE2TDYsMTBMNy40MSw4LjU4WiIgLz48L3N2Zz4=");
+  --option-bg: #666;
+  --select-bg: rgba(255, 255, 255, 0.2);
+  --ck-radius-small: 0.25rem;
+  --ck-radius-medium: 0.5rem;
+  --ck-radius-large: 0.75rem;
+  --ck-shadow: 0 0.0625rem 0.25rem 0 rgba(0, 0, 0, 0.16);
+  --ck-spacing-twoExtraSmall: 0.25rem;
+  --ck-spacing-extraSmall: 0.5rem;
+  --ck-spacing-small: 0.75rem;
+  --ck-spacing-medium: 1rem;
+  --ck-spacing-large: 1.5rem;
+  --ck-spacing-extraLarge: 2rem;
+  --ck-spacing-twoExtraLarge: 2.5rem;
+  --ck-spacing-threeExtraLarge: 3rem;
+  --ck-textPrimary: #3d3b40;
+  --ck-textSecondary: #726e75;
+  --ck-textInverted: #ffffff;
+  --ck-textInvertedStatic: #ffffff;
+  --ck-textInformation: #00639e;
+  --ck-textSuccess: #137044;
+  --ck-textWarning: #a8420d;
+  --ck-textSuccessInverted: #93d7ad;
+  --ck-textWarningInverted: #ffa857;
+  --ck-textError: #a81e35;
+  --ck-textBrand: #e4002b;
+  --ck-backgroundBrandStatic: #e4002b;
+  --ck-backgroundPrimary: #ffffff;
+  --ck-backgroundPrimaryBase: #ffffff;
+  --ck-backgroundPrimaryLow: #ffffff;
+  --ck-backgroundPrimaryHigh: #ffffff;
+  --ck-backgroundPrimaryInverted: #3d3b40;
+  --ck-backgroundPrimaryInvertedStatic: #3d3b40;
+  --ck-backgroundSecondaryBase: #f6f5f7;
+  --ck-backgroundSecondaryLow: #f6f5f7;
+  --ck-backgroundSecondaryInvertedStatic: #242326;
+  --ck-backgroundSecondary: #e5e3e8;
+  --ck-backgroundInformation: #dbf7ff;
+  --ck-backgroundSuccess: #dcfce7;
+  --ck-backgroundWarning: #ffeedb;
+  --ck-backgroundError: #ffe8eb;
+  --ck-backgroundOverlayStatic: rgba(36, 34, 38, 0.8);
+  --ck-borderBrandStatic: #e4002b;
+  --ck-borderPrimary: #959199;
+  --ck-borderSecondary: #e5e3e8;
+  --ck-borderInverted: #ffffff;
+  --ck-borderInvertedStatic: #959199;
+  --ck-borderErrored: #a8420d;
+  --ck-borderSelected: #3d3b40;
+  --ck-linkPrimary: #00639e;
+  --ck-linkSecondary: #726e75;
+  --ck-linkHoveredPrimary: #005180;
+  --ck-linkHoveredSecondary: #565359;
+  --ck-linkPressedPrimary: #10384f;
+  --ck-linkPressedSecondary: #3d3b40;
+  --ck-backgroundHoveredBrandStatic: #a81e35;
+  --ck-backgroundHoveredPrimary: #f6f5f7;
+  --ck-backgroundHoveredPrimaryInverted: #242326;
+  --ck-backgroundHoveredPrimaryInvertedStatic: #242326;
+  --ck-backgroundHoveredSecondary: #bebac2;
+  --ck-backgroundPressedBrandStatic: #80192b;
+  --ck-backgroundPressedPrimary: #e5e3e8;
+  --ck-backgroundPressedPrimaryInverted: #242326;
+  --ck-backgroundPressedPrimaryInvertedStatic: #1b1a1c;
+  --ck-backgroundPressedSecondary: #959199;
+  --ck-backgroundFocusedPrimary: #f6f5f7;
+  --ck-backgroundSelected: #3d3b40;
+  --ck-borderHovered: #3d3b40;
+  --ck-borderHoveredInverted: #f6f5f7;
+  --ck-borderPressed: #3d3b40;
+  --ck-borderPressedInverted: #3d3b40;
+  --ck-borderFocused: #3d3b40;
+  --ck-borderFocusedInvertedStatic: #f6f5f7;
+  --ck-textDisabled: #bebac2;
+  --ck-backgroundDisabled: #f6f5f7;
+  --ck-borderDisabled: #e5e3e8;
+  --ck-graphicOrange: #ed711f;
+  --ck-graphicYellow: #fcca36;
+  --ck-graphicTeal: #2bc5ca;
+  --ck-graphicBlue: #0078bd;
+  --ck-graphicPurple: #8154ab;
+  --ck-graphicPink: #f2636f;
+  --ck-graphicGreen: #2d8659;
+  --ck-backgroundBlue: #dbf7ff;
+  --ck-backgroundPink: #ffe8eb;
+  --ck-backgroundGreen: #dcfce7;
+  --ck-backgroundPurple: #f9ebff;
+  --ck-backgroundOrange: #ffeedb;
+  --ck-backgroundYellow: #fff4d4;
+  --ck-backgroundTeal: #ddfcfa;
+  --ck-textBlue: #00639e;
+  --ck-textPink: #a81e35;
+  --ck-textGreen: #137044;
+  --ck-textPurple: #66408d;
+  --ck-textOrange: #a8420d;
+  --ck-textYellow: #995c00;
+  --ck-textTeal: #0c747d;
+}
+/* Falta meterle el js */
+/*.leaflet-pane {
+  position:relative;
+}*/
+
+.popupX {
+  display: grid;
+  /*position:absolute;
+  top: 0;*/
+  /*left: 0;
+  right: -5px;
+  background: #fff;*/
+  /*z-index: 1000;*/
+  /*transition: 0.3s ease all;
+  transform: translateY(10px);*/
+
+  border-radius: 10px;
+  box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.2);
+  width: 382px;
+  height: 152px;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: absolute;
+}
+
+.click-card-container {
+  -webkit-text-size-adjust: 100%;
+  color-scheme: only light;
+  letter-spacing: 0.45px;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  font: 200 16px Outfit, sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  box-sizing: border-box;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  height: 7.125rem;
+  width: 100%;
+  display: flex;
+  background-color: #fff;
+  position: relative;
+  margin: auto;
+  z-index: 2;
+  box-shadow: 0 0.125rem 0.9375rem rgba(0, 0, 0, 0.15);
+}
+
+.image-container {
+  -webkit-text-size-adjust: 100%;
+  color-scheme: only light;
+  letter-spacing: 0.45px;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  font: 200 16px Outfit, sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  color: inherit;
+  box-sizing: border-box;
+  border-style: none;
+  max-width: none;
+  height: 10.375rem;
+  width: 12rem;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-top-left-radius: 0.625rem;
+  border-bottom-left-radius: 0.625rem;
+  object-fit: cover;
+  object-position: center;
+}
+
+.reale1 {
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  /*box-sizing: border-box;*/
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  /*vertical-align: baseline;*/
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 107;
+  width: 100%;
+}
+
+.reale2 {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  /*box-sizing: border-box;*/
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  /*vertical-align: baseline;*/
+  position: absolute;
+  width: 26.25rem;
+  height: 10.375rem;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  /*top: -299.047px;
+  left: -215.284px;
+  background: white;*/
+}
+
+.reale3 {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  /*box-sizing: border-box;*/
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  /*vertical-align: baseline;*/
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 0.0625rem 0.25rem 0px;
+  background-color: var(--ck-backgroundPrimaryLow);
+  display: flex;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.reale4 {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  /*vertical-align: baseline;*/
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-shrink: 0;
+  /*width: 11.375rem;*/
+}
+
+.reale5 {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  /*box-sizing: border-box;*/
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  /*vertical-align: baseline;*/
+  background-color: var(--ck-backgroundSecondaryBase);
+  height: 100%;
+  width: calc(100% - 11.8125rem);
+
+  /*width: 26.25rem;*/
+  background: #fff;
+  position: relative;
+}
+
+.reale6 {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  font: inherit;
+  box-sizing: border-box;
+}
+/* Text */
+.realeTextContainer {
+
+  
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-left: 1rem;
+  top: 0;
+
+
+  /*padding:1rem;*/
+  /*width: 26.25rem;*/
+}
+
+.realeTextContainer_2 {
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  text-align: left;
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  font: inherit;
+  outline: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Gelion Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  visibility: inherit;
+
+
+}
+
+.brandingcontainer {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  width: inherit;
+  height: 2rem;
+  padding: 0.25rem;
+  background: rgb(130, 78, 62);
+
+  position: relative;
+}
+
+.imgBrandLogo {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: middle;
+  max-width: none;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+
+  position: relative;
+}
+
+.pictureBrandLogo {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  font: inherit;
+  box-sizing: border-box;
+
+  position: relative;
+}
+
+.p_1 {
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  font-size: 0.75rem;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025rem;
+  margin: 0px;
+  color: var(--ck-textSecondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  position: absolute;
+}
+
+.p_2 {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0.25rem 0px;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+
+  position: relative;
+  top: 12px;
+}
+
+.a_1 {
+  user-select: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  text-decoration: none;
+  outline: none;
+  display: flex;
+  flex-wrap: wrap;
+
+  position: relative;
+}
+
+.p_3 {
+  user-select: none;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.25rem;
+  font-weight: 400;
+  margin: 0px;
+  color: var(--ck-textSecondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1rem;
+  width: 100%;
+
+  position: relative;
+  top: -28px;
+}
+
+.p_4 {
+  user-select: none;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.25rem;
+  font-weight: 400;
+  margin: 0px;
+  color: var(--ck-textSecondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1rem;
+  width: 100%;
+
+  position: relative;
+  top: -65px;
+}
+
+.ul_features {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+
+  position: relative;
+  top: -60px;
+}
+
+.p_features {
+  color: var(--ck-textPrimary);
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  list-style: none;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  font-size: 1rem;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  margin: 0px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  line-height: 1rem;
+}
+/* end text */
 .tooltipX {
   display: flex;
-  position:relative;
+  position: absolute;
   top: 0;
   left: 0;
   right: -5px;
@@ -22,7 +689,7 @@
   border-radius: 10px;
   box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.2);
   width: 32em;
-  height: 12.50em;
+  height: 12.5em;
   z-index: 1000;
   opacity: 0;
   transition: 0.3s ease all;

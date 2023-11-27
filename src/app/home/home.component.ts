@@ -1,13 +1,13 @@
 import { PropertyType, HouseType, Bedrooms, Bathrooms, Badge, PropertyState, Enseñanza, Institucion, 
-  RamasConocimiento, EmisionesCO2, ConsumoEnergetico, 
+  RamasConocimiento, EmisionesCO2, ConsumoEnergetico, TipoDeVia, Orientacion, 
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
-import { Component, ElementRef, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation, } from '@angular/core';
+import { Component, ElementRef, Injectable, Injector, OnDestroy, OnInit, Optional, Output, ViewChild, ViewEncapsulation, } from '@angular/core';
 import { marker, LatLng, circleMarker } from 'leaflet';
 import 'leaflet.locatecontrol';
 import { tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes, 
   Stadia_OSMBright, OpenStreetMap_Mapnik, CartoDB_Voyager, Thunderforest_OpenCycleMap, Jawg_Sunny} from '../model/maps/functions';
-import { grayIcon, greenIcon, grayPointerIcon, blackMarker, homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
+import { grayIcon, greenIcon, grayPointerIcon, homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
   busIcon, schoolIcon, universityIcon, fancyGreen, } from '../model/maps/icons';
 import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
@@ -18,17 +18,15 @@ import { HttpErrorResponse, HttpEventType, HttpHeaders, HttpResponse } from '@an
 import * as L from 'leaflet';
 //import H from '@here/maps-api-for-javascript';
 import { HomeService } from '../service/home.service';
-import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage,} from '../model/home';
+import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio} from '../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { DomSanitizer } from '@angular/platform-browser';
 import { OpenStreetMapProvider, GeoSearchControl, SearchControl, } from 'leaflet-geosearch';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormControl, NgForm, NgModel } from '@angular/forms';
-import { Colegio } from '../model/home';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
-import 'leaflet.awesome-markers';
 import { APIKEY } from 'src/environments/environment.prod';
 import * as $ from 'jquery';
 import Axios from 'axios-observable';
@@ -85,6 +83,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   ramas: string[] = Object.values(RamasConocimiento);
   calificacion_emisiones: string[] = Object.values(EmisionesCO2);
   calificacion_consumo: string[] = Object.values(ConsumoEnergetico);
+  tipo_de_via:string[] = Object.values(TipoDeVia);
+  orientacion:string[] = Object.values(Orientacion);
+  bathRooms:string[] = Object.values(Bathrooms);
 
   images=new Array<HomeImage>();// new Array(30).fill('');
 
@@ -155,11 +156,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   sc = schoolIcon;
   uni = universityIcon;
   customIcon: any;
-
-  @ViewChild('openselect') openselect: ElementRef;
-  showSelect() {
-    this.openselect.nativeElement.classList.toggle('active');
-  }
 
   // show/hide 2nd modal
   @ViewChild('element') element: ElementRef;
@@ -414,9 +410,41 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   showModal(): void {
     this.isVisible = true;
   }
+  
+  setDate(result:Date){
+    if (result) {
+      console.log(this.home.antiguedad.toString().substring(11,15));
+    }
+  }
+
+  fechaDisponibleAlquiler:any;
+  setDisponibilidad(result:Date){
+    if(result){
+    console.log(this.home.disponibilidad);
+    var aux=this.home.disponibilidad.toString().substring(4,7);
+    switch(aux){
+      case 'Jan': this.fechaDisponibleAlquiler  = 'Enero'; break;
+      case 'Feb': this.fechaDisponibleAlquiler  = 'Febrero'; break;
+      case 'Mar': this.fechaDisponibleAlquiler  = 'Marzo'; break;
+      case 'Apr': this.fechaDisponibleAlquiler  = 'Abril'; break;
+      case 'May': this.fechaDisponibleAlquiler  = 'Mayo'; break;
+      case 'Jun': this.fechaDisponibleAlquiler  = 'Junio'; break;
+      case 'Jul': this.fechaDisponibleAlquiler  = 'Julio'; break;
+      case 'Aug': this.fechaDisponibleAlquiler  = 'Agosto'; break;
+      case 'Sep': this.fechaDisponibleAlquiler  = 'Septiembre'; break;
+      case 'Oct': this.fechaDisponibleAlquiler  = 'Octubre'; break;
+      case 'Nov': this.fechaDisponibleAlquiler  = 'Noviembre'; break;
+      case 'Dec': this.fechaDisponibleAlquiler  = 'Diciembre'; break;
+      default: break;
+      }
+      console.log(this.fechaDisponibleAlquiler);
+    }
+  }
 
   // tamaño de los select para las tablas de proximidades
   size: NzSelectSizeType = 'small';
+  sizeM: NzSelectSizeType = 'default';
+  sizeL: NzSelectSizeType = 'large';
 
   protected setTextfieldValue(
     optionSelected: string,
@@ -499,7 +527,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.userMarkerEvents();
     this.map = L.map('map', { renderer: L.canvas() }).setView(
       [39.46975, -0.37739],
-      25
+      17  //25
     );
     this.getLocation();
     //tileLayerSelect().addTo(map);
@@ -518,55 +546,91 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             { icon: fancyGreen },
             this.opt
           )
-            .bindTooltip(
+            .bindPopup(
               `
-            <div class="row" id="slider" style="position:relative;">
-              <div class="col-sm-6" style="position:relative;">
-                <div>
-                  <h6 style="align-items:center;">Calle ${Home.calle}</h6>    
-                </div>
-                <div>
-                </div>
-                <div>
-                  <ion-icon style="font-size: 16px;" src="assets/svg/bath_tub.svg"></ion-icon>${Home.aseos}
-                  <ion-icon style="font-size: 16px; color:#666;" name="bed-outline"></ion-icon>${Home.habitaciones}
-                  <ion-icon style="font-size: 16px; color:#666;" name="car-outline"></ion-icon>${Home.garage}
-                  <ion-icon style="font-size: 16px; color:#666;" src="assets/svg/house_size.svg"></ion-icon>${Home.superficie + "m²"}
-                </div>
+            <div class="reale1 row">
+              <div class="reale2" col-sm-6>
+                 <div class="reale3" >
+                    <div class="reale5">
+                       <div id="carouselExample" class="carousel slide ">
+                          <div class="carousel-inner" >
+                             <div class="carousel-item active ">
+                                <img src=${Home.images[0].imageUrl} class="image-container" alt="...">
+                             </div>
+                             <div class="carousel-item ">
+                                <img src=${Home.images[1].imageUrl} class="image-container" alt="...">
+                             </div>
+                             <div class="carousel-item ">
+                                <img src=${Home.images[2].imageUrl} class="image-container" alt="...">
+                             </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                          </button>
+                          
+                       </div>
+                    </div>
+                    <div class="col-sm-6 realeTextContainer">
+                       <div class="realeTextContainer_2">
+                          <p class="p_1">${Home.tipo} en ${Home.condicion}</p>
+                          <p class="p_2">${Home.precioFinal}€</p>
+                          <a href="javascript:void(0);" onclick="runPopup()"  rel="noopener noreferrer" class="a_1">
+                             <p class="p_3">${Home.tipoDeVia} ${Home.calle} ${Home.numero},</p>
+                             <p class="p_4">${Home.ciudad}</p>
+                          </a>
+                          <div class="ul_features">
+                                <ion-icon style="font-size: 16px; top:-3px; position:relative;" src="assets/svg/bath_tub.svg"></ion-icon>
+                                ${Home.aseos}&nbsp;&nbsp;
+                                <ion-icon style="font-size: 16px; color:#666;" name="bed-outline"></ion-icon>
+                                ${Home.habitaciones}&nbsp;&nbsp;
+                                <ion-icon style="font-size: 16px; color:#666;" name="car-outline"></ion-icon>
+                                ${Home.garage}&nbsp;&nbsp;
+                                <ion-icon style="font-size: 16px; color:#666;" src="assets/svg/house_size.svg"></ion-icon>
+                                ${Home.superficie + "m²"}
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+                 
               </div>
-                <div class="slides col-sm-6" style="position:relative;">
-                  <img class="" style="border-radius: 0 10px 10px 0; width:220px; height:151px; display:block; top:-7px; right:-17px; position:relative;" src=${Home.images[0].imageUrl}>
-              </div>
-            </div>
+              
+           </div>
+           
             `,
               {
-                maxWidth: 150,
-                maxHeight: 80,
-                removable: true,
-                editable: true,
-                direction: 'top',
+                maxWidth: 382,
+                maxHeight: 152,
+                /*removable: true,
+                editable: true,*/
+                /*direction: 'top',*/
                 permanent: false,
-                sticky: false,
+                /*sticky: false,*/
                 offset: [0, -45],
-                opacity: 5,
-                className: 'tooltipX',
+                opacity: 0,
+                className: 'popupX',
               }
-            ) 
-            .on(
+            )
+           .on(
               'click',
               () => (
                 localStorage.removeItem('currentBuilding'),
-                localStorage.setItem('currentBuilding', JSON.stringify(Home)),
-                this.router.navigate(['/add'])
+                localStorage.setItem('currentBuilding', JSON.stringify(Home))
               )
-            )
+            ) /*.on('popupopen',()=>{
+              this.runTooltip();
+            }).on('tooltipclose',()=>{
+              this.closeTooltip();
+            })*/
             .addTo(this.map);
         });
         this.homes=data;
       })
     );
-
-    //            <button type="button" class="btn btn-secondary" data-toggle="modal" onclick="${this.viewAdd(Edificio.edificioId)}">Ver</button>
 
     /*  fitbounds para centrar el foco en los marcadores
     const markerItem = marker([39.46975, -0.37739]) // marker de prueba. Los usuarios podrán crear sus markers
@@ -622,7 +686,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       draggable: true,
     }).bindPopup(`
       
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMarkerModal" >Hecho</button>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMarkerModal" >Hecho</button>
       
       `);
     this.lg = new L.LayerGroup([this.mp]);
@@ -681,12 +745,17 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('garage', this.home.garage);
     formData.append('condicion', this.home.condicion);
     formData.append('tipo', this.home.tipo);
+    formData.append('piso', this.home.piso);
+    formData.append('orientacion', this.home.orientacion);
+    formData.append('distrito', this.home.distrito);
+    formData.append('tipoDeVia', this.home.tipoDeVia);
+    formData.append('video', this.home.video);
     formData.append('habitaciones', this.home.habitaciones);
     formData.append('aseos', this.home.aseos);
     formData.append('estado', this.home.estado);
     formData.append('destacar', this.home.destacar);
-    formData.append('antiguedad', this.home.antiguedad);
-    formData.append('precioFinal', this.home.precioFinal);
+    formData.append('antiguedad', this.home.antiguedad.toString().substring(11,15));
+    formData.append('precioFinal', this.home.precioFinal.toLocaleString());
     formData.append('aireAcondicionado', JSON.stringify(this.home.aireAcondicionado));
     formData.append('panelesSolares', JSON.stringify(this.home.panelesSolares));
     formData.append('gasNatural', JSON.stringify(this.home.gasNatural));
@@ -732,6 +801,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('Model', 'Flat');
     formData.append('creador', this.user.userId);
     formData.append('nombreCreador', this.user.username);
+    if(this.fechaDisponibleAlquiler){
+      formData.append('disponibilidad', this.fechaDisponibleAlquiler);
+    }
     this.message = [];
     if (this.selectedFiles) {
       for (let i = 0; i < this.selectedFiles.length; i++) {
@@ -771,7 +843,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
               }
             },
             error: (err: any) => {
-              const msg = 'Error al procesar la imagen: ' + this.selectedFiles[i].name;
+              const msg = 'Error al procesar la imagen: ' + this.selectedFiles[i].name + ' error: ' + err;
               this.message.push(msg);
             }
           }));
@@ -783,7 +855,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   checkBox(param): any {
-    
+    console.log(this.home.direccionAproximada);
   }
 
   ngOnDestroy(): void {

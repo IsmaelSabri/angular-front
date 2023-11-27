@@ -30,7 +30,6 @@ import { AddComponent } from './pages/add/add.component';
 import { ListComponent } from './pages/list/list.component';
 import { HomeService } from './service/home.service';
 import { CookieService } from 'ngx-cookie-service';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
@@ -43,6 +42,7 @@ import { IonicModule } from '@ionic/angular';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { MatSelectModule } from '@angular/material/select'; 
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -51,6 +51,20 @@ import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, Google
           GoogleSigninButtonModule, FacebookLoginProvider } from '@abacritt/angularx-social-login';
 import { CloudinaryModule } from '@cloudinary/ng';
 import { LightboxModule } from 'ngx-lightbox';
+import { AdminComponent } from './components/admin/admin.component';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import es from '@angular/common/locales/es';
+import { NZ_I18N, es_ES } from 'ng-zorro-antd/i18n';
+import { registerLocaleData } from '@angular/common';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { YouTubePlayerModule } from "@angular/youtube-player";
+registerLocaleData(es);
+import { NzAffixModule } from 'ng-zorro-antd/affix';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 
 @NgModule({
   declarations: [
@@ -62,6 +76,7 @@ import { LightboxModule } from 'ngx-lightbox';
     ListComponent,
     AddComponent,
     PasswordComponent,
+    AdminComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,7 +95,6 @@ import { LightboxModule } from 'ngx-lightbox';
     AutosizeModule,
     MatCardModule,
     MatCheckboxModule,
-    NzIconModule,
     NzFormModule,
     NzInputModule,
     NzCollapseModule,
@@ -100,6 +114,16 @@ import { LightboxModule } from 'ngx-lightbox';
     GoogleSigninButtonModule,
     CloudinaryModule,
     LightboxModule,
+    NzCarouselModule,
+    NzDatePickerModule,
+    NzCardModule,
+    NzCheckboxModule,
+    NzRadioModule,
+    NzToolTipModule,
+    YouTubePlayerModule,
+    NzAffixModule,
+    NzDividerModule,
+    NzBreadCrumbModule,
   ],
   exports: [
     // to get component in another modules
@@ -115,7 +139,8 @@ import { LightboxModule } from 'ngx-lightbox';
     NgbCarouselConfig,
     CookieService,
     HomeService,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true,  },
+    { provide: NZ_I18N, useValue: es_ES },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true, },
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {

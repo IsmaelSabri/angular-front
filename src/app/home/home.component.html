@@ -36,19 +36,19 @@
         <p *nzModalContent>Obtén notificaciones acerca de tus búsquedas y tus viviendas guardadas.</p>
       </nz-modal>
       <li class="nav-item pr-3">
-        <a routerLink="/login" *ngIf='!this.state' class="nav-link"><span nz-icon nzType="login" nzTheme="outline"
-            style="position: relative; bottom: 3px;"></span> Entrar </a>
+        <a routerLink="/login" *ngIf='!this.state' class="nav-link">
+          <ion-icon name="log-in-outline" style="position: relative; top: 2px; font-size:16px;"></ion-icon> Entrar </a>
       </li>
       <li class="nav-item pr-3">
         <a routerLink="/register" *ngIf='!this.state' class="nav-link"> Registrarse </a>
       </li>
       <li class="nav-item pr-3">
-        <a class="nav-link" *ngIf='this.state' (click)="onLogOut()" routerLink="/home"><span nz-icon nzType="logout"
-            nzTheme="outline" style="position: relative; bottom: 3px;"></span> Salir </a>
+        <a class="nav-link" *ngIf='this.state' (click)="onLogOut()" routerLink="/home">
+          <ion-icon name="log-out-outline" style="position: relative; top: 2px; font-size:16px;"></ion-icon> Salir </a>
       </li>
       <li class="nav-item pr-3">
-        <a class="nav-link" *ngIf='this.state' routerLink="/user/management"><span nz-icon nzType="user"
-            nzTheme="outline" style="position: relative; bottom: 3px;"></span> {{user?.username}} </a>
+        <a class="nav-link" *ngIf='this.state' routerLink="/user/management">
+          <ion-icon name="person-outline" style="position: relative; top: 2px;"></ion-icon> {{user?.username}} </a>
       </li>
       <li>
         <a class="nav-link"><button class="navbar-toggler menuHM shadow-none" data-bs-toggle="collapse"
@@ -112,14 +112,14 @@
 <div class="container">
   <ul class="nav nav-fill" id="secondnav">
     <li class="nav-item active pr-3">
-      <a routerLink="" class="nav-link nav-border"><span nz-icon nzType="search" nzTheme="outline"
-          style="position: relative; bottom: 3px;"></span> Map area </a>
+      <a routerLink="" class="nav-link nav-border">
+        <ion-icon name="search-outline" style="top:2px;"></ion-icon> Map area </a>
     </li>
     <li class="nav-item pr-3">
-      <a class="nav-link nav-border" data-toggle="modal" data-target="#addMarkerModal"> Tipo de propiedad </a>
+      <a class="nav-link nav-border" data-bs-toggle="modal" data-bs-target="#addMarkerModal"> Tipo de propiedad </a>
     </li>
     <li class="nav-item pr-3">
-      <a routerLink="" class="nav-link nav-border"> Precio </a>
+      <a routerLink="/admin" class="nav-link nav-border"> Precio </a>
     </li>
     <!--<li class="nav-item pr-3">
           <a  [hidden]="!isAdmin" class="nav-link disabled" routerLink="/user/management"> Usuarios</a>
@@ -128,8 +128,7 @@
       <a class="nav-link nav-border"> Habitaciones </a>
     </li>
     <li class="nav-item pr-3">
-      <a routerLink="/vlog" class="nav-link nav-border"><span nz-icon nzType="sliders" nzTheme="outline"
-          style="position: relative; bottom: 3px;"></span> Filtros </a>
+      <a routerLink="/vlog" class="nav-link nav-border"><ion-icon style="font-size: 16px; top:2px;" src="assets/svg/filters.svg"></ion-icon> Filtros </a>
     </li>
     <li class="nav-item pr-3">
       <a class="nav-link nav-border" routerLink="/list"><span nz-icon nzType="bars" nzTheme="outline"
@@ -140,7 +139,7 @@
 
 
 <!-- modal add home  -->
-<div *ngIf='this.state' class="modal draggable fade bd-example-modal-lg" id="addMarkerModal" tabindex="-1" rol="dialog"
+<div *ngIf='this.state' class="modal draggable fade bd-example-modal-lg addMarkerModal" id="addMarkerModal" tabindex="-1" rol="dialog"
   aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog" rol="document">
     <div class="modal-content">
@@ -148,9 +147,9 @@
         <mat-toolbar class="title-toolbar">
           <mat-toolbar-row>
             <span class="title-center">Nueva propiedad</span>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <!--<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
-            </button>
+            </button>-->
           </mat-toolbar-row>
         </mat-toolbar>
         <!---->
@@ -161,156 +160,169 @@
           style="margin-top: 15px;">
           <nz-tabset [nzTabBarExtraContent]="" [nzSize]="'large'" nz-row [nzTabBarStyle]=""
             style="color: #3a3b3c; display: block; align-items: center; justify-content: space-between; width: 100%; ">
-            <nz-tab [nzTitle]="'Ubicación '" nz-col nzSpan="8">
-              <!--introducir provincia-->
-              <div class="container-fluid">
-                <a class=" button_custom" id="provButton"
-                  style=" align-items: center; display: block; width: 100%;" (click)="locationMap()">
-                  Provincia
-              </a>
-                <a class=" button_custom" id="provButton2"
-                  style=" align-items: center; display: none; width: 100%;" (click)="showCityResult()">
-                  Ok
-            </a>
+            <nz-tab [nzTitle]="'General'" nz-col nzSpan="8">
+              <div class="card">
+                <div class="card-body">
+                  <!--introducir provincia-->
+                  <div class="container-fluid">
+                    <a class=" button_custom" id="provButton"
+                      style=" align-items: center; display: block; width: 100%;" (click)="locationMap()">
+                      Provincia
+                    </a>
+                    <a class=" button_custom" id="provButton2"
+                      style=" align-items: center; display: none; width: 100%;" (click)="showCityResult()">
+                      Guardar
+                    </a>
+                  </div>
+                <div id="map_2" style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
               </div>
-              <div id="map_2" style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
-              </div>
-              <!-- Calle, número y código postal -->
-              <div class="form-group" style="margin-top: 20px; padding-left: 4px;">
-                <label for="calle">Calle</label>
-                <input style="border:1px solid #bcd1c6;" class="form-control inputValue" id="" type="text" name="calle"
-                  required [(ngModel)]="this.home.calle" placeholder="Calle, avenida, plaza...">
-              </div>
-              <div class="form-group row" style="margin-top: 38px;">
-                <div class="col" style="padding-left: 21px;">
-                  <label for="numero">Número</label>
-                  <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
-                    type="text" ngModel pattern="\d*" maxlength="3" (keypress)="numberOnly($event)" name="numero"
-                    required [(ngModel)]="this.home.numero" placeholder="Numero">
+              <!-- tipo de via, nombre y distrito -->
+              <div class="form-group row" style="margin-top: 16px; padding: 4px; ">
+                <div class="col flex-lg-nowrap" style="padding-right: 5px;">
+                  <label for="tipodevia" style="text-overflow: ellipsis; white-space: nowrap;">Tipo de vía</label>
+                  <nz-select class=" " #tipodevia name="tipodevia" required nzPlaceHolder="Tipo de vía" [nzSize]="sizeM" [(ngModel)]="this.home.tipoDeVia" >
+                    <nz-option class="" *ngFor="let opt of tipo_de_via"
+                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
                 </div>
-                <div class="col" style="padding-left: 21px;">
-                  <label for="cp">Código postal</label>
-                  <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
-                    type="text" ngModel pattern="\d*" maxlength="5" (keypress)="numberOnly($event)" name="cp" required
-                    [(ngModel)]="this.home.cp" placeholder="Código postal">
+                <div class="col flex-lg-nowrap">
+                  <label for="calle">Nombre</label>
+                 <input #calle nz-input placeholder="Calle, avenida, plaza..."  [(ngModel)]="this.home.calle" type="text" name="calle"  class=""/>
+                </div>
+                <div class="col flex-lg-nowrap">
+                  <label for="distrito">Distrito</label>
+                  <input nz-input #distrito placeholder="Distrito"  required [(ngModel)]="this.home.distrito" type="text" name="distrito"/>
                 </div>
               </div>
-              <!-- Superficie y Garage -->
-              <div class="form-group row" style="margin-top: 30px;">
-                <div class="col" style="padding-left: 21px;">
+              <div class="form-group row" style="margin-top: 20px;">
+                <div class="col-3">
+                  <label for="numero">Piso</label>
+                  <input nz-input #piso placeholder="Piso" style="padding:5px;" ngModel pattern="\d*" maxlength="4" 
+                  (keypress)="numberOnly($event)" name="piso" required [(ngModel)]="this.home.piso"/>
+                </div>
+                <div class="col-3">
+                  <label for="numero">Numero</label>
+                  <input nz-input #numero placeholder="Número" style="padding:5px;" ngModel pattern="\d*" maxlength="4" 
+                  (keypress)="numberOnly($event)" name="numero" required [(ngModel)]="this.home.numero"/>
+                </div>
+                <div class="col-3">
+                  <label for="cp">CP</label>
+                  <input nz-input #cp placeholder="Código postal" style="padding:5px;" ngModel pattern="\d*" maxlength="5" 
+                  (keypress)="numberOnly($event)" name="cp" required [(ngModel)]="this.home.cp"/>
+                </div>
+                <div class="col-3">
+                  <label for="year">Antiguedad</label>
+                  <nz-date-picker placeholder="Año" #year nzMode="year" nzFormat="yyyy" [(ngModel)]="this.home.antiguedad" (ngModelChange)="setDate($event)"></nz-date-picker>
+                </div>
+              </div>
+              <!-- Superficie, habitaciones, baños y Garage -->
+              <div class="form-group row" style="margin-top: 20px;">
+                <div class="col-3">
                   <label for="superficie">Superficie</label>
-                  <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
-                    type="text" ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)" name="superfice"
+                  <input #superficie nz-input type="text" ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)" name="superficie"
                     required [(ngModel)]="this.home.superficie" placeholder="M²">
                 </div>
-                <div class="col" style="padding-left: 21px;">
+                <div class="col-3">
+                  <label for="habitaciones">Dormitorios</label>
+                  <input #habitaciones nz-input type="text" ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)" name="habitaciones"
+                    required [(ngModel)]="this.home.habitaciones" placeholder="0">
+                </div>
+                <div class="col-3" style="padding-left: 21px;">
+                  <label for="garage">Baños</label>
+                  <input nz-input #banyos type="text" ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)" 
+                     name="banyos" required [(ngModel)]="this.home.aseos" placeholder="0">
+                </div>
+                <div class="col-3" style="padding-left: 21px;">
                   <label for="garage">Aparcamientos</label>
-                  <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
-                    type="text" ngModel pattern="\d*" maxlength="5" (keypress)="numberOnly($event)" name="garage"
-                    required [(ngModel)]="this.home.garage" placeholder="Nº">
+                  <input nz-input #garage type="text" ngModel pattern="\d*" maxlength="3" (keypress)="numberOnly($event)" 
+                     name="garage" required [(ngModel)]="this.home.garage" placeholder="0">
                 </div>
               </div>
-              <!-- Opción a la que se destina y tipo -->
-              <div class="form-group row" style="margin-top: 30px;">
-                <div class="col" style="padding-left: 21px;">
-                  <label for="opcion">Alquiler - Venta ...</label>
-                  <mat-form-field floatLabel="never" appearance="outline" class="search no-label">
-                    <!--<mat-label>Opción</mat-label>-->
-                    <mat-select #optionInput="ngModel" [(ngModel)]="this.home.condicion" panelClass="example-panel" required>
-                      <mat-option *ngFor="let opt of condicion" [value]="opt">
-                        {{opt}}
-                      </mat-option>
-                    </mat-select>
-                    <mat-error style="color:red; font-size: xx-small;"
-                      *ngIf="optionInput.touched && optionInput.invalid">Seleccione una opción</mat-error>
-                    <mat-hint>{{optionInput.value?.sound}}</mat-hint>
-                  </mat-form-field>
+              <!-- Opción a la que se destina, tipo y estado -->
+              <div class="form-group row" style="margin-top: 20px;">
+                <div class="col-7" style="flex-direction: column;">
+                  <label for="optionInput">Alquiler - Venta ...</label>
+                  <nz-select #optionInput style="width:190px; flex-direction: column;" name="optionInput" required nzPlaceHolder="Alquiler - venta" [nzSize]="sizeM" [(ngModel)]="this.home.condicion" >
+                    <nz-option *ngFor="let opt of condicion" 
+                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
                 </div>
-                <div class="col" style="padding-left: 21px; ">
-                  <label for="Tipo">Tipo de inmueble</label>
-                  <mat-form-field [floatLabel]="'never'" appearance="outline" class="search no-label">
-                    <!--<mat-label>Tipo</mat-label>-->
-                    <mat-select #typeInput="ngModel" [(ngModel)]="this.home.tipo" panelClass="example-panel" required>
-                      <mat-option *ngFor="let opt of tipo" [value]="opt">
-                        {{opt}}
-                      </mat-option>
-                    </mat-select>
-                    <mat-error style="color:red; font-size: xx-small;"
-                      *ngIf="typeInput.touched && typeInput.invalid">Seleccione una opción</mat-error>
-                    <mat-hint>{{typeInput.value?.sound}}</mat-hint>
-                  </mat-form-field>
+                <div class="col-5"style="flex-direction: column; ">
+                  <label for="typeInput" style="flex-direction: column; padding-left:10px; text-overflow: ellipsis;">Tipo de inmueble</label>
+                  <nz-select #typeInput name="typeInput" style="flex-direction: column; padding-left:10px;" class="search no-label" required nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.tipo">
+                    <nz-option *ngFor="let opt of tipo"
+                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
                 </div>
               </div>
-              <!-- Habitaciones y baños -->
-              <div class="form-group" style="margin-top: auto;">
-                <div class="row">
-                  <div class="col" style="padding-left: 21px;">
-                    <label for="habitaciones">Habitaciones</label>
-                    <input #roomsInput="ngModel" style="border:1px solid #bcd1c6; width: 212px;"
-                      class="form-control inputValue" id="rooms" type="text" ngModel pattern="\d*" maxlength="3"
-                      (keypress)="numberOnly($event)" name="habitaciones" required [(ngModel)]="this.home.habitaciones"
-                      placeholder="0-999">
-                  </div>
-                  <div class="col" style="padding-left: 21px;">
-                    <label for="baños">Baños</label>
-                    <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id=""
-                      type="text" ngModel pattern="\d*" maxlength="3" (keypress)="numberOnly($event)" name="baños"
-                      required [(ngModel)]="this.home.aseos" placeholder="Aseos">
-                  </div>
-                </div>
-              </div>
-              <!-- Estado en el que se encuentra y a destacar -->
-              <div class="form-group row" style="margin-top: 30px;">
-                <div class="col" style="padding-left: 21px;">
-                  <label for="estado">Estado</label>
-                  <mat-form-field floatLabel="never" appearance="outline" class="search no-label">
-                    <!--<mat-label>Opción</mat-label>-->
-                    <mat-select #stateInput="ngModel" [(ngModel)]="this.home.estado" panelClass="example-panel" required>
-                      <mat-option *ngFor="let opt of propertyState" [value]="opt">
-                        {{opt}}
-                      </mat-option>
-                    </mat-select>
-                    <mat-error style="color:red; font-size: xx-small;"
-                      *ngIf="stateInput.touched && stateInput.invalid">Seleccione una opción</mat-error>
-                    <mat-hint>{{stateInput.value?.sound}}</mat-hint>
-                  </mat-form-field>
-                </div>
-                <div class="col" style="padding-left: 21px; ">
+              <!-- Destacar, orientación y precio-->
+              <div class="form-group row" style="margin-top: 20px;">
+                <div class="col-5" style="flex-direction: column;">
                   <label for="badge">Destacar</label>
-                  <mat-form-field [floatLabel]="'never'" appearance="outline" class="search no-label">
-                    <!--<mat-label>Tipo</mat-label>-->
-                    <mat-select #badgeInput="ngModel" [(ngModel)]="this.home.destacar" panelClass="example-panel" required>
-                      <mat-option *ngFor="let opt of badge" [value]="opt">
-                        {{opt}}
-                      </mat-option>
-                    </mat-select>
-                    <mat-error style="color:red; font-size: xx-small;"
-                      *ngIf="badgeInput.touched && badgeInput.invalid">Seleccione una opción</mat-error>
-                    <mat-hint>{{badgeInput.value?.sound}}</mat-hint>
-                  </mat-form-field>
+                  <nz-select #badgeInput="ngModel" name="badgeInput" nzPlaceHolder="" style="width:165px;"
+                  panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.destacar">
+                    <nz-option *ngFor="let opt of badge"
+                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
+                </div>
+                <div class="col-3" style=" flex-direction: column;">
+                  <label for="Orientacion">Orientación</label>
+                  <nz-select #Orientacion="ngModel" name="Orientacion" nzPlaceHolder="" style="width:90px;"
+                  panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.orientacion">
+                    <nz-option *ngFor="let opt of orientacion"
+                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
+                </div>
+                <div class="col-4">
+                  <label for="stateInput">Estado</label>
+                  <nz-select #stateInput="ngModel" style="flex-direction: column;" name="stateInput" required nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.estado">
+                    <nz-option *ngFor="let opt of propertyState"
+                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
                 </div>
               </div>
-              <!-- Antiguedad y precio -->
-              <div class="form-group" style="margin-top: auto;">
-                <div class="row">
-                  <div class="col" style="padding-left: 21px;">
-                    <label for="antiguedad">Año de construcción</label>
-                    <input #antiguedadInput="ngModel" style="border:1px solid #bcd1c6; width: 212px;"
-                      class="form-control inputValue" id="antiguedad" type="text" ngModel pattern="\d*" maxlength="4"
-                      (keypress)="numberOnly($event)" name="antiguedad" required [(ngModel)]="this.home.antiguedad"
-                      placeholder="AC-2023">
-                  </div>
-                  <div class="col" style="padding-left: 21px;">
-                    <label for="precio">Precio</label>
-                    <input style="border:1px solid #bcd1c6; width: 212px;" class="form-control inputValue" id="precio"
-                      type="text" ngModel pattern="\d*" maxlength="9" (keypress)="numberOnly($event)" name="precio"
-                      required [(ngModel)]="this.home.precioFinal" placeholder="€">
-                  </div>
+              <div class="form-group row" style="margin-top: 20px;">
+                <div class="col-6">
+                  <label for="precioFinal">Precio de venta:</label>
+                  <nz-input-group [nzSuffix]="precioVentaInfo">
+                    <input nz-input placeholder="€" [(ngModel)]="this.home.precioFinal" type="text" ngModel pattern="\d*" maxlength="8" 
+                     #precioFinal (keypress)="numberOnly($event)" name="precioFinal" required />
+                    </nz-input-group>
+                    <ng-template #precioVentaInfo>
+                      <i nz-tooltip nzTooltipTitle="Rellena este campo solo si vendes" class="bi bi-info-square"></i>
+                    </ng-template>
+                </div>
+                <div class="col-6" >
+                  <ng-container>
+                    <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="checkBox(this.home.direccionAproximada?true:false)">
+                      <div nz-row>
+                        <div nz-col nzSpan="8"><label style="white-space:nowrap;" [(ngModel)]="this.home.direccionAproximada"  nz-checkbox  >La dirección no es exacta</label></div>
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </ng-container>
                 </div>
               </div>
-            </nz-tab>
+              <div class="form-group row flex-lg-nowrap" style="margin-top: 20px;">
+                <div class="col">
+                  <nz-card nzTitle="Vistas" style="border:1px solid #d9d9d9; border-radius: 5px;margin:2px;">
+                    <nz-radio-group [(ngModel)]="this.home.vistasDespejadas" nzButtonStyle="solid">
+                      <label nz-radio-button nzValue="Ciudad">Ciudad</label>
+                      <label nz-radio-button nzValue="Jardines">Jardines</label>
+                      <label nz-radio-button nzValue="Deslunado">Deslunado</label>
+                      <label nz-radio-button nzValue="Mar">Mar</label>
+                      <label nz-radio-button nzValue="Piscina">Piscina</label>
+                      <label nz-radio-button nzValue="Montaña">Montaña</label>
+                      <label nz-radio-button nzValue="Río">Río</label>
+                    </nz-radio-group>
+                  </nz-card>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nz-tab>
 
-            <nz-tab [nzTitle]="'General'" nz-col nzSpan="8">
+        <!--Ambiente-->
+            <nz-tab [nzTitle]="'Ambiente'" nz-col nzSpan="8">
               <div class="form-group ">
                 <!-- Energía y climatización -->
                 <div class="row row-cols-2" style="margin-top: 10px;">
@@ -353,12 +365,12 @@
                 </div>
                 <div class="row row-cols-12" style="padding-left: 16px; border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col-10">
-                    <nz-select class="nzSelectL form-control" required nzPlaceHolder="Emisiones" [nzSize]="size" [(ngModel)]="this.home.emisiones" >
+                    <nz-select class="nzSelectL" required nzPlaceHolder="Emisiones" [nzSize]="size" [(ngModel)]="this.home.emisiones" >
                       <nz-option class="nzOptionL" *ngFor="let opt of calificacion_emisiones"
                       [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
                     <br>
-                    <nz-select class="nzSelectL form-control" required nzPlaceHolder="Consumo" [nzSize]="size" [(ngModel)]="this.home.consumo">
+                    <nz-select class="nzSelectL" required nzPlaceHolder="Consumo" [nzSize]="size" [(ngModel)]="this.home.consumo">
                       <nz-option class="nzOptionL" *ngFor="let opt of calificacion_consumo"
                         [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
@@ -488,7 +500,7 @@
                     <label class="c-material-che">
                       <input type="checkbox" [(ngModel)]="this.home.extintores"  class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
-                      <span class="c-material-che__label">Extintores</span>
+                      <span class="c-material-che__label">Rociadores de incendio</span>
                     </label>
                     <br>
                     <label class="c-material-che">
@@ -505,22 +517,6 @@
                   </div>
                   <br class="brboom">
                  </div>
-                 
-                
-                    <!--<li>
-                      <mat-card class="result">
-                        <mat-card-content >
-                          
-                          <section class="example-section">
-                            <mat-checkbox class="example-margin" (change)="changeEvent($event)" style="float: left;"
-                              (indeterminateChange)="checkBox($event)" class="example-margin" [checked]="IsChecked"
-                              [(indeterminate)]="IsIndeterminate" [labelPosition]="LabelAlign" [disabled]="IsDisabled">
-                              <label for="" style="">Favorito</label></mat-checkbox>
-                          </section>
-                        </mat-card-content>
-                      </mat-card>
-                    </li>-->
-                  
               </div>
             </nz-tab>
 
@@ -535,17 +531,17 @@
                  <div class="col"></div>
               </div>
                 <div class="row row-cols-2 "
-                style="padding-left: 10px; margin-top: 17px; border-bottom: 1px solid rgb(206, 203, 203);">
-                <div class="col">
-                  <div class="item">
+                 style="padding-left: 10px; margin-top: 17px; border-bottom: 1px solid rgb(206, 203, 203);">
+                 <div class="col">
+                   <div class="item">
                     <label class="labelsCh2">
                       <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.terraza" (change)="checkBox(this.home.terraza?true:false)" id="checkboxTerraza"/>
                       <span class="checkbox2"></span>
                     </label>
                     <label for="checkboxTerraza">Terraza</label>
-                  </div>
-                  <br>
-                  <div class="item">
+                   </div>
+                   <br>
+                   <div class="item">
                     <label class="labelsCh2">
                       <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.amueblado" id="checkboxAmueblado"/>
                       <span class="checkbox2"></span>
@@ -594,11 +590,15 @@
                   </div>
                   <br>
                   <div class="item">
-                    <label class="labelsCh2">
+                    <!--<label class="labelsCh2">
                       <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.aseoEnsuite" id="checkboxAseoEnsuite"/>
                       <span class="checkbox2"></span>
-                    </label>
-                    <label for="checkboxAseoEnsuite">Aseo ensuite</label>
+                    </label>-->
+                    <nz-select #aseoEnsuiteInput style=" flex-direction: column;" name="aseoEnsuiteInput" required nzPlaceHolder="" [nzSize]="sizeM" [(ngModel)]="this.home.aseoEnsuite" >
+                      <nz-option *ngFor="let opt of bathRooms" 
+                      [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                    <label for="AseoEnsuite">Aseo ensuite</label>
                   </div>
                   <br>
                   <div class="item">
@@ -609,21 +609,77 @@
                     <label for="checkboxBalcon">Balcón</label>
                   </div>
                   <br>
-                  <div class="item">
+                  <!--<div class="item">
                     <label class="labelsCh2">
                       <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.vistasDespejadas" id="checkboxVistas"/>
                       <span class="checkbox2"></span>
                     </label>
                     <label for="checkboxVistas">Vistas despejadas</label>
-                  </div>
+                  </div>-->
                 </div>
                   <br class="brboom">
                </div>
-              </div>
-          </nz-tab>
+               <!-- Condiciones de alquiler -->
+               <div class="form-group">
+                <div class="row row-cols-2" style="margin-top: 10px;">
+                  <div class="col">
+                    <div class="item">
+                      <label for="alquileres">Condiciones de alquiler</label>
+                    </div>
+                  </div>
+                  <div class="col"></div>
+                </div>
+                <section [attr.disabled]="this.home.condicion?'Alquilo':null">
+                <div class="row-cols-4" style="display:flex; flex-direction: row;">
+                  <div class="col" >
+                      <nz-card nzTitle="Fianza" style="border:1px solid #d9d9d9; border-radius: 5px;margin:2px;">
+                        <nz-radio-group nzButtonStyle="solid" style=" height: 10px; line-height: 10px;" [(ngModel)]="this.home.fianza">
+                          <label nz-radio-button nzValue="Sin fianza" style="flex-direction: row; display:inline-block; white-space: nowrap;">Sin fianza</label>
+                          <label nz-radio-button nzValue="1 mes">1 Mes</label>
+                          <label nz-radio-button nzValue="2 meses">2 Meses</label>
+                          <label nz-radio-button nzValue="+2">+2</label>
+                        </nz-radio-group>
+                      </nz-card>
+                  </div>
+                  <div class="col">
+                     <!--<input type="checkbox" style="accent-color: #666; width:20px;">-->
+                     <nz-card nzTitle="Disponible" style="border:1px solid #d9d9d9; border-radius: 5px;margin:2px;">
+                        <label for="disponibilidad">A partir de:</label>
+                      <nz-date-picker #month nzMode="month" nzFormat="MMM" [(ngModel)]="this.home.disponibilidad" (ngModelChange)="setDisponibilidad($event)"></nz-date-picker>
+                    </nz-card>
+                  </div>
+                  <div class="col">
+                      <nz-card nzTitle="Mascotas" style="border:1px solid #d9d9d9; border-radius: 5px;margin:2px;">
+                        <nz-radio-group style="height: 10px; line-height: 10px;" nzButtonStyle="solid" [(ngModel)]="this.home.mascotas">
+                          <label nz-radio-button nzValue="Se permiten mascotas">Si</label>
+                          <label nz-radio-button nzValue="No se permiten mascotas">No</label>
+                          <label nz-radio-button nzValue="Consultar">Consultar</label>
+                        </nz-radio-group>
+                      </nz-card>
+                  </div>
+                  <div class="col">
+                      <nz-card nzTitle="Contrato" style="border:1px solid #d9d9d9; border-radius: 5px; margin:2px;">
+                        <nz-radio-group style="height: 10px; line-height: 10px;" nzButtonStyle="solid" [(ngModel)]="this.home.estanciaMinima">
+                          <label nz-radio-button nzValue="Anual">Anual</label>
+                          <label nz-radio-button nzValue='Temporada'>Temporada</label>
+                        </nz-radio-group>
+                      </nz-card>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 col-sm-auto">
+                    <label for="precioAlquiler">Precio/mes:</label>
+                    <input nz-input placeholder="€/mes" [(ngModel)]="this.home.precioAlquiler" type="text" ngModel pattern="\d*" maxlength="5" 
+                    #precioAlquiler (keypress)="numberOnly($event)" name="precioAlquiler" required />
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </nz-tab>
 
-           <!-- Vivienda -->
-            <nz-tab [nzTitle]="'Piso'" nz-col nzSpan="8" [nzDisabled]="false">
+           <!-- Multimedia -->
+            <nz-tab [nzTitle]="'Multimedia'" nz-col nzSpan="8" [nzDisabled]="false">
               <div *ngFor="let progressInfo of progressInfos" class="mb-2">
                 <span>{{ progressInfo.fileName }}</span>
                 <div class="progress">
@@ -640,13 +696,8 @@
                     <input type="file" accept="image/*" multiple (change)="selectFiles($event)" />
                   </label>
                 </div>
-                <!--<div class="col-4">
-                  <button class="btn btn-success btn-sm" [disabled]="!selectedFiles" (click)="uploadFiles()">
-                    Guardar
-                  </button>
-                </div>-->
               </div>
-              
+
               <div>
                 <img *ngFor='let preview of previews' [src]=this.preview class="preview" style="max-width: 60px; padding:5px; border-radius: 4px;">
               </div>
@@ -658,37 +709,45 @@
               </div>
               
               <div class="card mt-3">
-                <div class="card-header">List of Images</div>
-                <ul
-                  class="list-group list-group-flush"
-                  *ngFor="let image of imageInfos | async"
-                >
+                <div class="card-header">Imagenes seleccionadas</div>
+                <ul class="list-group list-group-flush" *ngFor="let image of imageInfos | async">
                   <li class="list-group-item">
                     <p><a href="{{ image.url }}">{{ image.name }}</a></p>
                     <img src="{{ image.url }}" alt="{{ image.name }}" height="80px" />
                   </li>
                 </ul>
               </div>
-              
-              <!--<div class="form-group">
-                <label for="fotos">Sube una foto</label><br>
-                <input required (change)="saveImage($event)" type="file" class="" />
-              </div>-->
-              <!-- previsualización 
-              <div class="form-group" *ngIf="this.prev">
-                <img [src]="this.prev" alt="" height="75px" width="75" style="border-radius:5px;">
-              </div>-->
+              <!-- Video para youtube -->
+              <div class="form-group">
+                <ng-container>
+                  <div class="row">
+                    <div class="col-12 ">
+                      <label for="video">Video</label>
+                      <nz-input-group [nzPrefix]="youtubePrefix">
+                        <input style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
+                        width:100%" nz-input #video [(ngModel)]="this.home.video" type="text" name="video"/>
+                      </nz-input-group>
+                      <ng-template #youtubePrefix><ion-icon name="logo-youtube" style="font-size: 16px; color:red;"></ion-icon></ng-template>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
               <!--textarea-->
               <div class="form-group">
-                <label for="descripcion">Descripción</label>
-                <textarea required class="form-control"
-                  style="resize:none; border-radius:5px; height:100px; width:465px; background-color:white;color:black;"
-                  [(ngModel)]='this.home.descripcion' rows="30" cols="120">
-                 </textarea>
+                <ng-container>
+                  <div class="row mt-3">
+                    <div class="col-12 col-sm-auto">
+                      <label for="descripcion">Descripción</label>
+                        <textarea required class="form-control"
+                          style="margin-bottom:18px; resize:none; border-radius:5px; height:150px; width:100%; background-color:white;color:black;"
+                          [(ngModel)]='this.home.descripcion' rows="30" cols="120">
+                        </textarea>
+                    </div>
+                  </div>
+                </ng-container>
               </div>
-
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                   id="new-marker-close">Cerrar</button>
                 <input type="submit" class="btn btn-primary" value="Crear">
               </div>
@@ -709,10 +768,10 @@
                   </div>
                 </div>
                 <div class="ctnrmovility" #element>
-                  <a class="btnmov js-click-modal" (click)="openToogleModal(true)">Empezar</a>
+                  <a class="btnmov " (click)="openToogleModal(true)">Empezar</a>
                   <div class="modalmov">
                     <div class="header" style="border-top-right-radius: 20px 20px; border-top-left-radius: 20px 20px;">
-                     <a class="btnmov js-close-modal" (click)="openToogleModal(false)">Guardar</a>
+                     <a class="btnmov " (click)="openToogleModal(false)">Terminar</a>
                     </div>
                     <div class="body">
                       <div class="container-fluid">
@@ -1380,3 +1439,5 @@
 <div id="map"></div>
 
 <button id="oculto" class="oculto" style="display: none;" (click)="saveService()"></button>
+<button id="runImage" class="btn btn-primary carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next" style="display: none;" ></button>
+<button id="linkPopup" class="linkPopup" style="display: none;" routerLink="/add"></button>

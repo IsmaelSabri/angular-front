@@ -1,71 +1,836 @@
-<!-- Header Start -->
-<div class="header-wrap">
-  <header>
-    <div class="container">
-      <!-- Logo Start -->
-      <div class="logo">
-        <a href="#">
-          <img
-            src="assets/img/tmp/unknown-house.png"
-            width="80px;"
-            height="80px"
-            alt="Real Estate"
-          />
-        </a>
-      </div>
-      <!-- Logo End -->
-      <button class="menu-toggle">
-        <i class="ri-menu-fill bar-icon"></i>
-        <i class="ri-close-fill close-icon"></i>
-      </button>
-      <div class="header-right">
-        <!-- Header Menu Start -->
-        <div class="menu">
-          <ul>
-            <li><a routerLink="/home">Mapa</a></li>
-            <li><a href="#">Propiedades</a></li>
-            <li><a href="#">Agentes</a></li>
-            <li><a href="#">Blog</a></li>
-          </ul>
-        </div>
-        <!-- Header Menu End -->
-        <!-- Header Cta Start -->
-        <div class="cta">
-          <a href="#" class="btn btn-outline-primary">Entrar</a>
-        </div>
-        <!-- Header Cta End -->
-      </div>
+<nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <nz-breadcrumb class="mb-0">
+        <nz-breadcrumb-item>
+            <ion-icon name="home-outline"></ion-icon>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a>
+            <span nz-icon nzType="user"></span>
+            <span>Application List</span>
+          </a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>Application</nz-breadcrumb-item>
+      </nz-breadcrumb>
     </div>
-  </header>
-</div>
-<!-- Header End -->
+</nav>
 
-<!-- view property section starts  -->
+<!--brand header starts-->
+<nz-affix [nzOffsetTop]="0">
+  <nav class="navbar sticky-top navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Brand pro-user</a>
+    </div>
+  </nav>
+</nz-affix>
+<!--brand header ends-->
+
+<!-- image section starts -->
 <section>
-  <div class="row">
-    <div class="col-8 colcontainer">
-      <div class="gallery">
-        <div class="gallery__item">
-          <ng-container *ngFor="let image of _albums; let i = index">
-            <img *ngIf="i<3" class="image" [src]="image.thumb" (click)="open(i)" />
-          </ng-container>
+    <div id="photos" class="image-mosaic ">
+        <div class="listing-status">
+            <div class="listing-status-item">{{this.home.destacar}}</div>
         </div>
-      </div>
-      <div class="gallery">
-      <div class="gallery__item">
-         <ng-container *ngFor="let image of _albums.slice(3); let i = index">
-           <img *ngIf="i<3" class="image" [src]="image.thumb" (click)="open(i+3)" />
-         </ng-container>
-       </div>
-       </div>
+        <div class="single-media first-images " *ngFor="let image of _albums| slice:0:1; let i = index">
+            <a class="first-image ">
+                    <img [src]="this._albums[i].src" (click)="open(i)"/>
+            </a>
+            <div class="rest-media-length-4">
+                <a class="single-image  ">
+                    <img [src]="this._albums[i+1].src" (click)="open(i+1)"/>
+                </a>
+                <a class="single-image">
+                    <img [src]="this._albums[i+2].src" (click)="open(i+2)"/>
+                </a>
+                <a class="single-image">
+                    <img [src]="this._albums[i+3].src" (click)="open(i+3)"/>
+                    <span class="count-info">
+                        {{this.home.images.length-5}}<!-- -->
+                        +
+                    </span>
+                </a>
+                <a class="badge-count-image">
+                    <img [src]="this._albums[i+4].src" (click)="open(i+4)"/>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="col-4 colcontainer">
-         <div class="gallery__item_2" style="display: flex;">
-            <ng-container *ngFor="let image of _albums.slice(6); let i = index" style="height: 100%;">
-              <img *ngIf="i<1" class="image" [src]="image.thumb" (click)="open(i+6)" style="border-radius: 0.25rem;"/>
-            </ng-container>
-          </div>
+</section> 
+<!-- image section ends -->
+
+
+<!--Content-->
+<div class="main-details ">
+    <main class="row-main-details ">
+        <div class="sections">
+            <div>
+                <section id="overview" class="description-section " style="filter: none;">
+                    <div class="description-content ">
+                        <div>
+                            <h1 class="headline alone">{{this.home.tipo}} en {{this.home.condicion}} en {{this.home.ciudad}}</h1>
+                            <span class="address-icon icon-deluxe "><ion-icon name="location-outline"></ion-icon></span>
+                            <h2><a >La dirección es/no es aproximada</a></h2><!-- *ngIf="this.home.direccionAproximada"-->
+                        </div>
+                            <div class="prices">
+                                <div class="price under-market"  >
+                                    <span *ngIf="this.home.precioInicial!= null || this.home.precioInicial != undefined" class="prefix">En venta</span>
+                                    <div *ngIf="this.home.precioInicial!= null || this.home.precioInicial != undefined" class="price-container"><span class="price-value">{{this.home.precioInicial}}</span><span class="dimension"></span></div>
+                                </div>
+                                <div class="price ">
+                                    <span *ngIf="this.home.precioInicial== null || this.home.precioInicial == undefined" class="prefix">En venta</span>
+                                    <div class="price-container"><span *ngIf="this.home.precioFinal!= null || this.home.precioFinal != undefined" class="price-value">{{this.home.precioFinal}}€</span>
+                                    <span *ngIf="this.home.precioFinal!= null || this.home.precioFinal != undefined" class="dimension">{{this.calcPriceM2(this.home.precioFinal,this.home.superficie)}}€/m²</span>
+                                    <div class="diff" *ngIf="this.home.precioInicial!= null || this.home.precioInicial != undefined">
+                                        <span class="dimension under" style="color:#8dca3f;">-{{this.discount(this.home.precioInicial,this.home.precioFinal)}}%</span>
+                                    </div>
+                                </div>
+                                </div>
+                                <div *ngIf="this.home.precioAlquiler!= null || this.home.precioAlquiler != undefined"  class="price">
+                                    <span class="prefix">En alquiler</span>
+                                    <div class="price-container"><span *ngIf="this.home.precioAlquiler!= null || this.home.precioAlquiler != undefined" class="price-value">{{this.home.precioAlquiler}}</span><span *ngIf="this.home.precioAlquiler!= null || this.home.precioAlquiler != undefined" class="suffix">/mes</span><span class="dimension"></span></div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="acerca-de-container ">
+                        <div>
+                            <span class="value">{{this.home.habitaciones}}</span><span class="label"><ion-icon style="font-size: 24px; color:white;" src="assets/svg/bed-white.svg" ></ion-icon><br><span class="text">Dormitorios</span></span>
+                        </div>
+                        <div>
+                            <span class="value">{{this.home.aseos}}</span><span class="label"><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/bath-white.svg"></ion-icon><br><span class="text">Aseos</span></span>
+                        </div>
+                        <div>
+                            <span class="value">{{this.home.orientacion}}</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/compass-white.svg"></ion-icon><br><span class="text">Orientación</span></span>
+                        </div>
+                        <div *ngIf="this.home.tipo=='Piso'">
+                            <span class="value">{{this.home.piso}}</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/stairs_white.svg"></ion-icon><br><span class="text">Piso</span></span>
+                        </div>
+                        <div>
+                            <span class="value">{{this.home.garage}}</span><span class="label"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/garage-white.svg"></ion-icon><br><span class="text">Garage</span></span>
+                        </div>
+                        <div>
+                            <span class="value">{{this.home.superficie}}m²</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/size-box-white.svg"></ion-icon><br><span class="text">Superficie</span></span>
+                        </div>
+                        <div>
+                            <span class="value">{{this.home.antiguedad}}</span><span class="label"><ion-icon style="font-size: 22px; position:relative; top:2px;" src="assets/svg/build-white.svg"></ion-icon><br><span class="text">Antiguedad</span></span>
+                        </div>
+                    </div>
+                    <div class="readmore-open " >
+                        <h2>{{this.home.habitaciones}} Habitaciones en venta | {{this.home.distrito}} | {{this.home.ciudad}}</h2>
+                        <span class="description-box">
+                            <div class="container" id="module">
+                                <div class="collapse" id="collapseExample" aria-expanded="false" >
+                                    {{this.home.descripcion}}
+                                </div>
+                                <a role="button" class="collapsed" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                                aria-expanded="false" aria-controls="collapseExample"></a>
+                            </div>
+                        </span>
+                    </div>
+                    
+                    <div class="features-container ">
+                        <div class="features-block">
+                            <h2>Acerca de</h2>
+                            <div class="featured">
+                                <div>
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 18px; position:relative; top:2px;" src="assets/svg/house-next.svg"></ion-icon></span></div>
+                                    <div>
+                                        <span>Tipo de propiedad<!-- -->:</span><span class="value">{{this.home.tipo}}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 15px; position:relative; top:2px;" src="assets/svg/date1.svg"></ion-icon></span></div>
+                                    <div>
+                                        <span>Desde<!-- -->:</span><span class="value"> {{this.home.fechaCreacion.slice(0,10)}}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 18px; position:relative; top:2px;" src="assets/svg/date-update.svg"></ion-icon></span></div>
+                                    <div>
+                                        <span>Ultima actualización<!-- -->:</span><span class="value">{{this.home.fechaUltimaModificacion.slice(0,10)}}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.intake}}></ion-icon></span></div>
+                                    <div>
+                                        <span>Consumo<!-- -->:</span><span class="value"> {{this.home.consumo}}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.emissions}}></ion-icon></span></div>
+                                    <div>
+                                        <span>Emisiones<!-- -->:</span><span class="value"> {{this.home.emisiones}}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/eco-house2.svg"></ion-icon></span></div>
+                                    <div>
+                                        <span>Eficiencia energética<!-- -->:</span><span class="value"></span>
+                                    </div>
+                                </div>
+                                <div *ngIf="this.home.plantaMasAlta">
+                                    <div class="icon-container"><span class="icon icon-deluxe "></span></div>
+                                    <div>
+                                        <span>Planta mas alta del edificio<!-- --></span><span class="value"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/house-id.svg"></ion-icon></span></div>
+                                    <div>
+                                        <span>ID<!-- -->:</span><span class="value">{{this.home.viviendaId}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="features-block">
+                            <h2>Alquiler</h2>
+                            <div class="featured">
+                                <div>
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/fianza.svg"></ion-icon></span></div>
+                                    <div><span>Fianza:</span><span class="value">{{this.home.fianza}}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="this.home.disponibilidad!= null || this.home.disponibilidad != undefined">
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/date-out.svg"></ion-icon></span></div>
+                                    <div><span>Disponible a partir de:</span><span class="value">{{this.home.disponibilidad}}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="this.home.mascotas=='Se permiten mascotas'"><!---->
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/pets ok.svg"></ion-icon></span></div>
+                                    <div><span>Mascotas:</span><span class="value">{{this.home.mascotas}}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="this.home.mascotas=='No se permiten mascotas'"><!---->
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/pets no.svg"></ion-icon></span></div>
+                                    <div><span>Mascotas:</span><span class="value">{{this.home.mascotas}}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="this.home.mascotas=='Consultar'"> <!---->
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative; top:2px;" src="assets/svg/pets_question.svg"></ion-icon></span></div>
+                                    <div><span>Mascotas:</span><span class="value">{{this.home.mascotas}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="features-block">
+                            <h2>Extras</h2>
+                            <div class="content">
+                                <div class="highlighted">
+                                    <span *ngIf="this.home.aireAcondicionado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/aa2.svg"></ion-icon></span>Aire acondicionado</span>
+                                    <span *ngIf="this.home.calefaccion"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/heating.svg"></ion-icon></span>Calefacción</span>
+                                    <span *ngIf="this.home.panelesSolares"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/solar_panels.svg"></ion-icon></span>Paneles solares</span>
+                                    <span *ngIf="this.home.gasNatural"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/gas_house.svg"></ion-icon></span>Gas natural</span>
+                                    <span *ngIf="this.home.amueblado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/furniture.svg"></ion-icon></span>Amueblado completo</span>
+                                    <span *ngIf="this.home.aseoEnsuite!= null || this.home.aseoEnsuite != undefined"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/bath_independent.svg"></ion-icon></span>Aseo ensuite</span>
+                                </div>
+                                <div class="highlighted">
+                                    <span *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/balcony.svg"></ion-icon></span>Balcón</span>
+                                    <span *ngIf="this.home.terraza"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/terrace2.svg"></ion-icon></span>Terraza</span>
+                                    <span *ngIf="this.home.parquet"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/pq2.svg"></ion-icon></span>Parquet</span>
+                                    <span *ngIf="this.home.piscinaPrivada"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/only.svg"></ion-icon></span>Piscina Privada</span>
+                                    <span *ngIf="this.home.armariosEmpotrados"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/locker.svg"></ion-icon></span>Armarios Empotrados</span>
+                                    <span *ngIf="this.home.trastero"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/storage.svg"></ion-icon></span>Trastero</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="features-block">
+                            <h2>Comunidad</h2>
+                            <div class="content">
+                                <div class="highlighted">
+                                    <span *ngIf="this.home.videoPortero"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative; " src="assets/svg/videoportero.svg"></ion-icon></span>Videoportero</span>
+                                    <span *ngIf="this.home.ascensor"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; " src="assets/svg/elevator2.svg"></ion-icon></span>Ascensor</span>
+                                    <span *ngIf="this.home.zonaDeOcio"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/garden.svg"></ion-icon></span>Zona de ocio</span>
+                                    <span *ngIf="this.home.gym"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/gym.svg"></ion-icon></span>Gimnasio</span>
+                                    <span *ngIf="this.home.padel"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/padel.svg"></ion-icon></span>Padel</span>
+                                    <span *ngIf="this.home.tenis"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/tennis.svg"></ion-icon></span>Tenis</span>
+                                    <span *ngIf="this.home.golf"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/golf.svg"></ion-icon></span>Golf</span>
+                                </div>
+                                <div class="highlighted">
+                                    <span *ngIf="this.home.piscinaComp"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/comunity-pool.svg"></ion-icon></span>Piscina comunitaria</span>
+                                    <span *ngIf="this.home.jardin"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/garden-flowers2.svg"></ion-icon></span>Zonas ajardinadas</span>
+                                    <span *ngIf="this.home.columpios"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/slide.svg"></ion-icon></span>Columpios</span>
+                                    <span *ngIf="this.home.jacuzzi"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/jacuzzi.svg"></ion-icon></span>Jacuzzi</span>
+                                    <span *ngIf="this.home.sauna"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/sauna.svg"></ion-icon></span>Sauna</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="features-block">
+                            <h2>Vistas</h2>
+                            <div class="content">
+                                <div class="highlighted">
+                                    <span *ngIf="this.home.vistasDespejadas=='Ciudad'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/city.svg"></ion-icon></span>Ciudad</span>
+                                    <span *ngIf="this.home.vistasDespejadas=='Jardines'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/garden-views.svg"></ion-icon></span>Jardines</span>
+                                    <span *ngIf="this.home.vistasDespejadas=='Deslunado'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/deslunado.svg"></ion-icon></span>Deslunado</span>
+                                    <span *ngIf="this.home.vistasDespejadas=='Mar'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/sea.svg"></ion-icon></span>Mar</span>
+                                    <span *ngIf="this.home.vistasDespejadas=='Piscina'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/pool-views.svg"></ion-icon></span>Piscina</span>
+                                    <span *ngIf="this.home.vistasDespejadas=='Montaña'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/mountain.svg"></ion-icon></span>Montaña</span>
+                                    <span *ngIf="this.home.vistasDespejadas=='Río'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/river.svg"></ion-icon></span>Río</span>
+                                </div>
+                                <div class="highlighted"></div>
+                            </div>
+                        </div>
+                        <div class="features-block">
+                            <h2>Seguridad</h2>
+                            <div class="content">
+                                <div class="highlighted">
+                                    <span *ngIf="this.home.videoVigilancia"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/cctv.svg"></ion-icon></span>Video vigilancia</span>
+                                    <span *ngIf="this.home.recepcion24_7"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/reception.svg"></ion-icon></span>Recepción 24/7</span>
+                                    <span *ngIf="this.home.generadorEmergencia"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; " src="assets/svg/highvoltage.svg"></ion-icon></span>Generador de emergencia</span>
+                                </div>
+                                <div class="highlighted">
+                                    <span *ngIf="this.home.alarmaIncendios"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/fire-alarm.svg"></ion-icon></span>Alarma de incendios</span>
+                                    <span *ngIf="this.home.extintores"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/sprinklers.svg"></ion-icon></span>Rociadores de incendio</span>
+                                    <span *ngIf="this.home.instalacionesDiscapacitados"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; color:#666;" src="assets/svg/wheelchair.svg"></ion-icon></span>Vivienda accesible</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Esto hay que hacerlo mejor con bootstrap -->
+                <!--<div style="display: block;" class="restricted-message">
+                    <div class="body">
+                        <div class="advertisement ">
+                            <div class="image">
+                                <img
+                                    src=""
+                                    alt="Para ver más propiedades y disfrutar del chat en tiempo real cree un cuenta"
+                                />
+                                <div class="text"><h4>Entrar o registrarse</h4></div>
+                            </div>
+                            <div class="padded">
+                                <div class="heading">Acceso vip</div>
+                                <p>Puede acceder a información adicional con una cuenta</p>
+                                <button tabindex="0" class="login only-one-button"><span class="readmore-button-label">ENTRAR</span></button><button tabindex="0" class="register only-one-button"><span class="readmore-button-label">REGISTRARSE</span></button>
+                                <p class="privacy">
+                                    Al continuar acepta nuestra política de privacidad <a routerLink="/privacy-policy" target="_blank"> Política de privacidad</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+            <div>
+                <div class="hidden">
+
+                    <section>
+                        <h2>Propiedades similares en {{this.home.distrito}}</h2>
+                        <div class="district-filters ">
+                            <div class="filter-status">
+                                <button tabindex="0" class="only-one-button">
+                                    <span class="bage-wrap" >Alquiler<span class="district-rent-filter">12<!--reservado--></span></span>
+                                </button>
+                                <button tabindex="0" class="active only-one-button">
+                                    <span class="bage-wrap" >Venta<span class="district-rent-filter">2</span></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class=" similar-filter-card-body" *ngFor="let data of this.homes" let i = index >
+                            <a target="_blank" style="text-decoration: none;" >
+                                <div class="similar-filter-card "  >
+                                    <img class="image" alt="" src={{data.images[0].imageUrl}} height="80" width="112" />
+                                    <div class="content">
+                                        <div class="texts">
+                                            <div>{{data.habitaciones}} Habitaciones en venta | {{data.distrito}} | {{data.ciudad}}</div>
+                                            <div class="price under-market">
+                                                <div class="old">
+                                                    <span class="value">{{data.precioInicial}}</span>
+                                                </div>
+                                                <div class="new">{{data.precioFinal}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="featured-box featured-properties ">
+                                            <div class="private">
+                                                <div class="feature"><span class="icon"></span> <span class="label">1</span><span class="short-label">1</span></div>
+                                                <div class="feature"><span class="icon"></span> <span class="label">1</span><span class="short-label">1</span></div>
+                                                <div class="feature"><span class="icon"></span> <span class="label">57m²</span><span class="short-label">57m²</span></div>
+                                                <div class="feature"><span class="icon"></span> <span class="label">22</span><span class="short-label">22</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </section>
+
+                    <section id="map" >
+                        <h2>Conozca la zona</h2>
+                        <div class="content">
+                            <div class="filters">
+                                <nz-tabset>
+                                    <!--Colegios-->
+                                    <nz-tab nzTitle="Colegios">
+                                        <nz-table >
+                                            <thead>
+                                              <tr>
+                                                <th>Nombre</th>
+                                                <th>Enseñanza</th>
+                                                <th>Institución</th>
+                                                <th>Página web</th>
+                                                <th>Distancia</th>
+                                                <th>Como llegar</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              <tr *ngFor="let data of this.colegio">
+                                                <td>{{ data.nombre }}</td>
+                                                <td>{{ data.ensenyanza }}</td>
+                                                <td>{{ data.institucion }}</td>
+                                                <td>{{ data.web}}</td>
+                                                <td>{{ data.distancia}}</td>
+                                              </tr>
+                                            </tbody>
+                                          </nz-table>
+                                    </nz-tab>
+                                    <!--Colegios-->
+                                    <nz-tab nzTitle="Universidades">Content of Tab Pane 2</nz-tab>
+                                    <nz-tab nzTitle="Supermercados">Content of Tab Pane 3</nz-tab>
+                                    <nz-tab nzTitle="Autobuses">Content of Tab Pane 3</nz-tab>
+                                    <nz-tab nzTitle="Metro">Content of Tab Pane 3</nz-tab>
+                                    <nz-tab nzTitle="Playa">Content of Tab Pane 3</nz-tab>
+                                    <nz-tab nzTitle="Aeropuerto">Content of Tab Pane 3</nz-tab>
+                                </nz-tabset>
+                            </div>
+                                <!-- Leaflet map -->
+                                <div id="mapAdd"></div>
+                        </div>
+                    </section>
+                    <section id="profiles" class="videoAdd ">
+                        <h2>Video</h2>
+                        <div class="video-container">
+                            <div #demoYouTubePlayer class="demo-youtube-player">
+                                <section>
+                                    <youtube-player [videoId]="this.home.video.substring(30)" 
+                                    suggestedQuality="highres"
+                                    [height]="this.videoHeight" 
+                                    [width]="this.videoWidth" 
+                                    [startSeconds]="0"
+                                    [endSeconds]="0"  >
+                                    </youtube-player>
+                                </section>
+                            </div>
+                        </div>
+                        <a id="locationProfile" class="zone-intro ">
+                            <div class="image-container">
+                                <img src="https://www.spain.info/.content/imagenes/cabeceras-grandes/valencia/ciudad-artes-ciencias-valencia-c-luca-bravo-u-UyUjtbu5vj4.jpg" alt="Museo de las artes" /></div>
+                                <div class="info">
+                                <h2>{{this.home.distrito}}</h2>
+                                <div class="stats">
+                                    <div>
+                                        <ion-icon style="font-size: 40px; position:relative; top:2px;" src="assets/svg/up-prices.svg"></ion-icon>
+                                        <div>
+                                            <p>Precio de compra</p>
+                                            <p>140-990,000€</p>
+                                        </div>
+                                    </div>
+                                    <div >
+                                        <ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/key-board.svg"></ion-icon>
+                                        <div>
+                                            <p>Precio de alquiler</p>
+                                            <!-- mas queries -->
+                                            <p>665-300€</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <img src="" alt="" />
+                                        <div>
+                                            <p>En venta</p>
+                                            <p>
+                                                <!-- aquí irán las queries -->
+                                                Viviendas
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <img src="" alt="For Rent" />
+                                        <div>
+                                            <p>En alquiler</p>
+                                            <p>
+                                                <!-- mas queries -->
+                                                <!-- 5345345345345 -->Viviendas
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="link-name">Ver ubicación</p>
+                            </div>
+                        </a>
+                    </section>
+                    
+                </div>
+                <!-- Esto hay que meterlo en un modal -->
+                <div style="display: none;" class="restricted-message">
+                    <div class="body">
+                        <div class="advertisement ">
+                            <div class="image">
+                                <img src=""/>
+                                <div class="text"><h4>Entre o cree una cuenta</h4></div>
+                            </div>
+                            <div class="padded">
+                                <div class="heading">Access more content</div>
+                                <p>Para ver más propiedades y disfrutar del chat en tiempo real cree un cuenta</p>
+                                <button tabindex="0" class="login only-one-button"><span class="readmore-button-label">ENTRAR</span></button><button tabindex="0" class="register only-one-button"><span class="readmore-button-label">REGISTRARSE</span></button>
+                                <p class="privacy">
+                                    Al continuar, acepto la política de privacidad de mh<a href="/privacy-policy" target="_blank">Política de privacidad</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!---->
+            </div>
+        </div>
+    </main>
+    <!--contact form-->
+    <aside class="header-contact-form " >
+        <div id="chat-box-goto" class="chat-box  chat-contact-form" style="border-radius: 0 0 10px 10px;">
+            <div class="agent-info" >
+                <div style="text-transform: capitalize; font-size: 18px; font-weight: 700; text-align: center; margin-left: auto;">Contacto</div>
+                <svg viewBox="0 0 20 20" class="svg-styles">
+                    <path
+                        d="M14.348,14.849c-0.469,0.469-1.229,0.469-1.697,0L10,11.819l-2.651,3.029c-0.469,0.469-1.229,0.469-1.697,0c-0.469-0.469-0.469-1.229,0-1.697l2.758-3.15L5.651,6.849c-0.469-0.469-0.469-1.228,0-1.697c0.469-0.469,1.228-0.469,1.697,0L10,8.183l2.651-3.031c0.469-0.469,1.228-0.469,1.697,0c0.469,0.469,0.469,1.229,0,1.697l-2.758,3.152l2.758,3.15C14.817,13.62,14.817,14.38,14.348,14.849z"
+                    ></path>
+                </svg>
+            </div>
+            <div class="actions" style="display: block;">
+                <div class="actions-content ">
+                    <form class="content" style="padding-top: 0px; display: block; flex-direction: column; justify-content: space-between; height: 100%;">
+                        <div class="main-contact-form ">
+                            <div style="display: flex; justify-content: space-between;">
+                                <div style="flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px);">
+                                    <div class="field email-modal-name email-textfield">
+                                        <span class="addon icon-textfield">
+                                            <svg viewBox="0 0 20 20" class="svg-styles">
+                                                <path
+                                                    d="M7.725,2.146c-1.016,0.756-1.289,1.953-1.239,2.59C6.55,5.515,6.708,6.529,6.708,6.529s-0.313,0.17-0.313,0.854C6.504,9.1,7.078,8.359,7.196,9.112c0.284,1.814,0.933,1.491,0.933,2.481c0,1.649-0.68,2.42-2.803,3.334C3.196,15.845,1,17,1,19v1h18v-1c0-2-2.197-3.155-4.328-4.072c-2.123-0.914-2.801-1.684-2.801-3.334c0-0.99,0.647-0.667,0.932-2.481c0.119-0.753,0.692-0.012,0.803-1.729c0-0.684-0.314-0.854-0.314-0.854s0.158-1.014,0.221-1.793c0.065-0.817-0.398-2.561-2.3-3.096c-0.333-0.34-0.558-0.881,0.466-1.424C9.439,0.112,8.918,1.284,7.725,2.146z"
+                                                ></path>
+                                            </svg>
+                                        </span>
+                                        <label name="name" class="email-textfield">
+                                            <span class="name-tag-textfield"><input name="name" class="name-input-textfield" value="" placeholder="Nombre" /></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div style="flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px);">
+                                    <div class="fun-with-flags ">
+                                        <div class="PhoneInput">
+                                            <div class="PhoneInputCountry">
+                                                <select name="phoneCountry" aria-label="Phone number country" class="PhoneInputCountrySelect">
+                                                        <option value="ZZ">International</option>
+                                                        <option value="AF">Afghanistan</option>
+                                                        <option value="AX">Åland Islands</option>
+                                                        <option value="AL">Albania</option>
+                                                        <option value="DZ">Algeria</option>
+                                                        <option value="AS">American Samoa</option>
+                                                        <option value="AD">Andorra</option>
+                                                        <option value="AO">Angola</option>
+                                                        <option value="AI">Anguilla</option>
+                                                        <option value="AG">Antigua and Barbuda</option>
+                                                        <option value="AR">Argentina</option>
+                                                        <option value="AM">Armenia</option>
+                                                        <option value="AW">Aruba</option>
+                                                        <option value="AC">Ascension Island</option>
+                                                        <option value="AU">Australia</option>
+                                                        <option value="AT">Austria</option>
+                                                        <option value="AZ">Azerbaijan</option>
+                                                        <option value="BS">Bahamas</option>
+                                                        <option value="BH">Bahrain</option>
+                                                        <option value="BD">Bangladesh</option>
+                                                        <option value="BB">Barbados</option>
+                                                        <option value="BY">Belarus</option>
+                                                        <option value="BE">Belgium</option>
+                                                        <option value="BZ">Belize</option>
+                                                        <option value="BJ">Benin</option>
+                                                        <option value="BM">Bermuda</option>
+                                                        <option value="BT">Bhutan</option>
+                                                        <option value="BO">Bolivia</option>
+                                                        <option value="BQ">Bonaire, Sint Eustatius and Saba</option>
+                                                        <option value="BA">Bosnia and Herzegovina</option>
+                                                        <option value="BW">Botswana</option>
+                                                        <option value="BR">Brazil</option>
+                                                        <option value="IO">British Indian Ocean Territory</option>
+                                                        <option value="BN">Brunei Darussalam</option>
+                                                        <option value="BG">Bulgaria</option>
+                                                        <option value="BF">Burkina Faso</option>
+                                                        <option value="BI">Burundi</option>
+                                                        <option value="KH">Cambodia</option>
+                                                        <option value="CM">Cameroon</option>
+                                                        <option value="CA">Canada</option>
+                                                        <option value="CV">Cape Verde</option>
+                                                        <option value="KY">Cayman Islands</option>
+                                                        <option value="CF">Central African Republic</option>
+                                                        <option value="TD">Chad</option>
+                                                        <option value="CL">Chile</option>
+                                                        <option value="CN">China</option>
+                                                        <option value="CX">Christmas Island</option>
+                                                        <option value="CC">Cocos (Keeling) Islands</option>
+                                                        <option value="CO">Colombia</option>
+                                                        <option value="KM">Comoros</option>
+                                                        <option value="CG">Congo</option>
+                                                        <option value="CD">Congo, Democratic Republic of the</option>
+                                                        <option value="CK">Cook Islands</option>
+                                                        <option value="CR">Costa Rica</option>
+                                                        <option value="CI">Cote d'Ivoire</option>
+                                                        <option value="HR">Croatia</option>
+                                                        <option value="CU">Cuba</option>
+                                                        <option value="CW">Curaçao</option>
+                                                        <option value="CY">Cyprus</option>
+                                                        <option value="CZ">Czech Republic</option>
+                                                        <option value="DK">Denmark</option>
+                                                        <option value="DJ">Djibouti</option>
+                                                        <option value="DM">Dominica</option>
+                                                        <option value="DO">Dominican Republic</option>
+                                                        <option value="EC">Ecuador</option>
+                                                        <option value="EG">Egypt</option>
+                                                        <option value="SV">El Salvador</option>
+                                                        <option value="GQ">Equatorial Guinea</option>
+                                                        <option value="ER">Eritrea</option>
+                                                        <option value="EE">Estonia</option>
+                                                        <option value="ET">Ethiopia</option>
+                                                        <option value="FK">Falkland Islands</option>
+                                                        <option value="FO">Faroe Islands</option>
+                                                        <option value="FM">Federated States of Micronesia</option>
+                                                        <option value="FJ">Fiji</option>
+                                                        <option value="FI">Finland</option>
+                                                        <option value="FR">France</option>
+                                                        <option value="GF">French Guiana</option>
+                                                        <option value="PF">French Polynesia</option>
+                                                        <option value="GA">Gabon</option>
+                                                        <option value="GM">Gambia</option>
+                                                        <option value="GE">Georgia</option>
+                                                        <option value="DE">Germany</option>
+                                                        <option value="GH">Ghana</option>
+                                                        <option value="GI">Gibraltar</option>
+                                                        <option value="GR">Greece</option>
+                                                        <option value="GL">Greenland</option>
+                                                        <option value="GD">Grenada</option>
+                                                        <option value="GP">Guadeloupe</option>
+                                                        <option value="GU">Guam</option>
+                                                        <option value="GT">Guatemala</option>
+                                                        <option value="GG">Guernsey</option>
+                                                        <option value="GN">Guinea</option>
+                                                        <option value="GW">Guinea-Bissau</option>
+                                                        <option value="GY">Guyana</option>
+                                                        <option value="HT">Haiti</option>
+                                                        <option value="VA">Holy See (Vatican City State)</option>
+                                                        <option value="HN">Honduras</option>
+                                                        <option value="HK">Hong Kong</option>
+                                                        <option value="HU">Hungary</option>
+                                                        <option value="IS">Iceland</option>
+                                                        <option value="IN">India</option>
+                                                        <option value="ID">Indonesia</option>
+                                                        <option value="IR">Iran</option>
+                                                        <option value="IQ">Iraq</option>
+                                                        <option value="IE">Ireland</option>
+                                                        <option value="IM">Isle of Man</option>
+                                                        <option value="IL">Israel</option>
+                                                        <option value="IT">Italy</option>
+                                                        <option value="JM">Jamaica</option>
+                                                        <option value="JP">Japan</option>
+                                                        <option value="JE">Jersey</option>
+                                                        <option value="JO">Jordan</option>
+                                                        <option value="KZ">Kazakhstan</option>
+                                                        <option value="KE">Kenya</option>
+                                                        <option value="KI">Kiribati</option>
+                                                        <option value="XK">Kosovo</option>
+                                                        <option value="KW">Kuwait</option>
+                                                        <option value="KG">Kyrgyzstan</option>
+                                                        <option value="LA">Laos</option>
+                                                        <option value="LV">Latvia</option>
+                                                        <option value="LB">Lebanon</option>
+                                                        <option value="LS">Lesotho</option>
+                                                        <option value="LR">Liberia</option>
+                                                        <option value="LY">Libya</option>
+                                                        <option value="LI">Liechtenstein</option>
+                                                        <option value="LT">Lithuania</option>
+                                                        <option value="LU">Luxembourg</option>
+                                                        <option value="MO">Macao</option>
+                                                        <option value="MG">Madagascar</option>
+                                                        <option value="MW">Malawi</option>
+                                                        <option value="MY">Malaysia</option>
+                                                        <option value="MV">Maldives</option>
+                                                        <option value="ML">Mali</option>
+                                                        <option value="MT">Malta</option>
+                                                        <option value="MH">Marshall Islands</option>
+                                                        <option value="MQ">Martinique</option>
+                                                        <option value="MR">Mauritania</option>
+                                                        <option value="MU">Mauritius</option>
+                                                        <option value="YT">Mayotte</option>
+                                                        <option value="MX">Mexico</option>
+                                                        <option value="MD">Moldova</option>
+                                                        <option value="MC">Monaco</option>
+                                                        <option value="MN">Mongolia</option>
+                                                        <option value="ME">Montenegro</option>
+                                                        <option value="MS">Montserrat</option>
+                                                        <option value="MA">Morocco</option>
+                                                        <option value="MZ">Mozambique</option>
+                                                        <option value="MM">Myanmar</option>
+                                                        <option value="NA">Namibia</option>
+                                                        <option value="NR">Nauru</option>
+                                                        <option value="NP">Nepal</option>
+                                                        <option value="NL">Netherlands</option>
+                                                        <option value="NC">New Caledonia</option>
+                                                        <option value="NZ">New Zealand</option>
+                                                        <option value="NI">Nicaragua</option>
+                                                        <option value="NE">Niger</option>
+                                                        <option value="NG">Nigeria</option>
+                                                        <option value="NU">Niue</option>
+                                                        <option value="NF">Norfolk Island</option>
+                                                        <option value="KP">North Korea</option>
+                                                        <option value="MK">North Macedonia</option>
+                                                        <option value="MP">Northern Mariana Islands</option>
+                                                        <option value="NO">Norway</option>
+                                                        <option value="OM">Oman</option>
+                                                        <option value="PK">Pakistan</option>
+                                                        <option value="PW">Palau</option>
+                                                        <option value="PS">Palestine</option>
+                                                        <option value="PA">Panama</option>
+                                                        <option value="PG">Papua New Guinea</option>
+                                                        <option value="PY">Paraguay</option>
+                                                        <option value="PE">Peru</option>
+                                                        <option value="PH">Philippines</option>
+                                                        <option value="PL">Poland</option>
+                                                        <option value="PT">Portugal</option>
+                                                        <option value="PR">Puerto Rico</option>
+                                                        <option value="QA">Qatar</option>
+                                                        <option value="RE">Reunion</option>
+                                                        <option value="RO">Romania</option>
+                                                        <option value="RU">Russia</option>
+                                                        <option value="RW">Rwanda</option>
+                                                        <option value="BL">Saint Barthélemy</option>
+                                                        <option value="SH">Saint Helena</option>
+                                                        <option value="KN">Saint Kitts and Nevis</option>
+                                                        <option value="LC">Saint Lucia</option>
+                                                        <option value="MF">Saint Martin (French Part)</option>
+                                                        <option value="PM">Saint Pierre and Miquelon</option>
+                                                        <option value="VC">Saint Vincent and the Grenadines</option>
+                                                        <option value="WS">Samoa</option>
+                                                        <option value="SM">San Marino</option>
+                                                        <option value="ST">Sao Tome and Principe</option>
+                                                        <option value="SA">Saudi Arabia</option>
+                                                        <option value="SN">Senegal</option>
+                                                        <option value="RS">Serbia</option>
+                                                        <option value="SC">Seychelles</option>
+                                                        <option value="SL">Sierra Leone</option>
+                                                        <option value="SG">Singapore</option>
+                                                        <option value="SX">Sint Maarten</option>
+                                                        <option value="SK">Slovakia</option>
+                                                        <option value="SI">Slovenia</option>
+                                                        <option value="SB">Solomon Islands</option>
+                                                        <option value="SO">Somalia</option>
+                                                        <option value="ZA">South Africa</option>
+                                                        <option value="KR">South Korea</option>
+                                                        <option value="SS">South Sudan</option>
+                                                        <option value="ES">Spain</option>
+                                                        <option value="LK">Sri Lanka</option>
+                                                        <option value="SD">Sudan</option>
+                                                        <option value="SR">Suriname</option>
+                                                        <option value="SJ">Svalbard and Jan Mayen</option>
+                                                        <option value="SZ">Swaziland</option>
+                                                        <option value="SE">Sweden</option>
+                                                        <option value="CH">Switzerland</option>
+                                                        <option value="SY">Syria</option>
+                                                        <option value="TW">Taiwan</option>
+                                                        <option value="TJ">Tajikistan</option>
+                                                        <option value="TZ">Tanzania</option>
+                                                        <option value="TH">Thailand</option>
+                                                        <option value="TL">Timor-Leste</option>
+                                                        <option value="TG">Togo</option>
+                                                        <option value="TK">Tokelau</option>
+                                                        <option value="TO">Tonga</option>
+                                                        <option value="TT">Trinidad and Tobago</option>
+                                                        <option value="TA">Tristan da Cunha</option>
+                                                        <option value="TN">Tunisia</option>
+                                                        <option value="TR">Turkey</option>
+                                                        <option value="TM">Turkmenistan</option>
+                                                        <option value="TC">Turks and Caicos Islands</option>
+                                                        <option value="TV">Tuvalu</option>
+                                                        <option value="UG">Uganda</option>
+                                                        <option value="UA">Ukraine</option>
+                                                        <option value="AE">United Arab Emirates</option>
+                                                        <option value="GB">United Kingdom</option>
+                                                        <option value="US">United States</option>
+                                                        <option value="UY">Uruguay</option>
+                                                        <option value="UZ">Uzbekistan</option>
+                                                        <option value="VU">Vanuatu</option>
+                                                        <option value="VE">Venezuela</option>
+                                                        <option value="VN">Vietnam</option>
+                                                        <option value="VG">Virgin Islands, British</option>
+                                                        <option value="VI">Virgin Islands, U.S.</option>
+                                                        <option value="WF">Wallis and Futuna</option>
+                                                        <option value="EH">Western Sahara</option>
+                                                        <option value="YE">Yemen</option>
+                                                        <option value="ZM">Zambia</option>
+                                                        <option value="ZW">Zimbabwe</option>
+                                                    </select>
+                                                <div aria-hidden="true" class="PhoneInputCountryIcon PhoneInputCountryIcon--border">
+                                                    <img class="PhoneInputCountryIconImg imgCntr" alt="spain" src="https://purecatamphetamine.github.io/country-flag-icons/3x2/ES.svg" />
+                                                </div>
+                                                <div class="PhoneInputCountrySelectArrow"></div>
+                                            </div>
+                                            <input type="tel" autocomplete="tel" placeholder="Teléfono" name="phone" class="PhoneInputInput inputPhone" value />
+                                        </div>
+                                        <input type="hidden" name="phone2" value />
+                                    </div>
+                                    <div id="error-phone"></div>
+                                </div>
+                            </div>
+                            <div class="field email-modal-name email-textfield">
+                                <span class="addon icon-textfield">
+                                    <svg viewBox="0 0 20 20" class="svg-styles">
+                                        <path
+                                            d="M1.574,5.286c0.488,0.262,7.248,3.894,7.5,4.029C9.326,9.45,9.652,9.514,9.98,9.514c0.328,0,0.654-0.064,0.906-0.199s7.012-3.767,7.5-4.029C18.875,5.023,19.337,4,18.44,4H1.521C0.624,4,1.086,5.023,1.574,5.286z M18.613,7.489c-0.555,0.289-7.387,3.849-7.727,4.027s-0.578,0.199-0.906,0.199s-0.566-0.021-0.906-0.199S1.941,7.777,1.386,7.488C0.996,7.284,1,7.523,1,7.707S1,15,1,15c0,0.42,0.566,1,1,1h16c0.434,0,1-0.58,1-1c0,0,0-7.108,0-7.292S19.004,7.285,18.613,7.489z"
+                                        ></path>
+                                    </svg>
+                                </span>
+                                <label name="email" class="email-textfield">
+                                    <span class="name-tag-textfield"><input name="email" placeholder="Dirección email" class="name-input-textfield" value="" /></span>
+                                </label>
+                            </div>
+                            <div class="field email-modal-message email-textfield">
+                                <span class="addon icon-textfield">
+                                    <svg viewBox="0 0 20 20" class="svg-styles">
+                                        <path
+                                            d="M17.561,2.439c-1.442-1.443-2.525-1.227-2.525-1.227L8.984,7.264L2.21,14.037L1.2,18.799l4.763-1.01l6.774-6.771l6.052-6.052C18.788,4.966,19.005,3.883,17.561,2.439z M5.68,17.217l-1.624,0.35c-0.156-0.293-0.345-0.586-0.69-0.932c-0.346-0.346-0.639-0.533-0.932-0.691l0.35-1.623l0.47-0.469c0,0,0.883,0.018,1.881,1.016c0.997,0.996,1.016,1.881,1.016,1.881L5.68,17.217z"
+                                        ></path>
+                                    </svg>
+                                </span>
+                                <textarea name="message" rows="2" class="textareaForm description-box" placeholder="Mensaje"></textarea>
+                            </div>
+                        </div>
+                        <hr class="button-send-enquiry multihr" />
+                        <hr class="button-send-enquiry multihr" />
+                        <button tabindex="0" class="buttonForm submit-enquiry submit-enquiry-button-buy send-enquiry"><span class="readmore-button-label">Enviar consulta</span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!--Footer-->
+<footer class="main-footer ">
+    <div class="footer-container ">
+        <div class="footer-body-row ">
+            <div class="img-footer-container">
+                <a aria-label="Link to homepage" routerLink="/"><!--<img alt="Logo" src="" width="218.90547263681592" height="44" style="height: 44px; width: 218.905px; display: block;" />--></a>
+                <div class="contact-us" style="flex: 3 1 0%;">
+                    <div class="contacts">
+                        <div class="contact"><span class="icon" style="font-size: 20px;"></span>Plaza del ayuntamiento 1, Valencia 46001</div>
+                        <div class="contact"><span class="icon phone"></span><a  href="tel:+34666666666" class="footer-phone-details">+34666666666</a></div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <a class="footer-service-details">Acerca de nosotros</a><a routerLink="/vlog" class="footer-service-details">Anúnciese con nosotros</a><a routerLink="/contact" class="footer-service-details">Contacto</a>
+                <a class="footer-service-details">Únete a nuestro equipo</a><a class="footer-service-details">Legal</a><a routerLink="/privacy-policy" class="footer-service-details">Privacidad</a><a routerLink="/sitemap" class="footer-service-details">Donde estamos</a>
+                <hr class="footer-space-links" />
+                <span class="footer-util-links">
+                    <a target="_blank"  href="" class="footer-phone-details">myhouse.com</a><span style="margin: 0px 8px;"> | </span>
+                    <a target="_blank"  href="" class="footer-phone-details">myhouse.es</a><span style="margin: 0px 8px;"> | </span>
+                    <a target="_blank"  href="" class="footer-phone-details">myhouse.net</a><span style="margin: 0px 8px;"> | </span>
+                    <a target="_blank"  href="" class="footer-phone-details">myhouse.io</a><span style="margin: 0px 8px;"> | </span>
+                    <a target="_blank"  href="" class="footer-phone-details">myhouse.xyz</a>
+                </span>
+            </div>
+        </div>
     </div>
-  </div>
-</section>
-<!-- view property section ends -->
+</footer>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 48 42"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg22"
+   sodipodi:docname="videoportero.svg"
+   width="48"
+   height="42"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs26" />
+  <sodipodi:namedview
+     id="namedview24"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="12.683333"
+     inkscape:cx="23.968463"
+     inkscape:cy="27.003942"
+     inkscape:window-width="1850"
+     inkscape:window-height="1025"
+     inkscape:window-x="1990"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg22" />
+  <title
+     id="title2">Intercom with Camera</title>
+  <g
+     data-name="Intercom with Camera"
+     id="g16"
+     transform="translate(0,-3)"
+     style="fill:#484848">
+    <path
+       d="M 45,3 H 3 A 3,3 0 0 0 0,6 v 36 a 3,3 0 0 0 3,3 h 42 a 3,3 0 0 0 3,-3 V 6 A 3,3 0 0 0 45,3 Z m 1,39 a 1,1 0 0 1 -1,1 H 3 A 1,1 0 0 1 2,42 V 6 A 1,1 0 0 1 3,5 h 42 a 1,1 0 0 1 1,1 z"
+       id="path4"
+       style="fill:#484848" />
+    <path
+       d="M 43,7 H 5 A 1,1 0 0 0 4,8 v 24 a 1,1 0 0 0 1,1 h 38 a 1,1 0 0 0 1,-1 V 8 A 1,1 0 0 0 43,7 Z m -26.78,24 0.39,-1.94 a 7.54,7.54 0 0 1 14.78,0 L 31.78,31 Z M 21,18 v -2 a 3,3 0 0 1 6,0 v 2 a 3,3 0 0 1 -6,0 z m 21,13 h -8.18 l -0.47,-2.33 a 9.54,9.54 0 0 0 -5.94,-7 C 29.25,19.92 29,18.09 29,16 a 5,5 0 0 0 -10,0 c 0,2.17 -0.24,3.92 1.59,5.64 a 9.54,9.54 0 0 0 -5.94,7 L 14.18,31 H 6 V 9 h 36 z"
+       id="path6"
+       style="fill:#484848" />
+    <path
+       d="m 9,35 a 3,3 0 1 0 3,3 3,3 0 0 0 -3,-3 z m 0,4 a 1,1 0 0 1 0,-2 1,1 0 0 1 0,2 z"
+       id="path8"
+       style="fill:#484848" />
+    <path
+       d="m 19,35 a 3,3 0 1 0 3,3 3,3 0 0 0 -3,-3 z m 0,4 a 1,1 0 0 1 0,-2 1,1 0 0 1 0,2 z"
+       id="path10"
+       style="fill:#484848" />
+    <path
+       d="m 29,35 a 3,3 0 1 0 3,3 3,3 0 0 0 -3,-3 z m 0,4 a 1,1 0 0 1 0,-2 1,1 0 0 1 0,2 z"
+       id="path12"
+       style="fill:#484848" />
+    <path
+       d="m 39,35 a 3,3 0 1 0 3,3 3,3 0 0 0 -3,-3 z m 0,4 a 1,1 0 0 1 0,-2 1,1 0 0 1 0,2 z"
+       id="path14"
+       style="fill:#484848" />
+  </g>
+  <metadata
+     id="metadata28">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Intercom with Camera</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

@@ -3,7 +3,11 @@
 @import "node_modules/angular-notifier/styles";
 @import url("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+@import "tailwindcss/base";
 
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
 /* Gelion */
 @font-face {
   font-family: "Gelion Regular Italic";

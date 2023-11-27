@@ -1,27 +1,27 @@
 @font-face {
   font-family: "Lufga";
-  src: url("../fonts/Lufga-Bold.woff2") format("woff2"), url("../fonts/Lufga-Bold.woff") format("woff");
+  src: url("../../../assets/fonts/Lufga-Bold.woff2") format("woff2"), url("../../../assets/fonts/Lufga-Bold.woff") format("woff");
   font-weight: bold;
   font-style: normal;
   font-display: swap; }
 
 @font-face {
   font-family: "Lufga";
-  src: url("../fonts/Lufga-Regular.woff2") format("woff2"), url("../fonts/Lufga-Regular.woff") format("woff");
+  src: url("../../../assets/fonts/Lufga-Regular.woff2") format("woff2"), url("../../../assets/fonts/Lufga-Regular.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap; }
 
 @font-face {
   font-family: "Lufga";
-  src: url("../fonts/Lufga-SemiBold.woff2") format("woff2"), url("../fonts/Lufga-SemiBold.woff") format("woff");
+  src: url("../../../assets/fonts/Lufga-SemiBold.woff2") format("woff2"), url("../../../assets/fonts/Lufga-SemiBold.woff") format("woff");
   font-weight: 600;
   font-style: normal;
   font-display: swap; }
 
 @font-face {
   font-family: "Lufga";
-  src: url("../fonts/Lufga-Medium.woff2") format("woff2"), url("../fonts/Lufga-Medium.woff") format("woff");
+  src: url("../../../assets/fonts/Lufga-Medium.woff2") format("woff2"), url("../../../assets/fonts/Lufga-Medium.woff") format("woff");
   font-weight: 500;
   font-style: normal;
   font-display: swap; }
@@ -338,7 +338,7 @@ button,
 [type="button"],
 [type="reset"],
 [type="submit"] {
-  -webkit-appearance: button; }
+  appearance: button; }
   button:not(:disabled),
   [type="button"]:not(:disabled),
   [type="reset"]:not(:disabled),
@@ -385,7 +385,7 @@ legend {
 
 [type="search"] {
   outline-offset: -2px;
-  -webkit-appearance: textfield; }
+  appearance: textfield; }
 
 /* rtl:raw:
 [type="tel"],
@@ -396,7 +396,7 @@ legend {
 }
 */
 ::-webkit-search-decoration {
-  -webkit-appearance: none; }
+  appearance: none; }
 
 ::-webkit-color-swatch-wrapper {
   padding: 0; }
@@ -406,7 +406,7 @@ legend {
 
 ::-webkit-file-upload-button {
   font: inherit;
-  -webkit-appearance: button; }
+  appearance: button; }
 
 output {
   display: inline-block; }
@@ -1942,7 +1942,7 @@ progress {
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid #d0d0e3;
-  -webkit-appearance: none;
+  appearance: none;
   -moz-appearance: none;
   appearance: none;
   border-radius: 0.35rem;
@@ -2117,7 +2117,7 @@ textarea.form-control-lg {
   transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-  -webkit-appearance: none;
+  appearance: none;
   -moz-appearance: none;
   appearance: none; }
   @media (prefers-reduced-motion: reduce) {
@@ -2171,10 +2171,11 @@ textarea.form-control-lg {
   background-position: center;
   background-size: contain;
   border: 1px solid rgba(0, 0, 0, 0.25);
-  -webkit-appearance: none;
+  appearance: none;
   -moz-appearance: none;
   appearance: none;
-  color-adjust: exact; }
+  print-color-adjust: exact; 
+}
   .form-check-input[type="checkbox"] {
     border-radius: 0.25em; }
   .form-check-input[type="radio"] {
@@ -2245,7 +2246,7 @@ textarea.form-control-lg {
   height: 1.5rem;
   padding: 0;
   background-color: transparent;
-  -webkit-appearance: none;
+  appearance: none;
   -moz-appearance: none;
   appearance: none; }
   .form-range:focus {
@@ -2268,7 +2269,7 @@ textarea.form-control-lg {
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-    -webkit-appearance: none;
+    appearance: none;
     appearance: none; }
     @media (prefers-reduced-motion: reduce) {
       .form-range::-webkit-slider-thumb {
@@ -10086,7 +10087,7 @@ html {
   scrollbar-width: thin; }
 
 input[type="submit"] {
-  -webkit-appearance: none; }
+  appearance: none; }
 
 * {
   -webkit-box-sizing: border-box;
