@@ -182,7 +182,7 @@
                   <label for="tipodevia" style="text-overflow: ellipsis; white-space: nowrap;">Tipo de vía</label>
                   <nz-select class=" " #tipodevia name="tipodevia" required nzPlaceHolder="Tipo de vía" [nzSize]="sizeM" [(ngModel)]="this.home.tipoDeVia" >
                     <nz-option class="" *ngFor="let opt of tipo_de_via"
-                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
                 </div>
                 <div class="col flex-lg-nowrap">
@@ -244,14 +244,14 @@
                   <label for="optionInput">Alquiler - Venta ...</label>
                   <nz-select #optionInput style="width:190px; flex-direction: column;" name="optionInput" required nzPlaceHolder="Alquiler - venta" [nzSize]="sizeM" [(ngModel)]="this.home.condicion" >
                     <nz-option *ngFor="let opt of condicion" 
-                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
                 </div>
                 <div class="col-5"style="flex-direction: column; ">
                   <label for="typeInput" style="flex-direction: column; padding-left:10px; text-overflow: ellipsis;">Tipo de inmueble</label>
                   <nz-select #typeInput name="typeInput" style="flex-direction: column; padding-left:10px;" class="search no-label" required nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.tipo">
                     <nz-option *ngFor="let opt of tipo"
-                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
                 </div>
               </div>
@@ -262,7 +262,7 @@
                   <nz-select #badgeInput="ngModel" name="badgeInput" nzPlaceHolder="" style="width:165px;"
                   panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.destacar">
                     <nz-option *ngFor="let opt of badge"
-                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
                 </div>
                 <div class="col-3" style=" flex-direction: column;">
@@ -270,14 +270,14 @@
                   <nz-select #Orientacion="ngModel" name="Orientacion" nzPlaceHolder="" style="width:90px;"
                   panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.orientacion">
                     <nz-option *ngFor="let opt of orientacion"
-                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
                 </div>
                 <div class="col-4">
                   <label for="stateInput">Estado</label>
                   <nz-select #stateInput="ngModel" style="flex-direction: column;" name="stateInput" required nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.estado">
                     <nz-option *ngFor="let opt of propertyState"
-                    [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                    [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
                 </div>
               </div>
@@ -306,13 +306,13 @@
                 <div class="col">
                   <nz-card nzTitle="Vistas" style="border:1px solid #d9d9d9; border-radius: 5px;margin:2px;">
                     <nz-radio-group [(ngModel)]="this.home.vistasDespejadas" nzButtonStyle="solid">
-                      <label nz-radio-button nzValue="Ciudad">Ciudad</label>
-                      <label nz-radio-button nzValue="Jardines">Jardines</label>
-                      <label nz-radio-button nzValue="Deslunado">Deslunado</label>
-                      <label nz-radio-button nzValue="Mar">Mar</label>
-                      <label nz-radio-button nzValue="Piscina">Piscina</label>
-                      <label nz-radio-button nzValue="Montaña">Montaña</label>
-                      <label nz-radio-button nzValue="Río">Río</label>
+                      <label nz-radio-button nzValue=Ciudad>Ciudad</label>
+                      <label nz-radio-button nzValue=Jardines>Jardines</label>
+                      <label nz-radio-button nzValue=Deslunado>Deslunado</label>
+                      <label nz-radio-button nzValue=Mar>Mar</label>
+                      <label nz-radio-button nzValue=Piscina>Piscina</label>
+                      <label nz-radio-button nzValue=Montaña>Montaña</label>
+                      <label nz-radio-button nzValue=Río>Río</label>
                     </nz-radio-group>
                   </nz-card>
                 </div>
@@ -367,12 +367,12 @@
                   <div class="col-10">
                     <nz-select class="nzSelectL" required nzPlaceHolder="Emisiones" [nzSize]="size" [(ngModel)]="this.home.emisiones" >
                       <nz-option class="nzOptionL" *ngFor="let opt of calificacion_emisiones"
-                      [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                      [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
                     <br>
                     <nz-select class="nzSelectL" required nzPlaceHolder="Consumo" [nzSize]="size" [(ngModel)]="this.home.consumo">
                       <nz-option class="nzOptionL" *ngFor="let opt of calificacion_consumo"
-                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                        [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
                   </div>
                   <div class="col-2">
@@ -594,9 +594,9 @@
                       <input type="checkbox" class="inputCheckbox2 form-check-input" [(ngModel)]="this.home.aseoEnsuite" id="checkboxAseoEnsuite"/>
                       <span class="checkbox2"></span>
                     </label>-->
-                    <nz-select #aseoEnsuiteInput style=" flex-direction: column;" name="aseoEnsuiteInput" required nzPlaceHolder="" [nzSize]="sizeM" [(ngModel)]="this.home.aseoEnsuite" >
+                    <nz-select #aseoEnsuiteInput style="width:30px; flex-direction: column;" name="aseoEnsuiteInput" required nzPlaceHolder="" [nzSize]="sizeM" [(ngModel)]="this.home.aseoEnsuite" >
                       <nz-option *ngFor="let opt of bathRooms" 
-                      [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                      [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
                     <label for="AseoEnsuite">Aseo ensuite</label>
                   </div>
@@ -634,10 +634,10 @@
                   <div class="col" >
                       <nz-card nzTitle="Fianza" style="border:1px solid #d9d9d9; border-radius: 5px;margin:2px;">
                         <nz-radio-group nzButtonStyle="solid" style=" height: 10px; line-height: 10px;" [(ngModel)]="this.home.fianza">
-                          <label nz-radio-button nzValue="Sin fianza" style="flex-direction: row; display:inline-block; white-space: nowrap;">Sin fianza</label>
-                          <label nz-radio-button nzValue="1 mes">1 Mes</label>
-                          <label nz-radio-button nzValue="2 meses">2 Meses</label>
-                          <label nz-radio-button nzValue="+2">+2</label>
+                          <label nz-radio-button nzValue=Sin_fianza style="flex-direction: row; display:inline-block; white-space: nowrap;">Sin fianza</label>
+                          <label nz-radio-button nzValue=1_mes>1 Mes</label>
+                          <label nz-radio-button nzValue=2_meses>2 Meses</label>
+                          <label nz-radio-button nzValue=+2>+2</label>
                         </nz-radio-group>
                       </nz-card>
                   </div>
@@ -651,17 +651,17 @@
                   <div class="col">
                       <nz-card nzTitle="Mascotas" style="border:1px solid #d9d9d9; border-radius: 5px;margin:2px;">
                         <nz-radio-group style="height: 10px; line-height: 10px;" nzButtonStyle="solid" [(ngModel)]="this.home.mascotas">
-                          <label nz-radio-button nzValue="Se permiten mascotas">Si</label>
-                          <label nz-radio-button nzValue="No se permiten mascotas">No</label>
-                          <label nz-radio-button nzValue="Consultar">Consultar</label>
+                          <label nz-radio-button nzValue=Se_permiten_mascotas>Si</label>
+                          <label nz-radio-button nzValue=No_se_permiten_mascotas>No</label>
+                          <label nz-radio-button nzValue=Consultar>Consultar</label>
                         </nz-radio-group>
                       </nz-card>
                   </div>
                   <div class="col">
                       <nz-card nzTitle="Contrato" style="border:1px solid #d9d9d9; border-radius: 5px; margin:2px;">
                         <nz-radio-group style="height: 10px; line-height: 10px;" nzButtonStyle="solid" [(ngModel)]="this.home.estanciaMinima">
-                          <label nz-radio-button nzValue="Anual">Anual</label>
-                          <label nz-radio-button nzValue='Temporada'>Temporada</label>
+                          <label nz-radio-button nzValue=Anual>Anual</label>
+                          <label nz-radio-button nzValue=Temporada>Temporada</label>
                         </nz-radio-group>
                       </nz-card>
                   </div>
@@ -814,13 +814,13 @@
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][0]" [(ngModel)]="this.colegio[0].ensenyanza">
                                                         <nz-option class="nzOption" id="f1c1e" *ngFor="let opt of ensenyanza" 
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][0]" [(ngModel)]="this.colegio[0].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion" 
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td><input nz-input type="text" class="nzInput form-control" [attr.disabled]="this.stateTexfields[0][0]?true:null" placeholder="www" [(ngModel)]="this.colegio[0].web" >
@@ -868,13 +868,13 @@
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][2]" [(ngModel)]="this.colegio[2].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][2]" [(ngModel)]="this.colegio[2].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][2]?true:null"  [(ngModel)]="this.colegio[2].web">
@@ -895,13 +895,13 @@
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][3]" [(ngModel)]="this.colegio[3].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][3]" [(ngModel)]="this.colegio[3].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][3]?true:null" [(ngModel)]="this.colegio[3].web">
@@ -922,13 +922,13 @@
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][4]" [(ngModel)]="this.colegio[4].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][4]" [(ngModel)]="this.colegio[4].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][4]?true:null" [(ngModel)]="this.colegio[4].web">
@@ -949,13 +949,13 @@
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][5]" [(ngModel)]="this.colegio[5].ensenyanza">
                                                         <nz-option class="nzOption" *ngFor="let opt of ensenyanza"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[0][5]" [(ngModel)]="this.colegio[5].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[0][5]?true:null" [(ngModel)]="this.colegio[5].web">
@@ -1012,13 +1012,13 @@
                                                     <td>
                                                       <nz-select class="nzSelectR" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][0]" [(ngModel)]="this.universidad[0].rama">
                                                         <nz-option class="nzOptionR" *ngFor="let opt of ramas"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td>
                                                       <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][0]" [(ngModel)]="this.universidad[0].institucion">
                                                         <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                          [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                          [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                       </nz-select>
                                                     </td>
                                                     <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[1][0]?true:null"  [(ngModel)]="this.universidad[0].web">
@@ -1039,13 +1039,13 @@
                                                   <td>
                                                     <nz-select class="nzSelectR" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][1]" [(ngModel)]="this.universidad[1].rama">
                                                       <nz-option class="nzOptionR" *ngFor="let opt of ramas"
-                                                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                        [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                     </nz-select>
                                                   </td>
                                                   <td>
                                                     <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][1]" [(ngModel)]="this.universidad[1].institucion">
                                                       <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                        [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                     </nz-select>
                                                   </td>
                                                   <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[1][1]?true:null" [(ngModel)]="this.universidad[1].web">
@@ -1066,13 +1066,13 @@
                                                   <td>
                                                     <nz-select class="nzSelectR" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][2]" [(ngModel)]="this.universidad[2].rama">
                                                       <nz-option class="nzOptionR" *ngFor="let opt of ramas"
-                                                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                        [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                     </nz-select>
                                                   </td>
                                                   <td>
                                                     <nz-select class="nzSelect" [nzSize]="size" [nzDisabled]="this.stateTexfields[1][2]" [(ngModel)]="this.universidad[2].institucion">
                                                       <nz-option class="nzOption" *ngFor="let opt of institucion"
-                                                        [nzValue]="opt" [nzLabel]="opt">{{opt}}</nz-option>
+                                                        [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                                                     </nz-select>
                                                   </td>
                                                   <td><input nz-input type="text" class="nzInput" placeholder="www" [attr.disabled]="this.stateTexfields[1][2]?true:null" [(ngModel)]="this.universidad[2].web">

@@ -29,6 +29,9 @@ import { grayIcon, greenIcon, grayPointerIcon, homeicon, beachIcon, airportIcon,
 busIcon, schoolIcon, universityIcon, fancyGreen, } from '../../model/maps/icons';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
+import { Modal } from 'bootstrap';
+import html2PDF from 'jspdf-html2canvas';
+import { APIKEY } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-add',
@@ -49,11 +52,33 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   private host = environment.apiUrl;
   json: string;
   _albums: any = [];
+  state: boolean = this.authenticationService.isUserLoggedIn();
+
 
   intake: string;
   emissions: string;
   //maps
   mapAdd!: L.map;
+  circle!: L.circle;
+  indexGoal: number; // array index
+  nextCoords!: L.LatLng; // temp coordinates to put any service
+  fg = L.featureGroup(); 
+  time:number;
+  distance:string;
+
+  // add-delete temp routes
+  mapEvents = new Set<string>();
+
+    // icons
+    bch = beachIcon;
+    airp = airportIcon;
+    mki = marketIcon;
+    swi = subwayIcon;
+    busic = busIcon;
+    sc = schoolIcon;
+    uni = universityIcon;
+  customIcon: any;
+
 
   //routes
   colegio:Colegio[];
@@ -116,6 +141,9 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   }
 
   ngOnInit(): void {
+    if (this.state) {
+      this.user = this.authenticationService.getUserFromLocalCache();
+    }
     this.home = JSON.parse(localStorage.getItem('currentBuilding'));
     setTimeout(() => {
       for (let i = 0; i < this.home.images.length; i++) {
@@ -154,7 +182,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
           17
         );
         Stadia_OSMBright().addTo(this.mapAdd);
-        
+        this.circle=new L.circle([this.home.lat,this.home.lng],{radius:75,color:'#3a3b3c'}).addTo(this.mapAdd);
 
         this.colegio=JSON.parse(this.home.colegios);
         this.universidad=JSON.parse(this.home.universidades);
@@ -163,6 +191,8 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
         this.aeropuerto=JSON.parse(this.home.aeropuerto);
         this.beach=JSON.parse(this.home.distanciaAlMar);
         this.metro=JSON.parse(this.home.metro);
+        // to clear circle when print any route
+        this.mapEvents.add('circle');
         
       },
       error: (errorResponse: HttpErrorResponse) => {
@@ -190,13 +220,13 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   submitHouseDetails() {}
 
   discount(priceA:string, priceB:string):number{
-    var x:number=+priceA;
-    var y:number=+priceB;
+    var x:number=+priceA.replace(/\,/g,'');
+    var y:number=+priceB.replace(/\,/g,'');
     return Math.round(((((x-y)*100)/x)*100)/100);
   }
 
   calcPriceM2(price:string,sup:string):number{
-    var x:number=+price;
+    var x:number=+price.replace(/\,/g,'');
     var y:number=+sup;
     return Math.round(((x/y)*100)/100);
   }
@@ -270,6 +300,133 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
     this.videoHeight = this.videoWidth * 0.6;
     this._changeDetectorRef.detectChanges();
   };
+
+  cuoreLike(){
+    if(this.authenticationService.isUserLoggedIn()){
+      // el usuario guarda en favoritos la propiedad
+      // notificationService bla bla bla
+      console.log('guardado!!');
+    }else{
+      const element = document.getElementById('exampleModal') as HTMLElement;
+      const myModal = new Modal(element);
+      myModal.show();
+      //this.clickButton('#cuore');
+    }
+  }
+
+
+  makePdf(){
+    const pages = document.getElementById('pdfrun');
+    html2PDF(pages, {
+      jsPDF: {
+        format: 'a4',
+      },
+      html2canvas: {
+        useCORS: true,
+        allowTaint : true,
+        scale: 2,
+      },
+      imageType: 'image/jpeg',
+      output: './pdf/generate.pdf',
+    });
+  }
+
+  setRoute(
+    latitud: string,
+    longitud: string,
+    color: string,
+    customIcon: any,
+    index: number,
+  ) {
+    var lat = +latitud;
+    var lng = +longitud;
+    this.indexGoal = index;
+    this.customIcon = customIcon;
+    if (this.mapEvents.has('circle')) {
+      this.mapAdd.eachLayer(function (layer) {
+        layer.remove();
+      });
+      Jawg_Sunny().addTo(this.mapAdd);
+      this.mapEvents.delete('circle');
+    }
+    if (this.mapEvents.has('control')) {
+      this.mapAdd.eachLayer(function (layer) {
+        layer.remove();
+      });
+      Jawg_Sunny().addTo(this.mapAdd);
+      this.mapEvents.delete('control');
+    }
+    var control = L.Routing.control({
+      router: new L.Routing.Here(APIKEY.hereToken, {
+        alternatives: [1],
+        routeRestriction: {
+          transportMode: 'pedestrian',
+          routingMode: 'short',
+        },
+        urlParameters: {
+          avoid: {
+            tollTransponders: 'all',
+          },
+        },
+      }),
+      waypoints: [
+        L.latLng(this.home.lat, this.home.lng),
+        L.latLng(lat, lng),
+      ],
+      createMarker: function (i, wp, nWps) {
+        if (i === 0) {
+          // start
+          return L.marker(wp.latLng, {
+            icon: homeicon,
+            draggable: false,
+            bounceOnAdd: true,
+            name: 'start',
+          });
+        } else if (i == nWps - 1) {
+          // finish
+          return L.marker(wp.latLng, {
+            icon: customIcon,
+            draggable: true,
+            bounceOnAdd: true,
+          })/*.bindTooltip(
+            `
+            <div id="container">
+              <div id="content">
+              <div class="details-text">Distancia: <b> ${this.distance} Km</b></div>
+              <div class="details-text">Tiempo: <b> ${this.time} Min</b></div>
+            </div>
+            `
+          );*/
+        }
+      },
+      routeWhileDragging: true,
+      language: 'es',
+      showAlternatives: true,
+      lineOptions: {
+        styles: [{ color: color, weight: 4 }],
+      },
+    });
+    this.mapAdd.addControl(control);
+    control.on('routesfound', (e) => {
+      var routes = e.routes;
+      var summary = routes[0].summary;
+      this.distance=(summary.totalDistance / 1000).toFixed(2);
+      this.time=Math.round((summary.totalTime % 3600) / 60);
+      /*console.log(this.distance + ' ' + this.time);
+      console.log(
+        (summary.totalDistance / 1000).toFixed(2) +
+        ' km. ' +
+        Math.round((summary.totalTime % 3600) / 60) +
+        ' minutos'
+      );*/
+      var waypoints = e.waypoints || [];
+      var destination = waypoints[waypoints.length - 1];
+      this.nextCoords = destination.latLng;
+      this.mapAdd.fitBounds(L.latLngBounds([this.home.lat,this.home.lng], this.nextCoords));
+    });
+    this.mapEvents.add('control');
+    control._container.style.display = "None";
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

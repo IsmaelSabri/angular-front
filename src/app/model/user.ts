@@ -12,6 +12,7 @@ export class User {
   public showLastaccessDate: Date;
   public dateRegistry: Date;
   public fotoPerfilUrl: string;
+  public color: string;
   public isactive: boolean;
   public isnotLocked: boolean;
   public role: string;

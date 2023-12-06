@@ -8,7 +8,7 @@ import 'leaflet.locatecontrol';
 import { tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes, 
   Stadia_OSMBright, OpenStreetMap_Mapnik, CartoDB_Voyager, Thunderforest_OpenCycleMap, Jawg_Sunny} from '../model/maps/functions';
 import { grayIcon, greenIcon, grayPointerIcon, homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
-  busIcon, schoolIcon, universityIcon, fancyGreen, } from '../model/maps/icons';
+  busIcon, schoolIcon, universityIcon, fancyGreen, priceIcon, } from '../model/maps/icons';
 import { UserComponent } from '../components/user/user.component';
 import { NotificationService } from '../service/notification.service';
 import { AuthenticationService } from '../service/authentication.service';
@@ -111,9 +111,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 ];
 
   universidad:Universidad[]=[
-    {lat:'',lng:'',nombre:'',rama:'',institucion:'',web:'',distancia:'',tiempo:'',},
-    {lat:'',lng:'',nombre:'',rama:'',institucion:'',web:'',distancia:'',tiempo:'',},
-    {lat:'',lng:'',nombre:'',rama:'',institucion:'',web:'',distancia:'',tiempo:'',},
     {lat:'',lng:'',nombre:'',rama:'',institucion:'',web:'',distancia:'',tiempo:'',},
     {lat:'',lng:'',nombre:'',rama:'',institucion:'',web:'',distancia:'',tiempo:'',},
     {lat:'',lng:'',nombre:'',rama:'',institucion:'',web:'',distancia:'',tiempo:'',},
@@ -348,6 +345,24 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.mp.on('dragend', () => this.mp.openPopup());*/
   }
 
+  propertyGuidance(signal:string):string{
+    if(signal=='Norte'){
+      return 'N';
+    }else if(signal=='Noreste'){
+      return 'N/E';
+    }else if(signal=='Noroeste'){
+      return 'N/O';
+    }else if(signal=='Este'){
+      return 'E';
+    }else if(signal=='Oeste'){
+      return 'O';
+    }else if(signal=='Sureste'){
+      return 'S/E';
+    }else if(signal=='Suroeste'){
+      return 'S/O';
+    }
+  }
+
   saveService() {
     var x = document.getElementById(this.buttonBefore);
     x.style.display = 'none';
@@ -409,6 +424,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   isOkLoading = false;
   showModal(): void {
     this.isVisible = true;
+    console.log(this.user.color);
   }
   
   setDate(result:Date){
@@ -543,7 +559,17 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
           Home.images=JSON.parse(Home.imagesAsString)
           marker(
             [Number(Home.lat), Number(Home.lng)],
-            { icon: fancyGreen },
+            { icon: new L.DivIcon({
+              className: 'custom-div-icon',
+                html: `<div class="property-pill streamlined-marker-container streamlined-marker-position pill-color-forsale with-icon"
+                          role="link"
+                          tabindex="-1"
+                          data-test="property-marker">
+                          <div class="icon-text" style="display: inline-block; overflow: hidden;">${Home.precioFinal}€</div>
+                      </div>`,
+                iconSize: [30, 42],
+                iconAnchor: [15, 42]
+          }) },
             this.opt
           )
             .bindPopup(
@@ -578,8 +604,52 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                     <div class="col-sm-6 realeTextContainer">
                        <div class="realeTextContainer_2">
                           <p class="p_1">${Home.tipo} en ${Home.condicion}</p>
+                              <input type="checkbox" id="cuore" />
+                              <label for="cuore" style="float:right;">
+                                  <svg  id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
+                                      <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
+                                          <path d="M28.9955034,43.5021565 C29.8865435,42.7463028 34.7699838,39.4111958 36.0304386,38.4371087 C41.2235681,34.4238265 43.9999258,30.3756814 44.000204,25.32827 C43.8745444,20.7084503 40.2276972,17 35.8181279,17 C33.3361339,17 31.0635318,18.1584833 29.5323721,20.1689268 L28.9999629,20.8679909 L28.4675537,20.1689268 C26.936394,18.1584833 24.6637919,17 22.181798,17 C17.6391714,17 14,20.7006448 14,25.3078158 C14,30.4281078 16.7994653,34.5060727 22.0294634,38.5288772 C23.3319753,39.530742 27.9546492,42.6675894 28.9955034,43.5021565 Z" id="heart" stroke="#fc2779"/>
+                                          <circle id="main-circ" fill="#fc2779" opacity="0" cx="29.5" cy="29.5" r="1.5"/>
+
+                                          <g class="grp" id="grp7" opacity="0" transform="translate(7 6)">
+                                              <circle class="cir-a" id="oval1" fill="#9CD8C3" cx="2" cy="6" r="2"/>
+                                              <circle  class="cir-b " id="oval2" fill="#8CE8C3" cx="5" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp6" opacity="0" transform="translate(0 28)">
+                                              <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="7" r="2"/>
+                                              <circle class="cir-b" id="oval2" fill="#91D2FA" cx="3" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp3" opacity="0" transform="translate(52 28)">
+                                              <circle class="cir-b" id="oval2" fill="#9CD8C3" cx="2" cy="7" r="2"/>
+                                              <circle class="cir-a" id="oval1" fill="#8CE8C3" cx="4" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp2" opacity="0" transform="translate(44 6)">
+                                              <circle class="cir-b" id="oval2" fill="#CC8EF5" cx="5" cy="6" r="2"/>
+                                              <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp5" opacity="0" transform="translate(14 50)">
+                                              <circle class="cir-a" id="oval1" fill="#91D2FA" cx="6" cy="5" r="2"/>
+                                              <circle  class="cir-b" id="oval2" fill="#91D2FA" cx="2" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp4" opacity="0" transform="translate(35 50)">
+                                              <circle  class="cir-a" id="oval1" fill="#F48EA7" cx="6" cy="5" r="2"/>
+                                              <circle class="cir-b" id="oval2" fill="#F48EA7" cx="2" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp1" opacity="0" transform="translate(24)">
+                                              <circle class="cir-a" id="oval1" fill="#9FC7FA" cx="2.5" cy="3" r="2"/>
+                                              <circle class="cir-b" id="oval2" fill="#9FC7FA" cx="7.5" cy="2" r="2"/>
+                                          </g>
+                                      </g>
+                                  </svg>
+                              </label>
                           <p class="p_2">${Home.precioFinal}€</p>
-                          <a href="javascript:void(0);" onclick="runPopup()"  rel="noopener noreferrer" class="a_1">
+                          <a onclick="runPopup()" class="a_1">
                              <p class="p_3">${Home.tipoDeVia} ${Home.calle} ${Home.numero},</p>
                              <p class="p_4">${Home.ciudad}</p>
                           </a>
@@ -610,7 +680,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                 /*direction: 'top',*/
                 permanent: false,
                 /*sticky: false,*/
-                offset: [0, -45],
+                offset: [6, -63],
                 opacity: 0,
                 className: 'popupX',
               }
@@ -734,6 +804,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   newHome() {
     this.lg.remove(this.mp);
+    var splitLink = this.home.video.split('watch?v=')
+    var embedLink1 = splitLink.join("embed/")
     const formData = new FormData();
     formData.append('lat', this.afterCoords.lat);
     formData.append('lng', this.afterCoords.lng);
@@ -746,16 +818,16 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('condicion', this.home.condicion);
     formData.append('tipo', this.home.tipo);
     formData.append('piso', this.home.piso);
-    formData.append('orientacion', this.home.orientacion);
+    formData.append('orientacion', this.propertyGuidance(this.home.orientacion));
     formData.append('distrito', this.home.distrito);
     formData.append('tipoDeVia', this.home.tipoDeVia);
-    formData.append('video', this.home.video);
+    formData.append('video', embedLink1);
     formData.append('habitaciones', this.home.habitaciones);
     formData.append('aseos', this.home.aseos);
     formData.append('estado', this.home.estado);
     formData.append('destacar', this.home.destacar);
     formData.append('antiguedad', this.home.antiguedad.toString().substring(11,15));
-    formData.append('precioFinal', this.home.precioFinal.toLocaleString());
+    formData.append('precioFinal', this.home.precioFinal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     formData.append('aireAcondicionado', JSON.stringify(this.home.aireAcondicionado));
     formData.append('panelesSolares', JSON.stringify(this.home.panelesSolares));
     formData.append('gasNatural', JSON.stringify(this.home.gasNatural));

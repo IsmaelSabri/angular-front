@@ -1,3 +1,4 @@
+<div id="pdfrun">
 <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
       <nz-breadcrumb class="mb-0">
@@ -12,14 +13,67 @@
         </nz-breadcrumb-item>
         <nz-breadcrumb-item>Application</nz-breadcrumb-item>
       </nz-breadcrumb>
+      <div class="float-right ">
+      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/home-discard.svg"></ion-icon></button>
+      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/home-share.svg"></ion-icon></button>
+      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2" (click)="makePdf()"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>
+      <!--cuore-->
+      <input type="checkbox" id="cuore" (click)="cuoreLike()" />
+                              <label for="cuore" style="float:right;">
+                                  <svg  id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
+                                      <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
+                                          <path d="M28.9955034,43.5021565 C29.8865435,42.7463028 34.7699838,39.4111958 36.0304386,38.4371087 C41.2235681,34.4238265 43.9999258,30.3756814 44.000204,25.32827 C43.8745444,20.7084503 40.2276972,17 35.8181279,17 C33.3361339,17 31.0635318,18.1584833 29.5323721,20.1689268 L28.9999629,20.8679909 L28.4675537,20.1689268 C26.936394,18.1584833 24.6637919,17 22.181798,17 C17.6391714,17 14,20.7006448 14,25.3078158 C14,30.4281078 16.7994653,34.5060727 22.0294634,38.5288772 C23.3319753,39.530742 27.9546492,42.6675894 28.9955034,43.5021565 Z" id="heart" stroke="#fc2779"/>
+                                          <circle id="main-circ" fill="#fc2779" opacity="0" cx="29.5" cy="29.5" r="1.5"/>
+
+                                          <g class="grp" id="grp7" opacity="0" transform="translate(7 6)">
+                                              <circle class="cir-a" id="oval1" fill="#9CD8C3" cx="2" cy="6" r="2"/>
+                                              <circle  class="cir-b " id="oval2" fill="#8CE8C3" cx="5" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp6" opacity="0" transform="translate(0 28)">
+                                              <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="7" r="2"/>
+                                              <circle class="cir-b" id="oval2" fill="#91D2FA" cx="3" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp3" opacity="0" transform="translate(52 28)">
+                                              <circle class="cir-b" id="oval2" fill="#9CD8C3" cx="2" cy="7" r="2"/>
+                                              <circle class="cir-a" id="oval1" fill="#8CE8C3" cx="4" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp2" opacity="0" transform="translate(44 6)">
+                                              <circle class="cir-b" id="oval2" fill="#CC8EF5" cx="5" cy="6" r="2"/>
+                                              <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp5" opacity="0" transform="translate(14 50)">
+                                              <circle class="cir-a" id="oval1" fill="#91D2FA" cx="6" cy="5" r="2"/>
+                                              <circle  class="cir-b" id="oval2" fill="#91D2FA" cx="2" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp4" opacity="0" transform="translate(35 50)">
+                                              <circle  class="cir-a" id="oval1" fill="#F48EA7" cx="6" cy="5" r="2"/>
+                                              <circle class="cir-b" id="oval2" fill="#F48EA7" cx="2" cy="2" r="2"/>
+                                          </g>
+
+                                          <g class="grp" id="grp1" opacity="0" transform="translate(24)">
+                                              <circle class="cir-a" id="oval1" fill="#9FC7FA" cx="2.5" cy="3" r="2"/>
+                                              <circle class="cir-b" id="oval2" fill="#9FC7FA" cx="7.5" cy="2" r="2"/>
+                                          </g>
+                                      </g>
+                                  </svg>
+                              </label>
+      </div>
+      <!--end cuore-->
     </div>
 </nav>
 
 <!--brand header starts-->
-<nz-affix [nzOffsetTop]="0">
-  <nav class="navbar sticky-top navbar-light bg-light">
-    <div class="container-fluid">
+<nz-affix [nzOffsetTop]="0" *ngIf="this.state">
+  <nav class="navbar  py-0" [ngStyle]="{'background-color': this.user.color}" >
+    <div class="container-fluid" [ngStyle]="{'background-color': this.user.color}" >
       <a class="navbar-brand" href="#">Brand pro-user</a>
+      
+      <img height="55" width="55" class="rounded-circle img-fluid img-thumbnail" alt="avatar2" [src]="this.user.fotoPerfilUrl" />
     </div>
   </nav>
 </nz-affix>
@@ -134,37 +188,37 @@
                                 <div>
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 18px; position:relative; top:2px;" src="assets/svg/house-next.svg"></ion-icon></span></div>
                                     <div>
-                                        <span>Tipo de propiedad<!-- -->:</span><span class="value">{{this.home.tipo}}</span>
+                                        <span>Tipo de propiedad<!-- -->:</span><span class="value text-secondary">{{this.home.tipo}}</span>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 15px; position:relative; top:2px;" src="assets/svg/date1.svg"></ion-icon></span></div>
                                     <div>
-                                        <span>Desde<!-- -->:</span><span class="value"> {{this.home.fechaCreacion.slice(0,10)}}</span>
+                                        <span>Desde<!-- -->:</span><span class="value text-secondary"> {{this.home.fechaCreacion.slice(0,10)}}</span>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 18px; position:relative; top:2px;" src="assets/svg/date-update.svg"></ion-icon></span></div>
                                     <div>
-                                        <span>Ultima actualización<!-- -->:</span><span class="value">{{this.home.fechaUltimaModificacion.slice(0,10)}}</span>
+                                        <span>Ultima actualización<!-- -->:</span><span class="value text-secondary">{{this.home.fechaUltimaModificacion.slice(0,10)}}</span>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.intake}}></ion-icon></span></div>
                                     <div>
-                                        <span>Consumo<!-- -->:</span><span class="value"> {{this.home.consumo}}</span>
+                                        <span>Consumo<!-- -->:</span><span class="value text-secondary"> {{this.home.consumo}}</span>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.emissions}}></ion-icon></span></div>
                                     <div>
-                                        <span>Emisiones<!-- -->:</span><span class="value"> {{this.home.emisiones}}</span>
+                                        <span>Emisiones<!-- -->:</span><span class="value text-secondary"> {{this.home.emisiones}}</span>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/eco-house2.svg"></ion-icon></span></div>
                                     <div>
-                                        <span>Eficiencia energética<!-- -->:</span><span class="value"></span>
+                                        <span>Eficiencia energética<!-- -->:</span><span class="value text-secondary"></span>
                                     </div>
                                 </div>
                                 <div *ngIf="this.home.plantaMasAlta">
@@ -176,12 +230,12 @@
                                 <div>
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/house-id.svg"></ion-icon></span></div>
                                     <div>
-                                        <span>ID<!-- -->:</span><span class="value">{{this.home.viviendaId}}</span>
+                                        <span>ID<!-- -->:</span><span class="value text-secondary">{{this.home.viviendaId}}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="features-block">
+                        <div class="features-block" *ngIf="this.home.precioAlquiler!= null || this.home.precioAlquiler != undefined">
                             <h2>Alquiler</h2>
                             <div class="featured">
                                 <div>
@@ -220,7 +274,7 @@
                                     <span *ngIf="this.home.panelesSolares"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/solar_panels.svg"></ion-icon></span>Paneles solares</span>
                                     <span *ngIf="this.home.gasNatural"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/gas_house.svg"></ion-icon></span>Gas natural</span>
                                     <span *ngIf="this.home.amueblado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/furniture.svg"></ion-icon></span>Amueblado completo</span>
-                                    <span *ngIf="this.home.aseoEnsuite!= null || this.home.aseoEnsuite != undefined"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/bath_independent.svg"></ion-icon></span>Aseo ensuite</span>
+                                    <span *ngIf="this.home.aseoEnsuite!= null || this.home.aseoEnsuite != undefined"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/bath_independent.svg"></ion-icon></span>{{this.home.aseoEnsuite}} Aseo ensuite</span>
                                 </div>
                                 <div class="highlighted">
                                     <span *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/balcony.svg"></ion-icon></span>Balcón</span>
@@ -256,7 +310,7 @@
                         <div class="features-block">
                             <h2>Vistas</h2>
                             <div class="content">
-                                <div class="highlighted">
+                                <div class="highlighted"><!--*ngIf="this.home.vistasDespejadas=='Ciudad'"-->
                                     <span *ngIf="this.home.vistasDespejadas=='Ciudad'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/city.svg"></ion-icon></span>Ciudad</span>
                                     <span *ngIf="this.home.vistasDespejadas=='Jardines'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/garden-views.svg"></ion-icon></span>Jardines</span>
                                     <span *ngIf="this.home.vistasDespejadas=='Deslunado'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/deslunado.svg"></ion-icon></span>Deslunado</span>
@@ -285,14 +339,14 @@
                         </div>
                     </div>
                 </section>
-                <!-- Esto hay que hacerlo mejor con bootstrap -->
+                <!-- Aquí le invitas a registrarse para usar el chat en tiempo real -->
                 <!--<div style="display: block;" class="restricted-message">
                     <div class="body">
                         <div class="advertisement ">
                             <div class="image">
                                 <img
                                     src=""
-                                    alt="Para ver más propiedades y disfrutar del chat en tiempo real cree un cuenta"
+                                    alt="Para disfrutar del chat en tiempo real cree un cuenta"
                                 />
                                 <div class="text"><h4>Entrar o registrarse</h4></div>
                             </div>
@@ -358,7 +412,8 @@
                                 <nz-tabset>
                                     <!--Colegios-->
                                     <nz-tab nzTitle="Colegios">
-                                        <nz-table >
+                                        <div class="table-responsive-sm">
+                                        <table class="table table-sm">
                                             <thead>
                                               <tr>
                                                 <th>Nombre</th>
@@ -366,27 +421,147 @@
                                                 <th>Institución</th>
                                                 <th>Página web</th>
                                                 <th>Distancia</th>
+                                                <th>Tiempo</th>
                                                 <th>Como llegar</th>
                                               </tr>
                                             </thead>
                                             <tbody>
-                                              <tr *ngFor="let data of this.colegio">
-                                                <td>{{ data.nombre }}</td>
-                                                <td>{{ data.ensenyanza }}</td>
-                                                <td>{{ data.institucion }}</td>
-                                                <td>{{ data.web}}</td>
-                                                <td>{{ data.distancia}}</td>
+                                              <tr *ngFor="let data of this.colegio; let i = index">
+                                                <td class="text-secondary textInRow">{{ data.nombre }}</td>
+                                                <td class="text-secondary textInRow">{{ data.ensenyanza }}</td>
+                                                <td class="text-secondary textInRow">{{ data.institucion }}</td>
+                                                <td class="text-secondary textInRow"><a href="{{data.web}}">Ir a</a></td>
+                                                <td class="text-secondary textInRow">{{ data.distancia}}</td>
+                                                <td class="text-secondary textInRow">{{ data.tiempo}}</td>
+                                                <td ><button (click)="setRoute(this.colegio[i].lat, this.colegio[i].lng, '#808080', this.sc, i)" style="height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td><!---->
                                               </tr>
                                             </tbody>
-                                          </nz-table>
+                                          </table>
+                                        </div>
                                     </nz-tab>
                                     <!--Colegios-->
-                                    <nz-tab nzTitle="Universidades">Content of Tab Pane 2</nz-tab>
-                                    <nz-tab nzTitle="Supermercados">Content of Tab Pane 3</nz-tab>
-                                    <nz-tab nzTitle="Autobuses">Content of Tab Pane 3</nz-tab>
-                                    <nz-tab nzTitle="Metro">Content of Tab Pane 3</nz-tab>
-                                    <nz-tab nzTitle="Playa">Content of Tab Pane 3</nz-tab>
-                                    <nz-tab nzTitle="Aeropuerto">Content of Tab Pane 3</nz-tab>
+                                    <nz-tab nzTitle="Universidades">
+                                        <div class="table-responsive-sm">
+                                        <table class="table table-sm">
+                                            <thead>
+                                              <tr>
+                                                <th>Nombre</th>
+                                                <th>Rama de conocimiento</th>
+                                                <th>Institución</th>
+                                                <th>Página web</th>
+                                                <th>Distancia</th>
+                                                <th>Tiempo</th>
+                                                <th>Como llegar</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              <tr *ngFor="let data of this.universidad; let i = index">
+                                                <td class="text-secondary textInRow">{{ data.nombre }}</td>
+                                                <td class="text-secondary textInRow">{{ data.rama }}</td>
+                                                <td class="text-secondary textInRow">{{ data.institucion }}</td>
+                                                <td class="text-secondary textInRow"><a href="{{data.web}}">Ir a</a></td>
+                                                <td class="text-secondary textInRow">{{ data.distancia}}</td>
+                                                <td class="text-secondary textInRow">{{ data.tiempo}}</td>
+                                                <td><button (click)="setRoute(this.universidad[i].lat, this.universidad[i].lng, '#128c7e', this.uni, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                    </nz-tab>
+                                    <nz-tab nzTitle="Supermercados">
+                                        <div class="table-responsive-sm">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Como llegar</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr *ngFor="let data of this.mercados; let i = index">
+                                                    <td class="text-secondary textInRow">{{ data.nombre }}</td>
+                                                    <td><button (click)="setRoute(this.mercados[i].lat, this.mercados[i].lng, '#6f5e53', this.mki, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                        </div>
+                                    </nz-tab>
+                                    <nz-tab nzTitle="Autobuses">
+                                        <div class="table-responsive-sm">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Parada</th>
+                                                    <th>Líneas</th>
+                                                    <th>Como llegar</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr *ngFor="let data of this.autobus; let i = index">
+                                                    <td class="text-secondary textInRow">{{ data.parada }}</td>
+                                                    <td class="text-secondary textInRow">{{ data.lineas }}</td>
+                                                    <td><button (click)="setRoute(this.autobus[i].lat, this.autobus[i].lng, '#960018', this.busic, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                        </div>
+                                    </nz-tab>
+                                    <nz-tab nzTitle="Metro">
+                                        <div class="table-responsive-sm">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Parada</th>
+                                                    <th>Líneas</th>
+                                                    <th>Como llegar</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr *ngFor="let data of this.metro; let i = index">
+                                                    <td class="text-secondary textInRow">{{ data.parada }}</td>
+                                                    <td class="text-secondary textInRow">{{ data.lineas }}</td>
+                                                    <td><button (click)="setRoute(this.metro[i].lat, this.metro[i].lng, '#d6a323', this.swi, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                        </div>
+                                    </nz-tab>
+                                    <nz-tab nzTitle="Playa">
+                                        <div class="table-responsive-sm">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Como llegar</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr *ngFor="let data of this.beach; let i = index">
+                                                    <td class="text-secondary textInRow">{{ data.nombre }}</td>
+                                                    <td><button (click)="setRoute(this.beach[i].lat, this.beach[i].lng, 'dodgerblue', this.bch, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                        </div>
+                                    </nz-tab>
+                                    <nz-tab nzTitle="Aeropuerto">
+                                        <div class="table-responsive-sm">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                  <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Como llegar</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr *ngFor="let data of this.aeropuerto; let i = index">
+                                                    <td class="text-secondary textInRow">{{ data.nombre }}</td>
+                                                    <td><button (click)="setRoute(this.aeropuerto[i].lat, this.aeropuerto[i].lng, '#3200ff', this.airp, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                        </div>
+                                    </nz-tab>
                                 </nz-tabset>
                             </div>
                                 <!-- Leaflet map -->
@@ -456,22 +631,30 @@
                     </section>
                     
                 </div>
-                <!-- Esto hay que meterlo en un modal -->
-                <div style="display: none;" class="restricted-message">
-                    <div class="body">
-                        <div class="advertisement ">
-                            <div class="image">
-                                <img src=""/>
-                                <div class="text"><h4>Entre o cree una cuenta</h4></div>
+                <!-- Modal login-register to save through like button -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <ng-container style="align-items: center;">
+                            <div class="restricted-message">
+                                <div class="body">
+                                    <div class="advertisement ">
+                                        <div class="image">
+                                            <img width=auto height="70" style="display: block; width: 48px; max-width: 48px; min-width: 48px;" src="../../../assets/img/tmp/unknown-house.png"/>
+                                        </div>
+                                        <div class="padded">
+                                            <div class="heading">my</div>
+                                            <p>Guarda tus propiedades, descártalas y mucho mas.</p>
+                                            <button tabindex="0" class="login only-one-button" data-bs-dismiss="modal" routerLink="/login"><span class="readmore-button-label">ENTRAR</span></button>
+                                            <button tabindex="0" class="register only-one-button" data-bs-dismiss="modal" routerLink="/register"><span class="readmore-button-label">REGISTRARSE</span></button>
+                                            <p class="privacy">
+                                                Al continuar, acepto la política de privacidad de mh<a href="/privacy-policy" target="_blank">Política de privacidad</a>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="padded">
-                                <div class="heading">Access more content</div>
-                                <p>Para ver más propiedades y disfrutar del chat en tiempo real cree un cuenta</p>
-                                <button tabindex="0" class="login only-one-button"><span class="readmore-button-label">ENTRAR</span></button><button tabindex="0" class="register only-one-button"><span class="readmore-button-label">REGISTRARSE</span></button>
-                                <p class="privacy">
-                                    Al continuar, acepto la política de privacidad de mh<a href="/privacy-policy" target="_blank">Política de privacidad</a>.
-                                </p>
-                            </div>
+                        </ng-container>
                         </div>
                     </div>
                 </div>
@@ -814,8 +997,8 @@
                 <a aria-label="Link to homepage" routerLink="/"><!--<img alt="Logo" src="" width="218.90547263681592" height="44" style="height: 44px; width: 218.905px; display: block;" />--></a>
                 <div class="contact-us" style="flex: 3 1 0%;">
                     <div class="contacts">
-                        <div class="contact"><span class="icon" style="font-size: 20px;"></span>Plaza del ayuntamiento 1, Valencia 46001</div>
-                        <div class="contact"><span class="icon phone"></span><a  href="tel:+34666666666" class="footer-phone-details">+34666666666</a></div>
+                        <div class="contact"><span class="icon"><ion-icon name="people-outline"></ion-icon></span>&nbsp;Plaza del ayuntamiento 1, Valencia 46001</div>
+                        <div class="contact"><span class="icon"><ion-icon name="call-outline"></ion-icon></span><a class="footer-phone-details">&nbsp;+34666666666</a></div>
                     </div>
                 </div>
             </div>
@@ -834,3 +1017,4 @@
         </div>
     </div>
 </footer>
+</div>

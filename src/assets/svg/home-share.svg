@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   data-name="Layer 1"
+   viewBox="0 0 463.63718 470.30548"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg14"
+   sodipodi:docname="home-share.svg"
+   width="463.63718"
+   height="470.30548"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs18" />
+  <sodipodi:namedview
+     id="namedview16"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="1.1890625"
+     inkscape:cx="231.27464"
+     inkscape:cy="298.97503"
+     inkscape:window-width="1850"
+     inkscape:window-height="1025"
+     inkscape:window-x="1990"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14" />
+  <title
+     id="title2">Home</title>
+  <g
+     data-name="Group"
+     id="g8"
+     transform="translate(-24.261814,-20.99451)"
+     style="fill:#414141">
+    <path
+       data-name="Compound Path"
+       d="m 32.237,235.225 a 8.231,8.231 0 0 0 5.3,-1.926 L 73,202.991 V 447.228 A 7.638,7.638 0 0 0 80.8,455 h 206.984 c 21.137,23 51,36.3 84.06,36.3 63.92,0 116.055,-51.945 116.055,-115.865 0,-55.732 -39.9,-102.342 -91.9,-113.385 V 202.4 l 35.17,30.847 A 8.006,8.006 0 0 0 441.714,221.2 L 361,150.6 V 28.591 C 361,24.172 357.186,21 352.768,21 H 289.632 A 7.352,7.352 0 0 0 282,28.591 v 52.863 l -40.343,-35.09 a 8.127,8.127 0 0 0 -10.562,-0.05 L 27.072,221.15 a 7.991,7.991 0 0 0 5.165,14.075 z m 439.53,140.262 a 99.923,99.923 0 1 1 -99.923,-99.923 100.036,100.036 0 0 1 99.923,99.923 z M 298,37 h 47 v 99.621 L 298,95.434 Z M 89,189.277 236.26,62.968 346.644,159.463 a 8.511,8.511 0 0 0 2.033,1.683 L 380,188.422 v 71.417 c -3,-0.177 -5.371,-0.275 -8.023,-0.275 -63.92,0 -115.989,51.889 -115.989,115.809 0,1.252 -0.039,2.627 0,3.627 H 89 Z M 89,395 h 168.611 a 114.957,114.957 0 0 0 17.459,44 H 89 Z"
+       id="path4"
+       style="fill:#414141" />
+    <path
+       data-name="Compound Path"
+       d="m 343.077,357.363 a 25.73,25.73 0 1 0 -1.728,37.834 l 36.023,16.52 a 25.726,25.726 0 1 0 25.481,-22.2 25.646,25.646 0 0 0 -18.453,7.826 l -34.551,-15.846 a 25.633,25.633 0 0 0 0.428,-9.837 l 35.253,-16.916 a 25.682,25.682 0 1 0 -7.9,-13.954 z m -18.241,27.852 a 9.728,9.728 0 1 1 9.728,-9.728 9.739,9.739 0 0 1 -9.728,9.728 z m 78.017,20.3 a 9.728,9.728 0 1 1 -9.728,9.728 9.738,9.738 0 0 1 9.728,-9.731 z m 0,-79.506 a 9.728,9.728 0 1 1 -9.728,9.728 9.739,9.739 0 0 1 9.728,-9.731 z"
+       id="path6"
+       style="fill:#414141" />
+  </g>
+  <metadata
+     id="metadata20">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Home</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

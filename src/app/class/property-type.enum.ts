@@ -12,6 +12,7 @@ export enum HouseType { // tipo
   piso = 'Piso',
   apartamento = 'Apartamento',
   estudio = 'Estudio',
+  habitacion = 'Habitación',
   atico = 'Ático',
   duplex = 'Duplex',
   chalet = 'Chalet',

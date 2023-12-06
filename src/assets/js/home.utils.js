@@ -4,5 +4,3 @@ function saveService() {
 function runPopup() {
   document.getElementById("linkPopup").click();
 }
-
-// Expandable read more

@@ -45,6 +45,18 @@ export const fancyGreen = new Icon({
   shadowSize: [41, 41],
 });
 
+export const priceIcon= L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div class="property-pill streamlined-marker-container streamlined-marker-position pill-color-forsale with-icon"
+            role="link"
+            tabindex="-1"
+            data-test="property-marker">
+            <div style="display: inline-block; overflow: hidden;">4.70M</div>
+        </div>`,
+  iconSize: [30, 42],
+  iconAnchor: [15, 42]
+});
+
 export const homeicon= L.divIcon({
   className: 'custom-div-icon',
   html: "<div style='background-color:#3a3b3c;' class='marker-pin'></div><i class='fa fa-home'>",

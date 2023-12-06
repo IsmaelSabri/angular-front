@@ -16,7 +16,6 @@ export class Home {
   precioInicial: string;
   descuento: string;
   precioFinal: string;
-  precioM2: string;
   precioAlquiler:string;
   duracion: string;
   descripcion: string;
