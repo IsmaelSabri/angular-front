@@ -1,3 +1,4 @@
+
 <!--Main navbar-->
 <header class="header">
   <div class="logo">
@@ -77,9 +78,6 @@
       <ul class="nav-links nav lista1">
         <li class="nav-item active pr-3">
           <a routerLink="/home" class="nav-link"> Comprar </a>
-          <!--<li class="nav-item pr-3">
-            <a  [hidden]="!isAdmin" class="nav-link disabled" routerLink="/user/management"> Usuarios</a>
-          </li>-->
         <li class="nav-item pr-3">
           <a  class="nav-link disabled"> Vender </a>
         </li>
@@ -121,9 +119,6 @@
     <li class="nav-item pr-3">
       <a routerLink="/admin" class="nav-link nav-border"> Precio </a>
     </li>
-    <!--<li class="nav-item pr-3">
-          <a  [hidden]="!isAdmin" class="nav-link disabled" routerLink="/user/management"> Usuarios</a>
-        </li>-->
     <li class="nav-item pr-3">
       <a class="nav-link nav-border"> Habitaciones </a>
     </li>
@@ -1438,6 +1433,7 @@
 <!-- Leaflet map -->
 <div id="map"></div>
 
+<!--Ghost buttons-->
 <button id="oculto" class="oculto" style="display: none;" (click)="saveService()"></button>
 <button id="runImage" class="btn btn-primary carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next" style="display: none;" ></button>
 <button id="linkPopup" class="linkPopup" style="display: none;" routerLink="/add"></button>

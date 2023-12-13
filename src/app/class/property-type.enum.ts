@@ -3,8 +3,8 @@ export enum PropertyType { // condicion
   alquiler = 'Alquiler',
   venta = 'Venta',
   compartir = 'Comparto',
-  intercambio_vacacional = 'Intercambio vacacional',
-  nuevoProyectoObra = 'Nuevo proyecto obra nueva',
+  //intercambio_vacacional = 'Intercambio vacacional',
+  //nuevoProyectoObra = 'Nuevo proyecto obra nueva',
   //alquilerDias = 'Alquiler por días',
 }
 
@@ -156,4 +156,5 @@ export enum Orientacion {
   Oeste = 'Oeste',
   Sureste = 'Sureste',
   Suroeste = 'Suroeste',
+  Sur = 'Sur'
 }

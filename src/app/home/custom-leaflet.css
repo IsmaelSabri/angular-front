@@ -637,6 +637,7 @@
   display: flex;
   flex-direction: row;
 
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
   top: -60px;
 }

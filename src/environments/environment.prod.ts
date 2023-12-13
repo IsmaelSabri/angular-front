@@ -17,6 +17,7 @@ export const APIKEY = {
   api_key: '327894182456618',
   api_secret: 'qzWECxOOzzy-keF2HV7_t2BNFA8',
   upload_preset: 'm8nfc4rx',
-  imgbb:'d57222caced797c19ffcddae0046ebd8'
+  // cuando dé un 400 bad request hay que cambiarla
+  imgbb:'5398480df7260637129e24fa8cb725b2'//'d57222caced797c19ffcddae0046ebd8'
 };
 

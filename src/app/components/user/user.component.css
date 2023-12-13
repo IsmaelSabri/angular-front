@@ -1,3 +1,4 @@
+/* Badge user account status */
 .chip {
   padding: 8px 10px;
   border-radius: 10px;
@@ -17,4 +18,23 @@
 .chip.danger {
   background: #ef233c;
   color: whitesmoke;
+}
+/* end */
+
+/* font variation alternate */
+.fontVariation{
+  font-family: "Pangea", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/* end */
+
+.image-preview {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 8%), 0 4px 8px rgb(0 0 0 / 4%);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-left: 10px;
+  display: block;
+  max-width: 230px;
+  max-height: 155px;
+  width: auto;
+  height: auto;
 }

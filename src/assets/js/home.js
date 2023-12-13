@@ -4,3 +4,6 @@ function saveService() {
 function runPopup() {
   document.getElementById("linkPopup").click();
 }
+function cuoreLike(){
+  
+}

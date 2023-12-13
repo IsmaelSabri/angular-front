@@ -65,6 +65,7 @@ registerLocaleData(es);
 import { NzAffixModule } from 'ng-zorro-antd/affix';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 
 @NgModule({
   declarations: [
@@ -124,6 +125,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
     NzAffixModule,
     NzDividerModule,
     NzBreadCrumbModule,
+    NzColorPickerModule,
   ],
   exports: [
     // to get component in another modules

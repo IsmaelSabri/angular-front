@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BrandImage } from './../../model/user';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user.service';
 import { NotificationService } from '../../service/notification.service';
 import { NotificationType } from '../../class/notification-type.enum';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Validators, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { CustomHttpResponse } from '../../model/performance/custom-http-response';
 import { AuthenticationService } from '../../service/authentication.service';
@@ -13,6 +14,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FileUploadStatus } from '../../model/performance/file-upload.status';
 import { Rol } from '../../class/role.enum';
 import { ToastrService } from 'ngx-toastr';
+import { APIKEY } from 'src/environments/environment.prod';
+import { serialize } from 'object-to-formdata';
 
 @Component({
   selector: 'app-user',
@@ -27,13 +30,22 @@ export class UserComponent implements OnInit, OnDestroy {
   public refreshing: boolean;
   public selectedUser: User;
   public fileName: string;
-  public propertyImage: File;
+  public photoImage: File;
   protected subscriptions: Subscription[] = [];
   public editUser = new User();
   private currentUsername: string;
   public fileStatus = new FileUploadStatus();
   public showLoading: boolean;
+  brandImageSrc: string = '';
+  brandImageName: string;
+  BrandImage: File;
+  brandImageRefreshing: boolean;
+  imageProfileRefreshing: boolean;
 
+  myForm = new FormGroup({
+    file: new FormControl('', [Validators.required]),
+    fileSource: new FormControl('', [Validators.required])
+  });
 
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
     protected userService: UserService, protected notificationService: NotificationService,
@@ -41,9 +53,123 @@ export class UserComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache();
+    //this.user.profileImage=JSON.parse(this.user.profileImageAsString);
     console.log(this.user);
     this.getUsers(true);
+    //if(this.user.role=='USER_PRO'){}
   }
+
+  get f() {
+    return this.myForm.controls;
+  }
+
+  // brand image
+  onFileChange(event: any) {
+    const reader = new FileReader();
+    if (event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      this.brandImageName = event.target.files[0].name;
+      this.BrandImage = event.target.files[0];
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.brandImageSrc = reader.result as string;
+        this.myForm.patchValue({
+          fileSource: reader.result as string
+        });
+      };
+    }
+  }
+
+  // brand image
+  selectBrand(formDirective: FormGroupDirective) {
+    var userUpdate = this.user;
+    this.brandImageRefreshing = true;
+    const body = new FormData();
+    //imgbb cannot allow to delete images through api calls only manually so
+    body.append('image', this.BrandImage);
+    this.subscriptions.push(this.userService.uploadSignature(body, this.brandImageName)
+      .subscribe({
+        next: (res: any) => {
+          userUpdate.brandImage = {
+            imageId: res.data.data.id,
+            imageName: res.data.data.title,
+            imageUrl: res.data.data.url,
+            imageDeleteUrl: res.data.data.delete_url
+          }
+          userUpdate.brandImageAsString = JSON.stringify(userUpdate.brandImage);
+          formDirective.resetForm();
+          this.brandImageSrc = '';
+          this.subscriptions.push(this.userService.updateUser(userUpdate, userUpdate.id).subscribe({
+            next: (res: any) => {
+              console.log(res);
+            },
+            error: (err: any) => {
+              console.log(err);
+            }
+          }));
+          this.brandImageRefreshing = false;
+          this.BrandImage=null;
+          this.sendNotification(NotificationType.SUCCESS, `Imagen corporativa actualizada`);
+        },
+        error: (err: any) => {
+          this.sendNotification(NotificationType.ERROR, `Algo salio mal. Por favor intentelo pasados unos minutos.`);
+          this.brandImageRefreshing = false;
+        }
+      }));
+  }
+
+  public onUpdateCurrentUser(user: User): void {
+    //console.log(user + ' image: ' + this.photoImage);
+    this.refreshing = true;
+    user.profileImageAsString=JSON.stringify(user.profileImage);
+      this.subscriptions.push(this.userService.updateUser(user, user.id).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          
+          this.refreshing = false;
+          localStorage.removeItem('user');
+          //this.authenticationService.addUserToLocalCache(res.body);
+          this.photoImage=null;
+          this.sendNotification(NotificationType.SUCCESS, `${res.firstname} ${res.lastname} Actualizado`);
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.refreshing = false;
+        }
+      }));
+    }
+  
+    public onProfileImageChange(fileName: string, profileImage: File): void {
+      this.fileName = fileName;
+      this.imageProfileRefreshing = true;
+      this.photoImage = profileImage;
+      if (this.photoImage!=null) {
+        const body = new FormData();
+      body.append('image', this.photoImage);
+      this.subscriptions.push(this.userService.uploadSignature(body, this.fileName)
+        .subscribe({
+          next: (res: any) => {
+            this.user.profileImage = {
+              imageId: res.data.data.id,
+              imageName: res.data.data.title,
+              imageUrl: res.data.data.url,
+              imageDeleteUrl: res.data.data.delete_url
+            }
+            this.reportUploadProgress(res);
+            console.log(res);
+            console.log(this.user.profileImage);
+            this.user.profileImageAsString = JSON.stringify(this.user.profileImage);
+            //localStorage.removeItem('user');
+            //localStorage.setItem('user', JSON.stringify(this.user));          
+            this.imageProfileRefreshing = false;
+          },
+          error: (err: any) => {
+            this.imageProfileRefreshing = false;
+            console.log(err);
+          }
+        }));
+      }
+    }
 
   public changeTitle(title: string): void {
     this.titleSubject.next(title);
@@ -54,11 +180,15 @@ export class UserComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.userService.getUsers().subscribe({
         next: (response: User[]) => {
-          this.userService.addUsersToLocalCache(response);
           this.users = response;
+          for (let i = 0; i < response.length; i++) {
+            this.users[i].brandImage=JSON.parse(this.users[i].brandImageAsString);
+            this.users[i].profileImage=JSON.parse(this.users[i].profileImageAsString);
+          }
+          this.userService.addUsersToLocalCache(response);
           this.refreshing = false;
           if (showNotification) {
-            this.sendNotification(NotificationType.SUCCESS, `${response.length} usuario(s) cargados con éxito.`);
+            this.sendNotification(NotificationType.SUCCESS, `${response.length} usuario(s).`);
           }
         },
         error: (errorResponse: HttpErrorResponse) => {
@@ -75,92 +205,52 @@ export class UserComponent implements OnInit, OnDestroy {
     this.clickButton('openUserInfo');
   }
 
-  public onProfileImageChange(fileName: string, profileImage: File): void {
-    this.fileName = fileName;
-    this.propertyImage = profileImage;
-  }
-
   public saveNewUser(): void {
     this.clickButton('new-user-save');
   }
 
   public onAddNewUser(userForm: NgForm): void {
-    //const formData = this.userService.createUserFormDate(null, userForm.value, this.propertyImage);
+    //const formData = this.userService.a(null, userForm.value, this.photoImage);
     this.subscriptions.push(
       this.userService.addNewUser(userForm.value).subscribe({ // ? formdata
         next: () => {
           this.clickButton('new-user-close');
           this.getUsers(false);
           this.fileName = null;
-          this.propertyImage = null;
+          this.photoImage = null;
           userForm.reset();
           this.sendNotification(NotificationType.SUCCESS, `Añadido con éxito`);
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-          this.propertyImage = null;
+          this.photoImage = null;
         }
       })
     );
   }
 
   public onUpdateUser(): void {
-    const formData = this.userService.createUserFormDate(this.currentUsername, this.editUser, this.propertyImage);
+    const formData = this.userService.createUserFormData(this.currentUsername, this.editUser, this.photoImage);
     this.subscriptions.push(
-      this.userService.updateUser(formData, this.user.userId).subscribe({
+      this.userService.updateUser(this.user, this.user.userId).subscribe({//this.user esta mal. es para probar por no comentar
         next: (response: User) => {
           this.clickButton('closeEditUserModalButton');
           this.getUsers(false);
           this.fileName = null;
-          this.propertyImage = null;
+          this.photoImage = null;
           this.sendNotification(NotificationType.SUCCESS, `${response.firstname} ${response.lastname} actualizado con éxito`);
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-          this.propertyImage = null;
+          this.photoImage = null;
         }
       })
     );
   }
 
-  public onUpdateCurrentUser(user: User): void {
-    this.refreshing = true;
-    this.currentUsername = this.authenticationService.getUserFromLocalCache().firstname;
-    const formData = this.userService.createUserFormDate(this.currentUsername, user, this.propertyImage);
-    this.subscriptions.push(
-      this.userService.updateUser(formData, user.userId).subscribe({
-        next: (response: User) => {
-          this.authenticationService.addUserToLocalCache(response);
-          this.getUsers(false);
-          this.fileName = null;
-          this.propertyImage = null;
-          this.sendNotification(NotificationType.SUCCESS, `${response.firstname} ${response.lastname} actualizado con éxito`);
-        },
-        error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-          this.refreshing = false;
-          this.propertyImage = null;
-        }
-      })
-    );
-  }
 
-  public onUpdateProfileImage(): void {
-    const formData = new FormData();
-    formData.append('username', this.user.username);
-    formData.append('profileImage', this.propertyImage);
-    this.subscriptions.push(
-      this.userService.updateProfileImage(formData).subscribe({
-        next: (event: HttpEvent<any>) => {
-          this.reportUploadProgress(event);
-        },
-        error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-          this.fileStatus.status = 'done';
-        }
-      })
-    );
-  }
+
+
 
   private reportUploadProgress(event: HttpEvent<any>): void {
     switch (event.type) {
@@ -170,7 +260,7 @@ export class UserComponent implements OnInit, OnDestroy {
         break;
       case HttpEventType.Response:
         if (event.status === 200) {
-          this.user.fotoPerfilUrl = `${event.body.fotoPerfilUrl}?time=${new Date().getTime()}`;
+          this.user.profileImage.imageUrl = `${event.body.data.url}?time=${new Date().getTime()}`;
           this.sendNotification(NotificationType.SUCCESS, `${event.body.primerApellido}\' foto de perfil actualizada con éxito`);
           this.fileStatus.status = 'done';
           break;
@@ -189,9 +279,16 @@ export class UserComponent implements OnInit, OnDestroy {
 
   public onLogOut(): void {
     this.authenticationService.logOut();
-    this.router.navigate(['/home']);
-    window.location.reload();
-    this.sendNotification(NotificationType.SUCCESS, `Has cerrado sesión`);
+    if (this.router.url === '/home'
+    ) {
+      this.sendNotification(NotificationType.SUCCESS, `Has cerrado sesión`);
+      let timer = setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      this.router.navigate(['/home']);
+      this.sendNotification(NotificationType.SUCCESS, `Has cerrado sesión`);
+    }
   }
 
   public onResetPassword(emailForm: NgForm): void {
@@ -260,6 +357,10 @@ export class UserComponent implements OnInit, OnDestroy {
 
   public get isAdminOrManager(): boolean {
     return this.isAdmin || this.isManager;
+  }
+
+  public get isProUser(): boolean {
+    return this.getUserRole() === Rol.USER_PRO;
   }
 
   private getUserRole(): string {

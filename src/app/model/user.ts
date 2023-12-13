@@ -11,7 +11,8 @@ export class User {
   public lastaccessDate: Date;
   public showLastaccessDate: Date;
   public dateRegistry: Date;
-  public fotoPerfilUrl: string;
+  public profileImageAsString: string;
+  public brandImageAsString: string;
   public color: string;
   public isactive: boolean;
   public isnotLocked: boolean;
@@ -19,4 +20,22 @@ export class User {
   public token: string;
   public refreshToken: string;
   public authorities: [];
+  public likePreferences: string[];
+  public LikePreferencesAsString: string;
+  public brandImage: BrandImage;
+  public profileImage: ProfileImage;
+}
+
+export interface BrandImage {
+  imageUrl: string;
+  imageName: string;
+  imageId: string;
+  imageDeleteUrl: string;
+}
+
+export interface ProfileImage {
+  imageUrl: string;
+  imageName: string;
+  imageId: string;
+  imageDeleteUrl: string;
 }

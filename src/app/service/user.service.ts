@@ -4,6 +4,8 @@ import { environment } from '../../environments/environment';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from '../model/user';
 import { CustomHttpResponse } from '../model/performance/custom-http-response';
+import { APIKEY } from 'src/environments/environment.prod';
+import Axios from 'axios-observable';
 
 @Injectable({providedIn: 'root'})
 export class UserService {
@@ -19,10 +21,6 @@ export class UserService {
 
   public addNewUser(user: User): Observable<User> {
     return this.http.post<User>(`${this.host}/api/user/new`, user);
-  }
-
-  public updateUser(formData: FormData, id:string): Observable<User> {
-    return this.http.put<User>(`${this.host}/api/user/${id}`, formData);
   }
 
   public resetPassword(id: string): Observable<CustomHttpResponse> {
@@ -58,19 +56,27 @@ export class UserService {
     }
     return null;
   }
+  
+  public updateUser(user:User, id:string): Observable<User> {
+    return this.http.put<User>(`${this.host}/api/user/${id}`, user);
+  }
 
-  public createUserFormDate(loggedInUsername: string, user: User, fotoPerfilUrl: File): FormData {
+  public createUserFormData(loggedInUsername: string, user: User, profileImageAsString: File): FormData {
     const formData = new FormData();
-    formData.append('currentUsername', loggedInUsername);
-    formData.append('nombre', user.firstname);
-    formData.append('primerApellido', user.lastname);
-    formData.append('username', user.username);
+    formData.append('profileImageAsString', JSON.stringify(profileImageAsString));
+    formData.append('username', loggedInUsername);
+    formData.append('firstname', user.firstname);
+    formData.append('lastname', user.lastname);
+    formData.append('phone', user.phone);
     formData.append('email', user.email);
     formData.append('rol', user.role);
-    formData.append('fotoPerfilUrl', fotoPerfilUrl);
     formData.append('isActive', JSON.stringify(user.isactive));
     formData.append('isNonLocked', JSON.stringify(user.isnotLocked));
     return formData;
+  }
+
+  uploadSignature(body:FormData,name:string): Observable<any>{
+    return Axios.post(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${name}`, body);
   }
 
   public getRole(){

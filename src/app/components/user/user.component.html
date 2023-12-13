@@ -69,7 +69,7 @@
         <tbody *ngFor="let appUser of users">
           <tr class="text-center">
             <td (click)="onSelectUser(appUser)">
-              <img height="40" width="40" src="{{appUser?.fotoPerfilUrl}}" class="rounded-circle img-fluid img-thumbnail" alt=""/>
+              <img *ngIf="appUser.profileImage!= null || appUser.profileImage != undefined" height="40" width="40" src="{{appUser?.profileImage.imageUrl}}" class="rounded-circle img-fluid " alt=""/>
             </td>
             <td (click)="onSelectUser(appUser)">{{appUser?.userId}}</td>
             <td (click)="onSelectUser(appUser)">{{appUser?.firstname}}</td>
@@ -96,8 +96,8 @@
     <button [hidden]="true" type="button" id="openUserEdit" data-bs-toggle="modal" data-bs-target="#editUserModal">
     </button>
 
-    <!-- change password  -->
-    <div [hidden]="!isAdmin" class="tab-pane fade" id="reset-password">
+    <!-- change password [hidden]="!isAdmin" -->
+    <div  class="tab-pane fade" id="reset-password">
       <form #resetPasswordForm="ngForm" (ngSubmit)="onResetPassword(resetPasswordForm)">
         <fieldset>
           <legend>Cambio de password</legend>
@@ -130,7 +130,7 @@
                         <div class="col-12 col-sm-auto">
                           <div class="mx-auto" style="width: 120px;">
                             <div class="d-flex justify-content-center align-items-center rounded">
-                              <img class="rounded" height="135" width="135" src="{{this.user?.fotoPerfilUrl}}" alt="">
+                              <img *ngIf="this.user.profileImage!= null || this.user.profileImage != undefined" class="rounded" height="135" width="135" src="{{this.user?.profileImage.imageUrl}}" alt="">
                             </div>
                             <div *ngIf="fileStatus?.status==='progress'" class="progress mt-1">
                               <div class="progress-bar bg-info" rol="progressbar"
@@ -143,17 +143,18 @@
                           <div class="text-center text-sm-left mb-2 mb-sm-0">
                             <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{this.user?.firstname}} {{this.user?.lastname}}</h4>
                             <p class="mb-0">{{this.user?.username}}</p>
-                            <div *ngIf="this.user?.lastaccessDate !== null" class="text-muted"><small>Último acceso:
+                            <div *ngIf="this.user?.lastaccessDate !== null" class="text-muted"><small class="fontVariation text-secondary">Último acceso:
                                 {{this.user?.lastaccessDate | date:'medium'}}</small></div>
                             <div class="mt-2">
                               <button (click)="updateProfileImage()" class="btn btn-primary" type="button">
-                                <i class="fa fa-fw fa-camera"></i>
+                                <i *ngIf="imageProfileRefreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!imageProfileRefreshing" class="fa fa-fw fa-camera"></i>
                                 <span>Cambiar Foto</span>
                               </button>
+                              <button *ngIf="this.photoImage!= null || this.photoImage != undefined" (click)="onUpdateCurrentUser(this.user)" class="btn btn-success">Guardar</button>
                             </div>
                           </div>
                           <div class="text-center text-sm-right">
-                            <div class="text-muted"><small>Agregado {{this.user?.dateRegistry | date:'mediumDate'}}</small></div>
+                            <div class="text-muted"><small class="fontVariation text-secondary">Agregado {{this.user?.dateRegistry | date:'mediumDate'}}</small></div>
                           </div>
                         </div>
                       </div>
@@ -188,6 +189,16 @@
                                     </div>
                                   </div>
                                 </div>
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="form-group">
+                                      <label>Teléfono</label>
+                                      <input type="text" name="phone" [(ngModel)]="user.phone"
+                                        class="form-control">
+                                    </div>
+                                  </div>
+                                </div>
+
                                 <div class="row">
                                   <div class="col">
                                     <div class="form-group">
@@ -249,6 +260,7 @@
                   </div>
                 </div>
               </div>
+              <!--right card-->
               <div class="col-12 col-md-3 mb-3">
                 <div class="card mb-3">
                   <div class="card-body">
@@ -260,7 +272,34 @@
                     </div>
                   </div>
                 </div>
+                <!--color corporativo-->
                 <div class="card">
+                  <div class="card-body">
+                    <h6 class="card-title font-weight-bold text-secondary">Usuarios profesionales</h6>
+                    <div class="row row-cols-1">
+                      <label>Color corporativo</label>
+                      <nz-color-picker nzTrigger="hover" [(ngModel)]="this.user.color"></nz-color-picker>
+                    </div>
+                    <!--imagen corporativa-->
+                  <div class="row row-cols-1 mt-3">
+                    <label for="file" style="text-overflow: ellipsis; white-space: nowrap;">Imagen corporativa</label>
+                    <form [formGroup]="myForm" #formDirective="ngForm" (ngSubmit)="selectBrand(formDirective)" >
+                      <div class="form-group">
+                          <input formControlName="file" id="file" type="file" class="form-control form-control-sm block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" (change)="onFileChange($event)" />
+                          <div *ngIf="f['file'].touched && f['file'].invalid" class="alert alert-danger">
+                              <div *ngIf="f['file'].errors && f['file'].errors['required']">Adjunte una imagen válida</div>
+                          </div>
+                      </div>
+                      <img [src]="brandImageSrc" *ngIf="brandImageSrc" style="height: 40px; width: 50px;" class="image-preview mt-3" />
+                      <button class="btn btn-primary mt-3" [disabled]="myForm.invalid" type="submit"><i *ngIf="this.brandImageRefreshing" class="fas fa-sync fa-spin"></i>Guardar imagen</button>
+                  </form>
+                  
+                  </div>
+
+
+                  </div>
+                </div>
+                <div class="card mt-3">
                   <div class="card-body">
                     <h6 class="card-title font-weight-bold">Permisos para el Rol</h6>
                     <h6 *ngFor="let authority of user?.authorities" class="card-text">{{authority}}</h6>
@@ -294,7 +333,7 @@
                     <div class="col-12 col-sm-auto">
                       <div class="mx-auto" style="width: 120px;">
                         <div class="d-flex justify-content-center align-items-center rounded">
-                          <img class="rounded" height="120" width="120" src="{{selectedUser?.fotoPerfilUrl}}" alt="{{selectedUser?.firstname}}">
+                          <img *ngIf="selectedUser!= null || selectedUser != undefined" class="rounded" height="120" width="120" src="{{selectedUser?.profileImage.imageUrl}}" alt="{{selectedUser?.firstname}}">
                         </div>
                       </div>
                     </div>
@@ -607,7 +646,7 @@ rol="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <!-- profile image change form -->
   <form enctype="multipart/form-data" style="display:none;">
       <input type="file"
-        (change)="onProfileImageChange($event.target.files[0].name, $event.target.files[0]); onUpdateProfileImage()"
+        (change)="onProfileImageChange($event.target.files[0].name, $event.target.files[0]);"
        name="profile-image-input" id="profile-image-input" placeholder="file" accept="image/*" />
   </form>
 

@@ -16,7 +16,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 //import 'rxjs/Rx';
 import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio} from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
-import { Fancied } from 'src/app/model/fancied';
 import { ContactUser } from 'src/app/model/contact-user';
 import { Lightbox } from 'ngx-lightbox';
 import { NotificationType } from 'src/app/class/notification-type.enum';
@@ -25,13 +24,13 @@ import { environment } from 'src/environments/environment';
 import * as L from 'leaflet';
 import { tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes, 
   Stadia_OSMBright, OpenStreetMap_Mapnik, CartoDB_Voyager, Thunderforest_OpenCycleMap, Jawg_Sunny} from '../../model/maps/functions';
-import { grayIcon, greenIcon, grayPointerIcon, homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
+import { homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
 busIcon, schoolIcon, universityIcon, fancyGreen, } from '../../model/maps/icons';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
 import { Modal } from 'bootstrap';
-import html2PDF from 'jspdf-html2canvas';
 import { APIKEY } from 'src/environments/environment.prod';
+import * as intlTelInput from 'intl-tel-input';
 
 @Component({
   selector: 'app-add',
@@ -45,7 +44,6 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   videoHeight: number | undefined;
 
   homes: Home[] = [];
-  fancied: Fancied = new Fancied();
   aux: string;
   public refreshing: boolean;
   contactUser: ContactUser = new ContactUser();
@@ -53,6 +51,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   json: string;
   _albums: any = [];
   state: boolean = this.authenticationService.isUserLoggedIn();
+  isCollapsed:boolean=true;
 
 
   intake: string;
@@ -115,7 +114,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   public contactMessage() {
     this.refreshing = true;
     const formData = new FormData();
-    formData.append('nombre', this.contactUser.userName);
+    formData.append('nombre', this.contactUser.name);
     formData.append('correo', this.contactUser.mail);
     formData.append('telefono', this.contactUser.phone);
     formData.append('mensaje', this.contactUser.msg);
@@ -193,7 +192,17 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
         this.metro=JSON.parse(this.home.metro);
         // to clear circle when print any route
         this.mapEvents.add('circle');
-        
+        this.loadScripts();
+
+        // tel flags
+        const inputElement=document.querySelector('#phone');
+        if(inputElement){
+          intlTelInput(inputElement,{
+            initialCountry:'es',
+            separateDialCode:true,
+            //utilsScript:'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/'
+          })
+        }
       },
       error: (errorResponse: HttpErrorResponse) => {
         this.sendNotification(
@@ -291,6 +300,20 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
     }
   }
 
+  loadScripts() {
+    const dynamicScripts = [
+      '../../../assets/js/ad.js',
+      'https://www.youtube.com/iframe_api',
+    ];
+    for (let i = 0; i < dynamicScripts.length; i++) {
+      const node = document.createElement('script');
+      node.src = dynamicScripts[i];
+      node.type = 'text/javascript';
+      node.async = false;
+      document.getElementsByTagName('body')[0].appendChild(node);
+    }
+  }
+
   onResize = (): void => {
     // Automatically expand the video to fit the page up to 1200px x 720px
     this.videoWidth = Math.min(
@@ -316,19 +339,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
 
 
   makePdf(){
-    const pages = document.getElementById('pdfrun');
-    html2PDF(pages, {
-      jsPDF: {
-        format: 'a4',
-      },
-      html2canvas: {
-        useCORS: true,
-        allowTaint : true,
-        scale: 2,
-      },
-      imageType: 'image/jpeg',
-      output: './pdf/generate.pdf',
-    });
+
   }
 
   setRoute(

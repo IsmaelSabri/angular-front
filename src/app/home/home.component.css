@@ -12,11 +12,9 @@
 }
 
 #map {
-  width: auto;
+  width: 100%;
   margin: auto;
-  min-height: 905px;
-  max-height: 500px;
-  height: 100%;
+  height: calc(93vh - 56px);
 }
 
 .star {
@@ -122,7 +120,9 @@ star:hover {
 
 .header .nav-links li {
   display: inline-block;
-  padding: 0 20px;
+  /*padding: 0 20px;*/
+  line-height: 80px;
+  margin: 0 5px;
 }
 
 .header .nav-links li:hover {
@@ -135,6 +135,18 @@ star:hover {
   text-decoration: none;
 }
 
+.header .nav-links li a{
+  font-size: 15px;
+  padding: 7px 13px;
+  border-radius: 3px;
+}
+
+.header .nav-links .nav-item nz-dropdown-menu{
+  font-size: 15px;
+  padding: 7px 13px;
+  border-radius: 3px;
+}
+
 .header .nav-links li a:hover {
   color: #3a3b3c;
 }
@@ -142,42 +154,11 @@ star:hover {
 .header .btn button {
   margin-right: 20px;
   font-weight: 700;
-  /*color: #3a3b3c;*/
   padding: 9px 25px;
   background: none;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease 0s;
-}
-
-/*.header .btn button:hover {
-  background-color: #ffffff;
-  color: #676767;
-  transform: scale(1.1);
-}*/
-
-/* custom leaflet-pane */
-.header .nav-links2 {
-  list-style: none;
-}
-
-.header .nav-links2 li {
-  display: inline-block;
-  padding: 0 20px;
-}
-
-.header .nav-links2 li:hover {
-  transform: scale(1.1);
-}
-
-.header .nav-links2 a {
-  font-size: 700;
-  color: #eceff1;
-  text-decoration: none;
-}
-
-.header .nav-links2 li a:hover {
-  color: #ffbc0e;
 }
 
 .nav-border {
@@ -1278,3 +1259,7 @@ svg #main-circ {
   }
 }
 /* end popup like */
+
+/* modal like if not registered */
+
+/* end modal like if not registered */

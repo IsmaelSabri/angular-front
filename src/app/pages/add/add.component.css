@@ -113,7 +113,7 @@ body,
 
 #module #collapseExample.collapse:not(.show) {
   display: block;
-  height: 3rem;
+  height: 3rem !important;
   overflow: hidden;
   /*text gradient*/
   background: -webkit-linear-gradient( #333,#eee);
@@ -123,16 +123,6 @@ body,
 
 #module #collapseExample.collapsing {
   height: 3rem;
-}
-
-#module a.collapsed::after {
-  content: "+ Mostrar Más";
-  color: #8dca3f;
-}
-
-#module a:not(.collapsed)::after {
-  content: "- Mostrar menos";
-  color: #8dca3f;
 }
 
 /* sticky form */
@@ -257,12 +247,7 @@ svg:not(:root) {
 }
 
 .main-contact-form .email-modal-message {
-  padding: 8px 13px 8px 32px;
-}
-
-.icon-textfield {
-  display: block;
-  padding: 0px 16px;
+  padding: 8px 13px 8px 0px;
 }
 
 .multihr {
@@ -323,7 +308,6 @@ svg:not(:root) {
   cursor: text;
   margin: 0em;
   padding: 1px 0px;
-  border-radius: 5px;
 }
 
 .fun-with-flags .PhoneInputCountryIconImg {
@@ -352,7 +336,6 @@ input[type="tel" i] {
 .fun-with-flags .PhoneInputInput {
   flex: 1 1 0%;
   min-width: 0px;
-  border-radius: 5px;
 }
 
 .fun-with-flags .PhoneInputCountrySelectArrow {
@@ -506,7 +489,7 @@ svg:not(:root) {
 
 .icon-textfield {
   display: block;
-  padding: 0px 16px;
+  padding: 0px 5px;
 }
 
 .main-contact-form .field {
@@ -2473,6 +2456,8 @@ body {
 .similar-filter-card .content .featured-box .private,
 .similar-filter-card .content .featured-box .amenities {
   margin-top: 0px;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
 }
 
 @media all and (max-width: 599px) {
@@ -2483,7 +2468,7 @@ body {
   }
 }
 
-.similar-filter-card .texts {
+.similar-filter-card .content .texts {
   align-items: flex-start;
   -webkit-box-align: start;
   -ms-flex-align: start;
@@ -2498,10 +2483,14 @@ body {
   justify-content: space-between;
   max-height: 40px;
   overflow: hidden;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
 }
 
-.similar-filter-card .texts .price {
+.similar-filter-card .content .texts .price {
   font-weight: 800;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
 }
 
 .similar-filter-card .texts .price .priceDetails {
@@ -2564,6 +2553,7 @@ body {
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
   align-self: flex-end;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price.under-market .old .priceDetails::after {
@@ -2574,10 +2564,12 @@ body {
 .similar-filter-card .texts .price.under-market .new .priceDetails {
   color: #3a3b3c;
   opacity: 1;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price.under-market .new {
   text-align: right;
+  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price.under-market .percent {
@@ -2669,6 +2661,8 @@ body {
   margin-right: 4px;
   font-family: portal;
   font-size: 24px;
+
+  bottom:3px;
 }
 
 @media all and (max-width: 599px) {
@@ -2970,7 +2964,7 @@ body {
 }
 
 .main-footer {
-  background-color: #2f3239;
+  background-color: #3a3b3c;
 }
 
 @media all and (max-width: 1209px) {
@@ -3350,3 +3344,8 @@ border: 1px solid #3a3b3c;
 }
 
 
+.name-input-textfield:focus {
+  outline: none !important;
+  border: 2px solid #d9d9d9;
+  box-shadow: 0 0 10px #dadce0;
+}

@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   visible: boolean = true;
   changetype: boolean = true;
   registerForm: any = FormGroup;
-  user:any;
+  user:User;
 
   get f() {
     return this.registerForm.controls;
@@ -59,7 +59,17 @@ export class LoginComponent implements OnInit, OnDestroy {
           localStorage.clear();
           //console.log(response);
           //console.log(response.body);
-          this.authenticationService.addUserToLocalCache(response.body);
+          this.user=response.body;
+          if(response.body.brandImageAsString!=null || response.body.brandImageAsString!=undefined){
+            this.user.brandImage=JSON.parse(this.user.brandImageAsString);
+          }
+          if(response.body.profileImageAsString!=null || response.body.profileImageAsString!=undefined){
+            this.user.profileImage=JSON.parse(this.user.profileImageAsString);
+          }
+          if(response.body.LikePreferencesAsString!=null || response.body.LikePreferencesAsString!=undefined){
+            this.user.likePreferences=JSON.parse(this.user.LikePreferencesAsString);
+          }
+          this.authenticationService.addUserToLocalCache(this.user);
           this.authenticationService.saveToken(response.body.token);
           this.authenticationService.saveRefreshToken(
             response.body.refreshToken

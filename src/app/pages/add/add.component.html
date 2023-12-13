@@ -16,7 +16,7 @@
       <div class="float-right ">
       <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/home-discard.svg"></ion-icon></button>
       <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/home-share.svg"></ion-icon></button>
-      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2" (click)="makePdf()"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>
+      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>
       <!--cuore-->
       <input type="checkbox" id="cuore" (click)="cuoreLike()" />
                               <label for="cuore" style="float:right;">
@@ -73,7 +73,7 @@
     <div class="container-fluid" [ngStyle]="{'background-color': this.user.color}" >
       <a class="navbar-brand" href="#">Brand pro-user</a>
       
-      <img height="55" width="55" class="rounded-circle img-fluid img-thumbnail" alt="avatar2" [src]="this.user.fotoPerfilUrl" />
+      <img style="border-radius: 50%;" height="55" width="55" class="rounded-circle img-fluid " alt="avatar2" [src]="this.user.profileImage.imageUrl" />
     </div>
   </nav>
 </nz-affix>
@@ -172,11 +172,15 @@
                         <h2>{{this.home.habitaciones}} Habitaciones en venta | {{this.home.distrito}} | {{this.home.ciudad}}</h2>
                         <span class="description-box">
                             <div class="container" id="module">
-                                <div class="collapse" id="collapseExample" aria-expanded="false" >
+                                <div [ngbCollapse]="isCollapsed" class="collapse" id="collapseExample" >
                                     {{this.home.descripcion}}
                                 </div>
-                                <a role="button" class="collapsed" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                aria-expanded="false" aria-controls="collapseExample"></a>
+                                <a role="button" (click)="isCollapsed=!isCollapsed" *ngIf="this.isCollapsed"
+                                [attr.aria-expanded]="!isCollapsed" class="collapsed" 
+                                aria-expanded="false" aria-controls="collapseExample" style="color:#8dca3f">+ Mostrar más</a>
+                                <a role="button" (click)="isCollapsed=!isCollapsed" *ngIf="!this.isCollapsed"
+                                [attr.aria-expanded]="!isCollapsed" class="collapsed" 
+                                aria-expanded="false" aria-controls="collapseExample" style="color:#8dca3f">- Mostrar menos</a>
                             </div>
                         </span>
                     </div>
@@ -274,7 +278,7 @@
                                     <span *ngIf="this.home.panelesSolares"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/solar_panels.svg"></ion-icon></span>Paneles solares</span>
                                     <span *ngIf="this.home.gasNatural"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/gas_house.svg"></ion-icon></span>Gas natural</span>
                                     <span *ngIf="this.home.amueblado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/furniture.svg"></ion-icon></span>Amueblado completo</span>
-                                    <span *ngIf="this.home.aseoEnsuite!= null || this.home.aseoEnsuite != undefined"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/bath_independent.svg"></ion-icon></span>{{this.home.aseoEnsuite}} Aseo ensuite</span>
+                                    <span *ngIf="this.home.aseoEnsuite!= null || this.home.aseoEnsuite != undefined"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/shower-tabs.svg"></ion-icon></span>{{this.home.aseoEnsuite}} Aseo ensuite</span>
                                 </div>
                                 <div class="highlighted">
                                     <span *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/balcony.svg"></ion-icon></span>Balcón</span>
@@ -369,42 +373,46 @@
                         <h2>Propiedades similares en {{this.home.distrito}}</h2>
                         <div class="district-filters ">
                             <div class="filter-status">
-                                <button tabindex="0" class="only-one-button">
-                                    <span class="bage-wrap" >Alquiler<span class="district-rent-filter">12<!--reservado--></span></span>
+                                <button tabindex="0" class="only-one-button" href=".rentTab">
+                                    <span class="bage-wrap" >Alquiler<span class="district-rent-filter">n<!--reservado filtros--></span></span>
                                 </button>
-                                <button tabindex="0" class="active only-one-button">
-                                    <span class="bage-wrap" >Venta<span class="district-rent-filter">2</span></span>
+                                <button tabindex="0" class="active only-one-button" href=".saleTab">
+                                    <span class="bage-wrap" >Venta<span class="district-rent-filter">n+1<!--reservado filtros--></span></span>
                                 </button>
                             </div>
                         </div>
-                        <div class=" similar-filter-card-body" *ngFor="let data of this.homes" let i = index >
-                            <a target="_blank" style="text-decoration: none;" >
-                                <div class="similar-filter-card "  >
-                                    <img class="image" alt="" src={{data.images[0].imageUrl}} height="80" width="112" />
-                                    <div class="content">
-                                        <div class="texts">
-                                            <div>{{data.habitaciones}} Habitaciones en venta | {{data.distrito}} | {{data.ciudad}}</div>
-                                            <div class="price under-market">
-                                                <div class="old">
-                                                    <span class="value">{{data.precioInicial}}</span>
+                        <div class="tab-content tabs">
+                            <div class=" similar-filter-card-body saleTab" *ngFor="let data of this.homes" let i = index >
+                                <a style="text-decoration: none;" >
+                                    <div class="similar-filter-card "  >
+                                        <img class="image" alt="" src={{data.images[0].imageUrl}} height="80" width="112" />
+                                        <div class="content">
+                                            <div class="texts">
+                                                <div>{{data.habitaciones}} Habitaciones en venta | {{data.distrito}} | {{data.ciudad}}</div>
+                                                <div class="price under-market">
+                                                    <div class="old">
+                                                        <span *ngIf="this.home.precioInicial!= null || this.home.precioInicial != undefined" class="value">{{data.precioInicial}}€</span>
+                                                    </div>
+                                                    <div class="new">{{data.precioFinal}}€</div>
                                                 </div>
-                                                <div class="new">{{data.precioFinal}}</div>
                                             </div>
-                                        </div>
-                                        <div class="featured-box featured-properties ">
-                                            <div class="private">
-                                                <div class="feature"><span class="icon"></span> <span class="label">1</span><span class="short-label">1</span></div>
-                                                <div class="feature"><span class="icon"></span> <span class="label">1</span><span class="short-label">1</span></div>
-                                                <div class="feature"><span class="icon"></span> <span class="label">57m²</span><span class="short-label">57m²</span></div>
-                                                <div class="feature"><span class="icon"></span> <span class="label">22</span><span class="short-label">22</span></div>
+                                            <div class="featured-box featured-properties ">
+                                                <div class="private saleTab">
+                                                    <div *ngIf="this.home.habitaciones!= null || this.home.habitaciones != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 16px; position:relative; bottom:2px;" src="assets/svg/bed-horizontal.svg"></ion-icon></span> <span class="label">{{data.habitaciones}}</span><span class="short-label">{{data.habitaciones}}</span></div>
+                                                    <div *ngIf="this.home.aseos!= null || this.home.aseos != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 16px; position:relative; bottom:2px;" src="assets/svg/bath_tub.svg"></ion-icon></span> <span class="label">{{data.aseos}}</span><span class="short-label">{{data.aseos}}</span></div>
+                                                    <div *ngIf="this.home.superficie!= null || this.home.superficie != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 12px; position:relative; bottom:2px;" src="assets/svg/size-box.svg"></ion-icon></span> <span class="label">{{data.superficie}}m²</span><span class="short-label">{{data.superficie}}m²</span></div>
+                                                    <div *ngIf="this.home.piso!= null || this.home.piso != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 13px; position:relative; bottom:2px;" src="assets/svg/stairs-tab.svg"></ion-icon></span> <span class="label">{{data.piso}}</span><span class="short-label">{{data.piso}}</span></div>
+                                                    <div *ngIf="this.home.garage!= null || this.home.garage != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 16px; position:relative; bottom:2px;" src="assets/svg/car-tabs.svg"></ion-icon></span> <span class="label">{{data.garage}}</span><span class="short-label">{{data.garage}}</span></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
+                              
                         </div>
                     </section>
-
+                    
                     <section id="map" >
                         <h2>Conozca la zona</h2>
                         <div class="content">
@@ -675,289 +683,66 @@
             </div>
             <div class="actions" style="display: block;">
                 <div class="actions-content ">
-                    <form class="content" style="padding-top: 0px; display: block; flex-direction: column; justify-content: space-between; height: 100%;">
+                    <form #contatMessageForm="ngForm" method="post" (ngSubmit)="contactMessage()" class="content" style="padding-top: 0px; display: block; flex-direction: column; justify-content: space-between; height: 100%;">
                         <div class="main-contact-form ">
-                            <div style="display: flex; justify-content: space-between;">
+                            <!--<div style="display: flex; justify-content: space-between;">
+                                firstname
                                 <div style="flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px);">
                                     <div class="field email-modal-name email-textfield">
-                                        <span class="addon icon-textfield">
+                                        <span class=" icon-textfield">
                                             <svg viewBox="0 0 20 20" class="svg-styles">
                                                 <path
                                                     d="M7.725,2.146c-1.016,0.756-1.289,1.953-1.239,2.59C6.55,5.515,6.708,6.529,6.708,6.529s-0.313,0.17-0.313,0.854C6.504,9.1,7.078,8.359,7.196,9.112c0.284,1.814,0.933,1.491,0.933,2.481c0,1.649-0.68,2.42-2.803,3.334C3.196,15.845,1,17,1,19v1h18v-1c0-2-2.197-3.155-4.328-4.072c-2.123-0.914-2.801-1.684-2.801-3.334c0-0.99,0.647-0.667,0.932-2.481c0.119-0.753,0.692-0.012,0.803-1.729c0-0.684-0.314-0.854-0.314-0.854s0.158-1.014,0.221-1.793c0.065-0.817-0.398-2.561-2.3-3.096c-0.333-0.34-0.558-0.881,0.466-1.424C9.439,0.112,8.918,1.284,7.725,2.146z"
                                                 ></path>
                                             </svg>
                                         </span>
-                                        <label name="name" class="email-textfield">
-                                            <span class="name-tag-textfield"><input name="name" class="name-input-textfield" value="" placeholder="Nombre" /></span>
+                                        <label name="firstName" class="email-textfield">
+                                            <span class="name-tag-textfield">
+                                                <input [(ngModel)]="this.contactUser.firstName" type="text" id="firstName" #firstName="ngModel"
+                                                required name="firstName" class="name-input-textfield form-control" placeholder="Nombre"/>
+                                                <span class="help-block" *ngIf="firstName.invalid && firstName.touched" style="color:red;">Introduzca su nombre</span>
+                                            </span>
                                         </label>
                                     </div>
                                 </div>
                                 <div style="flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px);">
-                                    <div class="fun-with-flags ">
-                                        <div class="PhoneInput">
-                                            <div class="PhoneInputCountry">
-                                                <select name="phoneCountry" aria-label="Phone number country" class="PhoneInputCountrySelect">
-                                                        <option value="ZZ">International</option>
-                                                        <option value="AF">Afghanistan</option>
-                                                        <option value="AX">Åland Islands</option>
-                                                        <option value="AL">Albania</option>
-                                                        <option value="DZ">Algeria</option>
-                                                        <option value="AS">American Samoa</option>
-                                                        <option value="AD">Andorra</option>
-                                                        <option value="AO">Angola</option>
-                                                        <option value="AI">Anguilla</option>
-                                                        <option value="AG">Antigua and Barbuda</option>
-                                                        <option value="AR">Argentina</option>
-                                                        <option value="AM">Armenia</option>
-                                                        <option value="AW">Aruba</option>
-                                                        <option value="AC">Ascension Island</option>
-                                                        <option value="AU">Australia</option>
-                                                        <option value="AT">Austria</option>
-                                                        <option value="AZ">Azerbaijan</option>
-                                                        <option value="BS">Bahamas</option>
-                                                        <option value="BH">Bahrain</option>
-                                                        <option value="BD">Bangladesh</option>
-                                                        <option value="BB">Barbados</option>
-                                                        <option value="BY">Belarus</option>
-                                                        <option value="BE">Belgium</option>
-                                                        <option value="BZ">Belize</option>
-                                                        <option value="BJ">Benin</option>
-                                                        <option value="BM">Bermuda</option>
-                                                        <option value="BT">Bhutan</option>
-                                                        <option value="BO">Bolivia</option>
-                                                        <option value="BQ">Bonaire, Sint Eustatius and Saba</option>
-                                                        <option value="BA">Bosnia and Herzegovina</option>
-                                                        <option value="BW">Botswana</option>
-                                                        <option value="BR">Brazil</option>
-                                                        <option value="IO">British Indian Ocean Territory</option>
-                                                        <option value="BN">Brunei Darussalam</option>
-                                                        <option value="BG">Bulgaria</option>
-                                                        <option value="BF">Burkina Faso</option>
-                                                        <option value="BI">Burundi</option>
-                                                        <option value="KH">Cambodia</option>
-                                                        <option value="CM">Cameroon</option>
-                                                        <option value="CA">Canada</option>
-                                                        <option value="CV">Cape Verde</option>
-                                                        <option value="KY">Cayman Islands</option>
-                                                        <option value="CF">Central African Republic</option>
-                                                        <option value="TD">Chad</option>
-                                                        <option value="CL">Chile</option>
-                                                        <option value="CN">China</option>
-                                                        <option value="CX">Christmas Island</option>
-                                                        <option value="CC">Cocos (Keeling) Islands</option>
-                                                        <option value="CO">Colombia</option>
-                                                        <option value="KM">Comoros</option>
-                                                        <option value="CG">Congo</option>
-                                                        <option value="CD">Congo, Democratic Republic of the</option>
-                                                        <option value="CK">Cook Islands</option>
-                                                        <option value="CR">Costa Rica</option>
-                                                        <option value="CI">Cote d'Ivoire</option>
-                                                        <option value="HR">Croatia</option>
-                                                        <option value="CU">Cuba</option>
-                                                        <option value="CW">Curaçao</option>
-                                                        <option value="CY">Cyprus</option>
-                                                        <option value="CZ">Czech Republic</option>
-                                                        <option value="DK">Denmark</option>
-                                                        <option value="DJ">Djibouti</option>
-                                                        <option value="DM">Dominica</option>
-                                                        <option value="DO">Dominican Republic</option>
-                                                        <option value="EC">Ecuador</option>
-                                                        <option value="EG">Egypt</option>
-                                                        <option value="SV">El Salvador</option>
-                                                        <option value="GQ">Equatorial Guinea</option>
-                                                        <option value="ER">Eritrea</option>
-                                                        <option value="EE">Estonia</option>
-                                                        <option value="ET">Ethiopia</option>
-                                                        <option value="FK">Falkland Islands</option>
-                                                        <option value="FO">Faroe Islands</option>
-                                                        <option value="FM">Federated States of Micronesia</option>
-                                                        <option value="FJ">Fiji</option>
-                                                        <option value="FI">Finland</option>
-                                                        <option value="FR">France</option>
-                                                        <option value="GF">French Guiana</option>
-                                                        <option value="PF">French Polynesia</option>
-                                                        <option value="GA">Gabon</option>
-                                                        <option value="GM">Gambia</option>
-                                                        <option value="GE">Georgia</option>
-                                                        <option value="DE">Germany</option>
-                                                        <option value="GH">Ghana</option>
-                                                        <option value="GI">Gibraltar</option>
-                                                        <option value="GR">Greece</option>
-                                                        <option value="GL">Greenland</option>
-                                                        <option value="GD">Grenada</option>
-                                                        <option value="GP">Guadeloupe</option>
-                                                        <option value="GU">Guam</option>
-                                                        <option value="GT">Guatemala</option>
-                                                        <option value="GG">Guernsey</option>
-                                                        <option value="GN">Guinea</option>
-                                                        <option value="GW">Guinea-Bissau</option>
-                                                        <option value="GY">Guyana</option>
-                                                        <option value="HT">Haiti</option>
-                                                        <option value="VA">Holy See (Vatican City State)</option>
-                                                        <option value="HN">Honduras</option>
-                                                        <option value="HK">Hong Kong</option>
-                                                        <option value="HU">Hungary</option>
-                                                        <option value="IS">Iceland</option>
-                                                        <option value="IN">India</option>
-                                                        <option value="ID">Indonesia</option>
-                                                        <option value="IR">Iran</option>
-                                                        <option value="IQ">Iraq</option>
-                                                        <option value="IE">Ireland</option>
-                                                        <option value="IM">Isle of Man</option>
-                                                        <option value="IL">Israel</option>
-                                                        <option value="IT">Italy</option>
-                                                        <option value="JM">Jamaica</option>
-                                                        <option value="JP">Japan</option>
-                                                        <option value="JE">Jersey</option>
-                                                        <option value="JO">Jordan</option>
-                                                        <option value="KZ">Kazakhstan</option>
-                                                        <option value="KE">Kenya</option>
-                                                        <option value="KI">Kiribati</option>
-                                                        <option value="XK">Kosovo</option>
-                                                        <option value="KW">Kuwait</option>
-                                                        <option value="KG">Kyrgyzstan</option>
-                                                        <option value="LA">Laos</option>
-                                                        <option value="LV">Latvia</option>
-                                                        <option value="LB">Lebanon</option>
-                                                        <option value="LS">Lesotho</option>
-                                                        <option value="LR">Liberia</option>
-                                                        <option value="LY">Libya</option>
-                                                        <option value="LI">Liechtenstein</option>
-                                                        <option value="LT">Lithuania</option>
-                                                        <option value="LU">Luxembourg</option>
-                                                        <option value="MO">Macao</option>
-                                                        <option value="MG">Madagascar</option>
-                                                        <option value="MW">Malawi</option>
-                                                        <option value="MY">Malaysia</option>
-                                                        <option value="MV">Maldives</option>
-                                                        <option value="ML">Mali</option>
-                                                        <option value="MT">Malta</option>
-                                                        <option value="MH">Marshall Islands</option>
-                                                        <option value="MQ">Martinique</option>
-                                                        <option value="MR">Mauritania</option>
-                                                        <option value="MU">Mauritius</option>
-                                                        <option value="YT">Mayotte</option>
-                                                        <option value="MX">Mexico</option>
-                                                        <option value="MD">Moldova</option>
-                                                        <option value="MC">Monaco</option>
-                                                        <option value="MN">Mongolia</option>
-                                                        <option value="ME">Montenegro</option>
-                                                        <option value="MS">Montserrat</option>
-                                                        <option value="MA">Morocco</option>
-                                                        <option value="MZ">Mozambique</option>
-                                                        <option value="MM">Myanmar</option>
-                                                        <option value="NA">Namibia</option>
-                                                        <option value="NR">Nauru</option>
-                                                        <option value="NP">Nepal</option>
-                                                        <option value="NL">Netherlands</option>
-                                                        <option value="NC">New Caledonia</option>
-                                                        <option value="NZ">New Zealand</option>
-                                                        <option value="NI">Nicaragua</option>
-                                                        <option value="NE">Niger</option>
-                                                        <option value="NG">Nigeria</option>
-                                                        <option value="NU">Niue</option>
-                                                        <option value="NF">Norfolk Island</option>
-                                                        <option value="KP">North Korea</option>
-                                                        <option value="MK">North Macedonia</option>
-                                                        <option value="MP">Northern Mariana Islands</option>
-                                                        <option value="NO">Norway</option>
-                                                        <option value="OM">Oman</option>
-                                                        <option value="PK">Pakistan</option>
-                                                        <option value="PW">Palau</option>
-                                                        <option value="PS">Palestine</option>
-                                                        <option value="PA">Panama</option>
-                                                        <option value="PG">Papua New Guinea</option>
-                                                        <option value="PY">Paraguay</option>
-                                                        <option value="PE">Peru</option>
-                                                        <option value="PH">Philippines</option>
-                                                        <option value="PL">Poland</option>
-                                                        <option value="PT">Portugal</option>
-                                                        <option value="PR">Puerto Rico</option>
-                                                        <option value="QA">Qatar</option>
-                                                        <option value="RE">Reunion</option>
-                                                        <option value="RO">Romania</option>
-                                                        <option value="RU">Russia</option>
-                                                        <option value="RW">Rwanda</option>
-                                                        <option value="BL">Saint Barthélemy</option>
-                                                        <option value="SH">Saint Helena</option>
-                                                        <option value="KN">Saint Kitts and Nevis</option>
-                                                        <option value="LC">Saint Lucia</option>
-                                                        <option value="MF">Saint Martin (French Part)</option>
-                                                        <option value="PM">Saint Pierre and Miquelon</option>
-                                                        <option value="VC">Saint Vincent and the Grenadines</option>
-                                                        <option value="WS">Samoa</option>
-                                                        <option value="SM">San Marino</option>
-                                                        <option value="ST">Sao Tome and Principe</option>
-                                                        <option value="SA">Saudi Arabia</option>
-                                                        <option value="SN">Senegal</option>
-                                                        <option value="RS">Serbia</option>
-                                                        <option value="SC">Seychelles</option>
-                                                        <option value="SL">Sierra Leone</option>
-                                                        <option value="SG">Singapore</option>
-                                                        <option value="SX">Sint Maarten</option>
-                                                        <option value="SK">Slovakia</option>
-                                                        <option value="SI">Slovenia</option>
-                                                        <option value="SB">Solomon Islands</option>
-                                                        <option value="SO">Somalia</option>
-                                                        <option value="ZA">South Africa</option>
-                                                        <option value="KR">South Korea</option>
-                                                        <option value="SS">South Sudan</option>
-                                                        <option value="ES">Spain</option>
-                                                        <option value="LK">Sri Lanka</option>
-                                                        <option value="SD">Sudan</option>
-                                                        <option value="SR">Suriname</option>
-                                                        <option value="SJ">Svalbard and Jan Mayen</option>
-                                                        <option value="SZ">Swaziland</option>
-                                                        <option value="SE">Sweden</option>
-                                                        <option value="CH">Switzerland</option>
-                                                        <option value="SY">Syria</option>
-                                                        <option value="TW">Taiwan</option>
-                                                        <option value="TJ">Tajikistan</option>
-                                                        <option value="TZ">Tanzania</option>
-                                                        <option value="TH">Thailand</option>
-                                                        <option value="TL">Timor-Leste</option>
-                                                        <option value="TG">Togo</option>
-                                                        <option value="TK">Tokelau</option>
-                                                        <option value="TO">Tonga</option>
-                                                        <option value="TT">Trinidad and Tobago</option>
-                                                        <option value="TA">Tristan da Cunha</option>
-                                                        <option value="TN">Tunisia</option>
-                                                        <option value="TR">Turkey</option>
-                                                        <option value="TM">Turkmenistan</option>
-                                                        <option value="TC">Turks and Caicos Islands</option>
-                                                        <option value="TV">Tuvalu</option>
-                                                        <option value="UG">Uganda</option>
-                                                        <option value="UA">Ukraine</option>
-                                                        <option value="AE">United Arab Emirates</option>
-                                                        <option value="GB">United Kingdom</option>
-                                                        <option value="US">United States</option>
-                                                        <option value="UY">Uruguay</option>
-                                                        <option value="UZ">Uzbekistan</option>
-                                                        <option value="VU">Vanuatu</option>
-                                                        <option value="VE">Venezuela</option>
-                                                        <option value="VN">Vietnam</option>
-                                                        <option value="VG">Virgin Islands, British</option>
-                                                        <option value="VI">Virgin Islands, U.S.</option>
-                                                        <option value="WF">Wallis and Futuna</option>
-                                                        <option value="EH">Western Sahara</option>
-                                                        <option value="YE">Yemen</option>
-                                                        <option value="ZM">Zambia</option>
-                                                        <option value="ZW">Zimbabwe</option>
-                                                    </select>
-                                                <div aria-hidden="true" class="PhoneInputCountryIcon PhoneInputCountryIcon--border">
-                                                    <img class="PhoneInputCountryIconImg imgCntr" alt="spain" src="https://purecatamphetamine.github.io/country-flag-icons/3x2/ES.svg" />
-                                                </div>
-                                                <div class="PhoneInputCountrySelectArrow"></div>
-                                            </div>
-                                            <input type="tel" autocomplete="tel" placeholder="Teléfono" name="phone" class="PhoneInputInput inputPhone" value />
-                                        </div>
-                                        <input type="hidden" name="phone2" value />
+                                    <div class="field email-modal-name email-textfield">
+                                        <label name="name" class="email-textfield">
+                                            <span class="name-tag-textfield">
+                                                <input [(ngModel)]="this.contactUser.lastName" type="text" id="lastName" #lastName="ngModel"
+                                                 style="text-indent: 10px;" name="name" class="name-input-textfield form-control" placeholder="Apellido"/></span>
+                                        </label>
                                     </div>
-                                    <div id="error-phone"></div>
                                 </div>
-                            </div>
+                            </div>-->
+                            <!--name-->
                             <div class="field email-modal-name email-textfield">
-                                <span class="addon icon-textfield">
+                                <span class=" icon-textfield">
+                                    <svg viewBox="0 0 20 20" class="svg-styles">
+                                        <path
+                                            d="M7.725,2.146c-1.016,0.756-1.289,1.953-1.239,2.59C6.55,5.515,6.708,6.529,6.708,6.529s-0.313,0.17-0.313,0.854C6.504,9.1,7.078,8.359,7.196,9.112c0.284,1.814,0.933,1.491,0.933,2.481c0,1.649-0.68,2.42-2.803,3.334C3.196,15.845,1,17,1,19v1h18v-1c0-2-2.197-3.155-4.328-4.072c-2.123-0.914-2.801-1.684-2.801-3.334c0-0.99,0.647-0.667,0.932-2.481c0.119-0.753,0.692-0.012,0.803-1.729c0-0.684-0.314-0.854-0.314-0.854s0.158-1.014,0.221-1.793c0.065-0.817-0.398-2.561-2.3-3.096c-0.333-0.34-0.558-0.881,0.466-1.424C9.439,0.112,8.918,1.284,7.725,2.146z"
+                                        ></path>
+                                    </svg>
+                                </span>
+                                <label name="email" class="email-textfield">
+                                    <span class="name-tag-textfield">
+                                        <input [(ngModel)]="this.contactUser.name" name="name" type="text" id="name" placeholder="Nombre" class="name-input-textfield form-control"
+                                         #name="ngModel" required />
+                                         <span class="help-block" *ngIf="name.invalid && name.touched" style="color:red;">Introduzca su nombre</span>
+                                    </span>
+                                </label>
+                            </div>
+                            <!--phone-->
+                            <div class="field email-modal-name email-textfield">
+                                <label name="phone" class="email-textfield">
+                                    <span class="name-tag-textfield">
+                                        <input [(ngModel)]="this.contactUser.phone" type="tel" id="phone" placeholder="Teléfono -opcional-" class="name-input-textfield PhoneInputInput inputPhone form-control">
+                                    </span>
+                                </label>
+                            </div>
+                            <!--email-->
+                            <div class="field email-modal-name email-textfield">
+                                <span class=" icon-textfield">
                                     <svg viewBox="0 0 20 20" class="svg-styles">
                                         <path
                                             d="M1.574,5.286c0.488,0.262,7.248,3.894,7.5,4.029C9.326,9.45,9.652,9.514,9.98,9.514c0.328,0,0.654-0.064,0.906-0.199s7.012-3.767,7.5-4.029C18.875,5.023,19.337,4,18.44,4H1.521C0.624,4,1.086,5.023,1.574,5.286z M18.613,7.489c-0.555,0.289-7.387,3.849-7.727,4.027s-0.578,0.199-0.906,0.199s-0.566-0.021-0.906-0.199S1.941,7.777,1.386,7.488C0.996,7.284,1,7.523,1,7.707S1,15,1,15c0,0.42,0.566,1,1,1h16c0.434,0,1-0.58,1-1c0,0,0-7.108,0-7.292S19.004,7.285,18.613,7.489z"
@@ -965,23 +750,30 @@
                                     </svg>
                                 </span>
                                 <label name="email" class="email-textfield">
-                                    <span class="name-tag-textfield"><input name="email" placeholder="Dirección email" class="name-input-textfield" value="" /></span>
+                                    <span class="name-tag-textfield">
+                                        <input [(ngModel)]="this.contactUser.mail" name="email" type="email" id="email" placeholder="Dirección email" class="name-input-textfield form-control"
+                                         #email="ngModel" required />
+                                         <span class="help-block" *ngIf="email.invalid && email.touched" style="color:red;">Introduzca un email válido</span>
+                                    </span>
                                 </label>
                             </div>
+                            <!--mensaje-->
                             <div class="field email-modal-message email-textfield">
-                                <span class="addon icon-textfield">
+                                <span class="icon-textfield">
                                     <svg viewBox="0 0 20 20" class="svg-styles">
                                         <path
                                             d="M17.561,2.439c-1.442-1.443-2.525-1.227-2.525-1.227L8.984,7.264L2.21,14.037L1.2,18.799l4.763-1.01l6.774-6.771l6.052-6.052C18.788,4.966,19.005,3.883,17.561,2.439z M5.68,17.217l-1.624,0.35c-0.156-0.293-0.345-0.586-0.69-0.932c-0.346-0.346-0.639-0.533-0.932-0.691l0.35-1.623l0.47-0.469c0,0,0.883,0.018,1.881,1.016c0.997,0.996,1.016,1.881,1.016,1.881L5.68,17.217z"
                                         ></path>
                                     </svg>
                                 </span>
-                                <textarea name="message" rows="2" class="textareaForm description-box" placeholder="Mensaje"></textarea>
+                                <textarea [(ngModel)]="this.contactUser.msg" name="message" rows="2" class="form-control name-input-textfield textareaForm description-box" placeholder="Mensaje"></textarea>                                
                             </div>
                         </div>
                         <hr class="button-send-enquiry multihr" />
                         <hr class="button-send-enquiry multihr" />
-                        <button tabindex="0" class="buttonForm submit-enquiry submit-enquiry-button-buy send-enquiry"><span class="readmore-button-label">Enviar consulta</span></button>
+                        <button tabindex="0" class="buttonForm submit-enquiry submit-enquiry-button-buy send-enquiry">
+                            <span class="readmore-button-label">Enviar consulta</span>
+                        </button>
                     </form>
                 </div>
             </div>
