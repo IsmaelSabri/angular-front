@@ -1,58 +1,54 @@
 import { HomeService } from 'src/app/service/home.service';
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
 import { UserService } from '../../service/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
 //import 'rxjs/Rx';
-import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio} from '../../model/home';
+import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio, SingleDtoHomeRequest } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { ContactUser } from 'src/app/model/contact-user';
 import { Lightbox } from 'ngx-lightbox';
 import { NotificationType } from 'src/app/class/notification-type.enum';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import * as L from 'leaflet';
-import { tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes, 
-  Stadia_OSMBright, OpenStreetMap_Mapnik, CartoDB_Voyager, Thunderforest_OpenCycleMap, Jawg_Sunny} from '../../model/maps/functions';
-import { homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
-busIcon, schoolIcon, universityIcon, fancyGreen, } from '../../model/maps/icons';
+import {
+  tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes,
+  Stadia_OSMBright, OpenStreetMap_Mapnik, CartoDB_Voyager, Thunderforest_OpenCycleMap, Jawg_Sunny
+} from '../../model/maps/functions';
+import {
+  homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
+  busIcon, schoolIcon, universityIcon, fancyGreen,
+} from '../../model/maps/icons';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
 import { Modal } from 'bootstrap';
 import { APIKEY } from 'src/environments/environment.prod';
 import * as intlTelInput from 'intl-tel-input';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.css'],
 })
-export class AddComponent extends UserComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('demoYouTubePlayer') demoYouTubePlayer: ElementRef<HTMLDivElement>;
-  videoWidth: number | undefined;
-  videoHeight: number | undefined;
-
+export class AddComponent extends UserComponent implements OnInit, OnDestroy {
+  private sanitizer = inject(DomSanitizer);
   homes: Home[] = [];
   aux: string;
+  dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
   public refreshing: boolean;
   contactUser: ContactUser = new ContactUser();
   private host = environment.apiUrl;
   json: string;
   _albums: any = [];
   state: boolean = this.authenticationService.isUserLoggedIn();
-  isCollapsed:boolean=true;
-
+  isCollapsed: boolean = true;
+  trustedUrl: any = '';
+  home: Home;
 
   intake: string;
   emissions: string;
@@ -61,27 +57,26 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   circle!: L.circle;
   indexGoal: number; // array index
   nextCoords!: L.LatLng; // temp coordinates to put any service
-  fg = L.featureGroup(); 
-  time:number;
-  distance:string;
+  fg = L.featureGroup();
+  time: number;
+  distance: string;
 
   // add-delete temp routes
   mapEvents = new Set<string>();
-
-    // icons
-    bch = beachIcon;
-    airp = airportIcon;
-    mki = marketIcon;
-    swi = subwayIcon;
-    busic = busIcon;
-    sc = schoolIcon;
-    uni = universityIcon;
+  // icons
+  bch = beachIcon;
+  airp = airportIcon;
+  mki = marketIcon;
+  swi = subwayIcon;
+  busic = busIcon;
+  sc = schoolIcon;
+  uni = universityIcon;
   customIcon: any;
 
 
   //routes
-  colegio:Colegio[];
-  universidad:Universidad[];
+  colegio: Colegio[];
+  universidad: Universidad[];
   autobus: Bus[];
   metro: Metro[];
   mercados: Supermercado[];
@@ -97,7 +92,8 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
     toastr: ToastrService,
     private homeService: HomeService,
     private _lightbox: Lightbox,
-    private _changeDetectorRef: ChangeDetectorRef
+    private _changeDetectorRef: ChangeDetectorRef,
+    public activatedRoute: ActivatedRoute
   ) {
     super(
       router,
@@ -108,8 +104,9 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
       toastr
     );
   }
-
-  home: Home = this.homeService.getHomeFromLocalCache();
+  transform(value: any, ...args: any[]) {
+    throw new Error('Method not implemented.');
+  }
 
   public contactMessage() {
     this.refreshing = true;
@@ -139,110 +136,123 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
       ();
   }
 
-  ngOnInit(): void {
-    if (this.state) {
-      this.user = this.authenticationService.getUserFromLocalCache();
+  getTrustedUrl() {
+    if (this.home.video != null || this.home.video != undefined) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl(this.home.video);
     }
-    this.home = JSON.parse(localStorage.getItem('currentBuilding'));
-    setTimeout(() => {
-      for (let i = 0; i < this.home.images.length; i++) {
-        const src = this.home.images[i].imageUrl + i + '.jpg';
-        const caption = i + ' / ' + this.home.images.length;
-        const thumb = this.home.images[i].imageUrl + i + '.jpg';
-        const album = {
-          src: src,
-          caption: caption,
-          thumb: thumb,
-        };
-        this._albums.push(album);
-      }
-    }, 1000);
-    const formdata = new FormData();
-    formdata.append('Model', this.home.model);
-    var obj = {};
-    formdata.forEach((value, key) => (obj[key] = value));
-    this.json = JSON.stringify(obj);
+  }
+
+  ngOnInit(): void {
+    // mas rápido desde localstorage después lo machaco desde la api
+    if (this.homeService.getHomeFromLocalCache()) {
+      this.home = this.homeService.getHomeFromLocalCache();
+    }
+    //get the current home
     this.subscriptions.push(
-    this.homeService.gethome(this.home.id, this.json).subscribe({
-      next: (response: Home) => {
-        this.home = response;
+      this.activatedRoute.fragment.subscribe({
+        next: (model) => {
+          this.dto.model = model;
+          this.activatedRoute.params.subscribe({
+            next: (params) => {
+              this.dto.id = params['id'];
+            }, error: (errorResponse: HttpErrorResponse) => {
+              this.sendNotification(
+                NotificationType.ERROR,
+                errorResponse.error.message + 'Cannot catch home id'
+              );
+            }
+          })
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(
+            NotificationType.ERROR,
+            errorResponse.error.message + 'Cannot catch home model'
+          );
+        }
+      }));
+    const homeDto = JSON.stringify(this.dto);
+    this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
+      next: (res) => {
+        this.home = res;
+        if (this.state) {
+          this.user = this.authenticationService.getUserFromLocalCache();
+        }
+        setTimeout(() => {
+          for (let i = 0; i < this.home.images.length; i++) {
+            const src = this.home.images[i].imageUrl + i + '.jpg';
+            const caption = i + ' / ' + this.home.images.length;
+            const thumb = this.home.images[i].imageUrl + i + '.jpg';
+            const album = {
+              src: src,
+              caption: caption,
+              thumb: thumb,
+            };
+            this._albums.push(album);
+          }
+        }, 1000);
         this.home.images = JSON.parse(this.home.imagesAsString);
         this.setEnergyFeatures(
           this.home.consumo.substring(0, 1),
           this.home.emisiones.substring(0, 1)
         );
-        if (this.home.video != null || this.home.video != undefined) {
-          const tag = document.createElement('script');
-          tag.src = 'https://www.youtube.com/iframe_api';
-          document.body.appendChild(tag);
-        }
         this.mapAdd = L.map('mapAdd', { renderer: L.canvas() }).setView(
           [this.home.lat, this.home.lng],
           17
         );
         Stadia_OSMBright().addTo(this.mapAdd);
-        this.circle=new L.circle([this.home.lat,this.home.lng],{radius:75,color:'#3a3b3c'}).addTo(this.mapAdd);
-
-        this.colegio=JSON.parse(this.home.colegios);
-        this.universidad=JSON.parse(this.home.universidades);
-        this.mercados=JSON.parse(this.home.supermercados);
-        this.autobus=JSON.parse(this.home.bus);
-        this.aeropuerto=JSON.parse(this.home.aeropuerto);
-        this.beach=JSON.parse(this.home.distanciaAlMar);
-        this.metro=JSON.parse(this.home.metro);
+        this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
+        this.colegio = JSON.parse(this.home.colegios);
+        this.universidad = JSON.parse(this.home.universidades);
+        this.mercados = JSON.parse(this.home.supermercados);
+        this.autobus = JSON.parse(this.home.bus);
+        this.aeropuerto = JSON.parse(this.home.aeropuerto);
+        this.beach = JSON.parse(this.home.distanciaAlMar);
+        this.metro = JSON.parse(this.home.metro);
         // to clear circle when print any route
         this.mapEvents.add('circle');
         this.loadScripts();
-
         // tel flags
-        const inputElement=document.querySelector('#phone');
-        if(inputElement){
-          intlTelInput(inputElement,{
-            initialCountry:'es',
-            separateDialCode:true,
+        const inputElement = document.querySelector('#phone');
+        if (inputElement) {
+          intlTelInput(inputElement, {
+            initialCountry: 'es',
+            separateDialCode: true,
             //utilsScript:'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/'
           })
         }
+        this.homeService.getHomes().subscribe((data) => {
+          this.homes = data;
+          for (let i = 0; i < this.homes.length; i++) {
+            this.homes[i].images = JSON.parse(this.homes[i].imagesAsString);
+          }
+        })
       },
-      error: (errorResponse: HttpErrorResponse) => {
+      error: () => {
         this.sendNotification(
-          NotificationType.ERROR,
-          errorResponse.error.message
+          NotificationType.ERROR, 'El anuncio' + this.dto.id + ' ha caducado o ha sido eliminado',
         );
-        this.refreshing = false;
-      },
-    }),
-    this.homeService.getHomes().subscribe((data) => {
-      this.homes=data;
-      for (let i = 0; i < this.homes.length; i++) {
-        this.homes[i].images=JSON.parse(this.homes[i].imagesAsString);
+        this.router.navigateByUrl('/home');
       }
-      //console.log(this.homes);
-    })
-    );
+    }));
+    //if(Object.keys(this.home).length){
   }
 
   open(index: number): void {
     this._lightbox.open(this._albums, index);
   }
 
-  submitHouseDetails() {}
+  submitHouseDetails() { }
 
-  discount(priceA:string, priceB:string):number{
-    var x:number=+priceA.replace(/\,/g,'');
-    var y:number=+priceB.replace(/\,/g,'');
-    return Math.round(((((x-y)*100)/x)*100)/100);
+  discount(priceA: string, priceB: string): number {
+    var x: number = +priceA.replace(/\,/g, '');
+    var y: number = +priceB.replace(/\,/g, '');
+    return Math.round(((((x - y) * 100) / x) * 100) / 100);
   }
 
-  calcPriceM2(price:string,sup:string):number{
-    var x:number=+price.replace(/\,/g,'');
-    var y:number=+sup;
-    return Math.round(((x/y)*100)/100);
-  }
-
-  ngAfterViewInit() {
-    this.onResize();
-    window.addEventListener('resize', this.onResize);
+  calcPriceM2(price: string, sup: string): number {
+    var x: number = +price.replace(/\,/g, '');
+    var y: number = +sup;
+    return Math.round(((x / y) * 100) / 100);
   }
 
   setEnergyFeatures(featureC: string, featureE: string) {
@@ -314,32 +324,17 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
     }
   }
 
-  onResize = (): void => {
-    // Automatically expand the video to fit the page up to 1200px x 720px
-    this.videoWidth = Math.min(
-      this.demoYouTubePlayer.nativeElement.clientWidth,
-      1200
-    );
-    this.videoHeight = this.videoWidth * 0.6;
-    this._changeDetectorRef.detectChanges();
-  };
-
-  cuoreLike(){
-    if(this.authenticationService.isUserLoggedIn()){
+  cuoreLike() {
+    if (this.authenticationService.isUserLoggedIn()) {
       // el usuario guarda en favoritos la propiedad
       // notificationService bla bla bla
       console.log('guardado!!');
-    }else{
+    } else {
       const element = document.getElementById('exampleModal') as HTMLElement;
       const myModal = new Modal(element);
       myModal.show();
       //this.clickButton('#cuore');
     }
-  }
-
-
-  makePdf(){
-
   }
 
   setRoute(
@@ -421,8 +416,8 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
     control.on('routesfound', (e) => {
       var routes = e.routes;
       var summary = routes[0].summary;
-      this.distance=(summary.totalDistance / 1000).toFixed(2);
-      this.time=Math.round((summary.totalTime % 3600) / 60);
+      this.distance = (summary.totalDistance / 1000).toFixed(2);
+      this.time = Math.round((summary.totalTime % 3600) / 60);
       /*console.log(this.distance + ' ' + this.time);
       console.log(
         (summary.totalDistance / 1000).toFixed(2) +
@@ -433,7 +428,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
       var waypoints = e.waypoints || [];
       var destination = waypoints[waypoints.length - 1];
       this.nextCoords = destination.latLng;
-      this.mapAdd.fitBounds(L.latLngBounds([this.home.lat,this.home.lng], this.nextCoords));
+      this.mapAdd.fitBounds(L.latLngBounds([this.home.lat, this.home.lng], this.nextCoords));
     });
     this.mapEvents.add('control');
     control._container.style.display = "None";
@@ -441,6 +436,5 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-    window.removeEventListener('resize', this.onResize);
   }
 }

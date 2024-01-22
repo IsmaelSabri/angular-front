@@ -395,6 +395,10 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
+  formatNumberWithCommas(n:Number):string{
+    return JSON.stringify(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }

@@ -2,12 +2,13 @@
 @import "https://use.fontawesome.com/releases/v5.8.1/css/all.css";
 @import "node_modules/angular-notifier/styles";
 @import url("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css");
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
-@import "tailwindcss/base";
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
+/*@import "@coreui/coreui/scss/coreui";*/
+@import "bulma/css/bulma.css";
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
 
-@import "tailwindcss/components";
-
-@import "tailwindcss/utilities";
 /* Gelion */
 @font-face {
   font-family: "Gelion Regular Italic";
@@ -127,61 +128,120 @@
   font-family: "Pangea Regular";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Regular"), url("src/assets/fonts/PangeaAfrikanTextTrial-Regular.woff") format("woff");
+  src: local("Pangea Regular"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-Regular.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pangea SemiBold";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Semibold"), url("src/assets/fonts/PangeaAfrikanTextTrial-SemiBold.woff") format("woff");
+  src: local("Pangea Semibold"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-SemiBold.woff") format("woff");
 }
 @font-face {
   font-family: "Pangea SemiBold Italic";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Semibold Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-SemiBoldItalic.woff") format("woff");
+  src: local("Pangea Semibold Italic"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-SemiBoldItalic.woff")
+      format("woff");
 }
 @font-face {
   font-family: "Pangea Light";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Light"), url("src/assets/fonts/PangeaAfrikanTextTrial-Light.woff") format("woff");
+  src: local("Pangea Light"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-Light.woff") format("woff");
 }
 @font-face {
   font-family: "Pangea Italic";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-Italic.woff") format("woff");
+  src: local("Pangea Italic"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-Italic.woff") format("woff");
 }
 @font-face {
   font-family: "Pangea Light Italic";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Light Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-LightItalic.woff") format("woff");
+  src: local("Pangea Light Italic"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-LightItalic.woff")
+      format("woff");
 }
 @font-face {
   font-family: "Pangea Medium";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Medium"), url("src/assets/fonts/PangeaAfrikanTextTrial-Medium.woff") format("woff");
+  src: local("Pangea Medium"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-Medium.woff") format("woff");
 }
 @font-face {
   font-family: "Pangea Bold";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Bold"), url("src/assets/fonts/PangeaAfrikanTextTrial-Bold.woff") format("woff");
+  src: local("Pangea Bold"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-Bold.woff") format("woff");
 }
 @font-face {
   font-family: "Pangea Bold Italic";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Bold Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-BoldItalic.woff") format("woff");
+  src: local("Pangea Bold Italic"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-BoldItalic.woff")
+      format("woff");
 }
 @font-face {
   font-family: "Pangea Medium Italic";
   font-style: normal;
   font-weight: normal;
-  src: local("Pangea Medim Italic"), url("src/assets/fonts/PangeaAfrikanTextTrial-MediumItalic.woff") format("woff");
+  src: local("Pangea Medim Italic"),
+    url("src/assets/fonts/PangeaAfrikanTextTrial-MediumItalic.woff")
+      format("woff");
 }
 /* End Pangea */
+/* Start Museo */
+@font-face {
+  font-family: "MuseoSansCyrl";
+  font-style: normal;
+  font-weight: normal;
+  src: local("MuseoSansCyrl"),
+    url("src/assets/fonts/MuseoSansBlack.woff") format("woff");
+}
+/* End Museo */
+/* Start lufga */
+@font-face {
+  font-family: "Lufga-Bold";
+  src: url("src/assets/fonts/Lufga-Bold.woff2") format("woff2"),
+    url("src/assets/fonts/Lufga-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lufga-Regular";
+  src: url("src/assets/fonts/Lufga-Regular.woff2") format("woff2"),
+    url("src/assets/fonts/Lufga-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lufga-Semibold";
+  src: url("src/assets/fonts/Lufga-SemiBold.woff2") format("woff2"),
+    url("src/assets/fonts/Lufga-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lufga-Medium";
+  src: url("src/assets/fonts/Lufga-Medium.woff2") format("woff2"),
+    url("src/assets/fonts/Lufga-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}

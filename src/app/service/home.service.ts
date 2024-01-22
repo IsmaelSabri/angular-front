@@ -47,6 +47,10 @@ export class HomeService {
     });
   }
 
+  public getHomesByQuery(url:string): Observable<Home[]> {
+    return this.http.get<Home[]>(`${this.host}/api/home/query?filters=${url}`);
+  }
+
   public addHome(home: string): Observable<Home> {
     return this.http.post<Home>(`${this.host}/api/home/new`, home, {
       headers: this.httpHeaders,

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -60,12 +60,26 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { YouTubePlayerModule } from "@angular/youtube-player";
 registerLocaleData(es);
 import { NzAffixModule } from 'ng-zorro-antd/affix';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
+import { NzSliderModule } from 'ng-zorro-antd/slider';
+import {SelectButtonModule} from 'primeng/selectbutton';
+import {MatSliderModule} from '@angular/material/slider';
+import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { SliderModule } from 'primeng/slider';
+import { CheckboxModule } from 'primeng/checkbox';
+import { BadgeModule } from 'primeng/badge';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ButtonModule } from 'primeng/button';
+import {MatDividerModule} from '@angular/material/divider'; 
+
 
 @NgModule({
   declarations: [
@@ -121,17 +135,32 @@ import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
     NzCheckboxModule,
     NzRadioModule,
     NzToolTipModule,
-    YouTubePlayerModule,
     NzAffixModule,
     NzDividerModule,
     NzBreadCrumbModule,
     NzColorPickerModule,
+    NzBadgeModule,
+    ModalModule,
+    NzSliderModule,
+    SelectButtonModule,
+    MatSliderModule,
+    CardModule,
+    DialogModule,
+    MultiSelectModule,
+    SliderModule,
+    CheckboxModule,
+    BadgeModule,
+    ConfirmPopupModule,
+    ButtonModule,
+    MatDividerModule,
+
   ],
   exports: [
     // to get component in another modules
     HomeComponent,
     AddComponent,
     ListComponent,
+    AdminComponent,
   ],
   providers: [
     NotificationService,
@@ -141,6 +170,7 @@ import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
     NgbCarouselConfig,
     CookieService,
     HomeService,
+    BsModalService,
     { provide: NZ_I18N, useValue: es_ES },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true, },
     {
@@ -164,6 +194,9 @@ import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
         }
       } as SocialAuthServiceConfig,
     }
+  ],
+  schemas:[
+    CUSTOM_ELEMENTS_SCHEMA,
   ],
   bootstrap: [AppComponent],
 })

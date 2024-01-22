@@ -26,14 +26,14 @@ export class User {
   public profileImage: ProfileImage;
 }
 
-export interface BrandImage {
+export class BrandImage {
   imageUrl: string;
   imageName: string;
   imageId: string;
   imageDeleteUrl: string;
 }
 
-export interface ProfileImage {
+export class ProfileImage {
   imageUrl: string;
   imageName: string;
   imageId: string;

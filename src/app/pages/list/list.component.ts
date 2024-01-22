@@ -12,6 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HomeComponent } from 'src/app/home/home.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-list',
@@ -29,6 +30,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     toastr: ToastrService,
     homeService: HomeService,
     sanitizer: DomSanitizer,
+    modalService: BsModalService,
     @Inject(DOCUMENT) private document: Document,
     private renderer2: Renderer2,
   ) {
@@ -40,7 +42,9 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       route,
       toastr,
       homeService,
-      sanitizer
+      sanitizer,
+      modalService,
+      
     );
   }
 

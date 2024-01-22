@@ -527,7 +527,7 @@
   font: inherit;
   vertical-align: baseline;
   font-size: 0.75rem;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -550,8 +550,8 @@
   border: 0;
   font: inherit;
   vertical-align: baseline;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 500; /*500*/
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600; /*500*/
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -586,7 +586,7 @@
   border: 0;
   font: inherit;
   vertical-align: baseline;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.25rem;
   font-weight: 400;
   margin: 0px;
@@ -608,7 +608,7 @@
   border: 0;
   font: inherit;
   vertical-align: baseline;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.25rem;
   font-weight: 400;
   margin: 0px;
@@ -637,7 +637,7 @@
   display: flex;
   flex-direction: row;
 
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
   top: -60px;
 }
@@ -653,7 +653,7 @@
   font: inherit;
   vertical-align: baseline;
   font-size: 1rem;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   margin: 0px;
   display: flex;
@@ -796,7 +796,8 @@
   position: absolute;
   cursor: pointer;
 }
-.streamlined-marker-position ::after, ::before {
+.streamlined-marker-position ::after,
+::before {
   box-sizing: border-box;
 }
 /* icon tail */
@@ -810,8 +811,8 @@
   content: "";
 }
 
-.icon-text{
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+.icon-text {
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
 }
 /* End marker price icon */

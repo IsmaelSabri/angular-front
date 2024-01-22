@@ -1,10 +1,12 @@
 /* #8dca3f */
 
+
+#pdfrun{
+  background: #fff;
+}
+
 #mapAdd {
-  width: 100%;
-  margin: auto;
-  min-height: 380px;
-  height: 100%;
+  aspect-ratio: 16/9;
 }
 
 .ant-tabs-tab-btn {
@@ -116,7 +118,7 @@ body,
   height: 3rem !important;
   overflow: hidden;
   /*text gradient*/
-  background: -webkit-linear-gradient( #333,#eee);
+  background: -webkit-linear-gradient(#333, #eee);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -179,7 +181,7 @@ body,
 }
 
 .send-enquiry {
-  font-family: MuseoSansCyrl, "Helvetica Neue", Roboto, sans-serif;
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
   font-weight: 500;
   letter-spacing: 0.1px;
   line-height: 20px;
@@ -237,7 +239,7 @@ svg:not(:root) {
 }
 
 .description-box {
-  font-family: MuseoSansCyrl, "Helvetica Neue", Roboto, sans-serif;
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
   font-weight: 400;
   letter-spacing: 0.15px;
   line-height: 24px;
@@ -276,7 +278,7 @@ svg:not(:root) {
 }
 
 .email-textfield {
-  font-family: MuseoSansCyrl, "Helvetica Neue", Roboto, sans-serif;
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.15px;
@@ -422,7 +424,7 @@ select:not(:-internal-list-box) {
 }
 
 .name-input-textfield {
-  font-family: MuseoSansCyrl, "Helvetica Neue", Roboto, sans-serif;
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
   font-weight: 400;
   letter-spacing: 0.15px;
   line-height: 24px;
@@ -453,7 +455,7 @@ select:not(:-internal-list-box) {
 }
 
 .email-textfield {
-  font-family: MuseoSansCyrl, "Helvetica Neue", Roboto, sans-serif;
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.15px;
@@ -507,7 +509,7 @@ svg:not(:root) {
 }
 
 .email-textfield {
-  font-family: MuseoSansCyrl, "Helvetica Neue", Roboto, sans-serif;
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.15px;
@@ -549,7 +551,7 @@ svg:not(:root) {
 }
 
 .chat-contact-form {
-  font-family: MuseoSansCyrl, "Helvetica Neue", Roboto, sans-serif;
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.15px;
@@ -1589,17 +1591,14 @@ body {
 .description-content .prices .price .price-value {
   font-size: 24px;
   font-weight: bold;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .description-content .prices .price .dimension {
   font-weight: bold;
   font-size: 16px;
   color: #a7aca6;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .description-content .prices .price:last-of-type {
@@ -1643,8 +1642,7 @@ body {
 
 .description-content .prices .price.under-market .price-value:not(.under) {
   font-weight: 500;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .description-content .prices .price.under-market .price-value:not(.under),
@@ -1656,8 +1654,7 @@ body {
   -webkit-text-decoration: none !important;
   text-decoration: none !important;
   opacity: 0.48;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .description-content
@@ -1674,8 +1671,7 @@ body {
   left: 0;
   top: 42%;
   width: 100%;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .description-content .prices .price.under-market .dimension:not(.under)::after {
@@ -1793,7 +1789,7 @@ body {
   color: #414141;
   background-color: #fff;
   font-size: 24px;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .acerca-de-container > * .label {
@@ -1833,6 +1829,8 @@ body {
   word-break: break-word;
   line-height: 18px;
   font-size: 13px;
+  color: #ffff;
+  letter-spacing: 0.5px;
 }
 
 .acerca-de-container > * .badge-tooltip {
@@ -1907,8 +1905,7 @@ body {
 .features-container .features-block .featured > div span.value {
   font-size: 16px !important;
   margin-top: -4px;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .features-container .features-block .featured .icon-container {
@@ -2456,8 +2453,7 @@ body {
 .similar-filter-card .content .featured-box .private,
 .similar-filter-card .content .featured-box .amenities {
   margin-top: 0px;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 @media all and (max-width: 599px) {
@@ -2483,14 +2479,12 @@ body {
   justify-content: space-between;
   max-height: 40px;
   overflow: hidden;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .content .texts .price {
   font-weight: 800;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price .priceDetails {
@@ -2533,8 +2527,7 @@ body {
   -webkit-text-decoration: none !important;
   text-decoration: none !important;
   opacity: 0.48 !important;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price.under-market .old .value::after,
@@ -2545,15 +2538,14 @@ body {
   left: 0;
   top: 42%;
   width: 100%;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price.under-market .old .priceDetails {
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
   align-self: flex-end;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price.under-market .old .priceDetails::after {
@@ -2564,12 +2556,12 @@ body {
 .similar-filter-card .texts .price.under-market .new .priceDetails {
   color: #3a3b3c;
   opacity: 1;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price.under-market .new {
   text-align: right;
-  font-family: Pangea, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .similar-filter-card .texts .price.under-market .percent {
@@ -2662,7 +2654,7 @@ body {
   font-family: portal;
   font-size: 24px;
 
-  bottom:3px;
+  bottom: 3px;
 }
 
 @media all and (max-width: 599px) {
@@ -2745,11 +2737,12 @@ body {
 }
 
 .videoAdd .video-container {
-  position: relative;
+  aspect-ratio: 16/9;
+  /*position: relative;
   width: 100%;
   height: 0;
   padding-bottom: 56.25%;
-  margin: 30px 0px;
+  margin: 30px 0px;*/
 }
 
 .videoAdd .video {
@@ -3120,7 +3113,7 @@ body {
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
-  font-family: MuseoSansCyrl, Helvetica Neue, Roboto, sans-serif;
+  font-family: Lufga, Helvetica Neue, Roboto, sans-serif;
   font-size: 12px;
   font-weight: 400;
 }
@@ -3313,13 +3306,13 @@ svg #main-circ {
   }
 }
 /* end popup like */
-.roundedButtonsNavbar{
-border: 1px solid #3a3b3c;
+.roundedButtonsNavbar {
+  border: 1px solid #3a3b3c;
 }
-.textInRow{
+.textInRow {
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: Pangea Light, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .btnDistancia {
@@ -3342,7 +3335,6 @@ border: 1px solid #3a3b3c;
   transform: rotate(0) scale(1);
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
-
 
 .name-input-textfield:focus {
   outline: none !important;

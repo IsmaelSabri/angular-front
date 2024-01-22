@@ -5,7 +5,6 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { UserComponent } from './components/user/user.component';
 import { AuthenticationGuard } from './guard/authentication.guard';
-import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { VlogComponent } from './components/vlog/vlog.component';
 import { ListComponent } from './pages/list/list.component';
 import { AddComponent } from './pages/add/add.component';
@@ -19,7 +18,7 @@ const routes: Routes = [
   { path: 'admin', component: AdminComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'vlog', component: VlogComponent },
-  { path: 'add', component: AddComponent },
+  { path: 'add/:id', component: AddComponent },
   { path: 'home', component: HomeComponent },
   { path: 'list', component: ListComponent },
   { path: 'pass', component: PasswordComponent },

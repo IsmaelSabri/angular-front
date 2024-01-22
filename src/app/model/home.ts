@@ -7,24 +7,23 @@ export class Home {
   numero: string; // portal
   ciudad: string;
   cp: string;
-  habitaciones: string;
-  aseos: string;
-  aseoEnsuite: boolean = false;
-  superficie: string;
+  habitaciones: Number;
+  aseos: Number;
+  aseoEnsuite: Number;
+  superficie: Number;
   condicion: string;
   tipo: string;
-  precioInicial: string;
-  descuento: string;
-  precioFinal: string;
-  precioAlquiler:string;
+  precioInicial: Number;
+  precioFinal: Number;
+  precioAlquiler:Number;
   duracion: string;
   descripcion: string;
   armariosEmpotrados: boolean = false;
   terraza: boolean = false;
   piscinaPrivada: boolean = false;
   parquet: boolean = false;
-  antiguedad: string;
-  garage: string;
+  antiguedad: Number;
+  garage: Number;
   estado: string; // nuevo, usado, a-reformar
   distanciaAlMar: string;
   creador: string; // userId
@@ -48,6 +47,12 @@ export class Home {
   tipoDeVia:string;
   distrito:string;
   orientacion:string;
+  vendido:boolean = false;
+  balcon: boolean = false;
+  aireAcondicionado: boolean = false;
+  calefaccion: boolean = false;
+  plantaMasAlta:boolean = false;
+  videoPortero: boolean = false;
 
   // House profile
   alarma: boolean = false;
@@ -55,8 +60,6 @@ export class Home {
   videoVigilancia: boolean = false;
   alarmaIncendios: boolean = false;
   extintores: boolean = false;
-  aireAcondicionado: boolean = false;
-  calefaccion: boolean = false;
   panelesSolares: boolean = false;
   eficienciaEnergetica: boolean = false;
   colegios: string;
@@ -65,19 +68,16 @@ export class Home {
   emisiones:string;
   generadorEmergencia:boolean = false;
   aeropuerto:string;
+  jacuzzi: boolean = false;
+  vistasDespejadas: string;
+  instalacionesDiscapacitados: boolean = false;
 
 
   // Flat profile
   ascensor: boolean = false;
   trastero: boolean = false;
-  vistasDespejadas: string;
   bajoOplantabaja: boolean = false;
-  instalacionesDiscapacitados: boolean = false;
-  puerta: string;
   piso: string;
-  balcon: boolean = false;
-  videoPortero: boolean = false;
-  plantaMasAlta:boolean = false;
   // Gated community ameninites
   jardin: boolean = false;
   piscinaComp: boolean = false;
@@ -86,7 +86,6 @@ export class Home {
   tenis: boolean = false;
   padel: boolean = false;
   sauna: boolean = false;
-  jacuzzi: boolean = false;
   golf: boolean = false;
   zonaDeOcio:boolean = false
 
@@ -212,4 +211,39 @@ export interface HomeImage{
     imageName: string;
     imageId: string;
     imageDeleteUrl:string;
+}
+
+export class SingleDtoHomeRequest{
+  id:string;
+  model:string;
+}
+
+export class HomeFilterRequest {
+  condicion:string;
+  ciudad:string;
+  tipo:string;
+  estado:string;
+  habitaciones:string;
+  aseos:string;
+  aseoEnsuite:string;
+  garage:string;
+  precioVentaMin:Number;
+  precioVentaMax:Number;
+  precioAlquilerMin:Number;
+  precioAlquilerMax:Number;
+  superficieMin:Number;
+  superficieMax:Number;
+  vistas:string;
+  aireAcondicionado:boolean;
+  balcon:boolean;
+  calefaccion:boolean;
+  plantaMasAlta:boolean;
+  amueblado:boolean;
+  ascensor:boolean;
+  inmuebleAccesible:boolean;
+  panelesSolares:boolean;
+  jacuzzi:boolean;
+  piscinaPrivada:boolean;
+  piscinaCompartida:boolean;
+  trastero:boolean;
 }

@@ -38,10 +38,18 @@ export const grayPointerIcon = new divIcon({
 });
 
 export const fancyGreen = new Icon({
-  iconUrl: '../assets/svg/marker/ic-pin-2.svg',
-  iconSize: [30, 30],
+  iconUrl: '../assets/svg/marker/marker_green.svg',
+  iconSize: [35, 35],
   iconAnchor: [12, 41],
-  popupAnchor: [0, -0],
+  popupAnchor: [0, -30],
+  shadowSize: [41, 41],
+});
+
+export const luxuryRed = new Icon({
+  iconUrl: '../assets/svg/marker/ic-pin-2.svg',
+  iconSize: [35, 35],
+  iconAnchor: [12, 41],
+  popupAnchor: [0, -30],
   shadowSize: [41, 41],
 });
 

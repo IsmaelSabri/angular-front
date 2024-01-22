@@ -1,4 +1,4 @@
-<div class="container-fluid" style="height: 100%; padding: 50px; background: #e0e0e0;">
+<div class="container-fluid p-5" style="height: 100%; background: #e0e0e0;">
   <div class="d-flex justify-content-center h-50">
     <div class="user_card">
       <div>
@@ -6,8 +6,8 @@
           <img src="assets/img/tmp/unknown-house.png" alt="Logo de la marca">
         </div>
       </div>
-      <div class="d-flex justify-content-center" style="top: 35px;">
-        <div style="margin-top: 10px;margin-bottom:10px;">
+      <div class="d-flex justify-content-center mt-4">
+        <div class="mt-1 mb-1">
           <h3>Crear cuenta</h3>
         </div>
       </div>
@@ -18,19 +18,21 @@
             <div class="col-md-1"></div>
             <div class="input-group-append inputWithIcon col-md-5">
               <label for="firstnameInput">Nombre: </label>
-              <input type="text" class="form-control" name="firstname" placeholder="" required ngModel #firstnameInput="ngModel">              
+              <input type="text" class="form-control" name="firstname" placeholder="" required ngModel
+                #firstnameInput="ngModel">
             </div>
             <div class="input-group-append inputWithIcon col-md-5">
               <label for="lastnameInput">Apellido: </label>
-              <input type="text" class="form-control" name="lastname" placeholder="" required ngModel #lastnameInput="ngModel">
+              <input type="text" class="form-control" name="lastname" placeholder="" required ngModel
+                #lastnameInput="ngModel">
             </div>
             <div class="col-md-1"></div>
             <!-- Email input -->
             <div class="col-md-1"></div>
             <div class="input-group-append inputWithIcon col-md-10">
               <label for="emailInput">Email: </label>
-              <input type="email" class="form-control" name="email" placeholder="" ngModel [email]="true" #emailInput="ngModel"
-                required>
+              <input type="email" class="form-control" name="email" placeholder="" ngModel [email]="true"
+                #emailInput="ngModel" required>
             </div>
             <div class="col-md-1"></div>
             <!-- Submit button -->
@@ -46,15 +48,15 @@
             </div>
             <div class="col-md-1"></div>
           </div>
-            <!-- O -->
-            <br>
+          <!-- O -->
+          <br>
           <div class="container-fluid p-1 d-flex align-items-center justify-content-center col-10">
-          <h6><span>O</span></h6>
+            <h6><span>O</span></h6>
           </div>
         </form>
       </div>
       <div class="d-flex justify-content-center mt-3 flex-column" style="align-items:center;">
-        <button type="button" class=" top-fill"><i class="bi bi-facebook" style="padding: 8px;"></i>
+        <button type="button" class=" top-fill"><i class="bi bi-facebook p-1"></i>
           Continuar con Facebook</button>
       </div>
       <div class="d-flex justify-content-center mt-3 flex-column" style="align-items:center;">
@@ -66,8 +68,8 @@
       </div>
       <div class="mt-4">
         <div class="d-flex justify-content-center links">
-          Dispone de una cuenta? <a routerLink="/login" class="ml-2"
-            style="color: rgba(var(--h5f,56,151,240),1);"> Entrar</a>
+          Dispone de una cuenta? <a routerLink="/login" class="ml-2" style="color: rgba(var(--h5f,56,151,240),1);">
+            Entrar</a>
         </div>
       </div>
     </div>
@@ -112,5 +114,3 @@
     </div>
   </div>
 </div>-->
-
-
