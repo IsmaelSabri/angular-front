@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, VERSION } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, Renderer2, VERSION } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -16,6 +16,7 @@ import { UserComponent } from '../user/user.component';
 import { CustomHttpResponse } from 'src/app/model/performance/custom-http-response';
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-password',
@@ -31,6 +32,8 @@ export class PasswordComponent
   luckyId: string;
 
   constructor(
+    @Inject(DOCUMENT) document: Document,
+    renderer2: Renderer2,
     router: Router,
     authenticationService: AuthenticationService,
     userService: UserService,
@@ -45,7 +48,9 @@ export class PasswordComponent
       userService,
       notificationService,
       route,
-      toastr
+      toastr,
+      document,
+      renderer2,
     );
   }
 

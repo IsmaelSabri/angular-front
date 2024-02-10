@@ -3,4 +3,5 @@ export class ContactUser {
   phone: string;
   mail: string;
   msg: string;
+  privatePolicy:boolean;
 }

@@ -246,4 +246,5 @@ export class HomeFilterRequest {
   piscinaPrivada:boolean;
   piscinaCompartida:boolean;
   trastero:boolean;
+  keywords:string='';
 }

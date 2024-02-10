@@ -60,6 +60,10 @@
 
             <li nz-menu-item><a [routerLink]=""><ion-icon style="position: relative; top: 2px; font-size:16px;"
                   name="heart-half-outline"></ion-icon> Guardadas</a></li>
+            <li nz-menu-item><a routerLink="/user-pro"><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                  name="speedometer-outline"></ion-icon> Pro-area</a></li>
+            <li nz-menu-item><a routerLink="/admin"><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                  name="person-circle-outline"></ion-icon> Admin-area</a></li>
             <li nz-menu-item><a [routerLink]=""><ion-icon name="heart-dislike-outline"
                   style="position: relative; top: 2px; font-size:16px;"></ion-icon> Ocultas</a></li>
             <li nz-menu-item><a [routerLink]=""><span nz-icon nzType="schedule" nzTheme="outline"
@@ -155,10 +159,10 @@
           </nz-tabset>
         </mat-option>
       </mat-select>-->
-      <a class="nav-link nav-border" routerLink=""> Habitaciones </a>
+      <a class="nav-link nav-border sidebarbtn" routerLink="" ><ion-icon style="position: relative; top: 2px;" name="swap-horizontal-outline"></ion-icon> Listado </a>
     </li>
     <li class="nav-item pr-3">
-      <a class="nav-link nav-border" (click)="openFiltersModal(template)"><ion-icon name="options-outline"
+      <a class="nav-link nav-border" (click)="this.sidebarVisible = true"><ion-icon name="options-outline"
           style="position: relative; top: 2px;"></ion-icon> Filtros </a>
     </li>
     <li class="nav-item pr-3">
@@ -1844,15 +1848,66 @@
 <!-- Leaflet map -->
 <div id="map"></div>
 
-<!-- Filters form -->
-<ng-template #template class="ngModalTemplate py-0">
-  <div class="modal-header">
-    <h4 class="modal-title pull-left text-secondary">Filtros</h4>
-    <button type="button" class="btn-close pull-right" aria-label="Close" (click)="modalRef.hide()">
-    </button>
+
+<!-- Modal aux -->
+<div class="modal__gray-back">
+  <div class="modal__inner">
+    <h2 class="modal__title">Modal aux</h2>
+    <div class="modal__items">
+      <div class="modal__item">
+        <h3 class="modal__item-title">ほにゃらら</h3>
+        <p class="modal__item-content">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos iusto quibusdam sit ea laborum repellat
+          obcaecati consequatur, expedita debitis fugiat quam beatae doloribus voluptatibus error saepe in accusamus
+          optio harum.
+        </p>
+      </div>
+      <div class="modal__item">
+        <h3 class="modal__item-title">ほにゃらら</h3>
+        <p class="modal__item-content">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error voluptatum minima architecto quaerat
+          voluptatibus similique nihil, obcaecati, neque accusantium, maiores assumenda nam perferendis magnam
+          repellendus amet veniam recusandae illo est?
+        </p>
+      </div>
+      <div class="modal__item">
+        <h3 class="modal__item-title">ほにゃらら</h3>
+        <p class="modal__item-content">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus iure, voluptates quae perspiciatis ad
+          voluptas quasi mollitia laudantium ipsum corrupti sequi architecto debitis nesciunt voluptatem at corporis
+          autem velit labore.
+        </p>
+      </div>
+      <div class="modal__item">
+        <h3 class="modal__item-title">ほにゃらら</h3>
+        <p class="modal__item-content">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut minus amet cumque impedit recusandae maiores
+          iste, inventore consequatur sapiente reprehenderit, cum debitis, accusantium voluptas temporibus non repellat
+          deleniti facere aliquam?
+        </p>
+      </div>
+      <div class="modal__item">
+        <h3 class="modal__item-title">ほにゃらら</h3>
+        <p class="modal__item-content">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus, veniam veritatis facere tempora amet
+          obcaecati rerum totam perspiciatis distinctio minus. Incidunt quos animi et maiores rerum quae quibusdam
+          dolorum corrupti!
+        </p>
+      </div>
+    </div>
+    <div class="modal__close-btn-wrap">
+      <button class="modal__close-btn hover__light">Cerrar</button>
+      <button type="button" class="button is-rounded" onclick="uncheck()">Borrar
+        filtros</button>
+    </div>
   </div>
-    <div class="modal-body">
-      <form class="form-inline my-2 my-lg-0 justify-content-center" #filterSearchForm="ngForm" method="post"
+</div>
+
+<!-- Filters form -->
+<p-sidebar [(visible)]="sidebarVisible" position="right">
+  <div class="container-fluid text-center">
+    <h3 class="pull-center text-secondary">Filtros</h3>
+    <form class="form-inline my-2 my-lg-0 justify-content-center" #filterSearchForm="ngForm" method="post"
             (ngSubmit)="applyCaptureNameFilter()"><!--filterSearchForm.value-->
       <div class="container text-center">
         <div class="row align-items-center">
@@ -1895,6 +1950,20 @@
                 [style]="{'width':'100%','height':'33px'}" scrollHeight="400px" [selectionLimit]="11"
                 (onChange)="filter($event.value,'tipo')" [filter]="true">
               </p-multiSelect>
+            </div>
+          </div>
+          <div class="row mt-2 form-group">
+            <div class=".col-12 ">
+              <!--Keywords-->
+              <label class="filterLabel d-block" for="keyWordsfilter">Palabras clave</label>
+              <div id="demo-2">
+                <nz-badge [nzCount]="this.wordCount" [nzStyle]="{ backgroundColor: 'lightgreen' }">
+                <input class="keywords form-outline" name="keyWordsfilter" [(ngModel)]="this.homeFiltersRequest.keywords" 
+                (keyup)="wordCounter()" type="search" placeholder="Search" onkeydown="return /[a-z, ]/i.test(event.key)"
+                onblur="if (this.value == '') {this.value = '';}"
+                onfocus="if (this.value == '') {this.value = '';}">
+              </nz-badge>
+              </div>
             </div>
           </div>
           <div class="row mt-2 form-group">
@@ -2035,7 +2104,7 @@
               <br>
               <label class="filterLabel text-secondary ml-1 d-block" for="vistasFilter">Vistas</label>
               <nz-radio-group class="form-outline" nzSize="large" [(ngModel)]="this.homeFiltersRequest.vistas"
-                (ngModelChange)="filter($event,'vistas')">
+                (ngModelChange)="filter($event,'vistasDespejadas')">
                 <label nz-radio-button *ngFor="let opt of vistas" [nzValue]=opt>{{opt}}</label>
               </nz-radio-group>
             </div>
@@ -2185,91 +2254,131 @@
         </div><!--container-->
       </div>
     </form>
-    </div><!--modal-body-->
-    <div class="modal-footer" style="background-color: #fff;">
-      <div class="container text-center">
-        <div class="row align-items-center">
-          <div class="col-md-3">
-            <button type="button" class="button is-rounded" (click)="filterSearchForm.resetForm();clearMap()"
-              onclick="uncheck()">Borrar
-              filtros</button>
-          </div>
-          <div class="col-md-3">
-
-          </div>
-          <div class="col-md-3">
-
-          </div>
-          <div class="col-md-3">
-            <button type="submit" class="button is-rounded" (click)="modalRef.hide()">Buscar
-            </button><!--(click)="modalRef.hide()"-->
-          </div>
-        </div>
+  </div>
+  <div class="container text-center">
+    <div class="row align-items-center">
+      <div class="col-md-4">
+        <button type="button" class="button is-rounded" (click)="filterSearchForm.resetForm();clearMap()"
+          onclick="uncheck()">Borrar
+          filtros</button>
       </div>
-    </div>
-</ng-template>
+      <div class="col-md-4">
 
-
-
-
-
-
-<div class="modal__gray-back">
-  <div class="modal__inner">
-    <h2 class="modal__title">Modal aux</h2>
-    <div class="modal__items">
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos iusto quibusdam sit ea laborum repellat
-          obcaecati consequatur, expedita debitis fugiat quam beatae doloribus voluptatibus error saepe in accusamus
-          optio harum.
-        </p>
       </div>
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error voluptatum minima architecto quaerat
-          voluptatibus similique nihil, obcaecati, neque accusantium, maiores assumenda nam perferendis magnam
-          repellendus amet veniam recusandae illo est?
-        </p>
+      <div class="col-md-4">
+        <button type="submit" class="button is-rounded">Buscar
+        </button><!--(click)="modalRef.hide()"-->
       </div>
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus iure, voluptates quae perspiciatis ad
-          voluptas quasi mollitia laudantium ipsum corrupti sequi architecto debitis nesciunt voluptatem at corporis
-          autem velit labore.
-        </p>
-      </div>
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut minus amet cumque impedit recusandae maiores
-          iste, inventore consequatur sapiente reprehenderit, cum debitis, accusantium voluptas temporibus non repellat
-          deleniti facere aliquam?
-        </p>
-      </div>
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus, veniam veritatis facere tempora amet
-          obcaecati rerum totam perspiciatis distinctio minus. Incidunt quos animi et maiores rerum quae quibusdam
-          dolorum corrupti!
-        </p>
-      </div>
-    </div>
-    <div class="modal__close-btn-wrap">
-      <button class="modal__close-btn hover__light">Cerrar</button>
-      <button type="button" class="button is-rounded" onclick="uncheck()">Borrar
-        filtros</button>
     </div>
   </div>
+</p-sidebar>
+
+<!--Sidenav to list-->
+<div id="mySidenav" class="sidenav">
+  <div class="container-fluid mt-2" >
+    <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 g-4" >
+    <!--Ad Card-->
+    <div class="col d-flex flex-row" *ngFor="let appHome of homes; let i =index"><!--col-lg-8 col-md-10 col-sm-12 col-xs-12 d-flex-->
+      <div class=" teaser-tile mt-2 mx-2" >
+          <span class="favorite favorite-need-login" data-id="1935922" data-type="estate">
+            <div class="wrapper-demo">
+              <button class="toggle-icon" title="❤ Toggle Like!"></button>
+            </div>
+          </span>
+          <div class="flex-grow-1 " ><!--hace la llamada (click)="runAdCard(appHome)"-->
+              <div class="with-img" style="position: relative;">
+                <div id="carouselExample{{this.idIndex[i]}}" class="carousel slide" data-bs-interval="false" >
+                  <div class="carousel-inner">
+                    <div class="carousel-item " *ngFor="let data of appHome.images; let j=index"  [ngClass]="(j === 0) ? 'active' : ''" >
+                        <img style="aspect-ratio:16/9;" src={{data.imageUrl}} alt="First slide">
+                    </div>
+                  </div>
+                  <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+              </div>
+              <div class="desc">
+                  <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span class="text-secondary">{{appHome.tipo}}</span> </div>
+                  <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}} <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}</div>
+                  <div class="units mx-2">
+                      <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
+                        <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
+                          <span style="font-size: 0.8em;">{{appHome.habitaciones}}</span>
+                      </div>
+                      <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
+                        <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"  name="expand-outline"></ion-icon>
+                          <span style="font-size: 0.8em;">{{appHome.superficie}}m²</span>
+                      </div>
+                      <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="bath">
+                        <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-toilet.svg"></ion-icon>
+                          <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.aseos}}</span>
+                      </div>
+                      <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
+                        <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-facing.svg"></ion-icon>
+                          <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.orientacion}}</span>
+                      </div>
+                      <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="card-spaces">
+                        <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;" name="car-sport-outline"></ion-icon>
+                          <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.garage}}</span>
+                      </div>
+                      <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="year">
+                        <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" name="hammer-outline"></ion-icon>
+                          <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.antiguedad}}</span>
+                      </div>
+                  </div>
+              </div>
+              <div class="txt h-100p b-none pt-0">
+                  <div class="clamp-3" (click)="runAdCard(appHome)">{{appHome.descripcion}}</div>
+              </div>
+              <div class="price">
+                  <div class="price-item">
+                    {{formatNumberWithCommas(appHome.precioFinal)+'€'}}
+                  </div>
+              </div>
+              <!--<div class="social-actions">
+                  <div class="like-item">
+                    <ion-icon name="heart-outline"></ion-icon>
+                        <div class="social-counter" data-counter="1">1</div>
+                    </div>
+                  <div class="superlike-item">
+                    <ion-icon name="heart-outline"></ion-icon>
+                      <div class="social-counter" data-counter="0"></div>
+                  </div>
+                  <div class="d-flex flex-grow-1 justify-content-end">
+                      <div class="recommend-item">
+                          <div class="social-title">Recommend</div>
+                          <ion-icon name="thumbs-up-outline"></ion-icon>
+                          <div class="social-counter" data-counter="0"></div>
+                      </div>
+                  </div>
+              </div>-->
+            </div>
+          <!--<div class="txt color-black b-none pt-4">
+              <div class="contacts listing-contacts-block">
+                  <div class="buttons">
+                      <a href="" class="btn btn-sm w-100p btn-outline-primary">
+                        <ion-icon name="thumbs-up-outline"></ion-icon>
+                          <span class="text-truncate ml-6">Mensaje</span>
+                      </a>
+                  </div>
+                  <div class="col-auto overflow-hidden">
+                    <div class="btn btn-sm w-100p btn-primary show-contacts-btn">
+                      <ion-icon name="call-outline"></ion-icon>
+                    </div>
+                </div>
+              </div>
+          </div>-->
+      </div>
+  </div>
 </div>
-
-
-
-
+  </div>
+</div>
 
 
 

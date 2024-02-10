@@ -50,3 +50,18 @@ $(".modal__close-btn").click(function (e) {
   $("body").toggleClass("is-fixed");
   $(".modal__gray-back").fadeOut(300);
 });
+
+//sidebar to list
+$(document).ready(function(){
+  $('.sidebarbtn').click(function(){
+  $('#mySidenav, body').toggleClass('active');
+  })
+  $('.closebtn').click(function(){
+     $('#mySidenav, body').removeClass('active');    
+  })
+})
+//card like
+$('.toggle-icon').click(function(){
+  $(this).toggleClass('-checked');
+});
+

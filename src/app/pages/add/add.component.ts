@@ -1,5 +1,5 @@
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2 } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
@@ -28,7 +28,8 @@ import { Modal } from 'bootstrap';
 import { APIKEY } from 'src/environments/environment.prod';
 import * as intlTelInput from 'intl-tel-input';
 import { DomSanitizer } from '@angular/platform-browser';
-
+import Swal from 'sweetalert2'
+import { DOCUMENT } from '@angular/common';
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
@@ -36,6 +37,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 
 export class AddComponent extends UserComponent implements OnInit, OnDestroy {
+  
   private sanitizer = inject(DomSanitizer);
   homes: Home[] = [];
   aux: string;
@@ -84,6 +86,8 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
   beach: Beach[];
 
   constructor(
+    @Inject(DOCUMENT) document: Document,
+    renderer2: Renderer2,
     router: Router,
     authenticationService: AuthenticationService,
     userService: UserService,
@@ -93,7 +97,8 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
     private homeService: HomeService,
     private _lightbox: Lightbox,
     private _changeDetectorRef: ChangeDetectorRef,
-    public activatedRoute: ActivatedRoute
+    public activatedRoute: ActivatedRoute,
+    
   ) {
     super(
       router,
@@ -101,39 +106,10 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
       userService,
       notificationService,
       route,
-      toastr
+      toastr,
+      document,
+      renderer2
     );
-  }
-  transform(value: any, ...args: any[]) {
-    throw new Error('Method not implemented.');
-  }
-
-  public contactMessage() {
-    this.refreshing = true;
-    const formData = new FormData();
-    formData.append('nombre', this.contactUser.name);
-    formData.append('correo', this.contactUser.mail);
-    formData.append('telefono', this.contactUser.phone);
-    formData.append('mensaje', this.contactUser.msg);
-    alert(
-      'Mensaje enviado! \n La respuesta del vendedor será enviada a tu correo electrónico!'
-    );
-    this.subscriptions
-      .push
-      /*
-     hay que implementar el envio del correo:
-     - en el servicio 
-     - en el backend
-     - aquí
-     
-     this.markerService.addBuilding(formData).subscribe((res) => {
-        this.router.navigate(['/home']),
-          this.sendNotification(NotificationType.SUCCESS, ` Mensaje enviado.`);
-        var resetForm = <HTMLFormElement>document.getElementById('contactForm');
-        resetForm.reset();
-        this.clickButton('contact-form-close');
-      })*/
-      ();
   }
 
   getTrustedUrl() {
@@ -312,8 +288,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
 
   loadScripts() {
     const dynamicScripts = [
-      '../../../assets/js/ad.js',
-      'https://www.youtube.com/iframe_api',
+      '../../../assets/js/ad.js'
     ];
     for (let i = 0; i < dynamicScripts.length; i++) {
       const node = document.createElement('script');
@@ -432,6 +407,40 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
     });
     this.mapEvents.add('control');
     control._container.style.display = "None";
+  }
+
+  checkBox(param): any {
+    console.log(param);
+  }
+  public contactMessage() {
+    this.refreshing = true;
+    const formData = new FormData();
+    formData.append('nombre', this.contactUser.name);
+    formData.append('correo', this.contactUser.mail);
+    formData.append('telefono', this.contactUser.phone);
+    formData.append('mensaje', this.contactUser.msg);
+    Swal.fire({
+      title: "Enviado!",
+      text: "La respuesta la recibirás en tu correo electrónico!",
+      icon: "success"
+    });
+    var resetForm = <HTMLFormElement>document.getElementById('contactMessageForm');
+    resetForm.reset();
+    this.subscriptions
+      .push
+      /*
+     hay que implementar el envio del correo:
+     - en el servicio 
+     - en el backend(plantilla html)
+     
+     this.markerService.addBuilding(formData).subscribe((res) => {
+        this.router.navigate(['/home']),
+          this.sendNotification(NotificationType.SUCCESS, ` Mensaje enviado.`);
+        var resetForm = <HTMLFormElement>document.getElementById('contactForm');
+        resetForm.reset();
+        this.clickButton('contact-form-close');
+      })*/
+      ();
   }
 
   ngOnDestroy(): void {

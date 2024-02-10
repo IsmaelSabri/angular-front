@@ -350,55 +350,112 @@
       </div>
     </div>
 
-    <div class="property-list">
-      <ul class="row">
-        <li class="col-md-6" *ngFor="let appHome of homes">
-          <div class="property-box">
-            <div class="property-box__left">
-              <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="60000">
-                <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <img class="d-block w-100" src={{appHome.images[0].imageUrl}} alt="First slide">
-                  </div>
-                  <div class="carousel-item">
-                    <img class="d-block w-100" src={{appHome.images[1].imageUrl}} alt="Second slide">
-                  </div>
-                  <div class="carousel-item">
-                    <img class="d-block w-100" src={{appHome.images[2].imageUrl}} alt="Third slide">
+    <!--Tarjetas-->
+    <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 g-4" >
+      <!--Ad Card-->
+      <div class="col d-flex flex-row" *ngFor="let appHome of homes; let i =index"><!--col-lg-8 col-md-10 col-sm-12 col-xs-12 d-flex-->
+        <div class=" teaser-tile mt-2 mx-2" >
+            <span class="favorite favorite-need-login" data-id="1935922" data-type="estate">
+              <div class="wrapper-demo">
+                <button class="toggle-icon" title="❤ Toggle Like!"></button>
+              </div>
+            </span>
+            <div class="flex-grow-1 " ><!--hace la llamada (click)="runAdCard(appHome)"-->
+                <div class="with-img" style="position: relative;">
+                  <div id="carouselExample{{this.idIndex[i]}}" class="carousel slide" data-bs-interval="false" >
+                    <div class="carousel-inner">
+                      <div class="carousel-item " *ngFor="let data of appHome.images; let j=index"  [ngClass]="(j === 0) ? 'active' : ''" >
+                          <img style="aspect-ratio:16/9;" src={{data.imageUrl}} alt="First slide">
+                      </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                      </button>
+                      <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
                   </div>
                 </div>
-                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </div>
-            </div>
-            <div class="property-box__right">
-              <div class="property-box__title h3">
-                <a >{{appHome.calle}}</a>
-              </div>
-              <div class="property-box__amenities">
-                <span>{{appHome.aseos}} <ion-icon style="font-size: 24px;" src="assets/svg/bath_tub.svg"></ion-icon></span>
-                <span>{{appHome.superficie}} <ion-icon style="font-size: 24px; color:#666;" src="./assets/svg/house_size.svg"></ion-icon></span>
-                <span>{{appHome.garage}} <ion-icon style="font-size: 24px; color:#666;" name="car-outline"></ion-icon></span>
-              </div>
-              <div class="property-box__post-price">
-                <div class="property-box__post-by">
-                  Posted by <a href="#">{{appHome.nombreCreador}}</a>
+                <div class="desc">
+                    <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span class="text-secondary">{{appHome.tipo}}</span> </div>
+                    <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}} <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}</div>
+                    <div class="units mx-2">
+                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
+                          <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
+                            <span style="font-size: 0.8em;">{{appHome.habitaciones}}</span>
+                        </div>
+                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
+                          <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"  name="expand-outline"></ion-icon>
+                            <span style="font-size: 0.8em;">{{appHome.superficie}}m²</span>
+                        </div>
+                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="bath">
+                          <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-toilet.svg"></ion-icon>
+                            <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.aseos}}</span>
+                        </div>
+                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
+                          <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-facing.svg"></ion-icon>
+                            <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.orientacion}}</span>
+                        </div>
+                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="card-spaces">
+                          <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;" name="car-sport-outline"></ion-icon>
+                            <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.garage}}</span>
+                        </div>
+                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="year">
+                          <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" name="hammer-outline"></ion-icon>
+                            <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.antiguedad}}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="property-box__price">
-                  <span class="badge">{{appHome.precioFinal}}€</span>
+                <div class="txt h-100p b-none pt-0">
+                    <div class="clamp-3" (click)="runAdCard(appHome)">{{appHome.descripcion}}</div>
                 </div>
+                <div class="price">
+                    <div class="price-item">
+                      {{formatNumberWithCommas(appHome.precioFinal)+'€'}}
+                    </div>
+                </div>
+                <!--<div class="social-actions">
+                    <div class="like-item">
+                      <ion-icon name="heart-outline"></ion-icon>
+                          <div class="social-counter" data-counter="1">1</div>
+                      </div>
+                    <div class="superlike-item">
+                      <ion-icon name="heart-outline"></ion-icon>
+                        <div class="social-counter" data-counter="0"></div>
+                    </div>
+                    <div class="d-flex flex-grow-1 justify-content-end">
+                        <div class="recommend-item" >
+                            <div class="social-title">Recommend</div>
+                            <ion-icon name="thumbs-up-outline"></ion-icon>
+                            <div class="social-counter" data-counter="0"></div>
+                        </div>
+                    </div>
+                </div>-->
               </div>
-            </div>
-          </div>
-        </li>
-      </ul>
+            <!--<div class="txt color-black b-none pt-4">
+                <div class="contacts listing-contacts-block">
+                    <div class="buttons">
+                        <a class="btn btn-sm w-100p btn-outline-primary">
+                          <ion-icon name="thumbs-up-outline"></ion-icon>
+                            <span class="text-truncate ml-6">Mensaje</span>
+                        </a>
+                    </div>
+                    <div class="col-auto overflow-hidden">
+                      <div class="btn btn-sm w-100p btn-primary show-contacts-btn" >
+                        <ion-icon name="call-outline"></ion-icon>
+                      </div>
+                  </div>
+                </div>
+            </div>-->
+        </div>
     </div>
+  </div>
+  
+  <!--End Tarjetas-->
+
+    
 
   </div>
 </div>

@@ -13,7 +13,7 @@ import { HomeComponent } from 'src/app/home/home.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-
+import { NzAlign, NzJustify } from 'ng-zorro-antd/flex';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -31,8 +31,8 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     homeService: HomeService,
     sanitizer: DomSanitizer,
     modalService: BsModalService,
-    @Inject(DOCUMENT) private document: Document,
-    private renderer2: Renderer2,
+    @Inject(DOCUMENT) document: Document,
+    renderer2: Renderer2,
   ) {
     super(
       router,
@@ -44,10 +44,20 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       homeService,
       sanitizer,
       modalService,
-      
+      document,
+      renderer2
     );
   }
 
+  public justifySegment: NzJustify[] = [
+    'flex-start',
+    'center',
+    'flex-end',
+    'space-between',
+    'space-around',
+    'space-evenly'
+  ];
+  public alignSegment: NzAlign[] = ['flex-start', 'center', 'flex-end'];
   ngOnInit(): void {
     const cssPath = '../../../assets/css/style.css';
     this.style = this.renderer2.createElement('link') as HTMLLinkElement;
@@ -67,6 +77,10 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
         })
       );
     }
+  }
+
+  printLog(){
+    console.log("funciona");
   }
 
   loadScripts() {

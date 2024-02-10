@@ -18,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private authenticationService: AuthenticationService,
     private router: Router,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   intercept(
     request: HttpRequest<unknown>,

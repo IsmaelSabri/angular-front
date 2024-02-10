@@ -10,6 +10,7 @@ import { ListComponent } from './pages/list/list.component';
 import { AddComponent } from './pages/add/add.component';
 import { PasswordComponent } from './components/password/password.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { UserProComponent } from './components/user-pro/user-pro.component';
 
 
 
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'list', component: ListComponent },
   { path: 'pass', component: PasswordComponent },
+  { path: 'user-pro', component: UserProComponent, canActivate: [AuthenticationGuard] },
   { path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard] }, 
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];

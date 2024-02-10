@@ -43,12 +43,14 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
-import { MatSelectModule } from '@angular/material/select'; 
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { PasswordComponent } from './components/password/password.component';
-import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, GoogleSigninButtonDirective,
-          GoogleSigninButtonModule, FacebookLoginProvider } from '@abacritt/angularx-social-login';
+import {
+  SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, GoogleSigninButtonDirective,
+  GoogleSigninButtonModule, FacebookLoginProvider
+} from '@abacritt/angularx-social-login';
 import { CloudinaryModule } from '@cloudinary/ng';
 import { LightboxModule } from 'ngx-lightbox';
 import { AdminComponent } from './components/admin/admin.component';
@@ -68,8 +70,8 @@ import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
 import { NzSliderModule } from 'ng-zorro-antd/slider';
-import {SelectButtonModule} from 'primeng/selectbutton';
-import {MatSliderModule} from '@angular/material/slider';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { MatSliderModule } from '@angular/material/slider';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -78,8 +80,14 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { BadgeModule } from 'primeng/badge';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ButtonModule } from 'primeng/button';
-import {MatDividerModule} from '@angular/material/divider'; 
-
+import { MatDividerModule } from '@angular/material/divider';
+import { SidebarModule } from 'primeng/sidebar';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzFlexModule } from 'ng-zorro-antd/flex';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { UserProComponent } from './components/user-pro/user-pro.component';
 
 @NgModule({
   declarations: [
@@ -92,6 +100,7 @@ import {MatDividerModule} from '@angular/material/divider';
     AddComponent,
     PasswordComponent,
     AdminComponent,
+    UserProComponent,
   ],
   imports: [
     BrowserModule,
@@ -153,7 +162,12 @@ import {MatDividerModule} from '@angular/material/divider';
     ConfirmPopupModule,
     ButtonModule,
     MatDividerModule,
-
+    SidebarModule,
+    OverlayPanelModule,
+    MatSidenavModule,
+    NzLayoutModule,
+    NzFlexModule,
+    NzSpinModule,
   ],
   exports: [
     // to get component in another modules
@@ -195,9 +209,9 @@ import {MatDividerModule} from '@angular/material/divider';
       } as SocialAuthServiceConfig,
     }
   ],
-  schemas:[
+  schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,5 +1,5 @@
 import { BrandImage } from './../../model/user';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Inject, Renderer2 } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user.service';
@@ -16,8 +16,9 @@ import { Rol } from '../../class/role.enum';
 import { ToastrService } from 'ngx-toastr';
 import { APIKEY } from 'src/environments/environment.prod';
 import { serialize } from 'object-to-formdata';
+import { DOCUMENT } from '@angular/common';
 
-@Component({
+@Component({ 
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
@@ -49,9 +50,26 @@ export class UserComponent implements OnInit, OnDestroy {
 
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
     protected userService: UserService, protected notificationService: NotificationService,
-    protected route: ActivatedRoute, protected toastr: ToastrService) { }
+    protected route: ActivatedRoute, protected toastr: ToastrService, @Inject(DOCUMENT) protected document: Document,
+    protected renderer2: Renderer2,) { }
 
   ngOnInit(): void {
+    //this.loadScripts();
+    /*const cssPath = [
+    '../../../assets/css/user-style/feather.css', 
+    '../../../assets/css/user-style/materialdesignicons.min.css', 
+    '../../../assets/css/user-style/select.dataTables.min.css', 
+    '../../../assets/css/user-style/simple-line-icons.css', 
+    '../../../assets/css/user-style/style.css',
+    '../../../assets/css/user-style/themify-icons.css', 
+    '../../../assets/css/user-style/typicons.css',
+    '../../../assets/css/user-style/vendor.bundle.base.css'];
+    for (let i = 0; i < cssPath.length; i++) {
+      this.styleUser[i] = this.renderer2.createElement('link') as HTMLLinkElement;
+      this.renderer2.appendChild(this.document.head, this.styleUser[i]);
+      this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
+      this.renderer2.setProperty(this.styleUser[i], 'href', cssPath);
+    }*/
     this.user = this.authenticationService.getUserFromLocalCache();
     //this.user.profileImage=JSON.parse(this.user.profileImageAsString);
     console.log(this.user);
@@ -108,7 +126,7 @@ export class UserComponent implements OnInit, OnDestroy {
             }
           }));
           this.brandImageRefreshing = false;
-          this.BrandImage=null;
+          this.BrandImage = null;
           this.sendNotification(NotificationType.SUCCESS, `Imagen corporativa actualizada`);
         },
         error: (err: any) => {
@@ -121,30 +139,30 @@ export class UserComponent implements OnInit, OnDestroy {
   public onUpdateCurrentUser(user: User): void {
     //console.log(user + ' image: ' + this.photoImage);
     this.refreshing = true;
-    user.profileImageAsString=JSON.stringify(user.profileImage);
-      this.subscriptions.push(this.userService.updateUser(user, user.id).subscribe({
-        next: (res: any) => {
-          console.log(res);
-          
-          this.refreshing = false;
-          localStorage.removeItem('user');
-          //this.authenticationService.addUserToLocalCache(res.body);
-          this.photoImage=null;
-          this.sendNotification(NotificationType.SUCCESS, `${res.firstname} ${res.lastname} Actualizado`);
-        },
-        error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-          this.refreshing = false;
-        }
-      }));
-    }
-  
-    public onProfileImageChange(fileName: string, profileImage: File): void {
-      this.fileName = fileName;
-      this.imageProfileRefreshing = true;
-      this.photoImage = profileImage;
-      if (this.photoImage!=null) {
-        const body = new FormData();
+    user.profileImageAsString = JSON.stringify(user.profileImage);
+    this.subscriptions.push(this.userService.updateUser(user, user.id).subscribe({
+      next: (res: any) => {
+        console.log(res);
+
+        this.refreshing = false;
+        localStorage.removeItem('user');
+        //this.authenticationService.addUserToLocalCache(res.body);
+        this.photoImage = null;
+        this.sendNotification(NotificationType.SUCCESS, `${res.firstname} ${res.lastname} Actualizado`);
+      },
+      error: (errorResponse: HttpErrorResponse) => {
+        this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        this.refreshing = false;
+      }
+    }));
+  }
+
+  public onProfileImageChange(fileName: string, profileImage: File): void {
+    this.fileName = fileName;
+    this.imageProfileRefreshing = true;
+    this.photoImage = profileImage;
+    if (this.photoImage != null) {
+      const body = new FormData();
       body.append('image', this.photoImage);
       this.subscriptions.push(this.userService.uploadSignature(body, this.fileName)
         .subscribe({
@@ -168,8 +186,8 @@ export class UserComponent implements OnInit, OnDestroy {
             console.log(err);
           }
         }));
-      }
     }
+  }
 
   public changeTitle(title: string): void {
     this.titleSubject.next(title);
@@ -182,8 +200,8 @@ export class UserComponent implements OnInit, OnDestroy {
         next: (response: User[]) => {
           this.users = response;
           for (let i = 0; i < response.length; i++) {
-            this.users[i].brandImage=JSON.parse(this.users[i].brandImageAsString);
-            this.users[i].profileImage=JSON.parse(this.users[i].profileImageAsString);
+            this.users[i].brandImage = JSON.parse(this.users[i].brandImageAsString);
+            this.users[i].profileImage = JSON.parse(this.users[i].profileImageAsString);
           }
           this.userService.addUsersToLocalCache(response);
           this.refreshing = false;
@@ -387,6 +405,17 @@ export class UserComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  protected lettersOnly(evt) {
+    evt = (evt) ? evt : event;
+    var charCode = (evt.charCode) ? evt.charCode : ((evt.keyCode) ? evt.keyCode :
+      ((evt.which) ? evt.which : 0));
+    if (charCode > 31 && (charCode < 65 || charCode > 90) &&
+      (charCode < 97 || charCode > 122)) {
+      return false;
+    }
+    return true;
+  }
+
   isEmptyArray(array: unknown): array is Array<unknown> {
     if (Array.isArray(array) && array.length) {
       return true;
@@ -395,12 +424,38 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  formatNumberWithCommas(n:Number):string{
+  formatNumberWithCommas(n: Number): string {
     return JSON.stringify(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
+
+  /*loadScripts() {
+    const dynamicScripts = [
+      '../../../assets/js/user-dashboard/bootstrap-datepicker.min.js',
+      '../../../assets/js/user-dashboard/Chart.min.js',
+      '../../../assets/js/user-dashboard/Chart.roundedBarCharts.js',
+      '../../../assets/js/user-dashboard/dashboard.js',
+      '../../../assets/js/user-dashboard/hoverable-collapse.js',
+      '../../../assets/js/user-dashboard/jquery.cookie.js',
+      '../../../assets/js/user-dashboard/off-canvas.js',
+      '../../../assets/js/user-dashboard/progressbar.min.js',
+      '../../../assets/js/user-dashboard/settings.js',
+      '../../../assets/js/user-dashboard/template.js',
+      '../../../assets/js/user-dashboard/todolist.js',
+      '../../../assets/js/user-dashboard/vendor.bundle.base.js',
+      ''
+      //'../../../assets/js/bootstrap.bundle.min.js',
+    ];
+    for (let i = 0; i < dynamicScripts.length; i++) {
+      const node = document.createElement('script');
+      node.src = dynamicScripts[i];
+      node.type = 'text/javascript';
+      node.async = false;
+      document.getElementsByTagName('body')[0].appendChild(node);
+    }
+  }*/
 
 }

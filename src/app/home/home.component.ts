@@ -4,7 +4,7 @@ import {
   PrecioMaximoAlquiler, PrecioMinimoVenta, PrecioMaximoVenta, Superficie, Views
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild, ViewEncapsulation, } from '@angular/core';
+import { Component, ElementRef, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Optional, Output, Renderer2, SimpleChanges, TemplateRef, ViewChild, ViewEncapsulation, } from '@angular/core';
 import { marker, LatLng, circleMarker } from 'leaflet';
 import 'leaflet.locatecontrol';
 import {
@@ -37,6 +37,9 @@ import { APIKEY } from 'src/environments/environment.prod';
 import * as $ from 'jquery';
 import Axios from 'axios-observable';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import wordsCounter from 'word-counting'
+import { MatSidenav } from '@angular/material/sidenav';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -56,8 +59,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     protected homeService: HomeService,
     private sanitizer: DomSanitizer,
     private modalService: BsModalService,
+    @Inject(DOCUMENT) document: Document,
+    renderer2: Renderer2,
   ) {
-    super(router, authenticationService, userService, notificationService, route, toastr);
+    super(router, authenticationService, userService, notificationService, route, toastr,document,
+      renderer2);
   }
 
   map!: L.map; // map allocates homes
@@ -108,6 +114,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   routerLinkModel: string;
   filterRentSalePriceFlag: string = 'Venta';
   mapRentSalePriceFlag: string = 'Venta';
+  sidebarVisible:boolean=false;
   // method must know what array needs to work
   serviceGoal: string; // aim service
   indexGoal: number; // array index
@@ -159,6 +166,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   mapEvents = new Set<string>();
   // save points
   nearlyMarkers = new Map<string, L.Marker>();
+  // dynamic id's carousels
+  idIndex=Array.from(Array(100).keys());
 
   // icons
   bch = beachIcon;
@@ -445,7 +454,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   resizeMap() {
-    let timer = setTimeout(() => {
+    setTimeout(() => {
       this.map3.invalidateSize();
     }, 300);
   }
@@ -576,21 +585,19 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     x.style.display = 'block';
   }
 
-  public loadMarkers() {
-    this.map = L.map('map', { renderer: L.canvas() }).setView(
-      [39.46975, -0.37739],
-      17  //25
-    );
+  public loadMarkers(url:string) {
     this.getLocation();
+    this.map.eachLayer((layer) => {
+      layer.remove();
+    });
     //tileLayerSelect().addTo(map);
     //tileLayerWMSSelect().addTo(map);
     //tileLayerCP().addTo(map); // Codigos postales
     //tileLayerWMSSelectIGN().addTo(this.map);
     Stadia_OSMBright().addTo(this.map);
     //tileLayerHere().addTo(this.map);
-
     this.subscriptions.push(
-      this.homeService.getHomes().subscribe((data) => {
+      this.homeService.getHomesByQuery(url).subscribe((data) => {
         data.map((Home) => {
           Home.images = JSON.parse(Home.imagesAsString)
           marker(
@@ -612,12 +619,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
           )
             .bindPopup(
               `
-            <div class="reale1 row">
+            <div class="reale1 row">gula
               <div class="reale2" col-sm-6>
                  <div class="reale3" >
                     <div class="reale5">
-                       <div id="carouselExample" class="carousel slide ">
-                          <div class="carousel-inner" >
+                       <div id="carouselExample" class="carousel slide " data-bs-interval="false">
+                          <div class="carousel-inner popup-marker" >
                           </div>
                           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
                           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -741,21 +748,35 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     );
   }
 
+  runAdCard(home:Home){
+    localStorage.removeItem('currentBuilding');
+    localStorage.setItem('currentBuilding', JSON.stringify(home));
+    this.routerLinkId = +home.id;
+    this.routerLinkModel = home.model;
+    setTimeout(() => {
+    this.clickButton('linkPopup');
+    }, 1000);
+  }
   /************************************************************/
   ngOnInit(): void {
+    this.map = L.map('map', { renderer: L.canvas() }).setView(
+      [39.46975, -0.37739],
+      16  //25
+    );
     this.user = this.authenticationService.getUserFromLocalCache();
     this.userMarkerEvents();
-    this.loadMarkers();
+    this.loadMarkers('condicion@=*'+this.mapRentSalePriceFlag); // by default load for sale 
     this.loadScripts();
+    this.clearMap();
     this.mobilityMenu = window.innerWidth;
   }
 
   dynamicCarousel(data: HomeImage[]) {
     setTimeout(() => {
-      for(let j = 0; j < data.length; j++) {
-        $('<div class="carousel-item"><img src="'+data[j].imageUrl+'"class="image-container"></div>').appendTo('.carousel-inner');
+      for (let j = 0; j < data.length; j++) {
+        $('<div class="carousel-item"><img src="' + data[j].imageUrl + '"class="image-container"></div>').appendTo('.popup-marker');
       }
-        $('.carousel-item').first().addClass('active');
+      $('.carousel-item').first().addClass('active');
     }, 200);
   }
 
@@ -784,11 +805,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   getLocation() {
     this.map.on('locationfound', (e: { accuracy: number; latlng: LatLng }) => {
       this.beforeCoords = e.latlng; //Object.assign({}, e.latlng);
-      this.map.setView(this.beforeCoords, 25); // poner el foco en el mapa
+      this.map.setView(this.beforeCoords, 16); // poner el foco en el mapa
       this.map.fitBounds([[this.beforeCoords.lat, this.beforeCoords.lng]]); // por si acaso..
     });
     this.map.on('locationerror', this.notFoundLocation); // si el usuario no activa la geolocalización
-    this.map.locate({ setView: true, maxZoom: 25 }); // llamada para que la geolocalización funcione
+    this.map.locate({ setView: true, maxZoom: 16 }); // llamada para que la geolocalización funcione
   }
 
   notFoundLocation() {
@@ -803,14 +824,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     //this.map.flyTo([this.beforeCoords],25,{ animate:true,duration:1.5 });
     console.log(this.beforeCoords);
     this.afterCoords = this.beforeCoords;
-    this.notificationService.notify(
+    /*this.notificationService.notify(
       NotificationType.INFO,
       'Mueve el marcador hasta su propiedad'
-    );
-    /*this.toastr.success(
+    );*/
+    this.toastr.success(
       'Arrastra el marcador!',
       'Mueve el marcador hasta su propiedad!'
-    );*/
+    );
     this.mp = new L.marker(this.beforeCoords, {
       draggable: true,
       icon: luxuryRed,
@@ -828,7 +849,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.mp.on('move', () => (this.afterCoords = this.mp.getLatLng()));
     this.mp.on('moveend', () => console.log(this.afterCoords));
     this.mp.on('dragend', () => this.mp.openPopup());
-    this.map.flyTo([this.beforeCoords.lat, this.beforeCoords.lng], 20);
+    this.map.flyTo([this.beforeCoords.lat, this.beforeCoords.lng], 12);
   }
 
   // Revisar - en el html -> oninput="textAreaResize(this)"
@@ -1157,7 +1178,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.myMap.set(flag, homeTypes);
       this.searchFilterItems(this.myMap);
     }
-    console.log(flag + ' : ' + value);
   }
 
   /**
@@ -1200,9 +1220,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         if (urlFilterRequest.includes('&sorts=')) {
           if (key === 'precioAlquilerMin') {
             var formatParam = value.replace('€', '').split(',').join(''); // me dejas un número entero
-            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + formatParam + '<=precioAlquiler' + ',') // lo pone sequido a sorts
+            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioAlquiler>=' + formatParam  + ',') // lo pone sequido a sorts
             urlFilterRequest = formatUrl;
-            urlFilterRequest = formatParam + '<=precioAlquiler' + ',' + urlFilterRequest; // filtrado
+            urlFilterRequest = 'precioAlquiler>='+ formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           } else if (key === 'precioAlquilerMax') {
             var formatParam = value.replace('€', '').split(',').join('');
@@ -1212,9 +1232,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           } else if (key === 'precioVentaMin') {
             var formatParam = value.replace('€', '').split(',').join('');
-            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + formatParam + '<=precioFinal' + ',')
+            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioFinal>='+ formatParam + ',')
             urlFilterRequest = formatUrl;
-            urlFilterRequest = formatParam + '<=precioFinal' + ',' + urlFilterRequest; // filtrado
+            urlFilterRequest = 'precioFinal>=' + formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           } else if (key === 'precioVentaMax') {
             var formatParam = value.replace('€', '').split(',').join('');
@@ -1224,9 +1244,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           } else if (key === 'superficieMin') {
             var formatParam = value.replace('m²', '').split(',').join('');
-            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + formatParam + '<=superficie' + ',')
+            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'superficie>='+ formatParam + ',')
             urlFilterRequest = formatUrl; // ordenamiento 
-            urlFilterRequest = formatParam + '<=superficie' + ',' + urlFilterRequest; // filtrado
+            urlFilterRequest = 'superficie>=' + formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           } else if (key === 'superficieMax') {
             var formatParam = value.replace('m²', '').split(',').join('');
@@ -1238,9 +1258,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         }
       } else if (key === 'habitaciones' || key === 'aseos' || key === 'aseoEnsuite' || key === 'garage') {
         if (value != String(5)) {
-          urlFilterRequest = key + '==*' + value + ',' + urlFilterRequest;
+          urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
         } else {
-          urlFilterRequest = key + '>=*' + value + ',' + urlFilterRequest;
+          urlFilterRequest = key + '>=' + value + ',' + urlFilterRequest;
         }
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (String(value) === 'true' || String(value) === 'false') {
@@ -1257,25 +1277,46 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         }
         urlFilterRequest = 'tipo' + '@=*' + tipoValues + ',' + urlFilterRequest
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
+      } else if (key === 'descripcion') {
+        var formatParam = value.split(' ').join('|');
+        if (formatParam.slice(-1) == "|") {
+          formatParam = formatParam.slice(0, -1);
+        }
+        urlFilterRequest = 'descripcion' + '@=*' + formatParam + ',' + urlFilterRequest;
+        localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else { // descarte: condicion, ciudad, estado y vistas. Falta cuadrar esto
-        // con los atributos de compartir 
-        console.log(key + ' ' + value + 'descarte');
+        // con los atributos de compartir
+        console.log(key + ' ' + value);
         urlFilterRequest = key + '@=*' + value + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       }
     });
-    this.homeService.getHomesByQuery(urlFilterRequest);
     console.log(urlFilterRequest);
+    this.loadMarkers(urlFilterRequest);
   }
 
   public clearMap() {
     this.myMap = new Map<string, string>(JSON.parse(localStorage.getItem("detailFiltersMap")));
     this.myMap.clear();
     localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
+    this.wordCount = 0;
+    this.homeFiltersRequest.keywords = '';
+  }
+
+  wordCount: number;
+  public wordCounter() {
+     // setTimeout(() => {
+      this.wordCount = wordsCounter(this.homeFiltersRequest.keywords).wordsCount;
+      this.filter(this.homeFiltersRequest.keywords, 'descripcion');
+      console.log(this.homeFiltersRequest.keywords);
+      if(this.wordCount===0&&this.myMap.has('descripcion')){
+        this.myMap.delete('descripcion');
+      }
+    //}, 2000);
   }
 
   applyCaptureNameFilter() {
-    console.log();
+    console.log(this.homeFiltersRequest.keywords);
   }
 
   loadScripts() {

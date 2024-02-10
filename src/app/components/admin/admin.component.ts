@@ -41,6 +41,8 @@ export class AdminComponent implements OnInit, OnDestroy {
       '../../../assets/js/demo.js',
       '../../../assets/js/styleSwitcher.js',
       '../../../assets/js/custom.min.js',
+
+      '../../../assets/js/bootstrap.bundle.min.js',
     ];
     for (let i = 0; i < dynamicScripts.length; i++) {
       const node = document.createElement('script');
