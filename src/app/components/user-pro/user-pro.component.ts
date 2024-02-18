@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { UserComponent } from '../user/user.component';
 import { DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -7,13 +7,21 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthenticationService } from 'src/app/service/authentication.service';
 import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
+import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NotificationType } from 'src/app/class/notification-type.enum';
+import { PrimeNGConfig } from 'primeng/api';
+import { FormGroupDirective, NgForm } from '@angular/forms';
+import { User } from 'src/app/model/user';
 
 @Component({
   selector: 'app-user-pro',
   templateUrl: './user-pro.component.html',
   styleUrl: './user-pro.component.css'
 })
-export class UserProComponent extends UserComponent implements OnInit, OnDestroy{
+export class UserProComponent extends UserComponent implements OnInit, OnDestroy {
+
+  userUpdate: User = new User();
 
   constructor(
     renderer2: Renderer2,
@@ -25,6 +33,8 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     toastr: ToastrService,
     protected modalService: BsModalService,
     @Inject(DOCUMENT) protected document: Document,
+    protected sanitizer: DomSanitizer,
+    primengConfig: PrimeNGConfig
   ) {
     super(
       router,
@@ -34,61 +44,64 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       route,
       toastr,
       document,
-      renderer2
+      renderer2,
+      primengConfig
     );
   }
-  protected styleUser: HTMLLinkElement[]=[];
+  protected styleUser: HTMLLinkElement[] = [];
 
-    ngOnInit(): void {
+  ngOnInit(): void {
+    this.primengConfig.ripple = true;
     this.loadScripts();
     this.user = this.authenticationService.getUserFromLocalCache();
+    this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.user.color);
     const cssPath = [
-    '../../../assets/css/bootstrap.min.css',
-    'https://cdn.quilljs.com/1.3.6/quill.snow.css',
-    '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.min.css', 
-    '../../../assets/css/user-pro-style/extras.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.css',
-    '../../../assets/css/user-pro-style/danger.1.1.0.css',
-    '../../../assets/css/user-pro-style/danger.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/success.1.1.0.css',
-    '../../../assets/css/user-pro-style/info.1.1.0.css',
-    '../../../assets/css/user-pro-style/info.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/secondary.1.1.0.css',
-    '../../../assets/css/user-pro-style/secondary.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/success.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/warning.1.1.0.css',
-    '../../../assets/css/user-pro-style/warning.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/scss/_alert.scss',
-    '../../../assets/css/user-pro-style/scss/_badge.scss',
-    '../../../assets/css/user-pro-style/scss/_button-group.scss',
-    '../../../assets/css/user-pro-style/scss/_buttons.scss',
-    '../../../assets/css/user-pro-style/scss/_card.scss',
-    '../../../assets/css/user-pro-style/scss/_custom-forms.scss',
-    '../../../assets/css/user-pro-style/scss/_custom-sliders.scss',
-    '../../../assets/css/user-pro-style/scss/_dropdown.scss',
-    '../../../assets/css/user-pro-style/scss/_icons.scss',
-    '../../../assets/css/user-pro-style/scss/_images.scss',
-    '../../../assets/css/user-pro-style/scss/_input-group.scss',
-    '../../../assets/css/user-pro-style/scss/_list-group.scss',
-    '../../../assets/css/user-pro-style/scss/_navbar.scss',
-    '../../../assets/css/user-pro-style/scss/_overrides.scss',
-    '../../../assets/css/user-pro-style/scss/_reboot.scss',
-    '../../../assets/css/user-pro-style/scss/_utilities.scss',
-    '../../../assets/css/user-pro-style/scss/_variables.scss',
-    '../../../assets/css/user-pro-style/scss/shards-dashboards.scss'
-   ];
+      '../../../assets/css/bootstrap.min.css',
+      'https://cdn.quilljs.com/1.3.6/quill.snow.css',
+      '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.min.css',
+      '../../../assets/css/user-pro-style/extras.1.1.0.min.css',
+      '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.css',
+      '../../../assets/css/user-pro-style/danger.1.1.0.css',
+      '../../../assets/css/user-pro-style/danger.1.1.0.min.css',
+      '../../../assets/css/user-pro-style/success.1.1.0.css',
+      '../../../assets/css/user-pro-style/info.1.1.0.css',
+      '../../../assets/css/user-pro-style/info.1.1.0.min.css',
+      '../../../assets/css/user-pro-style/secondary.1.1.0.css',
+      '../../../assets/css/user-pro-style/secondary.1.1.0.min.css',
+      '../../../assets/css/user-pro-style/success.1.1.0.min.css',
+      '../../../assets/css/user-pro-style/warning.1.1.0.css',
+      '../../../assets/css/user-pro-style/warning.1.1.0.min.css',
+      '../../../assets/css/user-pro-style/scss/_alert.scss',
+      '../../../assets/css/user-pro-style/scss/_badge.scss',
+      '../../../assets/css/user-pro-style/scss/_button-group.scss',
+      '../../../assets/css/user-pro-style/scss/_buttons.scss',
+      '../../../assets/css/user-pro-style/scss/_card.scss',
+      '../../../assets/css/user-pro-style/scss/_custom-forms.scss',
+      '../../../assets/css/user-pro-style/scss/_custom-sliders.scss',
+      '../../../assets/css/user-pro-style/scss/_dropdown.scss',
+      '../../../assets/css/user-pro-style/scss/_icons.scss',
+      '../../../assets/css/user-pro-style/scss/_images.scss',
+      '../../../assets/css/user-pro-style/scss/_input-group.scss',
+      '../../../assets/css/user-pro-style/scss/_list-group.scss',
+      '../../../assets/css/user-pro-style/scss/_navbar.scss',
+      '../../../assets/css/user-pro-style/scss/_overrides.scss',
+      '../../../assets/css/user-pro-style/scss/_reboot.scss',
+      '../../../assets/css/user-pro-style/scss/_utilities.scss',
+      '../../../assets/css/user-pro-style/scss/_variables.scss',
+      '../../../assets/css/user-pro-style/scss/shards-dashboards.scss'
+    ];
     for (let i = 0; i < cssPath.length; i++) {
       this.styleUser[i] = this.renderer2.createElement('link') as HTMLLinkElement;
       this.renderer2.appendChild(this.document.head, this.styleUser[i]);
       this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
       this.renderer2.setProperty(this.styleUser[i], 'href', cssPath[i]);
     }
-    }
-    ngOnDestroy(): void {
-    }
+  }
+  ngOnDestroy(): void {
+  }
 
 
-    loadScripts() {
+  loadScripts() {
     const dynamicScripts = [
       'https://buttons.github.io/buttons.js',
       'https://cdn.quilljs.com/1.3.6/quill.js',
@@ -107,6 +120,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       '../../../assets/js/user-pro-dashboard/app/app-components-overview.1.1.0.min.js',
       '../../../assets/js/user-pro-dashboard/app/app-blog-new-post.1.1.0.js',
       '../../../assets/js/user-pro-dashboard/app/app-blog-new-post.1.1.0.min.js',
+      '../../../assets/js/user-pro-dashboard/app/user-pro.js',
       //'../../../assets/js/bootstrap.bundle.min.js',
     ];
     for (let i = 0; i < dynamicScripts.length; i++) {
@@ -116,6 +130,107 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       node.async = false;
       document.getElementsByTagName('body')[0].appendChild(node);
     }
+  }
+
+  imageChangedEventBranding: any = null;
+  imageChangedEventProfile: any = null;
+  croppedImageBranding: any = null;
+  croppedImageProfile: any = null;
+  tempBranding: File = null;
+  tempProfile: File = null;
+
+  fileChangeEvent(event: any, option: string): void {
+    if (option === 'branding') {
+      this.imageChangedEventBranding = event;
+    } else {
+      this.imageChangedEventProfile = event;
+    }
+  }
+  imageCropped(event: ImageCroppedEvent, option: string) {
+    var randomString = (Math.random() + 1).toString(36).substring(7);
+    if (option === 'branding') {
+      this.croppedImageBranding = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+      //this.tempBranding = event.blob; 
+      this.tempBranding = new File([event.blob], randomString + '.jpg');
+      console.log(this.tempBranding);
+    } else {
+      this.croppedImageProfile = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+      this.tempProfile = new File([event.blob], randomString + '.jpg');
+    }
+    // event.blob can be used to upload the cropped image
+  }
+
+  imageLoaded(image: LoadedImage, option: string) {
+
+  }
+  cropperReady() {
+    // cropper ready
+  }
+  loadImageFailed() {
+    // show message
+    this.sendNotification(NotificationType.ERROR, `Algo salio mal. Por favor intentelo pasados unos minutos.`);
+  }
+
+  updateUser() {
+    if (this.tempBranding != null) {
+      const body = new FormData();
+      //var randomString = (Math.random() + 1).toString(36).substring(10);
+      // branding image file
+      body.append('image', this.tempBranding);
+      this.subscriptions.push(this.userService.uploadSignature(body, this.tempBranding.name)
+        .subscribe({
+          next: (res: any) => {
+            this.user.brandImage = {
+              imageId: res.data.data.id,
+              imageName: res.data.data.title,
+              imageUrl: res.data.data.url,
+              imageDeleteUrl: res.data.data.delete_url
+            }
+            console.log(res);
+            this.user.brandImageAsString = JSON.stringify(this.user.brandImage);
+          },
+          error: (err: any) => {
+            this.sendNotification(NotificationType.ERROR, `Imagen corporativa: algo salio mal. Por favor intentelo pasados unos minutos.` + err);
+            this.brandImageRefreshing = false;
+          }
+        }));
+    }
+    // user profile file
+    if (this.tempProfile != null) {
+      const body = new FormData();
+      body.append('image', this.tempProfile);
+      this.subscriptions.push(this.userService.uploadSignature(body, this.tempBranding.name)
+        .subscribe({
+          next: (res: any) => {
+            this.user.profileImage = {
+              imageId: res.data.data.id,
+              imageName: res.data.data.title,
+              imageUrl: res.data.data.url,
+              imageDeleteUrl: res.data.data.delete_url
+            }
+            //this.reportUploadProgress(res);
+            console.log(res);
+            this.user.profileImageAsString = JSON.stringify(this.user.profileImage);
+            this.imageProfileRefreshing = false;
+          },
+          error: (err: any) => {
+            this.imageProfileRefreshing = false;
+            console.log(err);
+          }
+        }));
+    }
+    setTimeout(() => {
+      this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.sendNotification(NotificationType.SUCCESS, `Se ha actualizado el perfil`);
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      }));
+    }, 1500);
+
   }
 
 }

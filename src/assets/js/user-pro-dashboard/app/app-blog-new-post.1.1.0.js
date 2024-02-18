@@ -4,7 +4,7 @@
  |--------------------------------------------------------------------------
  */
 
-"use strict";
+/*"use strict";
 
 (function ($) {
   $(document).ready(function () {
@@ -19,7 +19,6 @@
     ];
 
     // Init the Quill RTE
-    setTimeout(() => {
       var quill = new Quill("#editor-container", {
         modules: {
           toolbar: toolbarOptions,
@@ -27,6 +26,5 @@
         placeholder: "Words can be like x-rays if you use them properly...",
         theme: "snow",
       });
-    }, 3000);
   });
-})(jQuery);
+})(jQuery);*/

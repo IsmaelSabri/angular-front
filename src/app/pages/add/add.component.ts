@@ -30,6 +30,9 @@ import * as intlTelInput from 'intl-tel-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import Swal from 'sweetalert2'
 import { DOCUMENT } from '@angular/common';
+import { PrimeNGConfig } from 'primeng/api';
+
+
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
@@ -98,7 +101,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
     private _lightbox: Lightbox,
     private _changeDetectorRef: ChangeDetectorRef,
     public activatedRoute: ActivatedRoute,
-    
+    primengConfig: PrimeNGConfig
   ) {
     super(
       router,
@@ -108,7 +111,8 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
       route,
       toastr,
       document,
-      renderer2
+      renderer2,
+      primengConfig
     );
   }
 
@@ -152,6 +156,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
         this.home = res;
         if (this.state) {
           this.user = this.authenticationService.getUserFromLocalCache();
+          this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.user.color);
         }
         setTimeout(() => {
           for (let i = 0; i < this.home.images.length; i++) {

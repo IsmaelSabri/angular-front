@@ -69,10 +69,6 @@ star:hover {
 .navbar-item img {
   max-height: 3.438rem;
 }
-
-.brand {
-  height: 3.31rem;
-}
 .navbar {
   padding: 0;
   border-bottom: 1px solid rgb(206, 203, 203);

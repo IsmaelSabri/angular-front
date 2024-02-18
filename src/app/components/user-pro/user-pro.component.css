@@ -9,3 +9,256 @@
   transform: translateX(-50%);
   margin-left: 50%;
 }*/
+.control-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.image-container {
+  border-radius: 5px;
+  position: relative;
+
+  > mat-progress-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  > img {
+    border-radius: inherit;
+  }
+}
+
+.brandLabel input {
+  display: none;
+}
+
+.brandLabel {
+  padding: 1rem 1.5rem;
+  background: #bdb7ab; /*1f66fd*/
+  box-shadow: 2px 2px 2px #aaa;
+  font: 1em Arial, sans-serif;
+  color: #fff;
+  position: relative;
+  cursor: pointer;
+  /*
+  No text-selection on buttons
+  */
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  border-radius: 4px;
+  max-height: 1.4em;
+}
+
+.brandLabel:active {
+  top: 2px;
+  box-shadow: none;
+}
+
+/*Create ripple effect*/
+.rbtn {
+  border-radius: 3px;
+  border: 0;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &.btn-link {
+    background: transparent;
+    box-shadow: none;
+    color: #222;
+
+    circle {
+      fill: rgba(0, 0, 0, 0.08);
+    }
+
+    &:hover,
+    &:active {
+      background: transparent;
+    }
+
+    &:focus {
+      &:before {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  &.focus,
+  &:focus {
+    outline: none;
+
+    &:before {
+      transition: all 0.7s ease;
+      content: "";
+      position: absolute;
+      background: rgba(255, 255, 255, 0.2);
+      z-index: 99;
+      left: 15%;
+      right: 15%;
+      top: -50%;
+      bottom: -50%;
+      border-radius: 200%;
+      animation: pulse ease 1.4s infinite;
+    }
+  }
+
+  &:active,
+  &:hover {
+    &:before {
+      opacity: 0;
+      left: -10%;
+      right: -10%;
+    }
+  }
+}
+
+.eff {
+  position: relative;
+  overflow: hidden;
+
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  circle {
+    fill: rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+/*end ripple effect*/
+.brandImage {
+  width: 80px;
+}
+
+@media screen and (min-width: 768px) {
+  .brandImage {
+    width: 100px;
+    margin-right: 0;
+    padding: 0 1em;
+  }
+}
+/*card deluxe profile*/
+
+.profile-container {
+  position: relative;
+  background-color: #fff;
+  max-width: auto;
+  padding: 6em 3em 2.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1.75em;
+}
+
+.img-container {
+  width: 6em;
+  height: 6em;
+  overflow: hidden;
+  border: 2px solid #3a3b3c;
+  border-radius: 50%;
+  box-shadow: 0 8px 55px #3a3b3c;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.img-container img {
+  width: 100%;
+  max-width: 100%;
+  transform: scale(1.1);
+}
+
+.info {
+  margin-bottom: 12px;
+}
+
+.info i {
+  margin-right: 8px;
+  font-size: 1.1em;
+}
+
+.place {
+  margin-bottom: 40px;
+}
+
+.full-name {
+  font-size: 1.4em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #666f66;
+}
+
+.posts-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 1.1em;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.6em;
+  text-align: center;
+}
+
+.posts-info span {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.action {
+  outline: none;
+  cursor: pointer;
+  color: #fff;
+  background-color: #3a3b3c;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 20px;
+  width: 80%;
+  margin-top: 1em;
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  font-size: 1em;
+  font-weight: bold;
+  letter-spacing: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.action.message {
+  background-color: white;
+  color: #3a3b3c;
+  border: 1px solid #3a3b3c;
+}
+
+.action:hover {
+  transform: scale(1.05);
+  opacity: 0.85;
+}

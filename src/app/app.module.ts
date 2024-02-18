@@ -88,6 +88,15 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { UserProComponent } from './components/user-pro/user-pro.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { FileUploadModule } from 'primeng/fileupload';
+import { MatButtonModule } from '@angular/material/button';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { RippleModule } from 'primeng/ripple';
+import {MatRippleModule} from '@angular/material/core'; 
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -168,6 +177,15 @@ import { UserProComponent } from './components/user-pro/user-pro.component';
     NzLayoutModule,
     NzFlexModule,
     NzSpinModule,
+    ImageCropperModule,
+    FileUploadModule,
+    MatButtonModule,
+    NzUploadModule,
+    RippleModule,
+    MatRippleModule,
+    ColorPickerModule,
+    NgbDropdownModule,
+    NgbAlertModule,
   ],
   exports: [
     // to get component in another modules

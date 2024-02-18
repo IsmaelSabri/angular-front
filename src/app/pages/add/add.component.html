@@ -1,5 +1,5 @@
 <div id="pdfrun">
-<nav class="navbar bg-body-tertiary">
+<nav class="navbar navbar-expand-sm navbar-light">
     <div class="container-fluid">
       <nz-breadcrumb class="mb-0">
         <nz-breadcrumb-item>
@@ -14,9 +14,9 @@
         <nz-breadcrumb-item>Application</nz-breadcrumb-item>
       </nz-breadcrumb>
       <div class="float-right ">
-      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/home-discard.svg"></ion-icon></button>
-      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/home-share.svg"></ion-icon></button>
-      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2"><ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>
+      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/home-discard.svg"></ion-icon></button>
+      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/home-share.svg"></ion-icon></button>
+      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>
       <!--cuore-->
       <input type="checkbox" id="cuore" (click)="cuoreLike()" />
                               <label for="cuore" style="float:right;">
@@ -69,11 +69,17 @@
 
 <!--brand header starts-->
 <nz-affix [nzOffsetTop]="0" *ngIf="this.state">
-  <nav *ngIf='this.user.color!=null || this.user.color!=undefined' [style.background-color]="this.user.color" class="navbar  py-0" role="navigation" >
+  <nav *ngIf='this.brandingColor!=null || this.brandingColor!=undefined' [style.background-color]="this.brandingColor" class="navbar  py-0" role="navigation" >
     <div class="container-fluid"  >
-      <a class="navbar-brand" href="#">Brand pro-user</a>
+        <div class="mx-auto order-0 my-auto"  *ngIf="this.user.brandImage!=null">
+            <a class="a-branding " >
+                <picture class="pictureBranding">
+                    <img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">
+                </picture>
+            </a>
+          </div>
       
-      <img style="border-radius: 50%;" height="55" width="55" class="rounded-circle img-fluid " alt="avatar2" [src]="this.user.profileImage.imageUrl" />
+      <!--<img style="border-radius: 50%;" height="55" width="55" class="rounded-circle img-fluid " alt="avatar2" [src]="this.user.profileImage.imageUrl" />-->
     </div>
   </nav>
 </nz-affix>
@@ -373,10 +379,10 @@
                         <h2>Propiedades similares en {{this.home.distrito}}</h2>
                         <div class="district-filters ">
                             <div class="filter-status">
-                                <button tabindex="0" class="only-one-button" href=".rentTab">
+                                <button tabindex="0" class="only-one-button rbtn eff" href=".rentTab">
                                     <span class="bage-wrap" >Alquiler<span class="district-rent-filter">n<!--reservado filtros--></span></span>
                                 </button>
-                                <button tabindex="0" class="active only-one-button" href=".saleTab">
+                                <button tabindex="0" class="active only-one-button rbtn eff" href=".saleTab">
                                     <span class="bage-wrap" >Venta<span class="district-rent-filter">n+1<!--reservado filtros--></span></span>
                                 </button>
                             </div>
@@ -775,7 +781,7 @@
                             <span *ngIf="showLoading" class="spinner-grow text-light" role="status"
                                     style="width: 1.5rem; height: 1.5rem; margin-top: 7px;">
                             </span>
-                            <span class="readmore-button-label" *ngIf="!showLoading">Enviar consulta</span>
+                            <span class="readmore-button-label rbtn eff" *ngIf="!showLoading">Enviar consulta</span>
                         </button>
                     </form>
                 </div>

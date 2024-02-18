@@ -9,22 +9,24 @@ import { DOCUMENT } from '@angular/common';
 
 })
 export class AdminComponent implements OnInit, OnDestroy {
-  private style?: HTMLLinkElement;
+  protected styleUser: HTMLLinkElement[] = [];
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private renderer2: Renderer2,
   ) {}
 
-
-
-
   ngOnInit(): void {
-    const cssPath = '../../../assets/css/admin-style/style.css';
-    this.style = this.renderer2.createElement('link') as HTMLLinkElement;
-    this.renderer2.appendChild(this.document.head, this.style);
-    this.renderer2.setProperty(this.style, 'rel', 'stylesheet');
-    this.renderer2.setProperty(this.style, 'href', cssPath);
+    const cssPath = ['../../../assets/css/admin-style/style.css',
+    '../../../assets/vendor/jquery-nice-select/css/nice-select.css',
+    '../../../assets/vendor/nouislider/nouislider.min.css'
+  ];
+  for (let i = 0; i < cssPath.length; i++) {
+    this.styleUser[i] = this.renderer2.createElement('link') as HTMLLinkElement;
+    this.renderer2.appendChild(this.document.head, this.styleUser[i]);
+    this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
+    this.renderer2.setProperty(this.styleUser[i], 'href', cssPath[i]);
+  }
     this.loadScripts();
   }
 
@@ -58,7 +60,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.renderer2.removeChild(this.document.head, this.style);
+    this.renderer2.removeChild(this.document.head, this.styleUser);
   }
 
 

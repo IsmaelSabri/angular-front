@@ -40,6 +40,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import wordsCounter from 'word-counting'
 import { MatSidenav } from '@angular/material/sidenav';
 import { DOCUMENT } from '@angular/common';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-home',
@@ -61,9 +62,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
+    primengConfig: PrimeNGConfig
   ) {
     super(router, authenticationService, userService, notificationService, route, toastr,document,
-      renderer2);
+      renderer2,primengConfig);
   }
 
   map!: L.map; // map allocates homes
@@ -540,7 +542,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   handleCancel(): void {
     this.isVisible = false;
   }
-
   showCityResult() {
     if (this.home.ciudad == null) {
       alert('Introduzca la provincia!');

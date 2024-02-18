@@ -14,6 +14,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NzAlign, NzJustify } from 'ng-zorro-antd/flex';
+import { PrimeNGConfig } from 'primeng/api';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -33,6 +34,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     modalService: BsModalService,
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
+    primengConfig: PrimeNGConfig
   ) {
     super(
       router,
@@ -45,7 +47,8 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       sanitizer,
       modalService,
       document,
-      renderer2
+      renderer2,
+      primengConfig
     );
   }
 

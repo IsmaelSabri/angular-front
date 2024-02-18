@@ -17,6 +17,7 @@ import { ToastrService } from 'ngx-toastr';
 import { APIKEY } from 'src/environments/environment.prod';
 import { serialize } from 'object-to-formdata';
 import { DOCUMENT } from '@angular/common';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({ 
   selector: 'app-user',
@@ -42,6 +43,7 @@ export class UserComponent implements OnInit, OnDestroy {
   BrandImage: File;
   brandImageRefreshing: boolean;
   imageProfileRefreshing: boolean;
+  brandingColor:any;
 
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
@@ -51,7 +53,7 @@ export class UserComponent implements OnInit, OnDestroy {
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
     protected userService: UserService, protected notificationService: NotificationService,
     protected route: ActivatedRoute, protected toastr: ToastrService, @Inject(DOCUMENT) protected document: Document,
-    protected renderer2: Renderer2,) { }
+    protected renderer2: Renderer2,protected primengConfig: PrimeNGConfig) { }
 
   ngOnInit(): void {
     //this.loadScripts();
@@ -161,6 +163,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.fileName = fileName;
     this.imageProfileRefreshing = true;
     this.photoImage = profileImage;
+    console.log(this.photoImage);
     if (this.photoImage != null) {
       const body = new FormData();
       body.append('image', this.photoImage);

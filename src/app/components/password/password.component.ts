@@ -17,6 +17,7 @@ import { CustomHttpResponse } from 'src/app/model/performance/custom-http-respon
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-password',
@@ -40,7 +41,8 @@ export class PasswordComponent
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    primengConfig: PrimeNGConfig
   ) {
     super(
       router,
@@ -51,6 +53,7 @@ export class PasswordComponent
       toastr,
       document,
       renderer2,
+      primengConfig
     );
   }
 

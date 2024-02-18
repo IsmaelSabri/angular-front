@@ -43,7 +43,7 @@
       <div class="navbar-end col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <a class="navbar-item" nz-dropdown [nzDropdownMenu]="menu" id="navbarDropdown" role="button"
           aria-expanded="false" aria-haspopup="true" *ngIf='this.state'>
-          <img *ngIf='this.state' height="55" width="55" class="rounded-circle img-fluid brand fluentImage"
+          <img *ngIf='this.state' height="55" width="55" class="rounded-circle img-fluid"
             alt="avatar2" [src]="this.user.profileImage.imageUrl" />
         </a>
         <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -2388,3 +2388,4 @@
   data-bs-slide="next" style="display: none;"></button>
 <button id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]"
   fragment={{this.routerLinkModel}}></button>
+  <button id="alertLocation" style="display:none;" type="button" class="btn-close" data-bs-dismiss="alert" data-bs-target="#my-alert" aria-label="Close"></button>
