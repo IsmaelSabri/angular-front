@@ -18,6 +18,7 @@ import { APIKEY } from 'src/environments/environment.prod';
 import { serialize } from 'object-to-formdata';
 import { DOCUMENT } from '@angular/common';
 import { PrimeNGConfig } from 'primeng/api';
+import { SingleDtoHomeRequest } from 'src/app/model/home';
 
 @Component({ 
   selector: 'app-user',
@@ -44,6 +45,9 @@ export class UserComponent implements OnInit, OnDestroy {
   brandImageRefreshing: boolean;
   imageProfileRefreshing: boolean;
   brandingColor:any;
+  brandingImage:any;
+  dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
+
 
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),

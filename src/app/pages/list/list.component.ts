@@ -34,7 +34,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     modalService: BsModalService,
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
-    primengConfig: PrimeNGConfig
+    primengConfig: PrimeNGConfig,
   ) {
     super(
       router,
@@ -48,7 +48,8 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       modalService,
       document,
       renderer2,
-      primengConfig
+      primengConfig,
+      
     );
   }
 
@@ -74,7 +75,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
           response.map((Home) => {
             Home.images = JSON.parse(Home.imagesAsString);
           });
-          this.homeService.addHomesToLocalCache(response);
+          //this.homeService.addHomesToLocalCache(response);
           this.homes = response;
           this.refreshing = false;
         })

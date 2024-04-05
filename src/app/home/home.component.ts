@@ -1,7 +1,7 @@
 import {
   PropertyType, HouseType, Bedrooms, Bathrooms, Badge, PropertyState, Enseñanza, Institucion,
   RamasConocimiento, EmisionesCO2, ConsumoEnergetico, TipoDeVia, Orientacion, Provincias, PrecioMinimoAlquiler,
-  PrecioMaximoAlquiler, PrecioMinimoVenta, PrecioMaximoVenta, Superficie, Views
+  PrecioMaximoAlquiler, PrecioMinimoVenta, PrecioMaximoVenta, Superficie, Views, PropertyShareType, CarPlaces,
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
 import { Component, ElementRef, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Optional, Output, Renderer2, SimpleChanges, TemplateRef, ViewChild, ViewEncapsulation, } from '@angular/core';
@@ -20,7 +20,6 @@ import { NotificationService } from '../service/notification.service';
 import { AuthenticationService } from '../service/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NotificationType } from '../class/notification-type.enum';
-import { HttpErrorResponse, HttpEventType, HttpHeaders, HttpResponse } from '@angular/common/http';
 import * as L from 'leaflet';
 //import H from '@here/maps-api-for-javascript';
 import { HomeService } from '../service/home.service';
@@ -29,7 +28,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DomSanitizer } from '@angular/platform-browser';
 import { OpenStreetMapProvider, GeoSearchControl, SearchControl, } from 'leaflet-geosearch';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FormControl, FormGroupDirective, NgForm, NgModel } from '@angular/forms';
+import { FormGroupDirective, NgForm, NgModel, AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, Validators, FormBuilder } from '@angular/forms';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
@@ -40,7 +39,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import wordsCounter from 'word-counting'
 import { MatSidenav } from '@angular/material/sidenav';
 import { DOCUMENT } from '@angular/common';
-import { PrimeNGConfig } from 'primeng/api';
+import { Message, PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-home',
@@ -62,10 +61,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
-    primengConfig: PrimeNGConfig
+    primengConfig: PrimeNGConfig,
   ) {
-    super(router, authenticationService, userService, notificationService, route, toastr,document,
-      renderer2,primengConfig);
+    super(router, authenticationService, userService, notificationService, route, toastr, document,
+      renderer2, primengConfig);
   }
 
   map!: L.map; // map allocates homes
@@ -81,15 +80,17 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   beforeCoords!: L.LatLng; // app user coordinates at the beggining
   afterCoords!: L.LatLng; // coordinates where the user wants to put his house
   nextCoords!: L.LatLng; // temp coordinates to put any service
-  streetView!: L.LatLng;
-
+  public adTitle = new BehaviorSubject<string>('Nueva propiedad');
+  public adTitleAction$ = this.adTitle.asObservable();
   home: Home = new Home();
   homeFiltersRequest: HomeFilterRequest = new HomeFilterRequest();
   homes: Home[] = [];
+  homesBounds: any[] = [];
   state: boolean = this.authenticationService.isUserLoggedIn();
   opt = {};
   mydate = new Date().getTime();
   condicion: string[] = Object.values(PropertyType);
+  condicion2: string[] = Object.values(PropertyShareType);
   tipo: string[] = Object.values(HouseType);
   bedrooms: string[] = Object.values(Bedrooms);
   bathrooms: string[] = Object.values(Bathrooms);
@@ -109,6 +110,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   precioMinimoVenta: string[] = Object.values(PrecioMinimoVenta);
   precioMaximoVenta: string[] = Object.values(PrecioMaximoVenta);
   superficie: string[] = Object.values(Superficie);
+  carPlaces: string[] = Object.values(CarPlaces);
+  value!: number;
+  decision: any[] = [
+    { name: 'Aprox.', value: false },
+    { name: 'Exacta', value: true }
+  ];
+  shinePopup: boolean = false; //skeleton
   vistas: string[] = Object.values(Views);
   currentPopupOpenId: string;
   images = new Array<HomeImage>();// new Array(30).fill('');
@@ -116,7 +124,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   routerLinkModel: string;
   filterRentSalePriceFlag: string = 'Venta';
   mapRentSalePriceFlag: string = 'Venta';
-  sidebarVisible:boolean=false;
+  sidebarVisible: boolean = false;
   // method must know what array needs to work
   serviceGoal: string; // aim service
   indexGoal: number; // array index
@@ -169,7 +177,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   // save points
   nearlyMarkers = new Map<string, L.Marker>();
   // dynamic id's carousels
-  idIndex=Array.from(Array(100).keys());
+  idIndex = Array.from(Array(100).keys());
 
   // icons
   bch = beachIcon;
@@ -182,16 +190,29 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   customIcon: any;
 
   mobilityMenu: any;
+  resizeStyleListSidenav = { "max-width": `50%`, };
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.mobilityMenu = window.innerWidth;
+  }
+  // modal new property title 
+  public setAdTitle(adTitle: string): void {
+    this.adTitle.next(adTitle);
+  }
+
+  public restoreMap() {
+    this.lg.clearLayers();
+    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
   }
 
   @ViewChild('newMarkerForm') newMarkerForm: FormGroupDirective;
   // show/hide 2nd modal
   @ViewChild('element') element: ElementRef;
   @ViewChild('map_3') map_3?: ElementRef;
-  openToogleModal(flag: boolean) {
+  @ViewChild('sidenav') sidenav: MatSidenav;
+
+  public openToogleModal(flag: boolean) {
     if (flag) {
       if (this.afterCoords == null || this.afterCoords == undefined) {
         // remove to production
@@ -219,7 +240,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   // rutas próximas
-  setRoute(
+  public setRoute(
     color: string,
     customIcon: any,
     serviceParam: string,
@@ -280,10 +301,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             bounceOnAdd: true,
           }).bindPopup(
             `
-            <div class="col">
-            <button type="button" class="popupopen btn btn-secondary" onclick="saveService()">Guardar</button>
+            <div class="buttons has-addons is-centered " style="left:-0.18em;top:0;botton:0;position:absolute; ">
+              <button class="button is-link" onclick="saveService()">Guardar</button>
+              <button class="button is-link is-light" onclick="closeSmallPopup()">Cancelar</button>
             </div>
-            `
+            `, {
+            offset: [6, -44],
+            //className: '.elementRouteX ',
+          }
           );
         }
       },
@@ -478,13 +503,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.isOkLoading = false;
     }, 3000);
   }
-  //modal primeng
-  mainModal: boolean = false;
-  showDialog() {
-    this.mainModal = true;
-  }
-  closeDialog() {
-    this.mainModal = false;
+  carPlacesIndex = 0;
+  addParkingPrice(input: HTMLInputElement): void {
+    const value = input.value;
+    if (this.carPlaces.indexOf(value) === -1) {
+      this.carPlaces = [...this.carPlaces, input.value || `New item ${this.carPlacesIndex++}`];
+    }
   }
 
   setDate(result: Date) {
@@ -542,51 +566,57 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   handleCancel(): void {
     this.isVisible = false;
   }
+
+  //modal primeng
+  mainModal: boolean = false;
+  showDialog() {
+    this.mainModal = true;
+  }
+  closeDialog() {
+    this.mainModal = false;
+  }
   showCityResult() {
     if (this.home.ciudad == null) {
       alert('Introduzca la provincia!');
     } else {
-      var x = document.getElementById('provButton2');
-      x.style.display = 'none';
-      x = document.getElementById('map_2');
-      x.style.display = 'none';
-      x = document.getElementById('provButton');
-      x.style.display = 'block';
-      this.map2.remove();
+      var x = document.getElementById('provButton');
+      $('.is-danger').addClass('is-success');
+      $('.is-success').removeClass('is-danger');
       this.home.ciudad = this.home.ciudad.split(' ')[0].replace(',', '');
       x.innerHTML = this.home.ciudad;
-      console.log(this.home.ciudad);
+      this.closeDialog();
+    }
+  }
+  locationMap() {
+    this.showDialog();
+    if (this.map2 == null || this.map2 == undefined) {
+      const search = GeoSearchControl({
+        provider: new OpenStreetMapProvider(),
+        popupFormat: ({ result }) => (this.home.ciudad = result.label),
+        searchLabel: 'Ciudad',
+        resultFormat: ({ result }) => result.label,
+        marker: {
+          icon: grayPointerIcon,
+          draggable: false,
+        },
+      });
+      setTimeout(() => {
+        var x = document.getElementById('map_2');
+        x.style.display = 'flex';
+        this.map2 = L.map('map_2', { renderer: L.canvas() }).setView(
+          [40.4380986, -3.8443428],
+          5
+        );
+        this.getLocation();
+        Stadia_OSMBright().addTo(this.map2);
+        //tileLayerHere().addTo(this.map2);
+        this.map2.addControl(search);
+      }, 300)
     }
   }
 
-  locationMap() {
-    const search = GeoSearchControl({
-      provider: new OpenStreetMapProvider(),
-      popupFormat: ({ result }) => (this.home.ciudad = result.label),
-      searchLabel: 'Ciudad',
-      resultFormat: ({ result }) => result.label,
-      marker: {
-        icon: grayPointerIcon,
-        draggable: false,
-      },
-    });
-    var x = document.getElementById('map_2');
-    x.style.display = 'flex';
-    this.map2 = L.map('map_2', { renderer: L.canvas() }).setView(
-      [40.4380986, -3.8443428],
-      5
-    );
-    this.getLocation();
-    Stadia_OSMBright().addTo(this.map2);
-    //tileLayerHere().addTo(this.map2);
-    this.map2.addControl(search);
-    var x = document.getElementById('provButton');
-    x.style.display = 'none';
-    var x = document.getElementById('provButton2');
-    x.style.display = 'block';
-  }
-
-  public loadMarkers(url:string) {
+  public loadMarkers(url: string) {
+    this.ngOnDestroy();
     this.getLocation();
     this.map.eachLayer((layer) => {
       layer.remove();
@@ -595,7 +625,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     //tileLayerWMSSelect().addTo(map);
     //tileLayerCP().addTo(map); // Codigos postales
     //tileLayerWMSSelectIGN().addTo(this.map);
-    Stadia_OSMBright().addTo(this.map);
+    Stadia_OSMBright().addTo(this.map).on('zoomend', () => {
+      this.homesBounds = this.map.getBounds();
+      for (let bound of this.homesBounds) {
+        console.log(bound);
+      }
+      /* now send your bounds to the server, requesting only the visible markers */
+    });;
     //tileLayerHere().addTo(this.map);
     this.subscriptions.push(
       this.homeService.getHomesByQuery(url).subscribe((data) => {
@@ -610,39 +646,41 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                           role="link"
                           tabindex="-1"
                           data-test="property-marker">
-                          <div class="icon-text" style="display: inline-block; overflow: hidden;">${this.formatNumberWithCommas(Home.precioFinal)}€</div>
+                          <div class="icon-text" style="display: inline-block; overflow: hidden;">${this.formatNumberWithCommas(
+                  Home.precioFinal
+                )}€</div>
                       </div>`,
                 iconSize: [30, 42],
-                iconAnchor: [15, 42]
-              })
+                iconAnchor: [15, 42],
+              }),
             },
             this.opt
           )
             .bindPopup(
               `
-            <div class="reale1 row">gula
+            <div class="reale1 row">
               <div class="reale2" col-sm-6>
                  <div class="reale3" >
                     <div class="reale5">
-                       <div id="carouselExample" class="carousel slide " data-bs-interval="false">
-                          <div class="carousel-inner popup-marker" >
-                          </div>
-                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Previous</span>
-                          </button>
-                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Next</span>
-                          </button>
-                          
-                       </div>
-                    </div>
+                      <div id="carouselExample" class="carousel slide " data-bs-interval="false">
+                        <div class="carousel-inner popup-marker">
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                        </button>
+                      </div>
+                      <div class="brandingcontainer" id="brandingcontainer" style="display:none;"></div>
+                    </div> <!-- reale5 -->
                     <div class="col-sm-6 realeTextContainer">
+                    <p class="p_1">${Home.tipo}</p>
                        <div class="realeTextContainer_2">
-                          <p class="p_1">${Home.tipo} en ${Home.condicion}</p>
-                              <input type="checkbox" id="cuore" onclick="cuoreLike()"/>
-                              <label for="cuore" style="float:right;">
+                       <input type="checkbox" id="cuore" onclick="cuoreLike()"/>
+                              <label for="cuore" class="float-end ">
                                   <svg  id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
                                       <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
                                           <path d="M28.9955034,43.5021565 C29.8865435,42.7463028 34.7699838,39.4111958 36.0304386,38.4371087 C41.2235681,34.4238265 43.9999258,30.3756814 44.000204,25.32827 C43.8745444,20.7084503 40.2276972,17 35.8181279,17 C33.3361339,17 31.0635318,18.1584833 29.5323721,20.1689268 L28.9999629,20.8679909 L28.4675537,20.1689268 C26.936394,18.1584833 24.6637919,17 22.181798,17 C17.6391714,17 14,20.7006448 14,25.3078158 C14,30.4281078 16.7994653,34.5060727 22.0294634,38.5288772 C23.3319753,39.530742 27.9546492,42.6675894 28.9955034,43.5021565 Z" id="heart" stroke="#fc2779"/>
@@ -685,28 +723,25 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                                       </g>
                                   </svg>
                               </label>
-                          <p class="p_2">${this.formatNumberWithCommas(Home.precioFinal)}€</p>
+                       <p class="p_1_2 d-block mt-4">En ${Home.condicion}</p>
+                          <p class="p_2"></p>
                           <a onclick="runPopup()" class="a_1">
-                             <p class="p_3">${Home.tipoDeVia} ${Home.calle} ${Home.numero},</p>
-                             <p class="p_4">${Home.ciudad}</p>
+                             <p class="p_3"></p>
+                             <p class="p_4">${Home.distrito}, ${Home.ciudad}</p>
                           </a>
                           <div class="ul_features">
-                                <ion-icon style="font-size: 16px; top:-3px; position:relative;" src="assets/svg/bath_tub.svg"></ion-icon>
-                                ${Home.aseos}&nbsp;&nbsp;
-                                <ion-icon style="font-size: 16px; color:#666;" name="bed-outline"></ion-icon>
-                                ${Home.habitaciones}&nbsp;&nbsp;
-                                <ion-icon style="font-size: 16px; color:#666;" name="car-outline"></ion-icon>
-                                ${Home.garage}&nbsp;&nbsp;
-                                <ion-icon style="font-size: 12px; color:#666;" src="assets/svg/size_arrow.svg"></ion-icon>
-                                &nbsp;${Home.superficie + "m²"}
+                            
                           </div>
-                       </div>
-                    </div>
-                 </div>
+                          <div class="p_features">
+                          
+                          </div>
+                       </div> <!-- realeTextContainer2 -->
+                    </div> <!-- realeTextContainer -->
+                 </div> <!-- reale3 -->
                  
-              </div>
+              </div> <!-- reale2 -->
               
-           </div>
+           </div> <!-- reale1 -->
            
             `,
               {
@@ -717,7 +752,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                 /*direction: 'top',*/
                 permanent: false,
                 /*sticky: false,*/
-                offset: [6, -63],
+                offset: [6, -99],
                 opacity: 0,
                 className: 'popupX',
               }
@@ -727,19 +762,25 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
               () => (
                 localStorage.removeItem('currentBuilding'),
                 localStorage.setItem('currentBuilding', JSON.stringify(Home)),
-                this.dynamicCarousel(Home.images)
+                this.dynamicCarousel(Home.images),
+                this.drawPopup(Home),
+                this.setPopupBranding(Home)
               )
-            ).on('popupopen', () => {
+            )
+            .on('popupopen', () => {
               this.routerLinkId = +Home.id;
               this.routerLinkModel = Home.model;
               if (this.state) {
-                if (this.user.likePreferences != undefined && this.user.likePreferences != null) {
+                if (
+                  this.user.likePreferences != undefined &&
+                  this.user.likePreferences != null
+                ) {
                   if (this.user.likePreferences.includes(Home.viviendaId)) {
                     this.clickButton('cuore');
                   }
                 }
               }
-            })/*.on('mouseover',()=>{
+            }) /*.on('mouseover',()=>{
               this.dynamicCarousel(Home.images);
             })*/
             .addTo(this.map);
@@ -749,15 +790,88 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     );
   }
 
-  runAdCard(home:Home){
+  setPopupBranding(home:Home){
+    if(home.proColor!=null || home.proColor!=undefined){
+      var x = document.getElementById('brandingcontainer');
+        x.style.display = 'flex';
+        x.style.backgroundColor=home.proColor;
+    }
+  }
+
+  dynamicCarousel(data: HomeImage[]) {
+    setTimeout(() => {
+      for (let j = 0; j < data.length; j++) {
+        $('<div class="carousel-item anime"><img src="' + data[j].imageUrl + '"class="image-container"></div>').appendTo('.popup-marker');
+      }
+      $(".anime").first().addClass("active");
+    }, 200);
+  }
+
+  drawMarker(h: Home) {
+    if (h.condicion == 'Venta') {
+      $('.icon-text').text(this.formatNumberWithCommas(h.precioFinal) + '€');
+    } else if (h.condicion == 'Alquiler') {
+      $('.icon-text').text(this.formatNumberWithCommas(h.precioAlquiler) + '€');
+    }
+  }
+
+  drawPopup(h: Home) {
+    if (h.condicion == 'Venta') {
+      $('.p_2').text(this.formatNumberWithCommas(h.precioFinal) + '€');
+    } else if (h.condicion == 'Alquiler') {
+      $('.p_2').text(this.formatNumberWithCommas(h.precioAlquiler) + '€');
+    } else if (h.condicion == 'Alquiler y Venta') {
+      $('<div class="p_2Prices">' + this.formatNumberWithCommas(h.precioFinal) + '€' + '<span style="color:#d9d9d9;">&nbsp;<i class="bi bi-grip-vertical"></i>&nbsp;</span>' + this.formatNumberWithCommas(h.precioAlquiler) + '€</div>').appendTo('.p_2');
+    }
+    if (h.model == 'House' || h.model == 'Flat' || h.model == 'Room') {
+      $('<div class="popup-features d-flex flex-start" id="popup-features"><ion-icon style="font-size:1em; position:relative;" src="assets/svg/bed-horizontal.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.habitaciones + '</span>&nbsp;&nbsp;&nbsp;' +
+        '<ion-icon style="font-size:1em; position:relative;" src="assets/svg/bath_tub.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.aseos + '</span>&nbsp;&nbsp;&nbsp;' +
+        '<ion-icon style="font-size:1em; color:#666;" src="assets/svg/size-popup.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.superficie + "m²" + '</span>&nbsp;&nbsp;</div>'
+      ).appendTo('.ul_features');
+      if (h.garage > 0) {
+        if (h.garage > 1000) {
+          $('<ion-icon style="font-size:1em; position:relative;" src="assets/svg/car-popup.svg"></ion-icon><ion-icon style="color:#8dca3f; margin-top:2px;" name="add-outline"></ion-icon><span class="numbers-font" style="color:#8dca3f;font-size:0.9em;">'
+            + this.formatNumberWithCommas(h.garage) + '€</span>').appendTo('.p_features');
+        } else {
+          $('<ion-icon style="font-size:1.1em; position:relative;" src="assets/svg/car-popup.svg"></ion-icon><span class="numbers-font" style="color:#b4b4b4;">'
+            + h.garage + '</span>').appendTo('.p_features');
+        }
+      }
+    }
+    if (h.piso != null || h.piso != undefined) {
+      $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; position:relative;" src="assets/svg/stairs-tab.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.piso + '</span></div>&nbsp;').appendTo('.popup-features');
+      /*if (newHome.ascensor) {
+        $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; position:relative;" src="assets/svg/popup-elevator.svg"></ion-icon></div>').appendTo('.popup-features');
+      }*/
+    }
+    var playa: Beach[] = JSON.parse(h.distanciaAlMar);
+    if (playa[0].distancia.length != 0) {
+      $('<div class="d-flex flex-start">&nbsp;&nbsp;&nbsp;<ion-icon style="font-size:1em; position:relative;" src="assets/svg/sea.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + playa[0].distancia + '</span></div>&nbsp;').appendTo('.p_features');
+    }
+
+
+
+
+
+    if (h.direccionAproximada) {
+      $('.p_3').text('Ubicación aprox.');
+    } else {
+      $('.p_3').text(h.tipoDeVia + ' ' + h.calle + ' ' + h.numero + ',');
+    }
+
+  }
+
+  // monta la url y pasa del marker al anuncio
+  runAdCard(home: Home) {
     localStorage.removeItem('currentBuilding');
     localStorage.setItem('currentBuilding', JSON.stringify(home));
     this.routerLinkId = +home.id;
     this.routerLinkModel = home.model;
     setTimeout(() => {
-    this.clickButton('linkPopup');
+      this.clickButton('linkPopup');
     }, 1000);
   }
+
   /************************************************************/
   ngOnInit(): void {
     this.map = L.map('map', { renderer: L.canvas() }).setView(
@@ -766,19 +880,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     );
     this.user = this.authenticationService.getUserFromLocalCache();
     this.userMarkerEvents();
-    this.loadMarkers('condicion@=*'+this.mapRentSalePriceFlag); // by default load for sale 
+    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag); // by default load for sale 
     this.loadScripts();
     this.clearMap();
     this.mobilityMenu = window.innerWidth;
-  }
-
-  dynamicCarousel(data: HomeImage[]) {
-    setTimeout(() => {
-      for (let j = 0; j < data.length; j++) {
-        $('<div class="carousel-item"><img src="' + data[j].imageUrl + '"class="image-container"></div>').appendTo('.popup-marker');
-      }
-      $('.carousel-item').first().addClass('active');
-    }, 200);
   }
 
   cuoreLikeFeature() {
@@ -838,9 +943,24 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       icon: luxuryRed,
     }).bindPopup(`
       
-      <button type="button" class="button is-primary is-rounded" onclick="runModal()" >Hecho</button>
-      
-      `);
+      <!--<button type="button" class="button is-primary is-rounded"  >Hecho</button>-->
+      <div class="buttons has-addons is-centered " style="left:-0.18em;top:0;botton:0;position:absolute; ">
+        <button class="button is-success" onclick="runModal()">Guardar</button>
+        <button class="button is-success is-light" onclick="closeSmallPopup()">Cancelar</button>
+      </div>
+          
+      `, {
+      maxWidth: 382,
+      maxHeight: 152,
+      /*removable: true,
+      editable: true,*/
+      /*direction: 'top',*/
+      permanent: false,
+      /*sticky: false,*/
+      offset: [6, -64],
+      opacity: 0,
+      className: 'tooltipX',
+    });
     this.lg = new L.LayerGroup([this.mp]);
     this.lg.addTo(this.map);
 
@@ -850,7 +970,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.mp.on('move', () => (this.afterCoords = this.mp.getLatLng()));
     this.mp.on('moveend', () => console.log(this.afterCoords));
     this.mp.on('dragend', () => this.mp.openPopup());
-    this.map.flyTo([this.beforeCoords.lat, this.beforeCoords.lng], 12);
+    this.map.flyTo([this.beforeCoords.lat, this.beforeCoords.lng], 18);
   }
 
   // Revisar - en el html -> oninput="textAreaResize(this)"
@@ -859,6 +979,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     e.style.height = e.scrollHeight + 'px';
   }
 
+  selectedFiles?: FileList;
+  progressInfos: any[] = [];
+  message: string[] = [];
+  previews: string[] = [];
+  imageInfos?: Observable<any>;
+  filesUploadSuccessfully: number = 0;
   // fix the previews
   selectFiles(event: any): void {
     this.message = [];
@@ -877,109 +1003,141 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectedFiles?: FileList;
-  progressInfos: any[] = [];
-  message: string[] = [];
-  previews: string[] = [];
-  imageInfos?: Observable<any>;
-  filesUploadSuccessfully: number = 0;
+  rentTab = new BehaviorSubject<boolean>(false);
+  shareTab = new BehaviorSubject<boolean>(undefined);
+  saleTab = new BehaviorSubject<boolean>(false);
+  conditionTabs() {
+    if (this.home.tipo != 'Habitación') {
+      this.shareTab.next(true);
+      this.saleTab.next(false);
+      var x = document.getElementById('kompartirTitle');
+      x.style.textDecoration = 'line-through';
+    } else {
+      this.shareTab.next(false);
+      this.saleTab.next(true);
+      var x = document.getElementById('kompartirTitle');
+      x.style.textDecoration = 'none';
+    }
+    if (this.home.condicion == 'Venta') {
+      this.rentTab.next(true);
+      var x = document.getElementById('alquilerTitle');
+      x.style.textDecoration = 'line-through';
+      this.home.precioAlquiler = null;
+    } else {
+      this.rentTab.next(false);
+      var x = document.getElementById('alquilerTitle');
+      x.style.textDecoration = 'none';
+    }
+    if (this.home.condicion == 'Alquiler') {
+      this.saleTab.next(true);
+      this.home.precioFinal = null;
+    }
+  }
+
+  getShareTab(): boolean {
+    return this.shareTab.getValue();
+  }
+  getRentTab(): boolean {
+    return this.rentTab.getValue();
+  }
+
+  tabIndex: number = 0;
+  increaseTab() {
+    if (this.tabIndex <= 4) {
+      if (this.home.condicion == 'Venta' && this.tabIndex == 1) {
+        this.tabIndex = 4;
+      } else if (this.home.condicion == 'Alquiler' && this.tabIndex == 2) {
+        this.tabIndex = 4;
+      } else {
+        this.tabIndex++;
+      }
+      if (this.tabIndex == 5) {
+        var x = document.getElementById('nextTab');
+        x.style.display = 'none';
+      }
+    }
+    if (this.tabIndex == 1) {
+      var x = document.getElementById('prevTab');
+      x.style.display = 'block';
+    }
+  }
+  decreaseTab() {
+    if (this.tabIndex >= 1) {
+      if (this.home.condicion == 'Venta' && this.tabIndex == 4) {
+        this.tabIndex = 1;
+      } else if (this.home.condicion == 'Alquiler' && this.tabIndex == 4) {
+        this.tabIndex = 2;
+      } else {
+        this.tabIndex--;
+      }
+      if (this.tabIndex == 5) {
+        var x = document.getElementById('prevTab');
+        x.style.display = 'none';
+      }
+    }
+    if (this.tabIndex == 4) {
+      var x = document.getElementById('nextTab');
+      x.style.display = 'block';
+    }
+    if (this.tabIndex == 0) {
+      var x = document.getElementById('prevTab');
+      x.style.display = 'none';
+    }
+  }
+  whatTab(flag: string) {
+    if (flag == 'General') {
+      this.tabIndex = 0;
+      var x = document.getElementById('prevTab');
+      x.style.display = 'none';
+      var x = document.getElementById('nextTab');
+      x.style.display = 'block';
+    } else if (flag == 'Acabados') {
+      this.tabIndex = 1;
+      var x = document.getElementById('nextTab');
+      x.style.display = 'block';
+      var x = document.getElementById('prevTab');
+      x.style.display = 'block';
+      x.style.display = 'block';
+    } else if (flag == 'Alquiler') {
+      this.tabIndex = 2;
+      var x = document.getElementById('nextTab');
+      x.style.display = 'block';
+      var x = document.getElementById('prevTab');
+      x.style.display = 'block';
+    } else if (flag == 'Compartir') {
+      this.tabIndex = 3;
+      var x = document.getElementById('nextTab');
+      x.style.display = 'block';
+      var x = document.getElementById('prevTab');
+      x.style.display = 'block';
+    } else if (flag == 'Movilidad') {
+      this.tabIndex = 4;
+      var x = document.getElementById('nextTab');
+      x.style.display = 'block';
+      var x = document.getElementById('prevTab');
+      x.style.display = 'block';
+    } else if (flag == 'Multimedia') {
+      this.tabIndex = 5;
+      var x = document.getElementById('nextTab');
+      x.style.display = 'none';
+      var x = document.getElementById('prevTab');
+      x.style.display = 'block';
+    }
+  }
+
+  public isHighEficiency(): boolean {
+    return this.home.emisiones.charAt(0) == 'A' && this.home.consumo.charAt(0) == 'A';
+  }
+
+  rotateArrows(e: any, id: string) {
+    if (e)
+      $("." + id).find(".ant-select-arrow").toggleClass("ant-select-arrow-down");
+    else
+      $("." + id).find(".ant-select-arrow").removeClass("ant-select-arrow-down");
+  }
 
   newHome() {
     this.lg.remove(this.mp);
-    /*
-    * por ahora al tener anidados varios elementos y componentes de distintas librerías los validators
-    * no cogen por lo que se hace manual para lo esencial y luego el usuario si lo quiere editar que
-    * ponga los atributos adicionales. Aun así están definidos los form-group + form-outline 
-    */
-    if (this.home.ciudad == null || this.home.ciudad == undefined) {
-      this.toastr.info(
-        'Introduzca la ciudad',
-        'Campo requerido'
-      );
-    } else if (this.home.tipoDeVia == null || this.home.tipoDeVia == undefined) {
-      this.toastr.info(
-        'Introduzca el tipo de vía',
-        'Campo requerido'
-      );
-    } else if (this.home.calle == null || this.home.calle == undefined) {
-      this.toastr.info(
-        'Introduzca la calle',
-        'Campo requerido'
-      );
-    } else if (this.home.distrito == null || this.home.distrito == undefined) {
-      this.toastr.info(
-        'Distrito no encontrado',
-        'Campo requerido'
-      );
-    } else if (this.home.cp == null || this.home.cp == undefined) {
-      this.toastr.info(
-        'Código postal incorrecto',
-        'Campo requerido'
-      );
-    } else if (this.home.antiguedad == null || this.home.antiguedad == undefined) {
-      this.toastr.info(
-        'Falta la antiguedad',
-        'Campo requerido'
-      );
-    } else if (this.home.superficie == null || this.home.superficie == undefined) {
-      this.toastr.info(
-        'Superficie indeterminada',
-        'Campo requerido'
-      );
-    } else if (this.home.habitaciones == null || this.home.habitaciones == undefined) {
-      this.toastr.info(
-        'Introduzca las habitaciones. Si se trata de un estudio/loft marque 0.',
-        'Campo requerido'
-      );
-    } else if (this.home.aseos == null || this.home.aseos == undefined) {
-      this.toastr.info(
-        'Introduzca de cuantos aseos dispone la vivienda',
-        'Campo requerido'
-      );
-    } else if (this.home.condicion == null || this.home.condicion == undefined) {
-      this.toastr.info(
-        'Introduzca si se encuentra en alquiler, venta o ambas cosas',
-        'Campo requerido'
-      );
-    } else if (this.home.tipo == null || this.home.tipo == undefined) {
-      this.toastr.info(
-        'Tipo de vivienda obligatorio',
-        'Campo requerido'
-      );
-    } else if (this.home.orientacion == null || this.home.orientacion == undefined) {
-      this.toastr.info(
-        'Introduzca la orientación',
-        'Campo requerido'
-      );
-    } else if (this.home.estado == null || this.home.estado == undefined) {
-      this.toastr.info(
-        'Introduzca el estado en el que se encuentra la vivienda',
-        'Campo requerido'
-      );
-    } else if (this.home.precioFinal == null || this.home.precioFinal == undefined
-      && this.home.condicion == "Venta" || this.home.condicion == "Alquiler y venta") {
-      this.toastr.info(
-        'Introduzca el precio de venta',
-        'Campo requerido'
-      );
-    } else if (this.home.precioAlquiler == null || this.home.precioAlquiler == undefined) {
-      if (this.home.condicion == "Alquiler" || this.home.condicion == "Alquiler y venta") {
-        this.toastr.info(
-          'Introduzca el precio de alquiler',
-          'Campo requerido'
-        );
-      }
-    } else if (this.home.vistasDespejadas == null || this.home.vistasDespejadas == undefined) {
-      this.toastr.info(
-        'Introduzca las vistas que ofrece la vivienda',
-        'Campo requerido'
-      );
-    } else if (this.home.descripcion == null || this.home.descripcion == undefined) {
-      this.toastr.info(
-        'Introduzca una descripción detallada',
-        'Campo requerido'
-      );
-    }
     const formData = new FormData();
     formData.append('lat', this.afterCoords.lat);
     formData.append('lng', this.afterCoords.lng);
@@ -988,10 +1146,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('numero', this.home.numero);
     formData.append('cp', this.home.cp);
     formData.append('superficie', JSON.stringify(this.home.superficie).split('"').join('').split("'").join(''));
-    formData.append('garage', JSON.stringify(this.home.garage).split('"').join('').split("'").join(''));
     formData.append('condicion', this.home.condicion);
     formData.append('tipo', this.home.tipo);
-    formData.append('piso', this.home.piso);
+    formData.append('piso', this.home.piso + "/" + this.home.plantaMasAlta);
     formData.append('orientacion', this.propertyGuidance(this.home.orientacion));
     formData.append('distrito', this.home.distrito);
     formData.append('tipoDeVia', this.home.tipoDeVia);
@@ -1006,6 +1163,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('calefaccion', JSON.stringify(this.home.calefaccion));
     formData.append('emisiones', this.home.emisiones);
     formData.append('consumo', this.home.consumo);
+    formData.append('eficienciaEnergetica', JSON.stringify(this.isHighEficiency()));
     formData.append('ascensor', JSON.stringify(this.home.ascensor));
     formData.append('gym', JSON.stringify(this.home.gym));
     formData.append('tenis', JSON.stringify(this.home.tenis));
@@ -1027,7 +1185,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('terraza', JSON.stringify(this.home.terraza));
     formData.append('amueblado', JSON.stringify(this.home.amueblado));
     formData.append('parquet', JSON.stringify(this.home.parquet));
-    formData.append('plantaMasAlta', JSON.stringify(this.home.plantaMasAlta));
     formData.append('trastero', JSON.stringify(this.home.trastero));
     formData.append('armariosEmpotrados', JSON.stringify(this.home.armariosEmpotrados));
     formData.append('piscinaPrivada', JSON.stringify(this.home.piscinaPrivada));
@@ -1044,6 +1201,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('Model', this.defineModel(this.home.tipo));
     formData.append('creador', this.user.userId);
     formData.append('nombreCreador', this.user.username);
+    formData.append('idCreador', this.user.userId);
+    formData.append('cabinaHidromasaje', JSON.stringify(this.home.cabinaHidromasaje));
+    if (this.home.garage) {
+      formData.append('garage', JSON.stringify(this.home.garage).split('"').join('').split("'").join(''));
+    }
     if (this.home.aseoEnsuite) {
       formData.append('aseoEnsuite', JSON.stringify(this.home.aseoEnsuite).split('"').join('').split("'").join(''));
     }
@@ -1068,10 +1230,29 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.toastr.info(
         'Si contempla compartir y vender introduzca el precio de alquiler',
         'Campo requerido'
-      );
+
+      ); 
     }
+    //detalles de alquiler
     if (this.fechaDisponibleAlquiler) {
       formData.append('disponibilidad', this.fechaDisponibleAlquiler);
+    }
+    if(this.home.mascotas){
+      formData.append('mascotas', this.home.mascotas);
+    }
+    if(this.home.fianza){
+      formData.append('fianza', this.home.fianza);
+    }
+    if(this.home.estanciaMinima){
+      formData.append('estanciaMinima', this.home.estanciaMinima);
+    }
+    if (this.user.isPro) {
+      if (this.user.color != null || this.user.color != undefined) {
+        this.home.proColor = this.user.color;
+      }
+      if(this.user.brandImage != null || this.user.brandImage != undefined || this.user.brandImage.imageUrl.length != 0){
+        this.home.proImage=this.user.brandImage.imageUrl;
+      }
     }
     this.message = [];
     if (this.selectedFiles) {
@@ -1104,8 +1285,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                       this.router.navigate(['/home']),
                         this.sendNotification(NotificationType.SUCCESS, `Anuncio creado.`);
                       var resetForm = <HTMLFormElement>document.getElementById('newMarkerForm');
-                      resetForm.reset();
-                      this.clickButton('new-marker-close');
+                      resetForm?.reset();
+                      $(".modal").removeClass("is-active");
                     })
                   );
                 }, 3000);
@@ -1121,6 +1302,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
 
     this.map.removeLayer(this.lg);
+    /*setTimeout(()=>{
+      window.location.reload();
+    },5000);*/
   }
 
   checkBox(param): any {
@@ -1221,9 +1405,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         if (urlFilterRequest.includes('&sorts=')) {
           if (key === 'precioAlquilerMin') {
             var formatParam = value.replace('€', '').split(',').join(''); // me dejas un número entero
-            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioAlquiler>=' + formatParam  + ',') // lo pone sequido a sorts
+            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioAlquiler>=' + formatParam + ',') // lo pone sequido a sorts
             urlFilterRequest = formatUrl;
-            urlFilterRequest = 'precioAlquiler>='+ formatParam + ',' + urlFilterRequest; // filtrado
+            urlFilterRequest = 'precioAlquiler>=' + formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           } else if (key === 'precioAlquilerMax') {
             var formatParam = value.replace('€', '').split(',').join('');
@@ -1233,7 +1417,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           } else if (key === 'precioVentaMin') {
             var formatParam = value.replace('€', '').split(',').join('');
-            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioFinal>='+ formatParam + ',')
+            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioFinal>=' + formatParam + ',')
             urlFilterRequest = formatUrl;
             urlFilterRequest = 'precioFinal>=' + formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
@@ -1245,7 +1429,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           } else if (key === 'superficieMin') {
             var formatParam = value.replace('m²', '').split(',').join('');
-            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'superficie>='+ formatParam + ',')
+            var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'superficie>=' + formatParam + ',')
             urlFilterRequest = formatUrl; // ordenamiento 
             urlFilterRequest = 'superficie>=' + formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
@@ -1306,13 +1490,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   wordCount: number;
   public wordCounter() {
-     // setTimeout(() => {
-      this.wordCount = wordsCounter(this.homeFiltersRequest.keywords).wordsCount;
-      this.filter(this.homeFiltersRequest.keywords, 'descripcion');
-      console.log(this.homeFiltersRequest.keywords);
-      if(this.wordCount===0&&this.myMap.has('descripcion')){
-        this.myMap.delete('descripcion');
-      }
+    // setTimeout(() => {
+    this.wordCount = wordsCounter(this.homeFiltersRequest.keywords).wordsCount;
+    this.filter(this.homeFiltersRequest.keywords, 'descripcion');
+    console.log(this.homeFiltersRequest.keywords);
+    if (this.wordCount === 0 && this.myMap.has('descripcion')) {
+      this.myMap.delete('descripcion');
+    }
     //}, 2000);
   }
 

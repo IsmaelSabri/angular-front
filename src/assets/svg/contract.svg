@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 51.82 56"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg22"
+   sodipodi:docname="contract.svg"
+   width="51.82"
+   height="56"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs26" />
+  <sodipodi:namedview
+     id="namedview24"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="9.5125"
+     inkscape:cx="25.965834"
+     inkscape:cy="27.542707"
+     inkscape:window-width="1920"
+     inkscape:window-height="1052"
+     inkscape:window-x="3840"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg22" />
+  <g
+     data-name="Contract"
+     id="g16"
+     transform="translate(-6,-4)"
+     style="fill:#bbbbbb">
+    <path
+       d="m 57.82,27.67 a 1.009,1.009 0 0 1 -0.29,0.7 l -7.07,7.07 -1.42,-1.41 6.37,-6.36 -0.71,-0.71 1.41,-1.42 1.42,1.42 a 1.033,1.033 0 0 1 0.29,0.71 z"
+       id="path2"
+       style="fill:#bbbbbb" />
+    <rect
+       x="55.112999"
+       y="18.886999"
+       width="2"
+       height="2"
+       transform="rotate(-45,56.11348,19.887036)"
+       id="rect4"
+       style="fill:#bbbbbb" />
+    <path
+       d="M 40.707,9.293 42,10.586 V 4 h -4 v 6.586 l 1.293,-1.293 a 1,1 0 0 1 1.414,0 z"
+       id="path6"
+       style="fill:#bbbbbb" />
+    <path
+       d="m 7,60 h 40 a 1,1 0 0 0 1,-1 V 33.657 L 34.192,47.464 a 0.985,0.985 0 0 1 -0.313,0.212 L 28.93,49.8 a 1,1 0 0 1 -1.1,-0.212 v 0 l -2.121,2.121 -1.414,-1.414 2.121,-2.121 v 0 a 1,1 0 0 1 -0.212,-1.1 l 2.122,-4.949 a 0.985,0.985 0 0 1 0.212,-0.313 L 48,22.343 V 5 A 1,1 0 0 0 47,4 h -3 v 9 a 1,1 0 0 1 -1.707,0.707 L 40,11.414 37.707,13.707 A 1,1 0 0 1 36,13 V 4 H 7 A 1,1 0 0 0 6,5 v 54 a 1,1 0 0 0 1,1 z m 3,-44 h 10 v 2 H 10 Z m 0,6 h 28 v 2 H 10 Z m 0,6 h 28 v 2 H 10 Z m 0,6 h 18 v 2 H 10 Z"
+       id="path8"
+       style="fill:#bbbbbb" />
+    <rect
+       x="50.577"
+       y="21.423"
+       width="4"
+       height="4"
+       transform="rotate(-45,52.577068,23.422865)"
+       id="rect10"
+       style="fill:#bbbbbb" />
+    <polygon
+       points="30.004,43.276 28.307,47.236 28.764,47.693 32.724,45.996 "
+       id="polygon12"
+       style="fill:#bbbbbb" />
+    <rect
+       x="29.263"
+       y="32.736"
+       width="24"
+       height="4"
+       transform="rotate(-45,41.263566,34.737071)"
+       id="rect14"
+       style="fill:#bbbbbb" />
+  </g>
+</svg>

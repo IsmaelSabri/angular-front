@@ -51,6 +51,9 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
   protected styleUser: HTMLLinkElement[] = [];
 
   ngOnInit(): void {
+    $('#action_menu_btn').click(function(){
+      $('.action_menu').toggle();
+  });
     this.primengConfig.ripple = true;
     this.loadScripts();
     this.user = this.authenticationService.getUserFromLocalCache();

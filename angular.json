@@ -23,7 +23,7 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
-              "src/wh_ico_.ico",
+              "src/favicon.png",
               "src/assets",
               {"glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",

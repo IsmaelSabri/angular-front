@@ -5,6 +5,11 @@ function saveService() {
 function runPopup() {
   document.getElementById("linkPopup").click();
 }
+//bypass close the ad
+function closeSmallPopup(){
+  document.querySelector('.leaflet-popup-close-button').click();
+  document.getElementById("restoreMap").click();
+}
 function cuoreLike() {}
 //modal newHome
 /*$(".modal-toggle").on("click", function (e) {

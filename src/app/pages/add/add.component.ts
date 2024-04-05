@@ -1,5 +1,5 @@
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
@@ -31,7 +31,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 import Swal from 'sweetalert2'
 import { DOCUMENT } from '@angular/common';
 import { PrimeNGConfig } from 'primeng/api';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PrivateChatComponent } from 'src/app/components/private-chat/private-chat.component';
+import { ChatService } from 'src/app/service/chat.service';
+import { User } from 'src/app/model/user';
+import { Message } from 'src/app/model/message';
+import { GestureHandling } from "leaflet-gesture-handling";
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-add',
@@ -44,7 +50,6 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   homes: Home[] = [];
   aux: string;
-  dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
   public refreshing: boolean;
   contactUser: ContactUser = new ContactUser();
   private host = environment.apiUrl;
@@ -54,9 +59,10 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
   isCollapsed: boolean = true;
   trustedUrl: any = '';
   home: Home;
-
+  //propertyOwner: User;
   intake: string;
   emissions: string;
+  @Input() messages: Message[] = this.chatService.privateMessages;
   //maps
   mapAdd!: L.map;
   circle!: L.circle;
@@ -101,7 +107,9 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
     private _lightbox: Lightbox,
     private _changeDetectorRef: ChangeDetectorRef,
     public activatedRoute: ActivatedRoute,
-    primengConfig: PrimeNGConfig
+    primengConfig: PrimeNGConfig,
+    public chatService: ChatService, 
+    private modalSevice: NgbModal
   ) {
     super(
       router,
@@ -123,11 +131,30 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // mas rápido desde localstorage después lo machaco desde la api
+    var x = document.getElementById('photos-section');
+    x.style.display='none'
+    // mas rápido desde localstorage después lo machaco desde la api para coger el modelo
+    // que ese sí tiene todos los atributos
     if (this.homeService.getHomeFromLocalCache()) {
       this.home = this.homeService.getHomeFromLocalCache();
     }
-    //get the current home
+    if(this.home.proColor!=null || this.home.proColor!=undefined){
+      this.brandingColor=this.sanitizer.bypassSecurityTrustStyle(this.home.proColor);
+    }
+    if(this.home.proImage!=null || this.home.proImage!=undefined){
+      this.brandingImage=this.sanitizer.bypassSecurityTrustStyle(this.home.proImage);
+    }
+    /*this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
+      next: (res) => {
+        this.propertyOwner=res;
+          
+      }, error: () => {
+        this.sendNotification(
+          NotificationType.ERROR, 'Propietario del anuncio' + this.dto.id + ' desconocido',
+        );
+      }
+    }));*/
+    //get the current home through url
     this.subscriptions.push(
       this.activatedRoute.fragment.subscribe({
         next: (model) => {
@@ -156,12 +183,11 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
         this.home = res;
         if (this.state) {
           this.user = this.authenticationService.getUserFromLocalCache();
-          this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.user.color);
         }
         setTimeout(() => {
           for (let i = 0; i < this.home.images.length; i++) {
             const src = this.home.images[i].imageUrl + i + '.jpg';
-            const caption = i + ' / ' + this.home.images.length;
+            const caption = i + 1 + ' / ' + this.home.images.length;
             const thumb = this.home.images[i].imageUrl + i + '.jpg';
             const album = {
               src: src,
@@ -172,12 +198,16 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
           }
         }, 1000);
         this.home.images = JSON.parse(this.home.imagesAsString);
+        var y = document.getElementById('skeleton-section');
+        y.style.display='none';
+        x.style.display = 'block';
         this.setEnergyFeatures(
           this.home.consumo.substring(0, 1),
           this.home.emisiones.substring(0, 1)
         );
-        this.mapAdd = L.map('mapAdd', { renderer: L.canvas() }).setView(
-          [this.home.lat, this.home.lng],
+        L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
+        this.mapAdd = L.map('mapAdd', { renderer: L.canvas(),gestureHandling: true}).setView(
+          [this.home.lat, this.home.lng], 
           17
         );
         Stadia_OSMBright().addTo(this.mapAdd);
@@ -448,7 +478,14 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
       ();
   }
 
+  openPrivateChat(toUser: string) {
+    this.chatService.createChatConnection();
+    const modalRef =this.modalSevice.open(PrivateChatComponent);
+    modalRef.componentInstance.toUser = toUser;
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.chatService.stopChatConnection();
   }
 }

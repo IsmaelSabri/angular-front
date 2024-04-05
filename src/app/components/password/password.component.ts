@@ -1,6 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, Renderer2, VERSION } from '@angular/core';
 import {
   AbstractControl,
+  AbstractControlOptions,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -124,7 +125,7 @@ export class PasswordComponent
       confirmPassword: this.confirmPassword,
     },
     {
-      validator: this.ConfirmedValidator('newPassword', 'confirmPassword'),
+      validator: this.ConfirmedValidator('newPassword', 'confirmPassword')
     }
   );
 

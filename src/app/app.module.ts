@@ -97,7 +97,16 @@ import {MatRippleModule} from '@angular/material/core';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { ChatService } from './service/chat.service';
+import { PrivateChatComponent } from './components/private-chat/private-chat.component';
+import { PanelModule } from 'primeng/panel';
+import { GalleriaModule } from 'primeng/galleria';
+import { DividerModule } from 'primeng/divider';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { MessagesModule } from 'primeng/messages';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { SkeletonModule } from 'primeng/skeleton';
 @NgModule({
   declarations: [
     AppComponent,
@@ -110,6 +119,7 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
     PasswordComponent,
     AdminComponent,
     UserProComponent,
+    PrivateChatComponent,
   ],
   imports: [
     BrowserModule,
@@ -121,7 +131,6 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
     NotifierModule,
     NgbModalModule,
     NgbModule,
-    //IvyCarouselModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     MatFormFieldModule,
@@ -186,6 +195,14 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
     ColorPickerModule,
     NgbDropdownModule,
     NgbAlertModule,
+    PanelModule,
+    GalleriaModule,
+    DividerModule,
+    NzTypographyModule,
+    MessagesModule,
+    NgScrollbarModule,
+    NzSkeletonModule,
+    SkeletonModule,
   ],
   exports: [
     // to get component in another modules
@@ -202,6 +219,7 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
     NgbCarouselConfig,
     CookieService,
     HomeService,
+    ChatService,
     BsModalService,
     { provide: NZ_I18N, useValue: es_ES },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true, },

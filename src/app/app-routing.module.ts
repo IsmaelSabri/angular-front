@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'vlog', component: VlogComponent },
   { path: 'add/:id', component: AddComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'list', component: ListComponent },
+  { path: '_es', component: ListComponent },
   { path: 'pass', component: PasswordComponent },
   { path: 'user-pro', component: UserProComponent, canActivate: [AuthenticationGuard] },
   { path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard] }, 

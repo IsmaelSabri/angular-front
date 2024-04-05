@@ -89,7 +89,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link " href="">
+            <a class="nav-link " data-bs-toggle="tab" href="#messages">
               <i class="material-icons">chat</i>
               <span>Mensajes</span>
             </a>
@@ -126,15 +126,16 @@
       <div class="main-navbar sticky-top bg-white">
         <!-- Main Navbar -->
         <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0 ">
-          <div class="main-navbar__search w-100 d-none d-md-flex d-lg-flex" 
-          *ngIf='this.brandingColor!=null || this.brandingColor!=undefined' [style.background-color]="this.brandingColor">
-            <div class="mx-auto order-0"  *ngIf="this.tempBranding==null">
-              <a class="navbar-brand d-none d-md-block" >
+          <div class="main-navbar__search w-100 d-none d-md-flex d-lg-flex"
+            *ngIf='this.brandingColor!=null || this.brandingColor!=undefined'
+            [style.background-color]="this.brandingColor">
+            <div class="mx-auto order-0" *ngIf="this.tempBranding==null">
+              <a class="navbar-brand d-none d-md-block">
                 <img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">
               </a>
             </div>
-            <div class="mx-auto order-0"  *ngIf="this.tempBranding!=null">
-              <a class="navbar-brand d-none d-md-block" >
+            <div class="mx-auto order-0" *ngIf="this.tempBranding!=null">
+              <a class="navbar-brand d-none d-md-block">
                 <img class="brandImage" [src]="this.croppedImageBranding" alt="">
               </a>
             </div>
@@ -188,21 +189,21 @@
               </div>
             </li>
             <li class="nav-item dropdown" ngbDropdown>
-              <a class="nav-link dropdown-toggle text-nowrap px-3" ngbDropdownToggle role="button"
-                aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle text-nowrap px-3" ngbDropdownToggle role="button" aria-haspopup="true"
+                aria-expanded="false">
                 <img class="user-avatar rounded-circle mr-2" [src]="this.user?.profileImage.imageUrl" alt="User Avatar">
                 <span class="d-none d-md-inline-block">{{this.user?.firstname}} {{this.user?.lastname}}</span>
               </a>
               <div class="dropdown-menu dropdown-menu-small" ngbDropdownMenu>
-                <a class="dropdown-item" ngbDropdownItem href="">
-                  <i class="material-icons">&#xE7FD;</i> Profile</a>
-                <a class="dropdown-item" ngbDropdownItem href="">
-                  <i class="material-icons">vertical_split</i> Blog Posts</a>
-                <a class="dropdown-item" ngbDropdownItem href="">
+                <a class="dropdown-item" ngbDropdownItem routerLink="/home">
+                  <i class="material-icons">map</i> Mapa</a>
+                <a class="dropdown-item" ngbDropdownItem routerLink="/admin">
+                  <i class="material-icons">storage</i> Admin area</a>
+                <a class="dropdown-item" ngbDropdownItem>
                   <i class="material-icons">note_add</i> Add New Post</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" ngbDropdownItem href="">
-                  <i class="material-icons text-danger">&#xE879;</i> Logout </a>
+                <a class="dropdown-item text-danger" ngbDropdownItem (click)="onLogOut()" routerLink="/home">
+                  <i class="material-icons text-danger">&#xE879;</i> Salir </a>
               </div>
             </li>
           </ul>
@@ -567,6 +568,260 @@
             <!-- End Top Referrals Component -->
           </div>
         </div>
+        <!--Messages-->
+        <div class="main-content-container container-fluid tab-pane fade " id="messages">
+          <div class="col-lg-12 right">
+            <div class="box shadow-sm rounded bg-white mb-3">
+                <div class="box-title border-bottom p-3">
+                    <h6 class="m-0">Recent</h6>
+                </div>
+                <div class="box-body p-0">
+                    <div class="p-3 d-flex align-items-center bg-light border-bottom osahan-post-header">
+                        <div class="dropdown-list-image mr-3">
+                            <img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="" />
+                        </div>
+                        <div class="font-weight-bold mr-3">
+                            <div class="text-truncate">DAILY RUNDOWN: WEDNESDAY</div>
+                            <div class="small text-nowrap">e alquila estupendo y luminoso Piso en Ángel Guimerá Disponible el 28 DE OCTUBRE , zona Abastos, con terraza. CORTA ESTANCIA HASTA 11 MESES
+
+                              Contrato temporal Hasta 11 meses , Servicios incluidos
+                              
+                              La Vivienda consta de unos 105 metros cuadrados distribuidos en un recibidor, salón comedor, cocina, 2 dormitorios, un baño y terraza de uso privativo de 20 metros cuadrados. Se alquila totalmente amueblada y equipada con todos los electrodomésticos.
+                              
+                              Está para entrar a vivir, con una reforma reciente, materiales de alta calidad, suelo de vinilo antibacteriano en toda la casa, ventanas de PVC y doble cristal bajo emisivo, aire acondicionado, armarios empotrados, puerta acorazada. La luz y agua están dadas de alta, el patio reformado y con ascensor a cota 0. Rodeada de todo tipo de servicios, supermercados, colegios, gimnasios, zonas de ocio, etc.
+                              
+                              El piso está situado en el barrio de Arrancapins, uno de los barrios más consolidados de València, desde el cual es muy cómodo llegar a pie al Centro Histórico, la Plaza del Ayuntamiento, la Estación del Norte, la Gran Vía Fernando El Católico, los Jardines del Turia, etc.
+                              
+                              Todos los servicios necesarios, como supermercados, organismos públicos, medios de transporte y vías principales de comunicación se encuentran en las inmediaciones. Sus numerosos restaurantes y locales típicos con terrazas la convierten en una ubicación ideal para poder disfrutar del fabuloso clima mediterráneo del que goza València.</div>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">3d</div>
+                        </span>
+                    </div>
+                    <div class="p-3 d-flex align-items-center osahan-post-header">
+                        <div class="dropdown-list-image mr-3">
+                            <img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" />
+                        </div>
+                        <div class="font-weight-bold mr-3">
+                            <div class="mb-2">We found a job at askbootstrap Ltd that you may be interested in Vivamus imperdiet venenatis est...</div>
+                            <button type="button" class="btn btn-outline-success btn-sm">View Jobs</button>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">4d</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="box shadow-sm rounded bg-white mb-3">
+                <div class="box-title border-bottom p-3">
+                    <h6 class="m-0">Earlier</h6>
+                </div>
+                <div class="box-body p-0">
+                    <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                        <div class="dropdown-list-image mr-3 d-flex align-items-center bg-danger justify-content-center rounded-circle text-white">DRM</div>
+                        <div class="font-weight-bold mr-3">
+                            <div class="text-truncate">DAILY RUNDOWN: MONDAY</div>
+                            <div class="small">Nunc purus metus, aliquam vitae venenatis sit amet, porta non est.</div>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" >
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">3d</div>
+                        </span>
+                    </div>
+                    <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                        <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="" /></div>
+                        <div class="font-weight-bold mr-3">
+                            <div class="text-truncate">DAILY RUNDOWN: SATURDAY</div>
+                            <div class="small">Pellentesque semper ex diam, at tristique ipsum varius sed. Pellentesque non metus ullamcorper</div>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">3d</div>
+                        </span>
+                    </div>
+                    <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                        <div class="dropdown-list-image mr-3">
+                            <img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="" />
+                        </div>
+                        <div class="font-weight-bold mr-3">
+                            <div class="mb-2"><span class="font-weight-normal">Congratulate Gurdeep Singh Osahan (iamgurdeeposahan)</span> for 5 years at Askbootsrap Pvt.</div>
+                            <button type="button" class="btn btn-outline-success btn-sm">Say congrats</button>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">4d</div>
+                        </span>
+                    </div>
+                    <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                        <div class="dropdown-list-image mr-3">
+                            <img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="" />
+                        </div>
+                        <div class="font-weight-bold mr-3">
+                            <div>
+                                <span class="font-weight-normal">Congratulate Mnadeep singh (iamgurdeeposahan)</span> for 4 years at Askbootsrap Pvt.
+                                <div class="small text-success"><i class="fa fa-check-circle"></i> You sent Mandeep a message</div>
+                            </div>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">4d</div>
+                        </span>
+                    </div>
+                    <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                        <div class="dropdown-list-image mr-3 d-flex align-items-center bg-success justify-content-center rounded-circle text-white">M</div>
+                        <div class="font-weight-bold mr-3">
+                            <div class="text-truncate">DAILY RUNDOWN: MONDAY</div>
+                            <div class="small">Nunc purus metus, aliquam vitae venenatis sit amet, porta non est.</div>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">3d</div>
+                        </span>
+                    </div>
+                    <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                        <div class="dropdown-list-image mr-3"><img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="" /></div>
+                        <div class="font-weight-bold mr-3">
+                            <div class="text-truncate">DAILY RUNDOWN: SATURDAY</div>
+                            <div class="small">Pellentesque semper ex diam, at tristique ipsum varius sed. Pellentesque non metus ullamcorper</div>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">3d</div>
+                        </span>
+                    </div>
+                    <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                        <div class="dropdown-list-image mr-3">
+                            <img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" />
+                        </div>
+                        <div class="font-weight-bold mr-3">
+                            <div class="mb-2"><span class="font-weight-normal">Congratulate Gurdeep Singh Osahan (iamgurdeeposahan)</span> for 5 years at Askbootsrap Pvt.</div>
+                            <button type="button" class="btn btn-outline-success btn-sm">Say congrats</button>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">4d</div>
+                        </span>
+                    </div>
+                    <div class="p-3 d-flex align-items-center osahan-post-header">
+                        <div class="dropdown-list-image mr-3">
+                            <img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="" />
+                        </div>
+                        <div class="font-weight-bold mr-3">
+                            <div>
+                                <span class="font-weight-normal">Congratulate Mnadeep singh (iamgurdeeposahan)</span> for 4 years at Askbootsrap Pvt.
+                                <div class="small text-success"><i class="fa fa-check-circle"></i> You sent Mandeep a message</div>
+                            </div>
+                        </div>
+                        <span class="ml-auto mb-auto">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-delete"></i> Delete</button>
+                                    <button class="dropdown-item" type="button"><i class="mdi mdi-close"></i> Turn Off</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-right text-muted pt-1">4d</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            </div>
+          <!--<div class="page-header row no-gutters py-4">
+            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+              <span class="text-uppercase page-subtitle">Blog Posts</span>
+              <h3 class="page-title">Add New Post</h3>
+            </div>
+          </div>-->
+          <div class="row ">
+            
+          </div>
+        </div>
         <div class="main-content-container container-fluid px-4 tab-pane fade" id="tables">
           <!-- Page Header -->
           <div class="page-header row no-gutters py-4">
@@ -586,7 +841,7 @@
                 <div class="card-body p-0 pb-3 text-center">
                   <table class="table mb-0">
                     <thead class="bg-light">
-                      <tr>
+                      <tr class="text-center">
                         <th scope="col" class="border-0">#</th>
                         <th scope="col" class="border-0">First Name</th>
                         <th scope="col" class="border-0">Last Name</th>
@@ -596,7 +851,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr class="text-center">
                         <td>1</td>
                         <td>Ali</td>
                         <td>Kerry</td>
@@ -604,7 +859,7 @@
                         <td>Gdańsk</td>
                         <td>107-0339</td>
                       </tr>
-                      <tr>
+                      <tr class="text-center">
                         <td>2</td>
                         <td>Clark</td>
                         <td>Angela</td>
@@ -612,7 +867,7 @@
                         <td>Borghetto di Vara</td>
                         <td>1-660-850-1647</td>
                       </tr>
-                      <tr>
+                      <tr class="text-center">
                         <td>3</td>
                         <td>Jerry</td>
                         <td>Nathan</td>
@@ -620,7 +875,7 @@
                         <td>Braunau am Inn</td>
                         <td>214-4225</td>
                       </tr>
-                      <tr>
+                      <tr class="text-center">
                         <td>4</td>
                         <td>Colt</td>
                         <td>Angela</td>
@@ -710,30 +965,30 @@
               <div class="card card-small mb-4 pt-3">
                 <div class="profile-container">
                   <div class="img-container" *ngIf="this.tempProfile==null">
-                      <img [src]="this.user.profileImage.imageUrl" alt="profile image">
+                    <img [src]="this.user.profileImage.imageUrl" alt="profile image">
                   </div>
                   <div class="img-container" *ngIf="this.tempProfile!=null">
                     <img [src]="this.croppedImageProfile" alt="profile image">
                   </div>
                   <p class="info full-name">Marian McGrow</p>
                   <p class="info role">
-                      <i class="fas fa-star"></i>
-                      4.9 (33 valoraciones)
+                    <i class="fas fa-star"></i>
+                    4.9 (33 valoraciones)
                   </p>
                   <p class="info place">
-                      <i class="fas fa-map-marker-alt"></i>
-                      Milan, Italy
+                    <i class="fas fa-map-marker-alt"></i>
+                    Milan, Italy
                   </p>
-          
+
                   <div class="posts-info">
-                      <p><span>336</span> Posts</p>
-                      <p><span>4300</span> Likes</p>
-                      <p><span>87</span> Works</p>
+                    <p><span>336</span> Posts</p>
+                    <p><span>4300</span> Likes</p>
+                    <p><span>87</span> Works</p>
                   </div>
-          
+
                   <button class="action rbtn eff">Llamar</button>
                   <button class="action message rbtn eff">Chat</button>
-              </div>
+                </div>
                 <!--<div class="card-header border-bottom text-center">
                   <div class="mb-3 mx-auto" *ngIf="this.imageChangedEventProfile==null">
                     <img class="rounded-circle" [src]="this.user.profileImage.imageUrl"
@@ -779,47 +1034,48 @@
                           <div class="form-group row">
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
                               <label for="feFirstName">Nombre</label>
-                              <input type="text" class="form-control" id="firstname" name="firstname" [(ngModel)]="this.user.firstname">
+                              <input type="text" class="form-control" id="firstname" name="firstname"
+                                [(ngModel)]="this.user.firstname">
                             </div>
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
                               <label for="feLastName">Apellido</label>
-                              <input type="text" class="form-control" id="feLastName" name="lastname" [(ngModel)]="this.user.lastname">
+                              <input type="text" class="form-control" id="feLastName" name="lastname"
+                                [(ngModel)]="this.user.lastname">
                             </div>
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
                               <label for="feEmailAddress">Email</label>
-                              <input type="email" class="form-control" id="feEmailAddress" name="email" [(ngModel)]="this.user.email">
+                              <input type="email" class="form-control" id="feEmailAddress" name="email"
+                                [(ngModel)]="this.user.email">
                             </div>
                           </div>
                           <div class="form-group row">
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
                               <label for="feInputPhone">Teléfono</label>
-                              <input type="text" class="form-control" id="feInputPhone" name="phone" [(ngModel)]="this.user.phone">
+                              <input type="text" class="form-control" id="feInputPhone" name="phone"
+                                [(ngModel)]="this.user.phone">
                             </div>
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
                               <label for="fePassword">Empresa</label>
-                              <input type="text" class="form-control" id="feCompany" name="company" [(ngModel)]="this.user.company">
+                              <input type="text" class="form-control" id="feCompany" name="company"
+                                [(ngModel)]="this.user.company" [value]="">
                             </div>
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
                               <label for="feInputColor">Color corporativo</label>
                               <nz-color-picker class="form-control" nzTrigger="hover" nzSize="small"
-                               [(ngModel)]="this.user.color" id="brandingcolor"></nz-color-picker>
+                                [(ngModel)]="this.user.color" id="brandingcolor"></nz-color-picker>
                             </div>
                           </div>
-                          
+
                           <div class="form-group row">
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column">
                               <label for="feInputState">Imagen corporativa</label>
                               <label class="brandLabel">
                                 <input type="file" (change)="fileChangeEvent($event,'branding')" />
                               </label>
-                              <image-cropper class="mt-1"
-                                [imageChangedEvent]="imageChangedEventBranding"
-                                [maintainAspectRatio]="true"
-                                [aspectRatio]="16 / 9"
-                                format="png"
+                              <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventBranding"
+                                [maintainAspectRatio]="true" [aspectRatio]="16 / 9" format="png"
                                 (imageCropped)="imageCropped($event,'branding')"
-                                (imageLoaded)="imageLoaded($event,'branding')"
-                                (cropperReady)="cropperReady()"
+                                (imageLoaded)="imageLoaded($event,'branding')" (cropperReady)="cropperReady()"
                                 (loadImageFailed)="loadImageFailed()">
                               </image-cropper>
                             </div>
@@ -828,20 +1084,15 @@
                               <label class="brandLabel" style="background: #88807b;">
                                 <input type="file" (change)="fileChangeEvent($event,'profile')" />
                               </label>
-                              <image-cropper class="mt-1"
-                                [imageChangedEvent]="imageChangedEventProfile"
-                                [maintainAspectRatio]="true"
-                                [aspectRatio]="1 / 1"
-                                format="png"
-                                roundCropper="true"
+                              <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventProfile"
+                                [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png" roundCropper="true"
                                 (imageCropped)="imageCropped($event,'profile')"
-                                (imageLoaded)="imageLoaded($event,'profile')"
-                                (cropperReady)="cropperReady()"
-                                (loadImageFailed)="loadImageFailed()"
-                            ></image-cropper>
+                                (imageLoaded)="imageLoaded($event,'profile')" (cropperReady)="cropperReady()"
+                                (loadImageFailed)="loadImageFailed()"></image-cropper>
                             </div>
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center my-auto">
-                              <button type="submit"  [disabled]="!editUserForm.dirty" class="button is-success rbtn eff" >Actualizar perfil</button>
+                              <button type="submit" [disabled]="!editUserForm.dirty"
+                                class="button is-success rbtn eff">Actualizar perfil</button>
                             </div>
                           </div>
                           <!--<div class="form-group row">
@@ -1162,7 +1413,7 @@
         </div>
       </div>
 
-      <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
+      <!--y<footer class="main-footer d-flex p-2 px-3 bg-white border-top">
         <ul class="nav">
           <li class="nav-item">
             <a class="nav-link" href="">Home</a>
@@ -1183,7 +1434,7 @@
         <span class="copyright ml-auto my-auto mr-2">Love 2024
           <a rel="nofollow">Isma SL</a>
         </span>
-      </footer>
+      </footer>-->
     </main>
   </div>
 </div>
@@ -1192,7 +1443,7 @@
 <!-- / .main-navbar tables-->
 
 <!-- End Default Dark Table -->
-<div class="promo-popup animated">
+<!--<div class="promo-popup animated">
 
   <div class="pp-intro-bar"> Need More Templates?
     <span class="close">
@@ -1207,4 +1458,4 @@
     <p>A premium & modern Bootstrap admin dashboard template pack.</p>
     <a class="pp-cta extra-action">More Demos</a>
   </div>
-</div>
+</div>-->

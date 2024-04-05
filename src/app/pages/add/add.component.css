@@ -1,12 +1,18 @@
 /* #8dca3f */
 
-
-#pdfrun{
+#pdfrun {
   background: #fff;
 }
 
 #mapAdd {
   aspect-ratio: 16/9;
+}
+
+.branding-nav {
+  z-index: 10000;
+}
+.leaflet-container{
+  z-index: 0 !important;
 }
 
 .ant-tabs-tab-btn {
@@ -29,12 +35,12 @@
   color: #3a3b3c;
 }
 /*branding navbar*/
-.navbar{
+.navbar {
   max-height: 3.6em;
 }
-.brandImage{
+.brandImage {
   color-scheme: light;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   box-sizing: border-box;
   padding: 0;
   border: 0;
@@ -44,9 +50,9 @@
   display: block;
   height: 32px;
 }
-.a-branding{
+.a-branding {
   color-scheme: light;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -55,15 +61,16 @@
   vertical-align: baseline;
   text-decoration: underline;
 }
-.pictureBranding{
+.pictureBranding {
   color-scheme: light;
   font: inherit;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
 }
-
+/*leafletgesture-handling*/
+  
 /* full template */
 
 body,
@@ -167,7 +174,12 @@ body,
   .header-contact-form {
     min-height: auto;
     margin-left: 0px !important;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 10px 10px 10px 10px;
   }
+
+  /*.agent-info{
+  }*/
 }
 
 .header-contact-form {
@@ -575,6 +587,8 @@ svg:not(:root) {
   padding: 10px 16px;
   background: rgb(255, 255, 255);
   display: flex;
+  border-radius: 10px 10px 0 0;
+  height: 2.6em;
 }
 
 .chat-contact-form .actions {
@@ -593,12 +607,12 @@ svg:not(:root) {
   line-height: 24px;
   text-rendering: optimizelegibility;
   text-decoration: none;
-  border-radius: 0px;
+  /*border-radius: 0px;*/
   box-sizing: border-box;
   background-color: rgb(252, 252, 252);
   position: relative;
   color: rgb(65, 65, 65);
-  border: 1px solid rgb(221, 221, 221);
+  /*border: 1px solid rgb(221, 221, 221);*/
   box-shadow: none;
   height: auto;
   width: auto;
@@ -876,6 +890,8 @@ body {
   letter-spacing: 0.1em;
   padding: 0px 8px;
   text-transform: uppercase;
+
+  border-radius: 3px;
 }
 
 .first-images {
@@ -1938,7 +1954,7 @@ body {
 }
 
 .features-container .features-block .featured > div span.value {
-  font-size: 16px !important;
+  font-size: 12px !important;
   margin-top: -4px;
   font-family: "Pangea Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

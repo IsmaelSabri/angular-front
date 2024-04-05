@@ -2,10 +2,14 @@ export enum PropertyType { // condicion
   alquiloYvendo = 'Alquiler y venta',
   alquiler = 'Alquiler',
   venta = 'Venta',
-  compartir = 'Compartir',
+  //compartir = 'Compartir',
   //intercambio_vacacional = 'Intercambio vacacional',
   //nuevoProyectoObra = 'Nuevo proyecto obra nueva',
   //alquilerDias = 'Alquiler por días',
+}
+
+export enum PropertyShareType { // condicion
+  alquiler = 'Alquiler',
 }
 
 export enum HouseType { // tipo
@@ -42,12 +46,21 @@ export enum Bedrooms {
 }
 
 export enum Bathrooms {
+  cero = '0',
   uno = '1',
   dos = '2',
   tres = '3',
   cuatro = '4',
   cinco = '5',
   masDeCinco = '5+',
+}
+
+export enum CarPlaces {
+  cero = '0',
+  uno = '1',
+  dos = '2',
+  tres = '3',
+  masTres = '+3'
 }
 
 export enum Views {

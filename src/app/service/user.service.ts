@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from '../model/user';
@@ -12,11 +12,18 @@ export class UserService {
   private host = environment.apiUrl;
   private fullName$ = new BehaviorSubject<string>("");
   private role$ = new BehaviorSubject<string>("");
+  private httpHeaders = new HttpHeaders({
+    'Content-Type': 'application/json;charset=UTF-8',
+  });
 
   constructor(private http: HttpClient) {}
 
   public getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.host}/api/user/all`);
+  }
+
+  public getUserByUserId(id:string): Observable<User> {
+    return this.http.get<User>(`${this.host}/api/user/check/${id}`);
   }
 
   public addNewUser(user: User): Observable<User> {
@@ -35,7 +42,9 @@ export class UserService {
   }
 
   public completeRegistry(user:User): Observable<CustomHttpResponse> {
-    return this.http.put<CustomHttpResponse>(`${this.host}/api/user/fullregistry/${user.id}`, user);
+    return this.http.put<CustomHttpResponse>(`${this.host}/api/user/full/${user.id}`, user, {
+      headers: this.httpHeaders,
+    });
   }
 
   public checkEmailExists(userId:string) : Observable<User>{
@@ -75,7 +84,7 @@ export class UserService {
     return formData;
   }
 
-  uploadSignature(body:FormData,name:string): Observable<any>{
+  public uploadSignature(body:FormData,name:string): Observable<any>{
     return Axios.post(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${name}`, body);
   }
 

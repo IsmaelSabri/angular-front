@@ -16,18 +16,18 @@
       <div class="header-right">
         <!-- Header Menu Start -->
         <div class="menu">
-          <ul>
+        <ul>
             <li><a routerLink="/home">Mapa</a></li>
             <li><a href="#">Propiedades</a></li>
-            <li><a href="#">Agentes</a></li>
-            <li><a href="#">Blog</a></li>
+            <li><a routerLink="/register">Unirse</a></li>
+            <li><a routerLink="/login">Entrar</a></li>
           </ul>
         </div>
         <!-- Header Menu End -->
         <!-- Header Cta Start -->
-        <div class="cta">
-          <a href="#" class="btn btn-outline-primary" >Entrar</a>
-        </div>
+        <!--<div class="cta">
+          <a routerLink="/login" class="btn btn-outline-primary" >Entrar</a>
+        </div>-->
         <!-- Header Cta End -->
       </div>
     </div>
@@ -37,27 +37,13 @@
 
 <div class="banner-wrap">
   <div class="container">
-    <div class="banner-box">
+    <div class="banner-box " style="background:#3a3b3c;">
       <!-- Banner Image Start -->
-      <div class="banner-box__img">
-        <img
-          src="assets/images/banner-image.jpg"
-          width="1300"
-          height="634"
-          alt=""
-        />
-      </div>
+  
+        
       <!-- Banner Image End -->
       <!-- Banner Content Start -->
-      <div class="banner-box__content">
-        <h1 class="banner-box__title h1">
-          Easy way to find a perfect property
-        </h1>
-        <div class="banner-box__txt text-ex-large">
-          We provide a complete service for the sale, purchase or rental of
-          real estate.
-        </div>
-      </div>
+
       <!-- Banner Content End -->
       <!-- Banner Tab Start  -->
       <div class="banner-tab-wrap">
@@ -112,29 +98,15 @@
                       <div class="form-group mb-lg-0">
                         <label class="form-label">Ciudad</label>
                         <select class="form-control">
-                          <option>Selecciona tu provincia</option>
-                          <option>Amsterdam</option>
-                          <option>Barcelona</option>
-                          <option>Beijing</option>
-                          <option>Beirut</option>
-                          <option>Bergen</option>
-                          <option>Copenhagen</option>
-                          <option>Doha</option>
+                          <option *ngFor="let opt of provincias">{{opt}}</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-md-6 col-lg-4">
                       <div class="form-group mb-lg-0">
-                        <label class="form-label">Tipo de propiedad</label>
+                        <label class="form-label">Tipo</label>
                         <select class="form-control">
-                          <option>Choose Property Type</option>
-                          <option>Residential Apartment</option>
-                          <option>Independent/Builder Floor</option>
-                          <option>Independent House/Villa</option>
-                          <option>Residential Land</option>
-                          <option>1 RK/ Studio Apartment</option>
-                          <option>Farm House</option>
-                          <option>Serviced Apartments</option>
+                          <option *ngFor="let opt of tipo">{{opt}}</option>
                         </select>
                       </div>
                     </div>
@@ -168,31 +140,17 @@
                   <div class="row">
                     <div class="col-md-6 col-lg-4">
                       <div class="form-group mb-lg-0">
-                        <label class="form-label">Location</label>
+                        <label class="form-label">Ciudad</label>
                         <select class="form-control">
-                          <option>Select Your City</option>
-                          <option>Amsterdam</option>
-                          <option>Barcelona</option>
-                          <option>Beijing</option>
-                          <option>Beirut</option>
-                          <option>Bergen</option>
-                          <option>Copenhagen</option>
-                          <option>Doha</option>
+                          <option *ngFor="let opt of provincias">{{opt}}</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-md-6 col-lg-4">
                       <div class="form-group mb-lg-0">
-                        <label class="form-label">Property Type</label>
+                        <label class="form-label">Tipo</label>
                         <select class="form-control">
-                          <option>Choose Property Type</option>
-                          <option>Residential Apartment</option>
-                          <option>Independent/Builder Floor</option>
-                          <option>Independent House/Villa</option>
-                          <option>Residential Land</option>
-                          <option>1 RK/ Studio Apartment</option>
-                          <option>Farm House</option>
-                          <option>Serviced Apartments</option>
+                          <option *ngFor="let opt of tipo">{{opt}}</option>
                         </select>
                       </div>
                     </div>
@@ -226,31 +184,17 @@
                   <div class="row">
                     <div class="col-md-6 col-lg-4">
                       <div class="form-group mb-lg-0">
-                        <label class="form-label">Location</label>
+                        <label class="form-label">Ciudad</label>
                         <select class="form-control">
-                          <option>Select Your City</option>
-                          <option>Amsterdam</option>
-                          <option>Barcelona</option>
-                          <option>Beijing</option>
-                          <option>Beirut</option>
-                          <option>Bergen</option>
-                          <option>Copenhagen</option>
-                          <option>Doha</option>
+                          <option *ngFor="let opt of provincias">{{opt}}</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-md-6 col-lg-4">
                       <div class="form-group mb-lg-0">
-                        <label class="form-label">Property Type</label>
+                        <label class="form-label">Tipo</label>
                         <select class="form-control">
-                          <option>Choose Property Type</option>
-                          <option>Residential Apartment</option>
-                          <option>Independent/Builder Floor</option>
-                          <option>Independent House/Villa</option>
-                          <option>Residential Land</option>
-                          <option>1 RK/ Studio Apartment</option>
-                          <option>Farm House</option>
-                          <option>Serviced Apartments</option>
+                          <option *ngFor="let opt of tipo">{{opt}}</option>
                         </select>
                       </div>
                     </div>
@@ -270,8 +214,8 @@
                   </div>
                 </div>
                 <div class="col-md-2 d-md-flex">
-                  <button class="btn btn-primary btn-icon ms-auto">
-                    <i class="ri-search-2-line"></i>
+                  <button class="btn btn-primary  ms-auto">
+                    <i class="bi bi-search" style="color:white;"></i>
                   </button>
                 </div>
               </div>
