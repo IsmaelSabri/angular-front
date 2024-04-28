@@ -122,16 +122,21 @@
       </div>
     </aside>
     <!-- End Main Sidebar -->
-    <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3">
+    <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3 bg-white">
       <div class="main-navbar sticky-top bg-white">
         <!-- Main Navbar -->
-        <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0 ">
+        <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0 bg-white">
           <div class="main-navbar__search w-100 d-none d-md-flex d-lg-flex"
             *ngIf='this.brandingColor!=null || this.brandingColor!=undefined'
             [style.background-color]="this.brandingColor">
-            <div class="mx-auto order-0" *ngIf="this.tempBranding==null">
+            <div class="mx-auto order-0" *ngIf="this.tempBranding==null && this.user.brandImageAsString!=undefined || this.user.brandImageAsString!=null">
               <a class="navbar-brand d-none d-md-block">
                 <img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">
+              </a>
+            </div>
+            <div class="mx-auto order-0" *ngIf="this.tempBranding==null && this.user.brandImageAsString==undefined || this.user.brandImageAsString==null">
+              <a class="navbar-brand d-none d-md-block">
+                <!--<img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">-->
               </a>
             </div>
             <div class="mx-auto order-0" *ngIf="this.tempBranding!=null">
@@ -195,14 +200,14 @@
                 <span class="d-none d-md-inline-block">{{this.user?.firstname}} {{this.user?.lastname}}</span>
               </a>
               <div class="dropdown-menu dropdown-menu-small" ngbDropdownMenu>
-                <a class="dropdown-item" ngbDropdownItem routerLink="/home">
+                <a class="dropdown-item bg-white" ngbDropdownItem routerLink="/home">
                   <i class="material-icons">map</i> Mapa</a>
-                <a class="dropdown-item" ngbDropdownItem routerLink="/admin">
+                <a class="dropdown-item bg-white" ngbDropdownItem routerLink="/admin">
                   <i class="material-icons">storage</i> Admin area</a>
-                <a class="dropdown-item" ngbDropdownItem>
+                <a class="dropdown-item bg-white" ngbDropdownItem>
                   <i class="material-icons">note_add</i> Add New Post</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" ngbDropdownItem (click)="onLogOut()" routerLink="/home">
+                <a class="dropdown-item text-danger bg-white" ngbDropdownItem (click)="onLogOut()" routerLink="/home">
                   <i class="material-icons text-danger">&#xE879;</i> Salir </a>
               </div>
             </li>
@@ -1070,10 +1075,10 @@
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column">
                               <label for="feInputState">Imagen corporativa</label>
                               <label class="brandLabel">
-                                <input type="file" (change)="fileChangeEvent($event,'branding')" />
+                                <input type="file" (change)="fileChangeEvent($event,'branding')" accept="image/*" />
                               </label>
                               <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventBranding"
-                                [maintainAspectRatio]="true" [aspectRatio]="16 / 9" format="png"
+                                [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
                                 (imageCropped)="imageCropped($event,'branding')"
                                 (imageLoaded)="imageLoaded($event,'branding')" (cropperReady)="cropperReady()"
                                 (loadImageFailed)="loadImageFailed()">
@@ -1082,7 +1087,7 @@
                             <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column">
                               <label for="inputZip">Imagen de perfil</label>
                               <label class="brandLabel" style="background: #88807b;">
-                                <input type="file" (change)="fileChangeEvent($event,'profile')" />
+                                <input type="file" (change)="fileChangeEvent($event,'profile')" accept="image/*" />
                               </label>
                               <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventProfile"
                                 [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png" roundCropper="true"
@@ -1091,7 +1096,7 @@
                                 (loadImageFailed)="loadImageFailed()"></image-cropper>
                             </div>
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center my-auto">
-                              <button type="submit" [disabled]="!editUserForm.dirty"
+                              <button type="submit" [disabled]="!editUserForm.dirty "
                                 class="button is-success rbtn eff">Actualizar perfil</button>
                             </div>
                           </div>

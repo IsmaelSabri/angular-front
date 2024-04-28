@@ -14,13 +14,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FileUploadStatus } from '../../model/performance/file-upload.status';
 import { Rol } from '../../class/role.enum';
 import { ToastrService } from 'ngx-toastr';
-import { APIKEY } from 'src/environments/environment.prod';
-import { serialize } from 'object-to-formdata';
 import { DOCUMENT } from '@angular/common';
 import { PrimeNGConfig } from 'primeng/api';
 import { SingleDtoHomeRequest } from 'src/app/model/home';
 
-@Component({ 
+@Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
@@ -44,8 +42,8 @@ export class UserComponent implements OnInit, OnDestroy {
   BrandImage: File;
   brandImageRefreshing: boolean;
   imageProfileRefreshing: boolean;
-  brandingColor:any;
-  brandingImage:any;
+  brandingColor: any;
+  brandingImage: any;
   dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
 
 
@@ -57,29 +55,14 @@ export class UserComponent implements OnInit, OnDestroy {
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
     protected userService: UserService, protected notificationService: NotificationService,
     protected route: ActivatedRoute, protected toastr: ToastrService, @Inject(DOCUMENT) protected document: Document,
-    protected renderer2: Renderer2,protected primengConfig: PrimeNGConfig) { }
+    protected renderer2: Renderer2, protected primengConfig: PrimeNGConfig) { }
 
   ngOnInit(): void {
-    //this.loadScripts();
-    /*const cssPath = [
-    '../../../assets/css/user-style/feather.css', 
-    '../../../assets/css/user-style/materialdesignicons.min.css', 
-    '../../../assets/css/user-style/select.dataTables.min.css', 
-    '../../../assets/css/user-style/simple-line-icons.css', 
-    '../../../assets/css/user-style/style.css',
-    '../../../assets/css/user-style/themify-icons.css', 
-    '../../../assets/css/user-style/typicons.css',
-    '../../../assets/css/user-style/vendor.bundle.base.css'];
-    for (let i = 0; i < cssPath.length; i++) {
-      this.styleUser[i] = this.renderer2.createElement('link') as HTMLLinkElement;
-      this.renderer2.appendChild(this.document.head, this.styleUser[i]);
-      this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
-      this.renderer2.setProperty(this.styleUser[i], 'href', cssPath);
-    }*/
     this.user = this.authenticationService.getUserFromLocalCache();
-    //this.user.profileImage=JSON.parse(this.user.profileImageAsString);
+    this.user.profileImage = JSON.parse(this.user.profileImageAsString);
+      
     console.log(this.user);
-    this.getUsers(true);
+    //this.getUsers(true);
     //if(this.user.role=='USER_PRO'){}
   }
 
@@ -142,9 +125,11 @@ export class UserComponent implements OnInit, OnDestroy {
       }));
   }
 
+  // actualizar usuario
   public onUpdateCurrentUser(user: User): void {
     //console.log(user + ' image: ' + this.photoImage);
     this.refreshing = true;
+    console.log(user);
     user.profileImageAsString = JSON.stringify(user.profileImage);
     this.subscriptions.push(this.userService.updateUser(user, user.id).subscribe({
       next: (res: any) => {
@@ -152,12 +137,18 @@ export class UserComponent implements OnInit, OnDestroy {
 
         this.refreshing = false;
         localStorage.removeItem('user');
-        //this.authenticationService.addUserToLocalCache(res.body);
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        this.authenticationService.addUserToLocalCache(res.body);
+        this.authenticationService.saveToken(res.body.token);
+          this.authenticationService.saveRefreshToken(
+            res.body.refreshToken
+          );
         this.photoImage = null;
         this.sendNotification(NotificationType.SUCCESS, `${res.firstname} ${res.lastname} Actualizado`);
       },
       error: (errorResponse: HttpErrorResponse) => {
-        this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        this.sendNotification(NotificationType.ERROR, errorResponse.error);
         this.refreshing = false;
       }
     }));
@@ -307,7 +298,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.router.url === '/home'
     ) {
       this.sendNotification(NotificationType.SUCCESS, `Has cerrado sesión`);
-      let timer = setTimeout(() => {
+      var timer = setTimeout(() => {
         window.location.reload();
       }, 2000);
     } else {

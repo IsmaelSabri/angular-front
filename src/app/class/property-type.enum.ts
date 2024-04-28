@@ -7,9 +7,24 @@ export enum PropertyType { // condicion
   //nuevoProyectoObra = 'Nuevo proyecto obra nueva',
   //alquilerDias = 'Alquiler por días',
 }
+export enum PropertyTypeSelectHeader { // condicion
+  alquiloYvendo = 'Alquiler y venta',
+  alquiler = 'Alquiler',
+  venta = 'Venta',
+  compartir = 'Compartir',
+  //intercambio_vacacional = 'Intercambio vacacional',
+  //nuevoProyectoObra = 'Nuevo proyecto obra nueva',
+  //alquilerDias = 'Alquiler por días',
+}
+
+export enum PropertyFilterOptions {
+  alquiler = 'Alquiler',
+  venta = 'Venta',
+  compartir = 'Compartir'
+}
 
 export enum PropertyShareType { // condicion
-  alquiler = 'Alquiler',
+  compartir = 'Compartir',
 }
 
 export enum HouseType { // tipo
@@ -17,6 +32,19 @@ export enum HouseType { // tipo
   apartamento = 'Apartamento',
   estudio = 'Estudio',
   habitacion = 'Habitación',
+  atico = 'Ático',
+  duplex = 'Duplex',
+  chalet = 'Chalet',
+  adosado = 'Adosado',
+  pareado = 'Pareado',
+  casa_rustica = 'Casa Rústica',
+  villa = 'Villa',
+}
+
+export enum HouseTypeFilters { // tipo
+  piso = 'Piso',
+  apartamento = 'Apartamento',
+  estudio = 'Estudio',
   atico = 'Ático',
   duplex = 'Duplex',
   chalet = 'Chalet',

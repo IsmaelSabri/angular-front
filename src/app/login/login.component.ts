@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   visible: boolean = true;
   changetype: boolean = true;
   registerForm: any = FormGroup;
-  user:User;
+  user: User;
 
   get f() {
     return this.registerForm.controls;
@@ -57,17 +57,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.authenticationService.login(user).subscribe({
         next: (response) => {
           localStorage.clear();
-          //console.log(response);
-          //console.log(response.body);
-          this.user=response.body;
-          if(response.body.brandImageAsString!=null || response.body.brandImageAsString!=undefined){
-            this.user.brandImage=JSON.parse(this.user.brandImageAsString);
+          console.log(response);
+          console.log(response.body);
+          this.user = response.body;
+          if (response.body.brandImageAsString != null || response.body.brandImageAsString != undefined) {
+            this.user.brandImage = JSON.parse(this.user.brandImageAsString);
           }
-          if(response.body.profileImageAsString!=null || response.body.profileImageAsString!=undefined){
-            this.user.profileImage=JSON.parse(this.user.profileImageAsString);
+          if (response.body.profileImageAsString != null || response.body.profileImageAsString != undefined) {
+            this.user.profileImage = JSON.parse(this.user.profileImageAsString);
           }
-          if(response.body.LikePreferencesAsString!=null || response.body.LikePreferencesAsString!=undefined){
-            this.user.likePreferences=JSON.parse(this.user.LikePreferencesAsString);
+          if (response.body.LikePreferencesAsString != null || response.body.LikePreferencesAsString != undefined) {
+            this.user.likePreferences = JSON.parse(this.user.LikePreferencesAsString);
           }
           this.authenticationService.addUserToLocalCache(this.user);
           this.authenticationService.saveToken(response.body.token);
@@ -81,10 +81,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.showLoading = false;
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.sendErrorNotification(
-            NotificationType.ERROR,
-            errorResponse.error.message
-          );
+          this.sendErrorNotification(NotificationType.ERROR,errorResponse.error);
           this.showLoading = false;
         },
       })
@@ -92,7 +89,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   signInWithFB(): void {
-      // falta el apikey de fc en módule
+    // falta el apikey de fc en módule
     this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID);
   }
 

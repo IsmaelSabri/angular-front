@@ -2,6 +2,9 @@ import {
   PropertyType, HouseType, Bedrooms, Bathrooms, Badge, PropertyState, Enseñanza, Institucion,
   RamasConocimiento, EmisionesCO2, ConsumoEnergetico, TipoDeVia, Orientacion, Provincias, PrecioMinimoAlquiler,
   PrecioMaximoAlquiler, PrecioMinimoVenta, PrecioMaximoVenta, Superficie, Views, PropertyShareType, CarPlaces,
+  PropertyTypeSelectHeader,
+  HouseTypeFilters,
+  PropertyFilterOptions,
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
 import { Component, ElementRef, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Optional, Output, Renderer2, SimpleChanges, TemplateRef, ViewChild, ViewEncapsulation, } from '@angular/core';
@@ -40,6 +43,7 @@ import wordsCounter from 'word-counting'
 import { MatSidenav } from '@angular/material/sidenav';
 import { DOCUMENT } from '@angular/common';
 import { Message, PrimeNGConfig } from 'primeng/api';
+import { GalleriaThumbnails } from 'primeng/galleria';
 
 @Component({
   selector: 'app-home',
@@ -90,8 +94,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   opt = {};
   mydate = new Date().getTime();
   condicion: string[] = Object.values(PropertyType);
+  condicionHeader: string[] = Object.values(PropertyTypeSelectHeader);
+  condicionFiltros: string[] = Object.values(PropertyFilterOptions);
   condicion2: string[] = Object.values(PropertyShareType);
   tipo: string[] = Object.values(HouseType);
+  tipoFilters: string[] = Object.values(HouseTypeFilters);
   bedrooms: string[] = Object.values(Bedrooms);
   bathrooms: string[] = Object.values(Bathrooms);
   badge: string[] = Object.values(Badge);
@@ -285,7 +292,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         L.latLng(this.nextCoords.lat - 0.001, this.nextCoords.lng + 0.001),
       ],
       createMarker: function (i, wp, nWps) {
-        if (i === 0) {
+        if (i == 0) {
           // start
           return L.marker(wp.latLng, {
             icon: homeicon,
@@ -504,10 +511,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }, 3000);
   }
   carPlacesIndex = 0;
+  @ViewChild('parkingOptional') parkingOptional: ElementRef;
   addParkingPrice(input: HTMLInputElement): void {
-    const value = input.value;
-    if (this.carPlaces.indexOf(value) === -1) {
-      this.carPlaces = [...this.carPlaces, input.value || `New item ${this.carPlacesIndex++}`];
+    if (this.parkingOptional.nativeElement.value) {
+      const value = input.value;
+      if (this.carPlaces.indexOf(value) == -1) {
+        this.carPlaces = [...this.carPlaces, input.value || `New item ${this.carPlacesIndex++}`];
+        //console.log(this.parkingOptional.nativeElement.value);
+      }
     }
   }
 
@@ -579,6 +590,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     if (this.home.ciudad == null) {
       alert('Introduzca la provincia!');
     } else {
+      console.log(this.home.ciudad);
       var x = document.getElementById('provButton');
       $('.is-danger').addClass('is-success');
       $('.is-success').removeClass('is-danger');
@@ -646,9 +658,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                           role="link"
                           tabindex="-1"
                           data-test="property-marker">
-                          <div class="icon-text" style="display: inline-block; overflow: hidden;">${this.formatNumberWithCommas(
-                  Home.precioFinal
-                )}€</div>
+                          <div class="icon-text" style="display: inline-block; overflow: hidden;">${this.drawMarker(Home)}€</div>
                       </div>`,
                 iconSize: [30, 42],
                 iconAnchor: [15, 42],
@@ -790,11 +800,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     );
   }
 
-  setPopupBranding(home:Home){
-    if(home.proColor!=null || home.proColor!=undefined){
+  setPopupBranding(home: Home) {
+    if (home.proColor != null || home.proColor != undefined) {
       var x = document.getElementById('brandingcontainer');
-        x.style.display = 'flex';
-        x.style.backgroundColor=home.proColor;
+      x.style.display = 'flex';
+      x.style.backgroundColor = home.proColor;
+      if (home.proImage != null || home.proImage != undefined) {
+        $('<img class="branding-image-popup" src="' + home.proImage + '" >').appendTo('.brandingcontainer');
+      }
     }
   }
 
@@ -806,22 +819,30 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       $(".anime").first().addClass("active");
     }, 200);
   }
-
-  drawMarker(h: Home) {
-    if (h.condicion == 'Venta') {
-      $('.icon-text').text(this.formatNumberWithCommas(h.precioFinal) + '€');
-    } else if (h.condicion == 'Alquiler') {
-      $('.icon-text').text(this.formatNumberWithCommas(h.precioAlquiler) + '€');
+  // pinta el precio en los marker y en las tarjetas del listado
+  drawMarker(home: Home): string {
+    if (home.condicion == 'Alquiler') {
+      return this.formatNumberWithCommas(home.precioAlquiler);
+    } else if (home.condicion == 'Venta' || home.condicion == 'Alquiler y venta') {
+      return this.formatNumberWithCommas(home.precioFinal);
+    } else if (home.condicion == 'Compartir') {
+      return this.formatNumberWithCommas(home.precioAlquiler);
     }
   }
 
   drawPopup(h: Home) {
     if (h.condicion == 'Venta') {
       $('.p_2').text(this.formatNumberWithCommas(h.precioFinal) + '€');
+      $('.p_1_2').text('En ' + h.condicion);
     } else if (h.condicion == 'Alquiler') {
       $('.p_2').text(this.formatNumberWithCommas(h.precioAlquiler) + '€');
-    } else if (h.condicion == 'Alquiler y Venta') {
+      $('.p_1_2').text('En ' + h.condicion);
+    } else if (h.condicion == 'Alquiler y venta') {
       $('<div class="p_2Prices">' + this.formatNumberWithCommas(h.precioFinal) + '€' + '<span style="color:#d9d9d9;">&nbsp;<i class="bi bi-grip-vertical"></i>&nbsp;</span>' + this.formatNumberWithCommas(h.precioAlquiler) + '€</div>').appendTo('.p_2');
+      $('.p_1_2').text('En ' + h.condicion);
+    } else if (h.condicion == 'Compartir') {
+      $('.p_2').text(this.formatNumberWithCommas(h.precioAlquiler) + '€');
+      $('.p_1_2').text(h.condicion + ' vivienda');
     }
     if (h.model == 'House' || h.model == 'Flat' || h.model == 'Room') {
       $('<div class="popup-features d-flex flex-start" id="popup-features"><ion-icon style="font-size:1em; position:relative;" src="assets/svg/bed-horizontal.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.habitaciones + '</span>&nbsp;&nbsp;&nbsp;' +
@@ -829,7 +850,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         '<ion-icon style="font-size:1em; color:#666;" src="assets/svg/size-popup.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.superficie + "m²" + '</span>&nbsp;&nbsp;</div>'
       ).appendTo('.ul_features');
       if (h.garage > 0) {
-        if (h.garage > 1000) {
+        if (h.garage > 10) {
           $('<ion-icon style="font-size:1em; position:relative;" src="assets/svg/car-popup.svg"></ion-icon><ion-icon style="color:#8dca3f; margin-top:2px;" name="add-outline"></ion-icon><span class="numbers-font" style="color:#8dca3f;font-size:0.9em;">'
             + this.formatNumberWithCommas(h.garage) + '€</span>').appendTo('.p_features');
         } else {
@@ -1007,30 +1028,43 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   shareTab = new BehaviorSubject<boolean>(undefined);
   saleTab = new BehaviorSubject<boolean>(false);
   conditionTabs() {
-    if (this.home.tipo != 'Habitación') {
-      this.shareTab.next(true);
-      this.saleTab.next(false);
-      var x = document.getElementById('kompartirTitle');
-      x.style.textDecoration = 'line-through';
-    } else {
+    if (this.home.tipo == 'Habitación') {
       this.shareTab.next(false);
       this.saleTab.next(true);
       var x = document.getElementById('kompartirTitle');
       x.style.textDecoration = 'none';
-    }
-    if (this.home.condicion == 'Venta') {
+      var y = document.getElementById('alquilerTitle');
+      y.style.textDecoration = 'none';
+      this.home.precioFinal = null;
+      this.home.condicion = 'Compartir';
+    } else if (this.home.condicion == 'Venta') {
       this.rentTab.next(true);
+      this.shareTab.next(true);
+      this.saleTab.next(false);
       var x = document.getElementById('alquilerTitle');
       x.style.textDecoration = 'line-through';
+      var y = document.getElementById('kompartirTitle');
+      y.style.textDecoration = 'line-through';
       this.home.precioAlquiler = null;
-    } else {
+    } else if (this.home.condicion == 'Alquiler y venta') {
+      this.shareTab.next(true);
       this.rentTab.next(false);
+      this.saleTab.next(false);
+      var y = document.getElementById('kompartirTitle');
+      y.style.textDecoration = 'line-through';
       var x = document.getElementById('alquilerTitle');
       x.style.textDecoration = 'none';
-    }
-    if (this.home.condicion == 'Alquiler') {
+    } else if (this.home.condicion == 'Alquiler') {
+      var y = document.getElementById('kompartirTitle');
+      y.style.textDecoration = 'line-through';
+      var x = document.getElementById('alquilerTitle');
+      x.style.textDecoration = 'none';
       this.saleTab.next(true);
+      this.shareTab.next(true);
       this.home.precioFinal = null;
+    } else {
+      this.shareTab.next(undefined);
+      this.saleTab.next(false);
     }
   }
 
@@ -1046,7 +1080,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     if (this.tabIndex <= 4) {
       if (this.home.condicion == 'Venta' && this.tabIndex == 1) {
         this.tabIndex = 4;
-      } else if (this.home.condicion == 'Alquiler' && this.tabIndex == 2) {
+      } else if (this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta' && this.tabIndex == 2) {
         this.tabIndex = 4;
       } else {
         this.tabIndex++;
@@ -1065,7 +1099,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     if (this.tabIndex >= 1) {
       if (this.home.condicion == 'Venta' && this.tabIndex == 4) {
         this.tabIndex = 1;
-      } else if (this.home.condicion == 'Alquiler' && this.tabIndex == 4) {
+      } else if (this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta' && this.tabIndex == 4) {
         this.tabIndex = 2;
       } else {
         this.tabIndex--;
@@ -1148,7 +1182,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('superficie', JSON.stringify(this.home.superficie).split('"').join('').split("'").join(''));
     formData.append('condicion', this.home.condicion);
     formData.append('tipo', this.home.tipo);
-    formData.append('piso', this.home.piso + "/" + this.home.plantaMasAlta);
     formData.append('orientacion', this.propertyGuidance(this.home.orientacion));
     formData.append('distrito', this.home.distrito);
     formData.append('tipoDeVia', this.home.tipoDeVia);
@@ -1203,55 +1236,76 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('nombreCreador', this.user.username);
     formData.append('idCreador', this.user.userId);
     formData.append('cabinaHidromasaje', JSON.stringify(this.home.cabinaHidromasaje));
+    formData.append('direccionAproximada', JSON.stringify(this.home.direccionAproximada).split('"').join('').split("'").join(''));
+    formData.append('politicaPrivacidad', JSON.stringify(this.home.politicaPrivacidad));
+    if (this.home.piso) {
+      formData.append('piso', this.home.piso + "/" + this.home.plantaMasAlta);
+    }
     if (this.home.garage) {
       formData.append('garage', JSON.stringify(this.home.garage).split('"').join('').split("'").join(''));
     }
     if (this.home.aseoEnsuite) {
       formData.append('aseoEnsuite', JSON.stringify(this.home.aseoEnsuite).split('"').join('').split("'").join(''));
     }
-    if (this.home.video != null) {
+    if (this.home.video) {
       var splitLink = this.home.video.split('watch?v=')
       var embedLink1 = splitLink.join("embed/")
       formData.append('video', embedLink1 + '?showinfo=0&enablejsapi=1&origin=http://localhost:4200');
     }
-    if (this.home.precioFinal != null) {
+    if (this.home.precioFinal) {
       formData.append('precioFinal', JSON.stringify(this.home.precioFinal).split('"').join('').split("'").join(''));
     }
-    if (this.home.precioAlquiler != null && this.home.condicion == 'Alquiler') {
-      formData.append('precioAlquiler', JSON.stringify(this.home.precioAlquiler).split('"').join('').split("'").join(''));
-    }
-    if (this.home.precioAlquiler != null && this.home.condicion == 'Alquiler y venta') {
+    if (this.home.precioAlquiler == null && this.home.condicion == 'Alquiler y venta') {
       this.toastr.info(
         'Si contempla alquilar y vender introduzca el precio de alquiler',
         'Campo requerido'
       );
     }
-    if (this.home.precioAlquiler != null && this.home.condicion == 'Compartir') {
-      this.toastr.info(
-        'Si contempla compartir y vender introduzca el precio de alquiler',
-        'Campo requerido'
-
-      ); 
+    if (this.home.precioAlquiler != null && this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta') {
+      formData.append('precioAlquiler', JSON.stringify(this.home.precioAlquiler).split('"').join('').split("'").join(''));
     }
     //detalles de alquiler
     if (this.fechaDisponibleAlquiler) {
       formData.append('disponibilidad', this.fechaDisponibleAlquiler);
     }
-    if(this.home.mascotas){
+    if (this.home.mascotas) {
       formData.append('mascotas', this.home.mascotas);
     }
-    if(this.home.fianza){
+    if (this.home.fianza) {
       formData.append('fianza', this.home.fianza);
     }
-    if(this.home.estanciaMinima){
+    if (this.home.estanciaMinima) {
       formData.append('estanciaMinima', this.home.estanciaMinima);
+    }
+    //detalles para compartir
+    if (this.home.precioAlquiler != null && this.home.condicion == 'Compartir') {
+      formData.append('precioAlquiler', JSON.stringify(this.home.precioAlquiler).split('"').join('').split("'").join(''));
+      formData.append('sepuedeFumar', JSON.stringify(this.home.sepuedeFumar).split('"').join('').split("'").join(''));
+      formData.append('seadmitenParejas', JSON.stringify(this.home.seadmitenParejas).split('"').join('').split("'").join(''));
+      formData.append('seadmitenMenoresdeedad', JSON.stringify(this.home.seadmitenMenoresdeedad).split('"').join('').split("'").join(''));
+      formData.append('seadmitenMochileros', JSON.stringify(this.home.seadmitenMochileros).split('"').join('').split("'").join(''));
+      formData.append('seadmitenJubilados', JSON.stringify(this.home.seadmitenJubilados).split('"').join('').split("'").join(''));
+      formData.append('seadmiteLGTBI', JSON.stringify(this.home.seadmiteLGTBI).split('"').join('').split("'").join(''));
+      formData.append('propietarioviveEnlacasa', JSON.stringify(this.home.propietarioviveEnlacasa).split('"').join('').split("'").join(''));
+      if (this.home.perfilCompartir) {
+        formData.append('perfilCompartir', this.home.perfilCompartir);
+      }
+      if (this.home.habitantesActualmente) {
+        formData.append('habitantesActualmente', this.home.habitantesActualmente);
+      }
+      if (this.home.ambiente) {
+        formData.append('ambiente', this.home.ambiente);
+      }
+      if (this.home.gastos) {
+        formData.append('gastos', this.home.gastos);
+      }
     }
     if (this.user.isPro) {
       if (this.user.color != null || this.user.color != undefined) {
         this.home.proColor = this.user.color;
       }
-      if(this.user.brandImage != null || this.user.brandImage != undefined || this.user.brandImage.imageUrl.length != 0){
-        this.home.proImage=this.user.brandImage.imageUrl;
+      if (this.user.brandImage != null || this.user.brandImage != undefined || this.user.brandImage.imageUrl.length != 0) {
+        this.home.proImage = this.user.brandImage.imageUrl;
       }
     }
     this.message = [];
@@ -1310,15 +1364,15 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   checkBox(param): any {
     console.log(param);
   }
-  /* Filters
-  *
+  /* 
+  * Filters
   *
   * 
   * 
   * 
   */
   myMap: any;
-  modalRef: BsModalRef;
+  /*modalRef: BsModalRef;
   openFiltersModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template); // , {class: 'modal-lg'}
     this.myMap = new Map<string, string>();
@@ -1328,34 +1382,37 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     } else {
       localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
     }
-  }
+  }*/
 
   public filter(value: any, flag: string) {
     // mapa para hacer la peticion
     this.myMap = new Map<string, string>(JSON.parse(localStorage.getItem("detailFiltersMap")));
     localStorage.removeItem('detailFiltersMap');
     // variable para mostrar los select de alquiler/compartir o venta
-    if (flag === 'condicion' && value === 'Alquiler') {
+    // el jquery resetea el multiselect
+    if (flag == 'condicion' && value == '0') {
       this.filterRentSalePriceFlag = 'Alquiler'
-    } else if (flag === 'condicion' && value === 'Venta') {
+      $(".ant-select-clear").trigger('click');
+    } else if (flag == 'condicion' && value == '1') {
       this.filterRentSalePriceFlag = 'Venta'
-    } else if (flag === 'condicion' && value === 'Compartir') {
+      $(".ant-select-clear").trigger('click');
+    } else if (flag == 'condicion' && value == '2') {
       this.filterRentSalePriceFlag = 'Compartir'
+      $(".ant-select-clear").trigger('click');
     }
     /*
-    *
-    *
+    * responde a los eventos del multiselect
     */
-    if (this.myMap.has(flag) && flag != 'tipo') { // contiene el elemento
+    if (this.myMap.has(flag) && flag != 'tipo' && value != null) { // contiene el elemento
       this.myMap.delete(flag);
       this.clearPrices(flag);
       this.myMap.set(flag, value);
       this.searchFilterItems(this.myMap);
-    } else if (!this.myMap.has(flag) && flag != 'tipo') { // no contiene el elemento
+    } else if (!this.myMap.has(flag) && flag != 'tipo' && value != null) { // no contiene el elemento
       this.clearPrices(flag);
       this.myMap.set(flag, value);
       this.searchFilterItems(this.myMap);
-    } else if (flag === 'tipo') { // tipo
+    } else if (flag == 'tipo' && value != null) { // tipo
       if (this.myMap.has(flag)) {
         this.myMap.delete(flag);
       }
@@ -1365,12 +1422,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
+  /*
    * Si el usuario cambia de precio de alquiler a precio de venta o viceversa
    * esta función borra los 2 parámetros de filtrado anteriores
-   * ***/
+   */
   public clearPrices(flag: string) {
-    if (flag === 'precioAlquilerMin' || flag === 'precioAlquilerMax') {
+    if (flag == 'precioAlquilerMin' || flag == 'precioAlquilerMax') {
       if (this.myMap.has('precioVentaMin')) {
         this.myMap.delete('precioVentaMin');
       }
@@ -1378,7 +1435,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         this.myMap.delete('precioVentaMax');
       }
     }
-    if (flag === 'precioVentaMin' || flag === 'precioVentaMax') {
+    if (flag == 'precioVentaMin' || flag == 'precioVentaMax') {
       if (this.myMap.has('precioAlquilerMin')) {
         this.myMap.delete('precioAlquilerMin');
       }
@@ -1397,43 +1454,45 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   *  6 - cantidad 1-5=< ok
   * 
   */
+  labelMultiselect: string = 'Todas';
+  //filtersMultiselect: boolean = false;
   public searchFilterItems(map: Map<string, string>) {
     var urlFilterRequest = '&sorts=';
     map.forEach((value: string, key: string) => {
-      if (key === 'precioAlquilerMin' || key === 'precioAlquilerMax' || key === 'precioVentaMin' || key === 'precioVentaMax'
-        || key === 'superficieMin' || key === 'superficieMax') {
+      if (key == 'precioAlquilerMin' || key == 'precioAlquilerMax' || key == 'precioVentaMin' || key == 'precioVentaMax'
+        || key == 'superficieMin' || key == 'superficieMax') {
         if (urlFilterRequest.includes('&sorts=')) {
-          if (key === 'precioAlquilerMin') {
+          if (key == 'precioAlquilerMin') {
             var formatParam = value.replace('€', '').split(',').join(''); // me dejas un número entero
             var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioAlquiler>=' + formatParam + ',') // lo pone sequido a sorts
             urlFilterRequest = formatUrl;
             urlFilterRequest = 'precioAlquiler>=' + formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-          } else if (key === 'precioAlquilerMax') {
+          } else if (key == 'precioAlquilerMax') {
             var formatParam = value.replace('€', '').split(',').join('');
             var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioAlquiler<=' + formatParam + ',')
             urlFilterRequest = formatUrl;
             urlFilterRequest = 'precioAlquiler<=' + formatParam + ',' + urlFilterRequest;
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-          } else if (key === 'precioVentaMin') {
+          } else if (key == 'precioVentaMin') {
             var formatParam = value.replace('€', '').split(',').join('');
             var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioFinal>=' + formatParam + ',')
             urlFilterRequest = formatUrl;
             urlFilterRequest = 'precioFinal>=' + formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-          } else if (key === 'precioVentaMax') {
+          } else if (key == 'precioVentaMax') {
             var formatParam = value.replace('€', '').split(',').join('');
             var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'precioFinal<=' + formatParam + ',')
             urlFilterRequest = formatUrl;
             urlFilterRequest = 'precioFinal<=' + formatParam + ',' + urlFilterRequest;
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-          } else if (key === 'superficieMin') {
+          } else if (key == 'superficieMin') {
             var formatParam = value.replace('m²', '').split(',').join('');
             var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'superficie>=' + formatParam + ',')
             urlFilterRequest = formatUrl; // ordenamiento 
             urlFilterRequest = 'superficie>=' + formatParam + ',' + urlFilterRequest; // filtrado
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-          } else if (key === 'superficieMax') {
+          } else if (key == 'superficieMax') {
             var formatParam = value.replace('m²', '').split(',').join('');
             var formatUrl = urlFilterRequest.split('&sorts=').join('&sorts=' + 'superficie<=' + formatParam + ',')
             urlFilterRequest = formatUrl;
@@ -1441,39 +1500,53 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           }
         }
-      } else if (key === 'habitaciones' || key === 'aseos' || key === 'aseoEnsuite' || key === 'garage') {
+      } else if (key == 'habitaciones' || key == 'aseos' || key == 'aseoEnsuite' || key == 'garage') {
         if (value != String(5)) {
           urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
         } else {
           urlFilterRequest = key + '>=' + value + ',' + urlFilterRequest;
         }
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-      } else if (String(value) === 'true' || String(value) === 'false') {
+      } else if (String(value) == 'true' || String(value) == 'false') {
         urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-      } else if (key === 'tipo') {
+      } else if (key == 'tipo') {
         var obj = JSON.parse(value);
         var tipoValues = '';
-        for (var item of obj) {
-          tipoValues += item.value + '|'
+        for (var i = 0; i < obj.length; i++) {
+          tipoValues += obj[i] + '|'
         }
         if (tipoValues.slice(-1) == "|") {
           tipoValues = tipoValues.slice(0, -1);
         }
         urlFilterRequest = 'tipo' + '@=*' + tipoValues + ',' + urlFilterRequest
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-      } else if (key === 'descripcion') {
+        /*if(map.has){ // solo falta pasar ya el model@= en función de tipo
+
+        }*/
+      } else if (key == 'descripcion') {
         var formatParam = value.split(' ').join('|');
         if (formatParam.slice(-1) == "|") {
           formatParam = formatParam.slice(0, -1);
         }
         urlFilterRequest = 'descripcion' + '@=*' + formatParam + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-      } else { // descarte: condicion, ciudad, estado y vistas. Falta cuadrar esto
-        // con los atributos de compartir
+      } else if (key == 'condicion') {
+        if (value == '0') {
+          urlFilterRequest = key + '@=*' + 'Alquiler' + ',' + urlFilterRequest;
+        } else if (value == '1') {
+          urlFilterRequest = key + '@=*' + 'Venta' + ',' + urlFilterRequest;
+        } else if (value == '2') {
+          urlFilterRequest = key + '@=*' + 'Compartir' + ',' + urlFilterRequest;
+        }
         console.log(key + ' ' + value);
-        urlFilterRequest = key + '@=*' + value + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
+      } else if (key == 'estado') {
+        urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
+        localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
+      } else { // descarte: ciudad
+        urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
+        localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
       }
     });
     console.log(urlFilterRequest);
@@ -1483,9 +1556,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   public clearMap() {
     this.myMap = new Map<string, string>(JSON.parse(localStorage.getItem("detailFiltersMap")));
     this.myMap.clear();
+    this.myMap.set('condicion', 'Venta');
     localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
     this.wordCount = 0;
     this.homeFiltersRequest.keywords = '';
+    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
   }
 
   wordCount: number;
@@ -1494,7 +1569,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.wordCount = wordsCounter(this.homeFiltersRequest.keywords).wordsCount;
     this.filter(this.homeFiltersRequest.keywords, 'descripcion');
     console.log(this.homeFiltersRequest.keywords);
-    if (this.wordCount === 0 && this.myMap.has('descripcion')) {
+    if (this.wordCount == 0 && this.myMap.has('descripcion')) {
       this.myMap.delete('descripcion');
     }
     //}, 2000);

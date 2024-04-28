@@ -32,9 +32,10 @@ function closeModal() {
 function uncheck() {
   $(":checkbox").prop("checked", false).parent().removeClass("active");
   $(":radio").prop("checked", false).parent().removeClass("active");
-  $("#two.saleRadio").prop("checked", true);
-  $(".p-icon-wrapper").trigger('click');
-  $(".p-icon-wrapper").trigger('click');
+  //$("#two.saleRadio").prop("checked", true);// pone en venta por default el filtrado
+  $(".ant-select-clear").trigger('click'); // tipos de vivienda
+  //$('.ant-select').prop('selectedIndex', 0); // select
+  //$(".p-icon-wrapper").trigger('click');
 }
 // bulma nav
 $(document).ready(function() {

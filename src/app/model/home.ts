@@ -224,7 +224,7 @@ export class SingleDtoHomeRequest {
 export class HomeFilterRequest {
   condicion: string;
   ciudad: string;
-  tipo: string;
+  tipo: string[] = [];
   estado: string;
   habitaciones: string;
   aseos: string;

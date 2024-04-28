@@ -15,41 +15,48 @@ import { NotificationType } from '../class/notification-type.enum';
 export class RegisterComponent implements OnInit, OnDestroy {
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
-  visible:boolean = true;
-  changetype:boolean =true;
+  visible: boolean = true;
+  changetype: boolean = true;
 
   constructor(private router: Router, private authenticationService: AuthenticationService,
-              private notificationService: NotificationService) {}
+    private notificationService: NotificationService) { }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     if (this.authenticationService.isUserLoggedIn()) {
       this.router.navigateByUrl('/home');
     }
   }
 
-  viewpass(){
+  viewpass() {
     this.visible = !this.visible;
     this.changetype = !this.changetype;
   }
 
-  public onRegister(user:User): void {
+  public onRegister(user: User): void {
     this.showLoading = true;
     console.log(user);
     this.subscriptions.push(
       this.authenticationService.register(user).subscribe({
-        next:() => {
+        next: () => {
           this.showLoading = false;
           this.sendNotification(NotificationType.SUCCESS, `Se ha creado tu cuenta ${user.firstname + " " + user.lastname}.
           Verifica tu correo electrónico para acceder.`);
           this.router.navigateByUrl('/login');
           //this.clickButton('emailInfoModal');
-        },error:(errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }, error: (errorResponse: HttpErrorResponse) => {
+          var array = errorResponse.error.split('\n\n');
+          this.sendNotification(NotificationType.ERROR, array[0]);
+          setTimeout(() => {
+            this.sendNotification(NotificationType.INFO, array[1]);
+            setTimeout(() => {
+              this.sendNotification(NotificationType.SUCCESS, array[2]);
+            }, 1500);
+          }, 1500);
           this.showLoading = false;
         }
       }
       )
-  );
+    );
   }
 
   private sendNotification(notificationType: NotificationType, message: string): void {

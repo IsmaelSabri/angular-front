@@ -1,4 +1,8 @@
 /* #8dca3f */
+.text-green{
+  /*color:#8dca3f;*/
+  color:#76ba1b;
+}
 
 #pdfrun {
   background: #fff;
@@ -48,7 +52,7 @@
   max-width: 100%;
   margin: 4px 8px;
   display: block;
-  height: 32px;
+  height: 2.3em;
 }
 .a-branding {
   color-scheme: light;
@@ -68,6 +72,14 @@
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
+}
+/*contact card with phone etc */
+.branding-image-card{
+  height: 100%;
+  width: 100%;
+  object-fit:contain;
+  aspect-ratio: 53/10;
+  padding: 0.380em 0.4em 0.4em 0.4em;
 }
 /*leafletgesture-handling*/
   
@@ -578,17 +590,17 @@ svg:not(:root) {
 
 .actions-content {
   padding: 16px;
-  border-top: 1px solid rgb(221, 221, 221);
+  /*border-top: 1px solid rgb(221, 221, 221);*/
   box-shadow: rgba(55, 55, 55, 0.18) 0px 14px 18px -1px;
   height: auto;
 }
 
 .agent-info {
-  padding: 10px 16px;
+  /*padding: 10px 16px;*/
   background: rgb(255, 255, 255);
   display: flex;
   border-radius: 10px 10px 0 0;
-  height: 2.6em;
+  height: 3em;
 }
 
 .chat-contact-form .actions {

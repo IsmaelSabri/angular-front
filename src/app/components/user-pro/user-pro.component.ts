@@ -11,8 +11,9 @@ import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import { PrimeNGConfig } from 'primeng/api';
-import { FormGroupDirective, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { User } from 'src/app/model/user';
+//declare function printLogger(any);
 
 @Component({
   selector: 'app-user-pro',
@@ -48,15 +49,25 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       primengConfig
     );
   }
+
   protected styleUser: HTMLLinkElement[] = [];
 
   ngOnInit(): void {
-    $('#action_menu_btn').click(function(){
+    $('#action_menu_btn').click(function () {
       $('.action_menu').toggle();
-  });
+    });
     this.primengConfig.ripple = true;
     this.loadScripts();
+    /*setTimeout(()=>{
+      printLogger('from ts to js');
+    },1000);*/
     this.user = this.authenticationService.getUserFromLocalCache();
+    if (this.user.brandImageAsString != null || this.user.brandImageAsString != undefined) {
+      this.user.brandImage = JSON.parse(this.user.brandImageAsString);
+    }
+    if (this.user.profileImageAsString != null || this.user.profileImageAsString != undefined) {
+      this.user.profileImage = JSON.parse(this.user.profileImageAsString);
+    }
     this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.user.color);
     const cssPath = [
       '../../../assets/css/bootstrap.min.css',
@@ -101,6 +112,8 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     }
   }
   ngOnDestroy(): void {
+    this.styleUser=[]; 
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
 
@@ -141,7 +154,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
   croppedImageProfile: any = null;
   tempBranding: File = null;
   tempProfile: File = null;
-
+  @ViewChild('editUserForm') updateUserForm: NgForm;
   fileChangeEvent(event: any, option: string): void {
     if (option === 'branding') {
       this.imageChangedEventBranding = event;
@@ -155,16 +168,20 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       this.croppedImageBranding = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
       //this.tempBranding = event.blob; 
       this.tempBranding = new File([event.blob], randomString + '.jpg');
-      console.log(this.tempBranding);
+      //console.log(this.tempBranding);
     } else {
       this.croppedImageProfile = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
       this.tempProfile = new File([event.blob], randomString + '.jpg');
     }
     // event.blob can be used to upload the cropped image
   }
-
+  // image events enables the form to update full user
   imageLoaded(image: LoadedImage, option: string) {
-
+    if (option == 'branding') {
+      this.updateUserForm.control.markAsDirty();
+    } else if (option == 'profile') {
+      this.updateUserForm.control.markAsDirty();
+    }
   }
   cropperReady() {
     // cropper ready
@@ -178,7 +195,6 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     if (this.tempBranding != null) {
       const body = new FormData();
       //var randomString = (Math.random() + 1).toString(36).substring(10);
-      // branding image file
       body.append('image', this.tempBranding);
       this.subscriptions.push(this.userService.uploadSignature(body, this.tempBranding.name)
         .subscribe({
@@ -202,7 +218,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     if (this.tempProfile != null) {
       const body = new FormData();
       body.append('image', this.tempProfile);
-      this.subscriptions.push(this.userService.uploadSignature(body, this.tempBranding.name)
+      this.subscriptions.push(this.userService.uploadSignature(body, this.tempProfile.name)
         .subscribe({
           next: (res: any) => {
             this.user.profileImage = {
@@ -226,7 +242,13 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
         next: (res: any) => {
           console.log(res);
+          localStorage.clear();
+          //this.authenticationService.addUserToLocalCache(res);
           this.sendNotification(NotificationType.SUCCESS, `Se ha actualizado el perfil`);
+          this.router.navigate(['/home'])
+          setTimeout(() => {
+            this.sendNotification(NotificationType.SUCCESS, `Vuelva a iniciar sesión`);
+          }, 1000);
         },
         error: (err: any) => {
           console.log(err);

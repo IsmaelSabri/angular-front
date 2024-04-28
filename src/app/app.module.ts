@@ -21,7 +21,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';
-import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AutosizeModule } from 'ngx-autosize';
 import { MatCardModule } from '@angular/material/card';
@@ -107,6 +106,11 @@ import { MessagesModule } from 'primeng/messages';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { SkeletonModule } from 'primeng/skeleton';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { ButtonDirective } from '@coreui/angular';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -203,6 +207,10 @@ import { SkeletonModule } from 'primeng/skeleton';
     NgScrollbarModule,
     NzSkeletonModule,
     SkeletonModule,
+    NzButtonModule,
+    NzSegmentedModule,
+    DropzoneModule,
+    ButtonDirective,
   ],
   exports: [
     // to get component in another modules

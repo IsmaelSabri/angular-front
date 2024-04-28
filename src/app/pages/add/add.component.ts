@@ -1,5 +1,5 @@
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
@@ -26,7 +26,8 @@ import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
 import { Modal } from 'bootstrap';
 import { APIKEY } from 'src/environments/environment.prod';
-import * as intlTelInput from 'intl-tel-input';
+//import * as intlTelInput from 'intl-tel-input';
+import intlTelInput from 'intl-tel-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import Swal from 'sweetalert2'
 import { DOCUMENT } from '@angular/common';
@@ -45,7 +46,7 @@ import * as $ from 'jquery';
   styleUrls: ['./add.component.css'],
 })
 
-export class AddComponent extends UserComponent implements OnInit, OnDestroy {
+export class AddComponent extends UserComponent implements OnInit, OnDestroy, AfterViewInit {
   
   private sanitizer = inject(DomSanitizer);
   homes: Home[] = [];
@@ -122,6 +123,17 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
       renderer2,
       primengConfig
     );
+  }
+
+  @ViewChild('phone') inputElement;
+  ngAfterViewInit(): void {
+    // tel flags
+    if (this.inputElement) {
+      intlTelInput(this.inputElement.nativeElement, {
+        initialCountry: 'es',
+        //utilsScript:'../../../../node_modules/intl-tel-input/build/js/utils.js'
+      })
+    }
   }
 
   getTrustedUrl() {
@@ -222,15 +234,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
         // to clear circle when print any route
         this.mapEvents.add('circle');
         this.loadScripts();
-        // tel flags
-        const inputElement = document.querySelector('#phone');
-        if (inputElement) {
-          intlTelInput(inputElement, {
-            initialCountry: 'es',
-            separateDialCode: true,
-            //utilsScript:'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/'
-          })
-        }
+        
         this.homeService.getHomes().subscribe((data) => {
           this.homes = data;
           for (let i = 0; i < this.homes.length; i++) {
@@ -323,7 +327,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy {
 
   loadScripts() {
     const dynamicScripts = [
-      '../../../assets/js/ad.js'
+      '../../../assets/js/ad.js',
     ];
     for (let i = 0; i < dynamicScripts.length; i++) {
       const node = document.createElement('script');
