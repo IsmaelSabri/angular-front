@@ -53,7 +53,7 @@ export class PrivateChatComponent extends UserComponent implements OnInit, OnDes
       next: (res) => {
         this.sellerUser = res;
       }, error: () => {
-        this.sendNotification(
+        this.notificationService.notify(
           NotificationType.ERROR, 'Propietario del anuncio desconocido',
         );
       }
@@ -62,7 +62,7 @@ export class PrivateChatComponent extends UserComponent implements OnInit, OnDes
   }
 
   sendMessage() {
-      this.chatService.sendPrivateMessage(this.toUser, this.content);
+    this.chatService.sendPrivateMessage(this.toUser, this.content);
   }
 
 }

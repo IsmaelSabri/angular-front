@@ -110,7 +110,11 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { ButtonDirective } from '@coreui/angular';
-
+import { CarouselModule } from 'primeng/carousel';
+import { NzBackTopModule } from 'ng-zorro-antd/back-top';
+import { InputTextModule } from 'primeng/inputtext';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { NgxLoadingModule } from "ngx-loading";
 @NgModule({
   declarations: [
     AppComponent,
@@ -211,6 +215,11 @@ import { ButtonDirective } from '@coreui/angular';
     NzSegmentedModule,
     DropzoneModule,
     ButtonDirective,
+    CarouselModule,
+    NzBackTopModule,
+    InputTextModule,
+    ProgressSpinnerModule,
+    NgxLoadingModule,
   ],
   exports: [
     // to get component in another modules

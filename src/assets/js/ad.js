@@ -5,3 +5,6 @@ $(".filter-status button").on("click", function (e) {
   $(this).addClass("active");
 });
 
+function print(){
+  console.log('funcionando en js');
+}

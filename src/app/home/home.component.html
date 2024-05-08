@@ -2228,7 +2228,7 @@
                 </div>
               </div>
               <div class="txt h-100p b-none pt-0">
-                <div class="clamp-3" (click)="runAdCard(appHome)">{{appHome.descripcion}}</div>
+                <div class="clamp-3" (click)="runAdCard(appHome,'home')">{{appHome.descripcion}}</div>
               </div>
               <div class="price">
                 <div class="price-item">
@@ -2341,7 +2341,7 @@
       <div class="container text-center">
         <div class="row align-items-center">
           <div class=".col-md-3 .offset-md-3">
-            <nz-segmented [nzBlock]="true" [nzOptions]="this.condicionFiltros" 
+            <nz-segmented [nzBlock]="true" [nzOptions]="this.condicionFiltros"
              (nzValueChange)="filter($event,'condicion')" [ngModel]=1></nz-segmented>
             <!--<div class="radio-filter-container">
               <div class="radio_container form-group">
@@ -2366,7 +2366,7 @@
               <label class="filterLabel d-block" for="CiudadFilter">Ciudad</label>
               <div class=" form-group" style="width:100%; background-color: white;">
                 <nz-select id="CiudadFilter" class="cityFiltersSelect" style="width:100%"
-                  [(ngModel)]="this.homeFiltersRequest.ciudad" [nzSize]="sizeM"
+                  [(ngModel)]="this.homeFiltersRequest.ciudad" [nzSize]="sizeM" [nzAllowClear]="true"
                   (nzOpenChange)="rotateArrows($event,'cityFiltersSelect')" (ngModelChange)="filter($event,'ciudad')">
                   <nz-option *ngFor="let opt of provincias" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                 </nz-select>
@@ -2481,7 +2481,7 @@
                 <div class="form-group">
                   <nz-select id="minPriceFilter" class="minPriceFilter" style="width:100%"
                     [(ngModel)]="this.homeFiltersRequest.precioAlquilerMin" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'minPriceFilter')"
+                    (nzOpenChange)="rotateArrows($event,'minPriceFilter')" [nzAllowClear]="true"
                     (ngModelChange)="filter($event,'precioAlquilerMin')">
                     <nz-option *ngFor="let opt of precioMinimoAlquiler" [nzValue]=opt
                       [nzLabel]="opt">{{opt}}</nz-option>
@@ -2493,7 +2493,7 @@
                 <div class="form-group">
                   <nz-select id="maxPriceFilter" class="maxPriceFilter" style="width:100%"
                     [(ngModel)]="this.homeFiltersRequest.precioAlquilerMax" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'maxPriceFilter')"
+                    (nzOpenChange)="rotateArrows($event,'maxPriceFilter')" [nzAllowClear]="true"
                     (ngModelChange)="filter($event,'precioAlquilerMax')">
                     <nz-option *ngFor="let opt of precioMaximoAlquiler" [nzValue]=opt
                       [nzLabel]="opt">{{opt}}</nz-option>
@@ -2510,7 +2510,7 @@
                 <div class="form-group">
                   <nz-select id="minPriceFilter" class="minPriceFilter" style="width:100%; "
                     [(ngModel)]="this.homeFiltersRequest.precioVentaMin" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'minPriceFilter')"
+                    (nzOpenChange)="rotateArrows($event,'minPriceFilter')" [nzAllowClear]="true"
                     (ngModelChange)="filter($event,'precioVentaMin')">
                     <nz-option *ngFor="let opt of precioMinimoVenta" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
@@ -2521,7 +2521,7 @@
                 <div class="form-group">
                   <nz-select id="maxPriceFilter" class="maxPriceFilter" style="width:100%"
                     [(ngModel)]="this.homeFiltersRequest.precioVentaMax" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'maxPriceFilter')"
+                    (nzOpenChange)="rotateArrows($event,'maxPriceFilter')" [nzAllowClear]="true"
                     (ngModelChange)="filter($event,'precioVentaMax')">
                     <nz-option *ngFor="let opt of precioMaximoVenta" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
@@ -2537,7 +2537,7 @@
                 <div class="form-group">
                   <nz-select id="minAreaFilter" class="minAreaFilter" style="width:100%"
                     [(ngModel)]="this.homeFiltersRequest.superficieMin" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'minAreaFilter')"
+                    (nzOpenChange)="rotateArrows($event,'minAreaFilter')" [nzAllowClear]="true"
                     (ngModelChange)="filter($event,'superficieMin')">
                     <nz-option *ngFor="let opt of superficie" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
@@ -2548,7 +2548,7 @@
                 <div class="form-group">
                   <nz-select id="maxAreaFilter" class="maxAreaFilter" style="width:100%"
                     [(ngModel)]="this.homeFiltersRequest.superficieMax" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'maxAreaFilter')"
+                    (nzOpenChange)="rotateArrows($event,'maxAreaFilter')" [nzAllowClear]="true"
                     (ngModelChange)="filter($event,'superficieMax')">
                     <nz-option *ngFor="let opt of superficie" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
@@ -2556,7 +2556,7 @@
                 <br>
               </div>
             </div>
-            <!--Vistas
+            <!--Vistas-->
             <div class="row mt-2 form-group">
               <br>
               <label class="filterLabel text-secondary ml-1 d-block" for="vistasFilter">Vistas</label>
@@ -2564,7 +2564,7 @@
                 (ngModelChange)="filter($event,'vistasDespejadas')">
                 <label nz-radio-button *ngFor="let opt of vistas" [nzValue]=opt>{{opt}}</label>
               </nz-radio-group>
-            </div>-->
+            </div>
             <!--Comodidades-->
             <div class="card mt-3 mb-3">
               <div class="card-content">
@@ -2695,9 +2695,9 @@
                     <label class="filterLabel text-secondary" for="foo12"
                       style="text-overflow: ellipsis; white-space:nowrap">Piscina comunitaria</label>
                     <input id="foo12"
-                      (change)="filter(this.homeFiltersRequest.piscinaCompartida?true:false,'piscinaCompartida')"
+                      (change)="filter(this.homeFiltersRequest.piscinaComp?true:false,'piscinaComp')"
                       style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
-                      type="checkbox" name="piscinaCompartida" [(ngModel)]="this.homeFiltersRequest.piscinaCompartida">
+                      type="checkbox" name="piscinaComp" [(ngModel)]="this.homeFiltersRequest.piscinaComp">
                     <label class="switch" for="foo12"></label>
                   </div>
                   <br>
@@ -2713,7 +2713,7 @@
   <div class="container text-center">
     <div class="row align-items-center pb-3">
       <div class="col-md-4">
-        <button type="button" pRipple class="button is-rounded is-light" (click)="filterSearchForm.resetForm();clearMap()"
+        <button type="reset" pRipple class="button is-rounded is-light" (click)="filterSearchForm.resetForm();clearMap()"
           onclick="uncheck()">Borrar filtros</button>
       </div>
       <div class="col-md-4">

@@ -39,17 +39,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.authenticationService.register(user).subscribe({
         next: () => {
           this.showLoading = false;
-          this.sendNotification(NotificationType.SUCCESS, `Se ha creado tu cuenta ${user.firstname + " " + user.lastname}.
+          this.notificationService.notify(NotificationType.SUCCESS, `Se ha creado tu cuenta ${user.firstname + " " + user.lastname}.
           Verifica tu correo electrónico para acceder.`);
           this.router.navigateByUrl('/login');
           //this.clickButton('emailInfoModal');
         }, error: (errorResponse: HttpErrorResponse) => {
           var array = errorResponse.error.split('\n\n');
-          this.sendNotification(NotificationType.ERROR, array[0]);
+          this.notificationService.notify(NotificationType.ERROR, array[0]);
           setTimeout(() => {
-            this.sendNotification(NotificationType.INFO, array[1]);
+            this.notificationService.notify(NotificationType.INFO, array[1]);
             setTimeout(() => {
-              this.sendNotification(NotificationType.SUCCESS, array[2]);
+              this.notificationService.notify(NotificationType.SUCCESS, array[2]);
             }, 1500);
           }, 1500);
           this.showLoading = false;
@@ -57,15 +57,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       }
       )
     );
-  }
-
-  private sendNotification(notificationType: NotificationType, message: string): void {
-    console.log(message);
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'Algo salio mal. Por favor, inténtelo de nuevo.');
-    }
   }
 
   protected clickButton(buttonId: string): void {

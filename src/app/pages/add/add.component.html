@@ -16,7 +16,7 @@
       <div class="float-right ">
       <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/home-discard.svg"></ion-icon></button>
       <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/home-share.svg"></ion-icon></button>
-      <!--<button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1" (click)="openPrivateChat(this.propertyOwner.userId)"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>-->
+      <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1" (click)="openPrivateChat(this.home.idCreador)"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>
       <!--cuore-->
       <input type="checkbox" id="cuore" (click)="cuoreLike()" />
                               <label for="cuore" style="float:right;">
@@ -89,7 +89,7 @@
 <section id="photos-section">
     <div id="photos" class="image-mosaic ">
         <div class="listing-status">
-            <div *ngIf="this.home.destacar!= null || this.home.destacar != undefined" class="listing-status-item">{{this.home.destacar}}</div>
+            <div *ngIf="this.home.destacar" class="listing-status-item">{{this.home.destacar}}</div>
             <div *ngIf="this.home.estado == 'Nuevo'" class="listing-status-item text-center" style="background-color: #80ed99;">{{this.home.estado}}</div>
         </div>
         <div class="single-media first-images " *ngFor="let image of _albums| slice:0:1; let i = index">
@@ -206,7 +206,7 @@
                         <div>
                             <span class="value">{{this.home.orientacion}}</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/compass-white.svg"></ion-icon><br><span class="text">Orientación</span></span>
                         </div>
-                        <div *ngIf="this.home.piso!=null && this.home.piso!=undefined">
+                        <div *ngIf="this.home.piso">
                             <span class="value">{{this.home.piso}}</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/stairs_white.svg"></ion-icon><br><span class="text">Piso</span></span>
                         </div>
                         <div *ngIf="this.home.garage < 20 && this.home.garage !== 0">
@@ -249,7 +249,7 @@
                                 <div>
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 15px; position:relative; top:2px;" src="assets/svg/date1.svg"></ion-icon></span></div>
                                     <div>
-                                        <span>Desde<!-- -->:</span><span class="value text-secondary"> {{this.home.fechaCreacion.slice(0,10)}}</span>
+                                        <span>Desde<!-- -->:</span><span class="value text-secondary"> {{this.home.fechaCreacion?.slice(0,10)}}</span>
                                     </div>
                                 </div>
                                 <div>
@@ -302,16 +302,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="features-block" *ngIf="this.home.precioAlquiler!=0">
+                        <div class="features-block" *ngIf="this.home.precioAlquiler!=0 && this.home.fianza || this.home.mascotas || this.home.disponibilidad || this.home.estanciaMinima">
                             <h2 *ngIf="this.home.condicion=='Alquiler' || this.home.condicion=='Alquiler y venta'">En alquiler</h2>
                             <h2 *ngIf="this.home.condicion=='Compartir'">Para compartir</h2>
                             <div class="featured">
-                                <div  *ngIf="this.home.fianza!= null || this.home.fianza != undefined">
+                                <div  *ngIf="this.home.fianza">
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/fianza.svg"></ion-icon></span></div>
                                     <div><span>Fianza:</span><span class="value">{{this.home.fianza}} mes</span>
                                     </div>
                                 </div>
-                                <div *ngIf="this.home.disponibilidad!= null || this.home.disponibilidad != undefined">
+                                <div *ngIf="this.home.disponibilidad">
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/date-out.svg"></ion-icon></span></div>
                                     <div><span>Disponible a partir de:</span><span class="value">{{this.home.disponibilidad}}</span>
                                     </div>
@@ -331,7 +331,7 @@
                                     <div><span>Mascotas:</span><span class="value">{{this.home.mascotas}}</span>
                                     </div>
                                 </div>
-                                <div *ngIf="this.home.estanciaMinima!=null&&this.home.estanciaMinima!=undefined"> 
+                                <div *ngIf="this.home.estanciaMinima"> 
                                     <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative; top:2px;" src="assets/svg/document.svg"></ion-icon></span></div>
                                     <div><span>Contrato:</span><span class="value">{{this.home.estanciaMinima}}</span>
                                     </div>
@@ -402,6 +402,40 @@
                                     <div><span>Se admite LGTBI:</span><span class="value text-danger">No</span>
                                     </div>
                                 </div>
+                                <!--Propietario vive en la casa? -->
+                                <div *ngIf="this.home.condicion=='Compartir' && this.home.propietarioviveEnlacasa!=null || this.home.propietarioviveEnlacasa!=undefined"> 
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/propietarioVive.svg"></ion-icon></span></div>
+                                    <div *ngIf="this.home.propietarioviveEnlacasa">
+                                        <span>El propietario vive en la casa?</span><span class="value text-green">Si</span>
+                                    </div>
+                                    <div *ngIf="!this.home.propietarioviveEnlacasa">
+                                        <span>El propietario vive en la casa?</span><span class="value text-danger">No</span>
+                                    </div>
+                                </div>
+                                <!--Perfil compartir-->
+                                <div *ngIf="this.home.condicion=='Compartir'&&this.home.perfilCompartir"> 
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/home-question.svg"></ion-icon></span></div>
+                                    <div><span>Perfil deseado:</span><span class="value text-secondary">{{this.home.perfilCompartir}}</span>
+                                    </div>
+                                </div>
+                                <!--Habitentes actualmente-->
+                                <div *ngIf="this.home.condicion=='Compartir'&&this.home.habitantesActualmente"> 
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/people-now.svg"></ion-icon></span></div>
+                                    <div><span>Habitantes actualmente:</span><span class="value text-secondary">{{this.home.habitantesActualmente}}</span>
+                                    </div>
+                                </div>
+                                <!--Ambiente-->
+                                <div *ngIf="this.home.condicion=='Compartir'&&this.home.ambiente"> 
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/nirvana.svg"></ion-icon></span></div>
+                                    <div><span>Ambiente:</span><span class="value text-secondary">{{this.home.ambiente}}</span>
+                                    </div>
+                                </div>
+                                <!--Gastos-->
+                                <div *ngIf="this.home.condicion=='Compartir'&&this.home.gastos"> 
+                                    <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/share-contract.svg"></ion-icon></span></div>
+                                    <div><span>Gastos:</span><span class="value text-secondary">{{this.home.gastos}}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="features-block">
@@ -426,8 +460,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="features-block">
-                            <h2>Comunidad</h2>
+                        <div class="features-block" *ngIf="this.home.videoPortero || this.home.ascensor || this.home.zonaDeOcio || this.home.gym || this.home.padel || this.home.tenis || this.home.golf || this.home.piscinaComp || this.home.jardin || this.home.columpios || this.home.jacuzzi || this.home.sauna">
+                            <h2 >Comunidad</h2>
                             <div class="content">
                                 <div class="highlighted">
                                     <span *ngIf="this.home.videoPortero"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative; " src="assets/svg/videoportero.svg"></ion-icon></span>Videoportero</span>
@@ -447,7 +481,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="features-block">
+                        <div class="features-block" *ngIf="this.home.vistasDespejadas">
                             <h2>Vistas</h2>
                             <div class="content">
                                 <div class="highlighted"><!--*ngIf="this.home.vistasDespejadas=='Ciudad'"-->
@@ -462,8 +496,8 @@
                                 <div class="highlighted"></div>
                             </div>
                         </div>
-                        <div class="features-block" *ngIf="!this.home.videoVigilancia==undefined && !this.home.recepcion24_7==undefined && !this.home.generadorEmergencia==undefined
-                        && !this.home.alarmaIncendios==undefined && !this.home.extintores==undefined  && !this.home.instalacionesDiscapacitados==undefined">
+                        <div class="features-block" *ngIf="this.home.videoVigilancia || this.home.recepcion24_7 || this.home.generadorEmergencia
+                        || this.home.alarmaIncendios || this.home.extintores  || this.home.instalacionesDiscapacitados">
                             <h2>Seguridad</h2>
                             <div class="content">
                                 <div class="highlighted">
@@ -480,7 +514,7 @@
                         </div>
                     </div>
                 </section>
-                <!-- Aquí le invitas a registrarse para usar el chat en tiempo real -->
+                <!-- Aquí le invitas a registrarse para usar mas funcionalidades -->
                 <!--<div style="display: block;" class="restricted-message">
                     <div class="body">
                         <div class="advertisement ">
@@ -511,10 +545,10 @@
                         <div class="district-filters ">
                             <div class="filter-status">
                                 <button tabindex="0" class="only-one-button" pRipple href=".rentTab">
-                                    <span class="bage-wrap" >Alquiler<span class="district-rent-filter">n<!--reservado filtros--></span></span>
+                                    <span class="bage-wrap" >Alquiler<span class="district-rent-filter">n</span></span>
                                 </button>
                                 <button tabindex="0" class="active only-one-button" pRipple href=".saleTab">
-                                    <span class="bage-wrap" >Venta<span class="district-rent-filter">n+1<!--reservado filtros--></span></span>
+                                    <span class="bage-wrap" >Venta<span class="district-rent-filter">n+1</span></span>
                                 </button>
                             </div>
                         </div>
@@ -578,7 +612,7 @@
                                                 <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow"><a href="{{data.web}}">Ir a</a></td>
                                                 <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow">{{ data.distancia}}</td>
                                                 <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo}}</td>
-                                                <td *ngIf="this.colegio[i].lat != ''" ><button (click)="setRoute(this.colegio[i].lat, this.colegio[i].lng, '#808080', this.sc, i)" style="height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td><!---->
+                                                <td *ngIf="this.colegio[i].lat != ''" ><button (click)="setAdRoute(this.colegio[i].lat, this.colegio[i].lng, '#808080', this.sc, i)" style="height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td><!---->
                                               </tr>
                                             </tbody>
                                           </table>
@@ -607,7 +641,7 @@
                                                 <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow"><a href="{{data.web}}">Ir a</a></td>
                                                 <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow">{{ data.distancia}}</td>
                                                 <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo}}</td>
-                                                <td *ngIf="this.universidad[i].lat != ''" ><button (click)="setRoute(this.universidad[i].lat, this.universidad[i].lng, '#128c7e', this.uni, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                <td *ngIf="this.universidad[i].lat != ''" ><button (click)="setAdRoute(this.universidad[i].lat, this.universidad[i].lng, '#128c7e', this.uni, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                               </tr>
                                             </tbody>
                                           </table>
@@ -629,7 +663,7 @@
                                                     <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                     <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                     <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                    <td *ngIf="this.mercados[i].lat != ''" ><button (click)="setRoute(this.mercados[i].lat, this.mercados[i].lng, '#6f5e53', this.mki, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                    <td *ngIf="this.mercados[i].lat != ''" ><button (click)="setAdRoute(this.mercados[i].lat, this.mercados[i].lng, '#6f5e53', this.mki, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -653,7 +687,7 @@
                                                     <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.lineas }}</td>
                                                     <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                     <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                    <td *ngIf="this.autobus[i].lat != ''" ><button (click)="setRoute(this.autobus[i].lat, this.autobus[i].lng, '#960018', this.busic, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
+                                                    <td *ngIf="this.autobus[i].lat != ''" ><button (click)="setAdRoute(this.autobus[i].lat, this.autobus[i].lng, '#960018', this.busic, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -677,7 +711,7 @@
                                                     <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.lineas }}</td>
                                                     <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                     <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                    <td *ngIf="this.metro[i].lat != ''" ><button (click)="setRoute(this.metro[i].lat, this.metro[i].lng, '#d6a323', this.swi, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
+                                                    <td *ngIf="this.metro[i].lat != ''" ><button (click)="setAdRoute(this.metro[i].lat, this.metro[i].lng, '#d6a323', this.swi, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -699,7 +733,7 @@
                                                     <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                     <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                     <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                    <td *ngIf="(this.beach[i].lat != '')" ><button (click)="setRoute(this.beach[i].lat, this.beach[i].lng, 'dodgerblue', this.bch, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                    <td *ngIf="(this.beach[i].lat != '')" ><button (click)="setAdRoute(this.beach[i].lat, this.beach[i].lng, 'dodgerblue', this.bch, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -721,7 +755,7 @@
                                                     <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                     <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                     <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                    <td *ngIf="(this.aeropuerto[i].lat != '')" ><button (click)="setRoute(this.aeropuerto[i].lat, this.aeropuerto[i].lng, '#3200ff', this.airp, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                    <td *ngIf="(this.aeropuerto[i].lat != '')" ><button (click)="setAdRoute(this.aeropuerto[i].lat, this.aeropuerto[i].lng, '#3200ff', this.airp, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -735,57 +769,108 @@
                     </section>
                     <section id="profiles" class="videoAdd ">
                         <!--Youtube video-->
-                        <h2 *ngIf="this.home.video != null || this.home.video != undefined">Video</h2>
-                        <div *ngIf="this.home.video != null || this.home.video != undefined" class="video-container">
+                        <h2 *ngIf="this.home.video">Video</h2>
+                        <div *ngIf="this.home.video" class="video-container">
                             <iframe [src]="getTrustedUrl()" width="100%" height="100%"></iframe>
                         </div>
-                        <a id="locationProfile" class="zone-intro ">
-                            <div class="image-container">
-                                <img src="https://www.spain.info/.content/imagenes/cabeceras-grandes/valencia/ciudad-artes-ciencias-valencia-c-luca-bravo-u-UyUjtbu5vj4.jpg" alt="Museo de las artes" /></div>
-                                <div class="info">
-                                <h2>{{this.home.distrito}}</h2>
-                                <div class="stats">
-                                    <div>
-                                        <ion-icon style="font-size: 40px; position:relative; top:2px;" src="assets/svg/up-prices.svg"></ion-icon>
-                                        <div>
-                                            <p>Precio de compra</p>
-                                            <p>140-990,000€</p>
-                                        </div>
-                                    </div>
-                                    <div >
-                                        <ion-icon style="font-size: 30px; position:relative; top:2px;" src="assets/svg/key-board.svg"></ion-icon>
-                                        <div>
-                                            <p>Precio de alquiler</p>
-                                            <!-- mas queries -->
-                                            <p>665-300€</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <img src="" alt="" />
-                                        <div>
-                                            <p>En venta</p>
-                                            <p>
-                                                <!-- aquí irán las queries -->
-                                                Viviendas
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <img src="" alt="For Rent" />
-                                        <div>
-                                            <p>En alquiler</p>
-                                            <p>
-                                                <!-- mas queries -->
-                                                <!-- 5345345345345 -->Viviendas
-                                            </p>
-                                        </div>
+                    </section>
+                    <section >
+                        <h2>Similares en {{this.home.distrito}}</h2>
+                        <!--Carousel slick primeng-->
+                        <p-carousel [value]="this.homes" [numVisible]="3" [numScroll]="3" [circular]="true" [responsiveOptions]="responsiveOptions" 
+                        class="mx-auto p-1 justify-content-center">
+                            <ng-template let-home pTemplate="item" let-i="index" class="mx-auto p-1 justify-content-center">
+                                <div class="col d-flex flex-row my-auto" >
+                                    <div class=" teaser-tile mt-2 mx-2 border" >
+                                        <!--<span class="favorite favorite-need-login" data-id="1935922" data-type="estate">
+                                          <div class="wrapper-demo">
+                                            <button class="toggle-icon" title="❤ Toggle Like!"></button>
+                                          </div>
+                                        </span>-->
+                                        <div class="flex-grow-1 " ><!--hace la llamada (click)="runAdCard(appHome)"-->
+                                            <div class="with-img" style="position: relative;">
+                                                <p-galleria [(value)]="home.images" [circular]="true" [showItemNavigators]="false" [showThumbnails]="false" [responsiveOptions]="responsiveOptions2" [containerStyle]="{ 'max-width': '640px' }">
+                                                    <ng-template pTemplate="item" let-item>
+                                                        <img [src]="item.imageUrl" style="width: 100%; display: block;" />
+                                                    </ng-template>
+                                                </p-galleria>
+                                            </div>
+                                            <div class="desc">
+                                                <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span class="text-secondary">{{home.tipo}}</span> </div>
+                                                <div class="route mx-2">{{home.calle}} <span style="color:#d9d9d9">|</span> {{home.distrito}} <span style="color:#d9d9d9">|</span> {{home.ciudad}}</div>
+                                                <div class="units mx-2">
+                                                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
+                                                      <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
+                                                        <span style="font-size: 0.8em;">{{home.habitaciones}}</span>
+                                                    </div>
+                                                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
+                                                      <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"  name="expand-outline"></ion-icon>
+                                                        <span style="font-size: 0.8em;">{{home.superficie}}m²</span>
+                                                    </div>
+                                                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="bath">
+                                                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-toilet.svg"></ion-icon>
+                                                        <span style="font-size: 0.8em; margin-left: 2px;">{{home.aseos}}</span>
+                                                    </div>
+                                                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
+                                                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-facing.svg"></ion-icon>
+                                                        <span style="font-size: 0.8em; margin-left: 2px;">{{home.orientacion}}</span>
+                                                    </div>
+                                                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="card-spaces">
+                                                      <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;" name="car-sport-outline"></ion-icon>
+                                                        <span style="font-size: 0.8em; margin-left: 2px;">{{home.garage}}</span>
+                                                    </div>
+                                                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="year">
+                                                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" name="hammer-outline"></ion-icon>
+                                                        <span style="font-size: 0.8em; margin-left: 2px;">{{home.antiguedad}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="txt h-100p b-none pt-0">
+                                                <div class="clamp-3" (click)="runAdCard(home,'ad')">{{home.descripcion}}</div><!--onclick="print()"-->
+                                            </div>
+                                            <div class="price">
+                                                <div class="price-item">
+                                                  {{formatNumberWithCommas(home.precioFinal)+'€'}}
+                                                </div>
+                                            </div>
+                                            <!--<div class="social-actions">
+                                                <div class="like-item">
+                                                  <ion-icon name="heart-outline"></ion-icon>
+                                                      <div class="social-counter" data-counter="1">1</div>
+                                                  </div>
+                                                <div class="superlike-item">
+                                                  <ion-icon name="heart-outline"></ion-icon>
+                                                    <div class="social-counter" data-counter="0"></div>
+                                                </div>
+                                                <div class="d-flex flex-grow-1 justify-content-end">
+                                                    <div class="recommend-item" >
+                                                        <div class="social-title">Recommend</div>
+                                                        <ion-icon name="thumbs-up-outline"></ion-icon>
+                                                        <div class="social-counter" data-counter="0"></div>
+                                                    </div>
+                                                </div>
+                                            </div>-->
+                                          </div>
+                                        <!--<div class="txt color-black b-none pt-4">
+                                            <div class="contacts listing-contacts-block">
+                                                <div class="buttons">
+                                                    <a class="btn btn-sm w-100p btn-outline-primary">
+                                                      <ion-icon name="thumbs-up-outline"></ion-icon>
+                                                        <span class="text-truncate ml-6">Mensaje</span>
+                                                    </a>
+                                                </div>
+                                                <div class="col-auto overflow-hidden">
+                                                  <div class="btn btn-sm w-100p btn-primary show-contacts-btn" >
+                                                    <ion-icon name="call-outline"></ion-icon>
+                                                  </div>
+                                              </div>
+                                            </div>
+                                        </div>-->
                                     </div>
                                 </div>
-                                <p class="link-name">Ver ubicación</p>
-                            </div>
-                        </a>
+                            </ng-template>
+                        </p-carousel>
                     </section>
-                    
                 </div>
                 <!-- Modal login-register to save through like button -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -929,7 +1014,8 @@
                             </ng-container>
                         </div>
                         <hr class="button-send-enquiry multihr" />
-                        <button tabindex="0" class="buttonForm submit-enquiry submit-enquiry-button-buy send-enquiry" [disabled]="contactMessageForm.invalid || showLoading ">
+                        <button tabindex="0" class="buttonForm submit-enquiry submit-enquiry-button-buy send-enquiry" [disabled]="contactMessageForm.invalid || showLoading "
+                        (click)="contactMessageForm.ngSubmit.emit()">
                             <span *ngIf="showLoading" class="spinner-grow text-light" role="status"
                                     style="width: 1.5rem; height: 1.5rem; margin-top: 7px;">
                             </span>
@@ -971,3 +1057,8 @@
     </div>
 </footer>
 </div>
+<nz-back-top></nz-back-top>
+
+<!--Ghost buttons-->
+<a id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]" target="_blank" 
+  fragment={{this.routerLinkModel}}></a>

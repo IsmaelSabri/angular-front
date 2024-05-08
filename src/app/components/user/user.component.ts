@@ -45,7 +45,8 @@ export class UserComponent implements OnInit, OnDestroy {
   brandingColor: any;
   brandingImage: any;
   dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
-
+  // dynamic id's carousels
+  idIndex = Array.from(Array(100).keys());
 
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
@@ -116,10 +117,10 @@ export class UserComponent implements OnInit, OnDestroy {
           }));
           this.brandImageRefreshing = false;
           this.BrandImage = null;
-          this.sendNotification(NotificationType.SUCCESS, `Imagen corporativa actualizada`);
+          this.notificationService.notify(NotificationType.SUCCESS, `Imagen corporativa actualizada`);
         },
         error: (err: any) => {
-          this.sendNotification(NotificationType.ERROR, `Algo salio mal. Por favor intentelo pasados unos minutos.`);
+          this.notificationService.notify(NotificationType.ERROR, `Algo salio mal. Por favor intentelo pasados unos minutos.`);
           this.brandImageRefreshing = false;
         }
       }));
@@ -145,10 +146,10 @@ export class UserComponent implements OnInit, OnDestroy {
             res.body.refreshToken
           );
         this.photoImage = null;
-        this.sendNotification(NotificationType.SUCCESS, `${res.firstname} ${res.lastname} Actualizado`);
+        this.notificationService.notify(NotificationType.SUCCESS, `${res.firstname} ${res.lastname} Actualizado`);
       },
       error: (errorResponse: HttpErrorResponse) => {
-        this.sendNotification(NotificationType.ERROR, errorResponse.error);
+        this.notificationService.notify(NotificationType.ERROR, errorResponse.error);
         this.refreshing = false;
       }
     }));
@@ -204,11 +205,11 @@ export class UserComponent implements OnInit, OnDestroy {
           this.userService.addUsersToLocalCache(response);
           this.refreshing = false;
           if (showNotification) {
-            this.sendNotification(NotificationType.SUCCESS, `${response.length} usuario(s).`);
+            this.notificationService.notify(NotificationType.SUCCESS, `${response.length} usuario(s).`);
           }
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.notify(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
         }
       })
@@ -235,10 +236,10 @@ export class UserComponent implements OnInit, OnDestroy {
           this.fileName = null;
           this.photoImage = null;
           userForm.reset();
-          this.sendNotification(NotificationType.SUCCESS, `Añadido con éxito`);
+          this.notificationService.notify(NotificationType.SUCCESS, `Añadido con éxito`);
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.notify(NotificationType.ERROR, errorResponse.error.message);
           this.photoImage = null;
         }
       })
@@ -254,10 +255,10 @@ export class UserComponent implements OnInit, OnDestroy {
           this.getUsers(false);
           this.fileName = null;
           this.photoImage = null;
-          this.sendNotification(NotificationType.SUCCESS, `${response.firstname} ${response.lastname} actualizado con éxito`);
+          this.notificationService.notify(NotificationType.SUCCESS, `${response.firstname} ${response.lastname} actualizado con éxito`);
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.notify(NotificationType.ERROR, errorResponse.error.message);
           this.photoImage = null;
         }
       })
@@ -277,11 +278,11 @@ export class UserComponent implements OnInit, OnDestroy {
       case HttpEventType.Response:
         if (event.status === 200) {
           this.user.profileImage.imageUrl = `${event.body.data.url}?time=${new Date().getTime()}`;
-          this.sendNotification(NotificationType.SUCCESS, `${event.body.primerApellido}\' foto de perfil actualizada con éxito`);
+          this.notificationService.notify(NotificationType.SUCCESS, `${event.body.primerApellido}\' foto de perfil actualizada con éxito`);
           this.fileStatus.status = 'done';
           break;
         } else {
-          this.sendNotification(NotificationType.ERROR, `No se puede subir la imagen. Por favor vuelva a intentarlo.`);
+          this.notificationService.notify(NotificationType.ERROR, `No se puede subir la imagen. Por favor vuelva a intentarlo.`);
           break;
         }
       default:
@@ -297,33 +298,33 @@ export class UserComponent implements OnInit, OnDestroy {
     this.authenticationService.logOut();
     if (this.router.url === '/home'
     ) {
-      this.sendNotification(NotificationType.SUCCESS, `Has cerrado sesión`);
+      this.notificationService.notify(NotificationType.SUCCESS, `Has cerrado sesión`);
       var timer = setTimeout(() => {
         window.location.reload();
       }, 2000);
     } else {
       this.router.navigate(['/home']);
-      this.sendNotification(NotificationType.SUCCESS, `Has cerrado sesión`);
+      this.notificationService.notify(NotificationType.SUCCESS, `Has cerrado sesión`);
     }
   }
 
   public onResetPassword(emailForm: NgForm): void {
-    this.refreshing = true;
+    /*this.refreshing = true;
     const emailAddress = emailForm.value['reset-password-email'];
     this.subscriptions.push(
       this.userService.resetPassword(emailAddress).subscribe({
         next: (response: CustomHttpResponse) => {
-          this.sendNotification(NotificationType.SUCCESS, response.message);
+          this.notificationService.notify(NotificationType.SUCCESS, response.message);
           this.refreshing = false;
           () => emailForm.reset()
         },
         error: (error: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.WARNING, error.error.message);
+          this.notificationService.notify(NotificationType.WARNING, error.error.message);
           this.refreshing = false;
         }
       },
       )
-    );
+    );*/
   }
 
   public onDeleteUser(id: string): void {
@@ -331,11 +332,11 @@ export class UserComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.userService.deleteUser(id).subscribe({
         next: (response: CustomHttpResponse) => {
-          this.sendNotification(NotificationType.SUCCESS, response.message);
+          this.notificationService.notify(NotificationType.SUCCESS, response.message);
           this.getUsers(false);
         },
         error: (error: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, error.error.message);
+          this.notificationService.notify(NotificationType.ERROR, error.error.message);
         }
       })
     );
@@ -381,14 +382,6 @@ export class UserComponent implements OnInit, OnDestroy {
 
   private getUserRole(): string {
     return this.authenticationService.getUserFromLocalCache().role;
-  }
-
-  protected sendNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'Error. Por favor inténtelo de nuevo.');
-    }
   }
 
   protected clickButton(buttonId: string): void {

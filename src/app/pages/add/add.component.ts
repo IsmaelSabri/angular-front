@@ -5,7 +5,6 @@ import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
 import { UserService } from '../../service/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-//import 'rxjs/Rx';
 import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio, SingleDtoHomeRequest } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { ContactUser } from 'src/app/model/contact-user';
@@ -26,7 +25,6 @@ import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
 import { Modal } from 'bootstrap';
 import { APIKEY } from 'src/environments/environment.prod';
-//import * as intlTelInput from 'intl-tel-input';
 import intlTelInput from 'intl-tel-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import Swal from 'sweetalert2'
@@ -35,10 +33,11 @@ import { PrimeNGConfig } from 'primeng/api';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PrivateChatComponent } from 'src/app/components/private-chat/private-chat.component';
 import { ChatService } from 'src/app/service/chat.service';
-import { User } from 'src/app/model/user';
 import { Message } from 'src/app/model/message';
 import { GestureHandling } from "leaflet-gesture-handling";
 import * as $ from 'jquery';
+import { HomeComponent } from 'src/app/home/home.component';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-add',
@@ -46,9 +45,9 @@ import * as $ from 'jquery';
   styleUrls: ['./add.component.css'],
 })
 
-export class AddComponent extends UserComponent implements OnInit, OnDestroy, AfterViewInit {
-  
-  private sanitizer = inject(DomSanitizer);
+export class AddComponent extends HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  protected sanitizer = inject(DomSanitizer);
   homes: Home[] = [];
   aux: string;
   public refreshing: boolean;
@@ -56,10 +55,9 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   private host = environment.apiUrl;
   json: string;
   _albums: any = [];
-  state: boolean = this.authenticationService.isUserLoggedIn();
   isCollapsed: boolean = true;
   trustedUrl: any = '';
-  home: Home;
+  //home: Home;
   //propertyOwner: User;
   intake: string;
   emissions: string;
@@ -72,7 +70,6 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   fg = L.featureGroup();
   time: number;
   distance: string;
-
   // add-delete temp routes
   mapEvents = new Set<string>();
   // icons
@@ -84,7 +81,37 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   sc = schoolIcon;
   uni = universityIcon;
   customIcon: any;
-
+  responsiveOptions = [ // carousel slick
+    {
+      breakpoint: '1199px',
+      numVisible: 1,
+      numScroll: 1
+    },
+    {
+      breakpoint: '991px',
+      numVisible: 2,
+      numScroll: 1
+    },
+    {
+      breakpoint: '767px',
+      numVisible: 1,
+      numScroll: 1
+    }
+  ];
+  responsiveOptions2: any[] = [ // carousel implicit
+    {
+      breakpoint: '1024px',
+      numVisible: 5
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1
+    }
+  ];
 
   //routes
   colegio: Colegio[];
@@ -104,13 +131,15 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    private homeService: HomeService,
+    homeService: HomeService,
     private _lightbox: Lightbox,
     private _changeDetectorRef: ChangeDetectorRef,
     public activatedRoute: ActivatedRoute,
     primengConfig: PrimeNGConfig,
-    public chatService: ChatService, 
-    private modalSevice: NgbModal
+    public chatService: ChatService,
+    private modalSevice: NgbModal,
+    sanitizer: DomSanitizer,
+    modalServiceBs: BsModalService,
   ) {
     super(
       router,
@@ -119,9 +148,13 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
       notificationService,
       route,
       toastr,
+      homeService,
+      sanitizer,
+      modalServiceBs,
       document,
       renderer2,
-      primengConfig
+      primengConfig,
+
     );
   }
 
@@ -144,24 +177,24 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
 
   ngOnInit(): void {
     var x = document.getElementById('photos-section');
-    x.style.display='none'
+    x.style.display = 'none'
     // mas rápido desde localstorage después lo machaco desde la api para coger el modelo
     // que ese sí tiene todos los atributos
     if (this.homeService.getHomeFromLocalCache()) {
       this.home = this.homeService.getHomeFromLocalCache();
     }
-    if(this.home.proColor!=null || this.home.proColor!=undefined){
-      this.brandingColor=this.sanitizer.bypassSecurityTrustStyle(this.home.proColor);
+    if (this.home.proColor != null || this.home.proColor != undefined) {
+      this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.home.proColor);
     }
-    if(this.home.proImage!=null || this.home.proImage!=undefined){
-      this.brandingImage=this.sanitizer.bypassSecurityTrustStyle(this.home.proImage);
+    if (this.home.proImage != null || this.home.proImage != undefined) {
+      this.brandingImage = this.sanitizer.bypassSecurityTrustStyle(this.home.proImage);
     }
     /*this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
       next: (res) => {
         this.propertyOwner=res;
           
       }, error: () => {
-        this.sendNotification(
+        this.notificationService.notify(
           NotificationType.ERROR, 'Propietario del anuncio' + this.dto.id + ' desconocido',
         );
       }
@@ -175,7 +208,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
             next: (params) => {
               this.dto.id = params['id'];
             }, error: (errorResponse: HttpErrorResponse) => {
-              this.sendNotification(
+              this.notificationService.notify(
                 NotificationType.ERROR,
                 errorResponse.error.message + 'Cannot catch home id'
               );
@@ -183,7 +216,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
           })
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(
+          this.notificationService.notify(
             NotificationType.ERROR,
             errorResponse.error.message + 'Cannot catch home model'
           );
@@ -211,15 +244,15 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
         }, 1000);
         this.home.images = JSON.parse(this.home.imagesAsString);
         var y = document.getElementById('skeleton-section');
-        y.style.display='none';
+        y.style.display = 'none';
         x.style.display = 'block';
         this.setEnergyFeatures(
           this.home.consumo.substring(0, 1),
           this.home.emisiones.substring(0, 1)
         );
         L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
-        this.mapAdd = L.map('mapAdd', { renderer: L.canvas(),gestureHandling: true}).setView(
-          [this.home.lat, this.home.lng], 
+        this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
+          [this.home.lat, this.home.lng],
           17
         );
         Stadia_OSMBright().addTo(this.mapAdd);
@@ -234,7 +267,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
         // to clear circle when print any route
         this.mapEvents.add('circle');
         this.loadScripts();
-        
+
         this.homeService.getHomes().subscribe((data) => {
           this.homes = data;
           for (let i = 0; i < this.homes.length; i++) {
@@ -243,7 +276,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
         })
       },
       error: () => {
-        this.sendNotification(
+        this.notificationService.notify(
           NotificationType.ERROR, 'El anuncio' + this.dto.id + ' ha caducado o ha sido eliminado',
         );
         this.router.navigateByUrl('/home');
@@ -351,7 +384,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
     }
   }
 
-  setRoute(
+  setAdRoute(
     latitud: string,
     longitud: string,
     color: string,
@@ -451,6 +484,7 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
   checkBox(param): any {
     console.log(param);
   }
+
   public contactMessage() {
     this.refreshing = true;
     const formData = new FormData();
@@ -465,26 +499,26 @@ export class AddComponent extends UserComponent implements OnInit, OnDestroy, Af
     });
     var resetForm = <HTMLFormElement>document.getElementById('contactMessageForm');
     resetForm.reset();
-    this.subscriptions
+    /*this.subscriptions
       .push
-      /*
+      
      hay que implementar el envio del correo:
      - en el servicio 
      - en el backend(plantilla html)
      
      this.markerService.addBuilding(formData).subscribe((res) => {
         this.router.navigate(['/home']),
-          this.sendNotification(NotificationType.SUCCESS, ` Mensaje enviado.`);
+          this.notificationService.notify(NotificationType.SUCCESS, ` Mensaje enviado.`);
         var resetForm = <HTMLFormElement>document.getElementById('contactForm');
         resetForm.reset();
         this.clickButton('contact-form-close');
-      })*/
-      ();
+      })
+      ()*/;
   }
 
   openPrivateChat(toUser: string) {
     this.chatService.createChatConnection();
-    const modalRef =this.modalSevice.open(PrivateChatComponent);
+    const modalRef = this.modalSevice.open(PrivateChatComponent);
     modalRef.componentInstance.toUser = toUser;
   }
 

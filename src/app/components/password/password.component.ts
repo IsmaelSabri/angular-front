@@ -1,13 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit, Renderer2, VERSION } from '@angular/core';
-import {
-  AbstractControl,
-  AbstractControlOptions,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { AbstractControl, AbstractControlOptions, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { User } from 'src/app/model/user';
 import { AuthenticationService } from 'src/app/service/authentication.service';
@@ -19,16 +12,15 @@ import { NotificationType } from 'src/app/class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
 import { PrimeNGConfig } from 'primeng/api';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-password',
   templateUrl: './password.component.html',
   styleUrls: ['./password.component.css'],
-})
-export class PasswordComponent
-  extends UserComponent
-  implements OnInit, OnDestroy
-{
+}) 
+export class PasswordComponent extends UserComponent implements OnInit, OnDestroy {
+
   visible: boolean = true;
   changetype: boolean = true;
   luckyId: string;
@@ -43,7 +35,7 @@ export class PasswordComponent
     route: ActivatedRoute,
     toastr: ToastrService,
     private formBuilder: FormBuilder,
-    primengConfig: PrimeNGConfig
+    primengConfig: PrimeNGConfig,
   ) {
     super(
       router,
@@ -59,25 +51,34 @@ export class PasswordComponent
   }
 
   name = 'Angular ' + VERSION.major;
-  passwordsMatching = false;
-  isConfirmPasswordDirty = false;
   confirmPasswordClass = 'form-control';
-  psw:string;
+  psw: string;
+  whatComponent: string;
+  public passTitle = new BehaviorSubject<string>('');
+  public passTitleAction$ = this.passTitle.asObservable();
 
   ngOnInit(): void {
     this.subscriptions.push(
       this.router.events.subscribe(() => {
-        this.luckyId = this.router.url.toString().substring(6, 23);
+        this.whatComponent = this.router.url.toString().substring(1, 4);
+        if (this.whatComponent == 'pass') {
+          this.passTitle.next('Completar registro');
+          this.luckyId = this.router.url.toString().substring(6, 23);
+        } else {
+          this.passTitle.next('Cambio de contraseña');
+          this.luckyId = this.router.url.toString().substring(12, 29);
+        }
         console.log(this.luckyId);
-        this.userService.checkEmailExists(this.luckyId).subscribe({
-          next: (res:any)=>{
-              this.user=res;
-              this.sendNotification(NotificationType.SUCCESS, `Introduce tu nueva contraseña`);
-              console.log(this.user);
+        this.userService.checkUserById(this.luckyId).subscribe({
+          next: (res: any) => {
+            this.user = res;
+            this.notificationService.notify(NotificationType.SUCCESS, `Introduce tu nueva contraseña`);
+            console.log(this.user);
           },
           error: (error: HttpErrorResponse) => {
-            this.sendNotification(NotificationType.WARNING, error.error.message);
+            this.notificationService.notify(NotificationType.WARNING, error.error.message);
             this.refreshing = false;
+            this.router.navigate(['/login']);
           }
         });
       })
@@ -86,24 +87,35 @@ export class PasswordComponent
 
   onSubmit(): void {
     console.log(this.resetPasswordForm);
-    this.user.password=this.psw;
+    this.user.password = this.psw;
     console.log(this.user);
-    this.subscriptions.push(
-      this.userService.completeRegistry(this.user).subscribe({
-        next: (res: CustomHttpResponse) => {
-          this.sendNotification(NotificationType.SUCCESS, res.message);
-          this.refreshing = false;
-          this.router.navigate(['/login']);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, error.error.message);
-        },
-      })
-    );
-
-    /*if (!this.resetPasswordForm?.valid) {
-      return;
-    }*/
+    if (this.whatComponent == 'pass') {
+      this.subscriptions.push(
+        this.userService.completeRegistry(this.user).subscribe({
+          next: (res: CustomHttpResponse) => {
+            this.notificationService.notify(NotificationType.SUCCESS, res.message);
+            this.refreshing = false;
+            this.router.navigate(['/login']);
+          },
+          error: (error: HttpErrorResponse) => {
+            this.notificationService.notify(NotificationType.ERROR, error.error.message);
+          },
+        })
+      );
+    } else {
+      this.subscriptions.push(
+        this.userService.saveNewPassword(this.user).subscribe({
+          next: (res: User) => {
+            this.notificationService.notify(NotificationType.SUCCESS, `Ya puedes iniciar sesión ` + res.firstname + `.`);
+            this.refreshing = false;
+            this.router.navigate(['/login']);
+          },
+          error: (error: HttpErrorResponse) => {
+            this.notificationService.notify(NotificationType.ERROR, error.error.message);
+          },
+        })
+      );
+    }
   }
 
   newPassword = new FormControl(null, [
@@ -119,6 +131,7 @@ export class PasswordComponent
     ),
   ]);
 
+
   resetPasswordForm = this.formBuilder.group(
     {
       newPassword: this.newPassword,
@@ -126,10 +139,27 @@ export class PasswordComponent
     },
     {
       validator: this.ConfirmedValidator('newPassword', 'confirmPassword')
-    }
+    } as AbstractControlOptions
   );
 
   ConfirmedValidator(controlName: string, matchingControlName: string) {
+    return (formGroup: FormGroup): ValidationErrors | null => {
+      const control = formGroup.controls[controlName];
+      const matchingControl = formGroup.controls[matchingControlName];
+      if (matchingControl.errors && !matchingControl.errors.confirmedValidator) {
+        return;
+      }
+      if (control.value !== matchingControl.value) {
+        matchingControl.setErrors({ confirmedValidator: true });
+      } else {
+        matchingControl.setErrors(null);
+      }
+    };
+  }
+
+
+
+  /*ConfirmedValidator(controlName: string, matchingControlName: string) {
     return (formGroup: FormGroup) => {
       const control = formGroup.controls[controlName];
       const matchingControl = formGroup.controls[matchingControlName];
@@ -145,15 +175,13 @@ export class PasswordComponent
         matchingControl.setErrors(null);
       }
     };
-  }
+  }*/
 
   viewpass() {
     this.visible = !this.visible;
     this.changetype = !this.changetype;
     console.log('funciona');
   }
-
-
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());

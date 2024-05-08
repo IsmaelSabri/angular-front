@@ -1,7 +1,7 @@
 import { UserService } from '../service/user.service';
-import { Component, OnInit, OnDestroy, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../service/authentication.service';
 import { NotificationService } from '../service/notification.service';
@@ -9,8 +9,9 @@ import { User } from '../model/user';
 import { NotificationType } from '../class/notification-type.enum';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
-import { FormGroup } from '@angular/forms';
-import { SocialAuthService, FacebookLoginProvider, GoogleLoginProvider, SocialLoginModule, GoogleSigninButtonDirective } from "@abacritt/angularx-social-login";
+import { SocialAuthService, FacebookLoginProvider } from "@abacritt/angularx-social-login";
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { ngxLoadingAnimationTypes } from 'ngx-loading';
 
 @Component({
   selector: 'app-login',
@@ -24,10 +25,22 @@ export class LoginComponent implements OnInit, OnDestroy {
   changetype: boolean = true;
   registerForm: any = FormGroup;
   user: User;
+  @ViewChild('customLoadingTemplate') customLoadingTemplate: TemplateRef<any>;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+
+  validateForm: FormGroup<{
+    email: FormControl<string>;
+  }>;
 
   get f() {
     return this.registerForm.controls;
   }
+
+  isVisible: boolean = false;
+  showDialog() {
+    this.isVisible = true;
+  }
+
 
   constructor(
     private router: Router,
@@ -37,10 +50,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     private userService: UserService,
     config: NgbCarouselConfig,
     private socialAuthService: SocialAuthService,
+    private fb: NonNullableFormBuilder
   ) {
     config.interval = 2200;
     config.keyboard = true;
     config.pauseOnHover = false;
+
+    this.validateForm = this.fb.group({
+      email: ['', [Validators.email, Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
+    });
   }
 
   ngOnInit(): void {
@@ -81,7 +99,40 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.showLoading = false;
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.sendErrorNotification(NotificationType.ERROR,errorResponse.error);
+          this.notificationService.notify(NotificationType.ERROR, errorResponse.error);
+          this.showLoading = false;
+        },
+      })
+    );
+  }
+
+  protected submitForm(form: FormGroup) {
+    this.showLoading=true
+    var email = '';
+    email = form.controls['email'].value;
+    this.subscriptions.push(
+      this.userService.checkEmailExists(email).subscribe({
+        next: (response) => {
+          if (response != null) {
+            this.subscriptions.push(
+              this.userService.resetPassword(response).subscribe({
+                next: () => {
+                  this.notificationService.notify(NotificationType.SUCCESS, `Revisa tu correo.`);
+                  this.showLoading = false;
+                },
+                error: (error: HttpErrorResponse) => {
+                  this.notificationService.notify(NotificationType.ERROR, error.error);
+                  this.showLoading = false;
+                }
+              })
+            )
+          } else {
+            this.notificationService.notify(NotificationType.INFO, "No existe una cuenta para " + email);
+            this.showLoading = false;
+          }
+        },
+        error: () => {
+          this.notificationService.notify(NotificationType.ERROR, `No existe ninguna cuenta para ` + this.user.email);
           this.showLoading = false;
         },
       })
@@ -91,20 +142,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   signInWithFB(): void {
     // falta el apikey de fc en módule
     this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID);
-  }
-
-  private sendErrorNotification(
-    notificationType: NotificationType,
-    message: string
-  ): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(
-        notificationType,
-        'Algo salio mal. Por favor, inténtelo de nuevo.'
-      );
-    }
   }
 
   viewpass() {

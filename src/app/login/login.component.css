@@ -137,9 +137,9 @@ input[type="email"] {
   height: 46px !important;
 }
 
-input[type="email"]:focus {
+/*input[type="email"]:focus {
   box-shadow: 0 0 8px 0 #3a3b3c;
-}
+}*/
 
 .inputWithIcon input[type="email"] {
   padding-left: 80px;

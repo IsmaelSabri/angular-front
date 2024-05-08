@@ -61,8 +61,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     route: ActivatedRoute,
     toastr: ToastrService,
     protected homeService: HomeService,
-    private sanitizer: DomSanitizer,
-    private modalService: BsModalService,
+    protected sanitizer: DomSanitizer,
+    protected modalServiceBs: BsModalService,
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
     primengConfig: PrimeNGConfig,
@@ -75,7 +75,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   map2!: L.Map; // map geocoding search location
   map3!: L.Map; // map to set nearly services
   //hereMap!: H.Map;
-  lg = new L.LayerGroup();
+  lg = new L.LayerGroup(); // para añadir un nuevo marker
+  contained = new L.LayerGroup(); // responde a los eventos de mapa cargando los markers en su area visible
   mp!: L.Marker;
   markerHouse!: L.Marker; // punto de referencia para los servicios
   markerSchool!: L.Marker;
@@ -89,7 +90,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   home: Home = new Home();
   homeFiltersRequest: HomeFilterRequest = new HomeFilterRequest();
   homes: Home[] = [];
-  homesBounds: any[] = [];
   state: boolean = this.authenticationService.isUserLoggedIn();
   opt = {};
   mydate = new Date().getTime();
@@ -183,8 +183,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   mapEvents = new Set<string>();
   // save points
   nearlyMarkers = new Map<string, L.Marker>();
-  // dynamic id's carousels
-  idIndex = Array.from(Array(100).keys());
+
 
   // icons
   bch = beachIcon;
@@ -196,13 +195,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   uni = universityIcon;
   customIcon: any;
 
-  mobilityMenu: any;
   resizeStyleListSidenav = { "max-width": `50%`, };
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.mobilityMenu = window.innerWidth;
-  }
   // modal new property title 
   public setAdTitle(adTitle: string): void {
     this.adTitle.next(adTitle);
@@ -637,29 +631,24 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     //tileLayerWMSSelect().addTo(map);
     //tileLayerCP().addTo(map); // Codigos postales
     //tileLayerWMSSelectIGN().addTo(this.map);
-    Stadia_OSMBright().addTo(this.map).on('zoomend', () => {
-      this.homesBounds = this.map.getBounds();
-      for (let bound of this.homesBounds) {
-        console.log(bound);
-      }
-      /* now send your bounds to the server, requesting only the visible markers */
-    });;
+    Stadia_OSMBright().addTo(this.map);
     //tileLayerHere().addTo(this.map);
     this.subscriptions.push(
       this.homeService.getHomesByQuery(url).subscribe((data) => {
         data.map((Home) => {
-          Home.images = JSON.parse(Home.imagesAsString)
+          Home.images = JSON.parse(Home.imagesAsString);
+          //if(this.map.getBounds().contains([Home.lat,Home.lng])) { 
           marker(
             [Number(Home.lat), Number(Home.lng)],
             {
               icon: new L.DivIcon({
                 className: 'custom-div-icon',
                 html: `<div class="property-pill streamlined-marker-container streamlined-marker-position pill-color-forsale with-icon"
-                          role="link"
-                          tabindex="-1"
-                          data-test="property-marker">
-                          <div class="icon-text" style="display: inline-block; overflow: hidden;">${this.drawMarker(Home)}€</div>
-                      </div>`,
+                            role="link"
+                            tabindex="-1"
+                            data-test="property-marker">
+                            <div class="icon-text" style="display: inline-block; overflow: hidden;">${this.drawMarker(Home)}€</div>
+                        </div>`,
                 iconSize: [30, 42],
                 iconAnchor: [15, 42],
               }),
@@ -668,92 +657,92 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
           )
             .bindPopup(
               `
-            <div class="reale1 row">
-              <div class="reale2" col-sm-6>
-                 <div class="reale3" >
-                    <div class="reale5">
-                      <div id="carouselExample" class="carousel slide " data-bs-interval="false">
-                        <div class="carousel-inner popup-marker">
+              <div class="reale1 row">
+                <div class="reale2" col-sm-6>
+                   <div class="reale3" >
+                      <div class="reale5">
+                        <div id="carouselExample" class="carousel slide " data-bs-interval="false">
+                          <div class="carousel-inner popup-marker">
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                          </button>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                        </button>
-                      </div>
-                      <div class="brandingcontainer" id="brandingcontainer" style="display:none;"></div>
-                    </div> <!-- reale5 -->
-                    <div class="col-sm-6 realeTextContainer">
-                    <p class="p_1">${Home.tipo}</p>
-                       <div class="realeTextContainer_2">
-                       <input type="checkbox" id="cuore" onclick="cuoreLike()"/>
-                              <label for="cuore" class="float-end ">
-                                  <svg  id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
-                                      <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
-                                          <path d="M28.9955034,43.5021565 C29.8865435,42.7463028 34.7699838,39.4111958 36.0304386,38.4371087 C41.2235681,34.4238265 43.9999258,30.3756814 44.000204,25.32827 C43.8745444,20.7084503 40.2276972,17 35.8181279,17 C33.3361339,17 31.0635318,18.1584833 29.5323721,20.1689268 L28.9999629,20.8679909 L28.4675537,20.1689268 C26.936394,18.1584833 24.6637919,17 22.181798,17 C17.6391714,17 14,20.7006448 14,25.3078158 C14,30.4281078 16.7994653,34.5060727 22.0294634,38.5288772 C23.3319753,39.530742 27.9546492,42.6675894 28.9955034,43.5021565 Z" id="heart" stroke="#fc2779"/>
-                                          <circle id="main-circ" fill="#fc2779" opacity="0" cx="29.5" cy="29.5" r="1.5"/>
-
-                                          <g class="grp" id="grp7" opacity="0" transform="translate(7 6)">
-                                              <circle class="cir-a" id="oval1" fill="#9CD8C3" cx="2" cy="6" r="2"/>
-                                              <circle  class="cir-b " id="oval2" fill="#8CE8C3" cx="5" cy="2" r="2"/>
-                                          </g>
-
-                                          <g class="grp" id="grp6" opacity="0" transform="translate(0 28)">
-                                              <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="7" r="2"/>
-                                              <circle class="cir-b" id="oval2" fill="#91D2FA" cx="3" cy="2" r="2"/>
-                                          </g>
-
-                                          <g class="grp" id="grp3" opacity="0" transform="translate(52 28)">
-                                              <circle class="cir-b" id="oval2" fill="#9CD8C3" cx="2" cy="7" r="2"/>
-                                              <circle class="cir-a" id="oval1" fill="#8CE8C3" cx="4" cy="2" r="2"/>
-                                          </g>
-
-                                          <g class="grp" id="grp2" opacity="0" transform="translate(44 6)">
-                                              <circle class="cir-b" id="oval2" fill="#CC8EF5" cx="5" cy="6" r="2"/>
-                                              <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="2" r="2"/>
-                                          </g>
-
-                                          <g class="grp" id="grp5" opacity="0" transform="translate(14 50)">
-                                              <circle class="cir-a" id="oval1" fill="#91D2FA" cx="6" cy="5" r="2"/>
-                                              <circle  class="cir-b" id="oval2" fill="#91D2FA" cx="2" cy="2" r="2"/>
-                                          </g>
-
-                                          <g class="grp" id="grp4" opacity="0" transform="translate(35 50)">
-                                              <circle  class="cir-a" id="oval1" fill="#F48EA7" cx="6" cy="5" r="2"/>
-                                              <circle class="cir-b" id="oval2" fill="#F48EA7" cx="2" cy="2" r="2"/>
-                                          </g>
-
-                                          <g class="grp" id="grp1" opacity="0" transform="translate(24)">
-                                              <circle class="cir-a" id="oval1" fill="#9FC7FA" cx="2.5" cy="3" r="2"/>
-                                              <circle class="cir-b" id="oval2" fill="#9FC7FA" cx="7.5" cy="2" r="2"/>
-                                          </g>
-                                      </g>
-                                  </svg>
-                              </label>
-                       <p class="p_1_2 d-block mt-4">En ${Home.condicion}</p>
-                          <p class="p_2"></p>
-                          <a onclick="runPopup()" class="a_1">
-                             <p class="p_3"></p>
-                             <p class="p_4">${Home.distrito}, ${Home.ciudad}</p>
-                          </a>
-                          <div class="ul_features">
+                        <div class="brandingcontainer" id="brandingcontainer" style="display:none;"></div>
+                      </div> <!-- reale5 -->
+                      <div class="col-sm-6 realeTextContainer">
+                      <p class="p_1">${Home.tipo}</p>
+                         <div class="realeTextContainer_2">
+                         <input type="checkbox" id="cuore" onclick="cuoreLike()"/>
+                                <label for="cuore" class="float-end ">
+                                    <svg  id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
+                                        <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
+                                            <path d="M28.9955034,43.5021565 C29.8865435,42.7463028 34.7699838,39.4111958 36.0304386,38.4371087 C41.2235681,34.4238265 43.9999258,30.3756814 44.000204,25.32827 C43.8745444,20.7084503 40.2276972,17 35.8181279,17 C33.3361339,17 31.0635318,18.1584833 29.5323721,20.1689268 L28.9999629,20.8679909 L28.4675537,20.1689268 C26.936394,18.1584833 24.6637919,17 22.181798,17 C17.6391714,17 14,20.7006448 14,25.3078158 C14,30.4281078 16.7994653,34.5060727 22.0294634,38.5288772 C23.3319753,39.530742 27.9546492,42.6675894 28.9955034,43.5021565 Z" id="heart" stroke="#fc2779"/>
+                                            <circle id="main-circ" fill="#fc2779" opacity="0" cx="29.5" cy="29.5" r="1.5"/>
+  
+                                            <g class="grp" id="grp7" opacity="0" transform="translate(7 6)">
+                                                <circle class="cir-a" id="oval1" fill="#9CD8C3" cx="2" cy="6" r="2"/>
+                                                <circle  class="cir-b " id="oval2" fill="#8CE8C3" cx="5" cy="2" r="2"/>
+                                            </g>
+  
+                                            <g class="grp" id="grp6" opacity="0" transform="translate(0 28)">
+                                                <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="7" r="2"/>
+                                                <circle class="cir-b" id="oval2" fill="#91D2FA" cx="3" cy="2" r="2"/>
+                                            </g>
+  
+                                            <g class="grp" id="grp3" opacity="0" transform="translate(52 28)">
+                                                <circle class="cir-b" id="oval2" fill="#9CD8C3" cx="2" cy="7" r="2"/>
+                                                <circle class="cir-a" id="oval1" fill="#8CE8C3" cx="4" cy="2" r="2"/>
+                                            </g>
+  
+                                            <g class="grp" id="grp2" opacity="0" transform="translate(44 6)">
+                                                <circle class="cir-b" id="oval2" fill="#CC8EF5" cx="5" cy="6" r="2"/>
+                                                <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="2" r="2"/>
+                                            </g>
+  
+                                            <g class="grp" id="grp5" opacity="0" transform="translate(14 50)">
+                                                <circle class="cir-a" id="oval1" fill="#91D2FA" cx="6" cy="5" r="2"/>
+                                                <circle  class="cir-b" id="oval2" fill="#91D2FA" cx="2" cy="2" r="2"/>
+                                            </g>
+  
+                                            <g class="grp" id="grp4" opacity="0" transform="translate(35 50)">
+                                                <circle  class="cir-a" id="oval1" fill="#F48EA7" cx="6" cy="5" r="2"/>
+                                                <circle class="cir-b" id="oval2" fill="#F48EA7" cx="2" cy="2" r="2"/>
+                                            </g>
+  
+                                            <g class="grp" id="grp1" opacity="0" transform="translate(24)">
+                                                <circle class="cir-a" id="oval1" fill="#9FC7FA" cx="2.5" cy="3" r="2"/>
+                                                <circle class="cir-b" id="oval2" fill="#9FC7FA" cx="7.5" cy="2" r="2"/>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </label>
+                         <p class="p_1_2 d-block mt-4">En ${Home.condicion}</p>
+                            <p class="p_2"></p>
+                            <a onclick="runPopup()" class="a_1">
+                               <p class="p_3"></p>
+                               <p class="p_4">${Home.distrito}, ${Home.ciudad}</p>
+                            </a>
+                            <div class="ul_features">
+                              
+                            </div>
+                            <div class="p_features">
                             
-                          </div>
-                          <div class="p_features">
-                          
-                          </div>
-                       </div> <!-- realeTextContainer2 -->
-                    </div> <!-- realeTextContainer -->
-                 </div> <!-- reale3 -->
-                 
-              </div> <!-- reale2 -->
-              
-           </div> <!-- reale1 -->
-           
-            `,
+                            </div>
+                         </div> <!-- realeTextContainer2 -->
+                      </div> <!-- realeTextContainer -->
+                   </div> <!-- reale3 -->
+                   
+                </div> <!-- reale2 -->
+                
+             </div> <!-- reale1 -->
+             
+              `,
               {
                 maxWidth: 382,
                 maxHeight: 152,
@@ -790,13 +779,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                   }
                 }
               }
-            }) /*.on('mouseover',()=>{
-              this.dynamicCarousel(Home.images);
-            })*/
-            .addTo(this.map);
-        });
+            }).addTo(this.map);
+          //}
+        })
         this.homes = data;
-      })
+      }),
     );
   }
 
@@ -883,14 +870,22 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   // monta la url y pasa del marker al anuncio
-  runAdCard(home: Home) {
-    localStorage.removeItem('currentBuilding');
-    localStorage.setItem('currentBuilding', JSON.stringify(home));
-    this.routerLinkId = +home.id;
-    this.routerLinkModel = home.model;
-    setTimeout(() => {
-      this.clickButton('linkPopup');
-    }, 1000);
+  runAdCard(home: Home, flag: string) {
+    if (home) {
+      localStorage.removeItem('currentBuilding');
+      localStorage.setItem('currentBuilding', JSON.stringify(home));
+      this.routerLinkId = +home.id;
+      this.routerLinkModel = home.model;
+      if (flag == 'home') {
+        setTimeout(() => {
+          $('#linkPopup').trigger('click');
+        }, 100);
+      } else if (flag == 'ad' || flag == 'list') {
+        setTimeout(() => {
+          this.clickButton('linkPopup');
+        }, 100);
+      }
+    }
   }
 
   /************************************************************/
@@ -898,13 +893,25 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.map = L.map('map', { renderer: L.canvas() }).setView(
       [39.46975, -0.37739],
       16  //25
-    );
+    ).on('zoomend', (e) => {
+      /*
+      * Aquí puede cargar las viviendas respondiendo al zoom.
+      * this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag)
+      * Y lo mismo para moveend
+      */
+    }).on('moveend', (e) => {
+      /*
+      * console.log('mover');
+        * setTimeout(()=>{
+        * this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+      * },1000);
+      */
+    });
     this.user = this.authenticationService.getUserFromLocalCache();
     this.userMarkerEvents();
     this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag); // by default load for sale 
     this.loadScripts();
     this.clearMap();
-    this.mobilityMenu = window.innerWidth;
   }
 
   cuoreLikeFeature() {
@@ -1337,7 +1344,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                   this.subscriptions.push(
                     this.homeService.addHome(json).subscribe(() => {
                       this.router.navigate(['/home']),
-                        this.sendNotification(NotificationType.SUCCESS, `Anuncio creado.`);
+                        this.notificationService.notify(NotificationType.SUCCESS, `Anuncio creado.`);
                       var resetForm = <HTMLFormElement>document.getElementById('newMarkerForm');
                       resetForm?.reset();
                       $(".modal").removeClass("is-active");
@@ -1372,18 +1379,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   * 
   */
   myMap: any;
-  /*modalRef: BsModalRef;
-  openFiltersModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template); // , {class: 'modal-lg'}
-    this.myMap = new Map<string, string>();
-    if ('detailFiltersMap' in localStorage) {
-      localStorage.removeItem('detailFiltersMap');
-      localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
-    } else {
-      localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
-    }
-  }*/
-
   public filter(value: any, flag: string) {
     // mapa para hacer la peticion
     this.myMap = new Map<string, string>(JSON.parse(localStorage.getItem("detailFiltersMap")));
@@ -1444,18 +1439,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       }
     }
   }
-  /* itera el mapa, crea un string con la url y hace la petición
-  *  1 - filtros genéricos (true-false...) ok
-  *  2 - filtros de características (ciudad,estado...) ok 
-  *  3 - ordenamiento y filtrado (precio y superficie) ok
-  *  4 - página y tamaño de la página (proximamente, cuando me vaya al componente list
-  *       y haga en este una tab para el listado)
-  *  5 - array de objetos (tipo) con operadores lógicos ok
-  *  6 - cantidad 1-5=< ok
-  * 
+  /* 
+  * itera el mapa, crea un string con la url y hace la petición
   */
   labelMultiselect: string = 'Todas';
-  //filtersMultiselect: boolean = false;
   public searchFilterItems(map: Map<string, string>) {
     var urlFilterRequest = '&sorts=';
     map.forEach((value: string, key: string) => {
@@ -1507,23 +1494,52 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
           urlFilterRequest = key + '>=' + value + ',' + urlFilterRequest;
         }
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-      } else if (String(value) == 'true' || String(value) == 'false') {
+      } else if (String(value) == 'true') {
+        if (key == 'trastero' || key == 'piscinaComp') {
+          if (urlFilterRequest.includes('model@=,')) {
+            urlFilterRequest = urlFilterRequest.split('model@=,').join('model@=Flat,');
+          } else if (!urlFilterRequest.includes('model@=')) {
+            urlFilterRequest = 'model@=Flat,' + urlFilterRequest;
+          }
+        } else if (key == 'panelesSolares' || key == 'inmuebleAccesible' || key == 'jacuzzi') {
+          if (urlFilterRequest.includes('model@=,')) {
+            urlFilterRequest = urlFilterRequest.split('model@=,').join('model@=Flat,');
+          } else if (!urlFilterRequest.includes('model@=')) {
+            urlFilterRequest = 'model@=Flat,' + urlFilterRequest;
+          }
+        }
         urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (key == 'tipo') {
         var obj = JSON.parse(value);
         var tipoValues = '';
+        var modelValues: string[] = [];
+        var modelOptions = '';
         for (var i = 0; i < obj.length; i++) {
-          tipoValues += obj[i] + '|'
+          tipoValues += obj[i] + '|';
+          modelValues.push(this.defineModel(obj[i]));
+        }
+        modelValues = [...new Set(modelValues)];
+        for (var i = 0; i < modelValues.length; i++) {
+          modelOptions += modelValues[i] + '|';
         }
         if (tipoValues.slice(-1) == "|") {
           tipoValues = tipoValues.slice(0, -1);
         }
-        urlFilterRequest = 'tipo' + '@=*' + tipoValues + ',' + urlFilterRequest
+        if (modelOptions.slice(-1) == "|") {
+          modelOptions = modelOptions.slice(0, -1);
+        }
+        if (urlFilterRequest.includes('model@=Flat,')) {
+          urlFilterRequest = urlFilterRequest.split('model@=Flat,').join('');
+        } else if ('model@=House,') {
+          urlFilterRequest = urlFilterRequest.split('model@=House,').join('');
+        } else if ('model@=Flat|House,') {
+          urlFilterRequest = urlFilterRequest.split('model@=Flat|House,').join('');
+        } else if ('model@=House|Flat,') {
+          urlFilterRequest = urlFilterRequest.split('model@=House|Flat,').join('');
+        }
+        urlFilterRequest = 'model' + '@=' + modelOptions + ',' + 'tipo' + '@=*' + tipoValues + ',' + urlFilterRequest
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-        /*if(map.has){ // solo falta pasar ya el model@= en función de tipo
-
-        }*/
       } else if (key == 'descripcion') {
         var formatParam = value.split(' ').join('|');
         if (formatParam.slice(-1) == "|") {
@@ -1531,6 +1547,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         }
         urlFilterRequest = 'descripcion' + '@=*' + formatParam + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
+      } else if (key == 'estado') {
+        urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
+        localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
+      } else if (key == 'ciudad') { // descarte: ciudad
+        urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
+        localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
       } else if (key == 'condicion') {
         if (value == '0') {
           urlFilterRequest = key + '@=*' + 'Alquiler' + ',' + urlFilterRequest;
@@ -1539,16 +1561,20 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         } else if (value == '2') {
           urlFilterRequest = key + '@=*' + 'Compartir' + ',' + urlFilterRequest;
         }
-        console.log(key + ' ' + value);
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-      } else if (key == 'estado') {
+      } else if (key == 'vistasDespejadas') {
+        if (urlFilterRequest.includes('model@=,')) {
+          urlFilterRequest = urlFilterRequest.split('model@=,').join('model@=Flat,');
+        } else if (!urlFilterRequest.includes('model@=')) {
+          urlFilterRequest = 'model@=Flat,' + urlFilterRequest;
+        }
         urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
-        localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
-      } else { // descarte: ciudad
-        urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
-        localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
+        localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       }
     });
+    if (urlFilterRequest.includes('model@=,')) {
+      urlFilterRequest = urlFilterRequest.split('model@=,').join('');
+    }
     console.log(urlFilterRequest);
     this.loadMarkers(urlFilterRequest);
   }
@@ -1556,7 +1582,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   public clearMap() {
     this.myMap = new Map<string, string>(JSON.parse(localStorage.getItem("detailFiltersMap")));
     this.myMap.clear();
-    this.myMap.set('condicion', 'Venta');
+    this.myMap.set('condicion', '1');
     localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
     this.wordCount = 0;
     this.homeFiltersRequest.keywords = '';

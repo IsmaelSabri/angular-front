@@ -247,7 +247,7 @@ export class HomeFilterRequest {
   panelesSolares: boolean;
   jacuzzi: boolean;
   piscinaPrivada: boolean;
-  piscinaCompartida: boolean;
+  piscinaComp: boolean;
   trastero: boolean;
   keywords: string = '';
 }

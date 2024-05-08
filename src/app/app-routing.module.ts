@@ -12,8 +12,6 @@ import { PasswordComponent } from './components/password/password.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { UserProComponent } from './components/user-pro/user-pro.component';
 
-
-
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent },
@@ -23,6 +21,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: '_es', component: ListComponent },
   { path: 'pass', component: PasswordComponent },
+  { path: 'reset-pass', component: PasswordComponent },
   { path: 'user-pro', component: UserProComponent, canActivate: [AuthenticationGuard] },
   { path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard] }, 
   { path: '', redirectTo: '/home', pathMatch: 'full' }

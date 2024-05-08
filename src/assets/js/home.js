@@ -32,6 +32,10 @@ function closeModal() {
 function uncheck() {
   $(":checkbox").prop("checked", false).parent().removeClass("active");
   $(":radio").prop("checked", false).parent().removeClass("active");
+  $(".ant-radio-button").removeClass("ant-radio-button-checked");
+  $(".ant-radio-button-wrapper").removeClass("ant-radio-button-wrapper-checked");
+  $(".ant-segmented-item-label:contains('Venta')").trigger('click');
+
   //$("#two.saleRadio").prop("checked", true);// pone en venta por default el filtrado
   $(".ant-select-clear").trigger('click'); // tipos de vivienda
   //$('.ant-select').prop('selectedIndex', 0); // select

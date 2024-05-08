@@ -7,7 +7,7 @@ import { CustomHttpResponse } from '../model/performance/custom-http-response';
 import { APIKEY } from 'src/environments/environment.prod';
 import Axios from 'axios-observable';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class UserService {
   private host = environment.apiUrl;
   private fullName$ = new BehaviorSubject<string>("");
@@ -16,13 +16,13 @@ export class UserService {
     'Content-Type': 'application/json;charset=UTF-8',
   });
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   public getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.host}/api/user/all`);
   }
 
-  public getUserByUserId(id:string): Observable<User> {
+  public getUserByUserId(id: string): Observable<User> {
     return this.http.get<User>(`${this.host}/api/user/check/${id}`);
   }
 
@@ -30,25 +30,34 @@ export class UserService {
     return this.http.post<User>(`${this.host}/api/user/new`, user);
   }
 
-  public resetPassword(id: string): Observable<CustomHttpResponse> {
-    return this.http.get<CustomHttpResponse>(`${this.host}/api/user/update/${id}`);
-  }
-
   public updateProfileImage(formData: FormData): Observable<HttpEvent<User>> {
     return this.http.post<User>(`${this.host}/api/user/updateProfileImage`, formData,
-    {reportProgress: true,
-      observe: 'events'
-    });
+      {
+        reportProgress: true,
+        observe: 'events'
+      });
   }
 
-  public completeRegistry(user:User): Observable<CustomHttpResponse> {
+  public completeRegistry(user: User): Observable<CustomHttpResponse> {
     return this.http.put<CustomHttpResponse>(`${this.host}/api/user/full/${user.id}`, user, {
       headers: this.httpHeaders,
     });
   }
 
-  public checkEmailExists(userId:string) : Observable<User>{
+  public checkUserById(userId: string): Observable<User> {
     return this.http.get<User>(`${this.host}/api/user/check/${userId}`);
+  }
+
+  public checkEmailExists(email: string): Observable<User> {
+    return this.http.get<User>(`${this.host}/api/user/checkemail/${email}`);
+  }
+
+  public resetPassword(user: User): Observable<User> {
+    return this.http.post<User>(`${this.host}/api/user/reset-password`, user);
+  }
+
+  public saveNewPassword(user: User): Observable<User> {
+    return this.http.post<User>(`${this.host}/api/user/save-newpassword`, user);
   }
 
   public deleteUser(id: string): Observable<CustomHttpResponse> {
@@ -61,12 +70,12 @@ export class UserService {
 
   public getUsersFromLocalCache(): User[] {
     if (localStorage.getItem('usuarios')) {
-        return JSON.parse(localStorage.getItem('usuarios'));
+      return JSON.parse(localStorage.getItem('usuarios'));
     }
     return null;
   }
-  
-  public updateUser(user:User, id:string): Observable<User> {
+
+  public updateUser(user: User, id: string): Observable<User> {
     return this.http.put<User>(`${this.host}/api/user/${id}`, user);
   }
 
@@ -84,23 +93,23 @@ export class UserService {
     return formData;
   }
 
-  public uploadSignature(body:FormData,name:string): Observable<any>{
+  public uploadSignature(body: FormData, name: string): Observable<any> {
     return Axios.post(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${name}`, body);
   }
 
-  public getRole(){
+  public getRole() {
     return this.role$.asObservable();
   }
 
-  public setRole(role:string){
+  public setRole(role: string) {
     this.role$.next(role);
   }
 
-  public getFullName(){
+  public getFullName() {
     return this.fullName$.asObservable();
   }
 
-  public setFullName(fullname:string){
+  public setFullName(fullname: string) {
     this.fullName$.next(fullname)
   }
 

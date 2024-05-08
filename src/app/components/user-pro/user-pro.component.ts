@@ -188,7 +188,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
   }
   loadImageFailed() {
     // show message
-    this.sendNotification(NotificationType.ERROR, `Algo salio mal. Por favor intentelo pasados unos minutos.`);
+    this.notificationService.notify(NotificationType.ERROR, `Algo salio mal. Por favor intentelo pasados unos minutos.`);
   }
 
   updateUser() {
@@ -209,7 +209,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
             this.user.brandImageAsString = JSON.stringify(this.user.brandImage);
           },
           error: (err: any) => {
-            this.sendNotification(NotificationType.ERROR, `Imagen corporativa: algo salio mal. Por favor intentelo pasados unos minutos.` + err);
+            this.notificationService.notify(NotificationType.ERROR, `Imagen corporativa: algo salio mal. Por favor intentelo pasados unos minutos.` + err);
             this.brandImageRefreshing = false;
           }
         }));
@@ -244,10 +244,10 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
           console.log(res);
           localStorage.clear();
           //this.authenticationService.addUserToLocalCache(res);
-          this.sendNotification(NotificationType.SUCCESS, `Se ha actualizado el perfil`);
+          this.notificationService.notify(NotificationType.SUCCESS, `Se ha actualizado el perfil`);
           this.router.navigate(['/home'])
           setTimeout(() => {
-            this.sendNotification(NotificationType.SUCCESS, `Vuelva a iniciar sesión`);
+            this.notificationService.notify(NotificationType.SUCCESS, `Vuelva a iniciar sesión`);
           }, 1000);
         },
         error: (err: any) => {

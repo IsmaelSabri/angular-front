@@ -2197,8 +2197,6 @@ mat-drawer {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
-  --swiper-theme-color: #007aff;
-  --swiper-navigation-size: 44px;
   color-scheme: only light;
   font-family: "Lufga-Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.33;

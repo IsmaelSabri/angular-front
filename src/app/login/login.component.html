@@ -1,69 +1,98 @@
-<div class="container-fluid" style="height: 100%; padding: 50px; background: #e0e0e0;">
-  <div class="d-flex justify-content-center h-50">
-    <div class="user_card">
-      <div>
-        <div class="d-flex justify-content-center logo">
-          <img src="assets/img/tmp/unknown-house.png" alt="Logo de la marca">
-        </div>
-      </div>
-      <div class="d-flex justify-content-center" style="top: 35px;">
-        <div style="margin-top: 10px;margin-bottom:10px;">
-          <h3>Entrar</h3>
-        </div>
-      </div>
-      <div class="d-flex justify-content-center">
-        <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm.value)">
-          <div class="input-group mb-3">
-            <div class="input-group-append inputWithIcon">
-              <input type="email" class="form-control" name="email" placeholder="Email" ngModel [email]="true" #emailInput="ngModel"
-                required><ion-icon name="mail-outline"></ion-icon>
-              <span class="help-block" style="color:red;" *ngIf="emailInput.invalid && emailInput.touched">Por favor
-                introduzca un correo electrónico válido</span>
-            </div>
+<div class="container-fluid loading" style="height: 100%; padding: 50px; background: #e0e0e0;" [ngTemplateOutlet]="customLoadingTemplate">
+    <div class="d-flex justify-content-center h-50">
+      <div class="user_card">
+        <div>
+          <div class="d-flex justify-content-center logo">
+            <img src="assets/img/tmp/unknown-house.png" alt="Logo de la marca">
           </div>
-          <div class="input-group mb-2">
-            <div class="input-group-append inputWithIcon">
-              <input [type]="changetype?'password':'text'" class="form-control" name="password" placeholder="Contraseña"
-                required ngModel #passwordInput="ngModel"><ion-icon name="lock-closed-outline"></ion-icon>
-              <span class="help-block" style="color:red;" *ngIf="passwordInput.invalid && passwordInput.touched">Por favor
-                introduzca su password.</span>
-              <span class="eyeicon" (click)="viewpass()">
-                <ion-icon class="eyeicon" [ngClass]="visible?'eye-off-outline':'eye-outline'"></ion-icon></span>
+        </div>
+        <div class="d-flex justify-content-center" style="top: 35px;">
+          <div style="margin-top: 10px;margin-bottom:10px;">
+            <h3>Entrar</h3>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center">
+          <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm.value)">
+            <div class="input-group mb-3">
+              <div class="input-group-append inputWithIcon">
+                <input type="email" class="form-control focus-ring focus-ring-secondary" name="email"
+                  placeholder="Email" ngModel [email]="true" #emailInput="ngModel" required><ion-icon
+                  name="mail-outline"></ion-icon>
+                <span class="help-block" style="color:red;" *ngIf="emailInput.invalid && emailInput.touched">Por favor
+                  introduzca un correo electrónico válido</span>
+              </div>
             </div>
+            <div class="input-group mb-2">
+              <div class="input-group-append inputWithIcon">
+                <input [type]="changetype?'password':'text'" class="form-control" name="password"
+                  placeholder="Contraseña" required ngModel #passwordInput="ngModel"><ion-icon
+                  name="lock-closed-outline"></ion-icon>
+                <span class="help-block" style="color:red;" *ngIf="passwordInput.invalid && passwordInput.touched">Por
+                  favor
+                  introduzca su password.</span>
+                <span class="eyeicon" (click)="viewpass()">
+                  <ion-icon class="eyeicon" [ngClass]="visible?'eye-off-outline':'eye-outline'"></ion-icon></span>
+              </div>
 
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+              <button style="border: 1px;" type="submit" [disabled]="loginForm.invalid || showLoading" name="button"
+                class=" login_btn ">
+                <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+                  style="width: 1.5rem; height: 1.5rem; margin-top: 7px;">
+                </span>
+                <span style=" font-weight: 600;" *ngIf="!showLoading">Entrar</span>
+              </button>
+            </div>
+            <div class="d-flex justify-content-center mt-3 ">
+              <a (click)="showDialog()" class="small">Recuperar contraseña</a>
+            </div>
+            <h6><span>O</span></h6>
+          </form>
+        </div>
+        <div class="d-flex justify-content-center mt-3 flex-column" style="align-items:center;">
+          <button (click)="signInWithFB()" type="button" class=" top-fill"><i class="bi bi-facebook"
+              style="padding: 8px;"></i>
+            Continuar con Facebook</button>
+        </div>
+        <div class="d-flex justify-content-center mt-3 flex-column" style="align-items:center;">
+          <button GoogleSigninButtonDirective type="button" class=" top-fill"><i class="bi bi-google"></i>
+            Continuar con Google </button>
+        </div>
+        <div class="d-flex justify-content-center mt-3 flex-column" style="align-items: center;">
+          <button type="button" class=" top-fill" (click)="showLoading = !showLoading"><i class="bi bi-apple"></i> Continuar con Apple</button>
+        </div>
+        <div class="mt-4">
+          <div class="d-flex justify-content-center links">
+            No dispone de una cuenta? <a routerLink="/register" class="ml-2"
+              style="color: rgba(var(--h5f,56,151,240),1);">Registrarse</a>
           </div>
-          <div class="d-flex justify-content-center mt-3">
-            <button style="border: 1px;" type="submit" [disabled]="loginForm.invalid || showLoading" name="button"
-              class=" login_btn ">
-              <span *ngIf="showLoading" class="spinner-border text-light" role="status"
-                style="width: 1.5rem; height: 1.5rem; margin-top: 7px;">
-              </span>
-              <span style=" font-weight: 600;" *ngIf="!showLoading">Entrar</span>
-            </button>
-          </div>
-          <div class="d-flex justify-content-center mt-3 ">
-            <a routerLink="/pass" class="small">Recuperar contraseña</a>
-          </div>
-          <h6><span>O</span></h6>
-        </form>
-      </div>
-      <div class="d-flex justify-content-center mt-3 flex-column" style="align-items:center;">
-        <button (click)="signInWithFB()" type="button" class=" top-fill"><i class="bi bi-facebook" style="padding: 8px;"></i>
-          Continuar con Facebook</button>
-      </div>
-      <div class="d-flex justify-content-center mt-3 flex-column" style="align-items:center;">
-        <button GoogleSigninButtonDirective type="button" class=" top-fill"><i class="bi bi-google"></i>
-          Continuar con Google </button>
-      </div>
-      <div class="d-flex justify-content-center mt-3 flex-column" style="align-items: center;">
-        <button type="button" class=" top-fill"><i class="bi bi-apple"></i> Continuar con Apple</button>
-      </div>
-      <div class="mt-4">
-        <div class="d-flex justify-content-center links">
-          No dispone de una cuenta? <a routerLink="/register" class="ml-2"
-            style="color: rgba(var(--h5f,56,151,240),1);">Registrarse</a>
         </div>
       </div>
     </div>
-  </div>
+
+    <ngx-loading [show]="showLoading" [config]="{ backdropBorderRadius: '3px',
+              animationType: ngxLoadingAnimationTypes.rectangleBounce,
+
+     }"
+      [template]="customLoadingTemplate"></ngx-loading>
 </div>
+
+
+<p-dialog header="Reestablecer contraseña" [modal]="true" [(visible)]="isVisible" [style]="{ width: '25rem' }">
+  <!--<span class="p-text-secondary block mb-5">Update your information.</span>-->
+  <form [formGroup]="validateForm" #restoreForm="ngForm" (ngSubmit)="submitForm(validateForm); restoreForm.resetForm()">
+    <div class="flex align-items-center gap-3 mb-5 d-block form-group" *ngIf="!showLoading">
+      <label for="email" class="font-semibold w-6rem mr-2">Introduce tu correo electrónico</label>
+      <input pInputText id="email" class="flex-auto form-control focus-ring focus-ring-success" autocomplete="off"
+        type="email" name="email" [(ngModel)]="restoreForm.name" [email]="true" formControlName="email" />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5 d-block form-group" *ngIf="showLoading">
+      <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+    </div>
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Enviar" pRipple (click)="isVisible = false; restoreForm.ngSubmit.emit()"
+        [disabled]="!validateForm.valid || showLoading" />
+    </div>
+  </form>
+</p-dialog>
