@@ -204,7 +204,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   public restoreMap() {
     this.lg.clearLayers();
-    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+    this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag);
   }
 
   @ViewChild('newMarkerForm') newMarkerForm: FormGroupDirective;
@@ -631,7 +631,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     //tileLayerWMSSelect().addTo(map);
     //tileLayerCP().addTo(map); // Codigos postales
     //tileLayerWMSSelectIGN().addTo(this.map);
-    Stadia_OSMBright().addTo(this.map);
+    //Stadia_OSMBright().addTo(this.map);
+    Jawg_Sunny().addTo(this.map);
     //tileLayerHere().addTo(this.map);
     this.subscriptions.push(
       this.homeService.getHomesByQuery(url).subscribe((data) => {
@@ -863,8 +864,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
     if (h.direccionAproximada) {
       $('.p_3').text('Ubicación aprox.');
-    } else {
+    } else if(h.numero!=null){
       $('.p_3').text(h.tipoDeVia + ' ' + h.calle + ' ' + h.numero + ',');
+    } else {
+      $('.p_3').text(h.tipoDeVia + ' ' + h.calle + ',');
     }
 
   }
@@ -896,20 +899,20 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     ).on('zoomend', (e) => {
       /*
       * Aquí puede cargar las viviendas respondiendo al zoom.
-      * this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag)
+      * this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag)
       * Y lo mismo para moveend
       */
     }).on('moveend', (e) => {
       /*
       * console.log('mover');
         * setTimeout(()=>{
-        * this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+        * this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag);
       * },1000);
       */
     });
     this.user = this.authenticationService.getUserFromLocalCache();
     this.userMarkerEvents();
-    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag); // by default load for sale 
+    this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag); // by default load for sale 
     this.loadScripts();
     this.clearMap();
   }
@@ -1038,6 +1041,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     if (this.home.tipo == 'Habitación') {
       this.shareTab.next(false);
       this.saleTab.next(true);
+      this.rentTab.next(false);
       var x = document.getElementById('kompartirTitle');
       x.style.textDecoration = 'none';
       var y = document.getElementById('alquilerTitle');
@@ -1069,6 +1073,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.saleTab.next(true);
       this.shareTab.next(true);
       this.home.precioFinal = null;
+      this.rentTab.next(false);
     } else {
       this.shareTab.next(undefined);
       this.saleTab.next(false);
@@ -1538,14 +1543,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         } else if ('model@=House|Flat,') {
           urlFilterRequest = urlFilterRequest.split('model@=House|Flat,').join('');
         }
-        urlFilterRequest = 'model' + '@=' + modelOptions + ',' + 'tipo' + '@=*' + tipoValues + ',' + urlFilterRequest
+        urlFilterRequest = 'model' + '@=' + modelOptions + ',' + 'tipo' + '@=' + tipoValues + ',' + urlFilterRequest
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (key == 'descripcion') {
         var formatParam = value.split(' ').join('|');
         if (formatParam.slice(-1) == "|") {
           formatParam = formatParam.slice(0, -1);
         }
-        urlFilterRequest = 'descripcion' + '@=*' + formatParam + ',' + urlFilterRequest;
+        urlFilterRequest = 'descripcion' + '@=' + formatParam + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (key == 'estado') {
         urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
@@ -1555,11 +1560,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
       } else if (key == 'condicion') {
         if (value == '0') {
-          urlFilterRequest = key + '@=*' + 'Alquiler' + ',' + urlFilterRequest;
+          urlFilterRequest = key + '@=' + 'Alquiler' + ',' + urlFilterRequest;
         } else if (value == '1') {
-          urlFilterRequest = key + '@=*' + 'Venta' + ',' + urlFilterRequest;
+          urlFilterRequest = key + '@=' + 'Venta' + ',' + urlFilterRequest;
         } else if (value == '2') {
-          urlFilterRequest = key + '@=*' + 'Compartir' + ',' + urlFilterRequest;
+          urlFilterRequest = key + '@=' + 'Compartir' + ',' + urlFilterRequest;
         }
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (key == 'vistasDespejadas') {
@@ -1586,7 +1591,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
     this.wordCount = 0;
     this.homeFiltersRequest.keywords = '';
-    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+    this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag);
   }
 
   wordCount: number;

@@ -6,6 +6,7 @@ import { User } from '../model/user';
 import { CustomHttpResponse } from '../model/performance/custom-http-response';
 import { APIKEY } from 'src/environments/environment.prod';
 import Axios from 'axios-observable';
+import { ContactUser } from '../model/contact-user';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -95,6 +96,12 @@ export class UserService {
 
   public uploadSignature(body: FormData, name: string): Observable<any> {
     return Axios.post(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${name}`, body);
+  }
+
+  public EmailMessage(contactUser: string): Observable<CustomHttpResponse> {
+    return this.http.post<CustomHttpResponse>(`${this.host}/api/email/email-contact`, contactUser, {
+      headers: this.httpHeaders,
+    });
   }
 
   public getRole() {

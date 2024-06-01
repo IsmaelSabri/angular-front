@@ -57,13 +57,19 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
   public passTitle = new BehaviorSubject<string>('');
   public passTitleAction$ = this.passTitle.asObservable();
 
+  /*
+  * Falta alguna verificación con fechas para validar si ha expirado un plazo para definir una contraseña
+  * (para reestablecer la contraseña da igual)
+  */
   ngOnInit(): void {
     this.subscriptions.push(
       this.router.events.subscribe(() => {
-        this.whatComponent = this.router.url.toString().substring(1, 4);
+        this.whatComponent = this.router.url.toString().substring(1, 5);
+        console.log(this.whatComponent)
         if (this.whatComponent == 'pass') {
           this.passTitle.next('Completar registro');
           this.luckyId = this.router.url.toString().substring(6, 23);
+          console.log(this.luckyId);
         } else {
           this.passTitle.next('Cambio de contraseña');
           this.luckyId = this.router.url.toString().substring(12, 29);

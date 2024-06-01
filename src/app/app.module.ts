@@ -87,7 +87,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { UserProComponent } from './components/user-pro/user-pro.component';
-import { ImageCropperModule } from 'ngx-image-cropper';
+//import { ImageCropperModule } from 'ngx-image-cropper';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MatButtonModule } from '@angular/material/button';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
@@ -194,7 +194,7 @@ import { NgxLoadingModule } from "ngx-loading";
     NzLayoutModule,
     NzFlexModule,
     NzSpinModule,
-    ImageCropperModule,
+    //ImageCropperModule,
     FileUploadModule,
     MatButtonModule,
     NzUploadModule,

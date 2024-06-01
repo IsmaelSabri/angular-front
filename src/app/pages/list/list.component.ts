@@ -53,6 +53,8 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     );
   }
 
+  public cssPath = '../../../assets/css/style.css';
+
   public justifySegment: NzJustify[] = [
     'flex-start',
     'center',
@@ -63,11 +65,10 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
   ];
   public alignSegment: NzAlign[] = ['flex-start', 'center', 'flex-end'];
   ngOnInit(): void {
-    const cssPath = '../../../assets/css/style.css';
     this.style = this.renderer2.createElement('link') as HTMLLinkElement;
     this.renderer2.appendChild(this.document.head, this.style);
     this.renderer2.setProperty(this.style, 'rel', 'stylesheet');
-    this.renderer2.setProperty(this.style, 'href', cssPath);
+    this.renderer2.setProperty(this.style, 'href', this.cssPath);
     this.loadScripts();
     if (!this.isEmptyArray(this.homes)) {
       this.subscriptions.push(
@@ -103,6 +104,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.style=null;
     this.renderer2.removeChild(this.document.head, this.style);
   }
 

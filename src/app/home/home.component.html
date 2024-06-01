@@ -340,7 +340,12 @@
                       </nz-select>
                     </div>
                     <div class="col-xl col-lg-3 col-md-3 col-sm-6 align-self-start">
-
+                      <button 
+                          pButton 
+                          pRipple 
+                          label="Submit" 
+                          class="p-button-success">
+                      </button>
                     </div>
                   </div>
                   <!-- Tipo, estado, alquiler-venta y destacar -->
@@ -409,8 +414,10 @@
                           pattern="\d*" maxlength="5" #precioAlquiler (keypress)="numberOnly($event)"
                           name="precioAlquiler" [disabled]="this.rentTab.value" />
                       </nz-input-group>
-                      <input nz-input type="number" [(ngModel)]="this.home.precioFinal||this.home.precioAlquiler"
-                        ngModel #precioEuros name="precioEuros" class="form-control" required style="display:none;" />
+                      <!--<input nz-input type="number" [(ngModel)]="this.home.precioFinal||this.home.precioAlquiler"
+                        ngModel #precioEuros name="precioEuros" class="form-control" required style="display:none;" />-->
+
+                        
                       <!--<ng-container>
                         <nz-checkbox-wrapper style="width: 100%;"
                           (nzOnChange)="checkBox(this.home.direccionAproximada?true:false)">
@@ -2720,8 +2727,8 @@
 
       </div>
       <div class="col-md-4">
-        <button type="submit" pRipple class="button is-rounded is-light">Buscar
-        </button><!--(click)="modalRef.hide()"-->
+        <!--<button type="submit" pRipple class="button is-rounded is-light">Buscar
+        </button>(click)="modalRef.hide()"-->
       </div>
     </div>
   </div>

@@ -38,6 +38,8 @@ import { GestureHandling } from "leaflet-gesture-handling";
 import * as $ from 'jquery';
 import { HomeComponent } from 'src/app/home/home.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { User } from 'src/app/model/user';
+import { CustomHttpResponse } from 'src/app/model/performance/custom-http-response';
 
 @Component({
   selector: 'app-add',
@@ -52,15 +54,16 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   aux: string;
   public refreshing: boolean;
   contactUser: ContactUser = new ContactUser();
-  private host = environment.apiUrl;
   json: string;
   _albums: any = [];
   isCollapsed: boolean = true;
+  privatePolicy: boolean = false;
   trustedUrl: any = '';
   //home: Home;
   //propertyOwner: User;
   intake: string;
   emissions: string;
+  propertyOwner: User;
   @Input() messages: Message[] = this.chatService.privateMessages;
   //maps
   mapAdd!: L.map;
@@ -189,16 +192,16 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     if (this.home.proImage != null || this.home.proImage != undefined) {
       this.brandingImage = this.sanitizer.bypassSecurityTrustStyle(this.home.proImage);
     }
-    /*this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
+    // get the owner
+    this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
       next: (res) => {
-        this.propertyOwner=res;
-          
+        this.propertyOwner = res;
       }, error: () => {
         this.notificationService.notify(
-          NotificationType.ERROR, 'Propietario del anuncio' + this.dto.id + ' desconocido',
+          NotificationType.ERROR, 'Propietario del anuncio' + this.dto.id + ' desconocido!',
         );
       }
-    }));*/
+    }));
     //get the current home through url
     this.subscriptions.push(
       this.activatedRoute.fragment.subscribe({
@@ -481,39 +484,41 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     control._container.style.display = "None";
   }
 
-  checkBox(param): any {
-    console.log(param);
-  }
-
   public contactMessage() {
     this.refreshing = true;
     const formData = new FormData();
-    formData.append('nombre', this.contactUser.name);
-    formData.append('correo', this.contactUser.mail);
-    formData.append('telefono', this.contactUser.phone);
-    formData.append('mensaje', this.contactUser.msg);
-    Swal.fire({
-      title: "Enviado!",
-      text: "La respuesta la recibirás en tu correo electrónico!",
-      icon: "success"
-    });
+    formData.append('fromName', this.contactUser.fromName);
+    formData.append('fromAddress', this.contactUser.fromAddress);
+    formData.append('phone', this.contactUser.phone);
+    formData.append('message', this.contactUser.message);
+    formData.append('subject', this.contactUser.fromName + ' acerca de ' + this.home.tipo + ' ' + this.home.viviendaId);
+    formData.append('toEmail', this.propertyOwner.email);
+    formData.append('name', this.propertyOwner.firstname);
+    formData.append('ccEmail', this.home.tipo + ' ' + this.home.viviendaId);
+    /*
+    * En el correo de contacto la imagen se puede mandar por aquí y
+    * según el mes que mande una diferente.
+    * 
+    * if (this.home.images[0].imageUrl != null) 
+    * formData.append('bccEmail', this.home.images[0].imageUrl);
+    */
+    var obj = {};
+    formData.forEach((value, key) => obj[key] = value);
+    var json = JSON.stringify(obj);
+    this.subscriptions.push(this.userService.EmailMessage(json).subscribe({
+      next: (res: CustomHttpResponse) => {
+        Swal.fire({
+          title: res.message,
+          text: "La respuesta la recibirás en tu correo electrónico!",
+          icon: "success"
+        });
+      },
+      error: (err: any) => {
+
+      }
+    }));
     var resetForm = <HTMLFormElement>document.getElementById('contactMessageForm');
     resetForm.reset();
-    /*this.subscriptions
-      .push
-      
-     hay que implementar el envio del correo:
-     - en el servicio 
-     - en el backend(plantilla html)
-     
-     this.markerService.addBuilding(formData).subscribe((res) => {
-        this.router.navigate(['/home']),
-          this.notificationService.notify(NotificationType.SUCCESS, ` Mensaje enviado.`);
-        var resetForm = <HTMLFormElement>document.getElementById('contactForm');
-        resetForm.reset();
-        this.clickButton('contact-form-close');
-      })
-      ()*/;
   }
 
   openPrivateChat(toUser: string) {

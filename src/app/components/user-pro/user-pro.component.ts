@@ -13,6 +13,7 @@ import { NotificationType } from 'src/app/class/notification-type.enum';
 import { PrimeNGConfig } from 'primeng/api';
 import { NgForm } from '@angular/forms';
 import { User } from 'src/app/model/user';
+import { Home } from 'src/app/model/home';
 //declare function printLogger(any);
 
 @Component({
@@ -23,6 +24,7 @@ import { User } from 'src/app/model/user';
 export class UserProComponent extends UserComponent implements OnInit, OnDestroy {
 
   userUpdate: User = new User();
+  homes: Home[] = [];
 
   constructor(
     renderer2: Renderer2,
@@ -51,7 +53,41 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
   }
 
   protected styleUser: HTMLLinkElement[] = [];
-
+   cssPath = [
+    '../../../assets/css/bootstrap.min.css',
+    'https://cdn.quilljs.com/1.3.6/quill.snow.css',
+    '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.min.css',
+    '../../../assets/css/user-pro-style/extras.1.1.0.min.css',
+    '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.css',
+    '../../../assets/css/user-pro-style/danger.1.1.0.css',
+    '../../../assets/css/user-pro-style/danger.1.1.0.min.css',
+    '../../../assets/css/user-pro-style/success.1.1.0.css',
+    '../../../assets/css/user-pro-style/info.1.1.0.css',
+    '../../../assets/css/user-pro-style/info.1.1.0.min.css',
+    '../../../assets/css/user-pro-style/secondary.1.1.0.css',
+    '../../../assets/css/user-pro-style/secondary.1.1.0.min.css',
+    '../../../assets/css/user-pro-style/success.1.1.0.min.css',
+    '../../../assets/css/user-pro-style/warning.1.1.0.css',
+    '../../../assets/css/user-pro-style/warning.1.1.0.min.css',
+    '../../../assets/css/user-pro-style/scss/_alert.scss',
+    '../../../assets/css/user-pro-style/scss/_badge.scss',
+    '../../../assets/css/user-pro-style/scss/_button-group.scss',
+    '../../../assets/css/user-pro-style/scss/_buttons.scss',
+    '../../../assets/css/user-pro-style/scss/_card.scss',
+    '../../../assets/css/user-pro-style/scss/_custom-forms.scss',
+    '../../../assets/css/user-pro-style/scss/_custom-sliders.scss',
+    '../../../assets/css/user-pro-style/scss/_dropdown.scss',
+    '../../../assets/css/user-pro-style/scss/_icons.scss',
+    '../../../assets/css/user-pro-style/scss/_images.scss',
+    '../../../assets/css/user-pro-style/scss/_input-group.scss',
+    '../../../assets/css/user-pro-style/scss/_list-group.scss',
+    '../../../assets/css/user-pro-style/scss/_navbar.scss',
+    '../../../assets/css/user-pro-style/scss/_overrides.scss',
+    '../../../assets/css/user-pro-style/scss/_reboot.scss',
+    '../../../assets/css/user-pro-style/scss/_utilities.scss',
+    '../../../assets/css/user-pro-style/scss/_variables.scss',
+    '../../../assets/css/user-pro-style/scss/shards-dashboards.scss'
+  ];
   ngOnInit(): void {
     $('#action_menu_btn').click(function () {
       $('.action_menu').toggle();
@@ -69,50 +105,19 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       this.user.profileImage = JSON.parse(this.user.profileImageAsString);
     }
     this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.user.color);
-    const cssPath = [
-      '../../../assets/css/bootstrap.min.css',
-      'https://cdn.quilljs.com/1.3.6/quill.snow.css',
-      '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.min.css',
-      '../../../assets/css/user-pro-style/extras.1.1.0.min.css',
-      '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.css',
-      '../../../assets/css/user-pro-style/danger.1.1.0.css',
-      '../../../assets/css/user-pro-style/danger.1.1.0.min.css',
-      '../../../assets/css/user-pro-style/success.1.1.0.css',
-      '../../../assets/css/user-pro-style/info.1.1.0.css',
-      '../../../assets/css/user-pro-style/info.1.1.0.min.css',
-      '../../../assets/css/user-pro-style/secondary.1.1.0.css',
-      '../../../assets/css/user-pro-style/secondary.1.1.0.min.css',
-      '../../../assets/css/user-pro-style/success.1.1.0.min.css',
-      '../../../assets/css/user-pro-style/warning.1.1.0.css',
-      '../../../assets/css/user-pro-style/warning.1.1.0.min.css',
-      '../../../assets/css/user-pro-style/scss/_alert.scss',
-      '../../../assets/css/user-pro-style/scss/_badge.scss',
-      '../../../assets/css/user-pro-style/scss/_button-group.scss',
-      '../../../assets/css/user-pro-style/scss/_buttons.scss',
-      '../../../assets/css/user-pro-style/scss/_card.scss',
-      '../../../assets/css/user-pro-style/scss/_custom-forms.scss',
-      '../../../assets/css/user-pro-style/scss/_custom-sliders.scss',
-      '../../../assets/css/user-pro-style/scss/_dropdown.scss',
-      '../../../assets/css/user-pro-style/scss/_icons.scss',
-      '../../../assets/css/user-pro-style/scss/_images.scss',
-      '../../../assets/css/user-pro-style/scss/_input-group.scss',
-      '../../../assets/css/user-pro-style/scss/_list-group.scss',
-      '../../../assets/css/user-pro-style/scss/_navbar.scss',
-      '../../../assets/css/user-pro-style/scss/_overrides.scss',
-      '../../../assets/css/user-pro-style/scss/_reboot.scss',
-      '../../../assets/css/user-pro-style/scss/_utilities.scss',
-      '../../../assets/css/user-pro-style/scss/_variables.scss',
-      '../../../assets/css/user-pro-style/scss/shards-dashboards.scss'
-    ];
-    for (let i = 0; i < cssPath.length; i++) {
+    
+    for (let i = 0; i < this.cssPath.length; i++) {
       this.styleUser[i] = this.renderer2.createElement('link') as HTMLLinkElement;
       this.renderer2.appendChild(this.document.head, this.styleUser[i]);
       this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
-      this.renderer2.setProperty(this.styleUser[i], 'href', cssPath[i]);
+      this.renderer2.setProperty(this.styleUser[i], 'href', this.cssPath[i]);
     }
   }
   ngOnDestroy(): void {
-    this.styleUser=[]; 
+    for (let i = 0; i < this.cssPath.length; i++) {
+      this.renderer2.removeChild(this.document.head, this.styleUser[i]);
+    }
+    this.styleUser=[];
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
