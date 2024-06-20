@@ -40,6 +40,7 @@ import { HomeComponent } from 'src/app/home/home.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/model/user';
 import { CustomHttpResponse } from 'src/app/model/performance/custom-http-response';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-add',
@@ -143,6 +144,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     private modalSevice: NgbModal,
     sanitizer: DomSanitizer,
     modalServiceBs: BsModalService,
+    nzMessage: NzMessageService
   ) {
     super(
       router,
@@ -157,7 +159,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       document,
       renderer2,
       primengConfig,
-
+      nzMessage
     );
   }
 
@@ -289,7 +291,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   }
 
   open(index: number): void {
-    this._lightbox.open(this._albums, index);
+    this._lightbox.open(this._albums, index, { wrapAround: true});
   }
 
   submitHouseDetails() { }
@@ -375,7 +377,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   }
 
   cuoreLike() {
-    if (this.authenticationService.isUserLoggedIn()) {
+    if (this.state) {
       // el usuario guarda en favoritos la propiedad
       // notificationService bla bla bla
       console.log('guardado!!');
@@ -383,6 +385,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       const element = document.getElementById('exampleModal') as HTMLElement;
       const myModal = new Modal(element);
       myModal.show();
+      console.log('descartado!!');
       //this.clickButton('#cuore');
     }
   }

@@ -1,28 +1,22 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpResponse,
-  HttpErrorResponse,
-  HttpHeaders,
-} from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../model/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { TokenApiModel } from '../model/performance/TokenApiModel';
-
+import { UserService } from './user.service';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
   public host = environment.apiUrl;
   private token: string;
   private refreshToken: string;
-  private jwtHelper = new JwtHelperService();
   private httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
     Authorization: 'Bearer ',
   });
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private userService: UserService) { }
 
   public login(user: User): Observable<any> {
     return this.http.post<User>(`${this.host}/api/user/login`, user, {
@@ -30,10 +24,10 @@ export class AuthenticationService {
     });
   }
 
-  public register(user: User): Observable<User> {
+  public register(user: string): Observable<User> {
     return this.http.post<User>(`${this.host}/api/user/new`, user, {
       headers: this.httpHeaders,
-    }); 
+    });
   }
 
   public renewToken(tokenApi: TokenApiModel) {
@@ -66,7 +60,13 @@ export class AuthenticationService {
   }
 
   public addUserToLocalCache(user: User): void {
+    localStorage.clear();
     localStorage.setItem('user', JSON.stringify(user));
+    this.saveToken(user.token);
+    this.saveRefreshToken(user.refreshToken);
+    const tokenPayload = this.decodedToken();
+    this.userService.setFullName(tokenPayload.name);
+    this.userService.setRole(tokenPayload.role);
   }
 
   public getUserFromLocalCache(): User {

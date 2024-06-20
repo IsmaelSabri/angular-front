@@ -2111,7 +2111,7 @@
                         name="chkprivacy" (change)="checkBox(this.home.politicaPrivacidad?true:false)" type="checkbox"
                         required>
                       <label class="labelprivacy" for="chkprivacy">Acepto los <a style="color:dodgerblue;"
-                          class="aprivacy" (click)="showModal()">términos de privacidad</a> de myhouse.</label>
+                          class="aprivacy" (click)="showModal('privatePolicy')">términos de privacidad</a> de myhouse.</label>
                     </div>
                   </div>
                 </ng-container>
@@ -2139,8 +2139,8 @@
   </div><!--modal-->
 </div><!--container-fluid-->
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Términos y preferencias" (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleOk()" [nzOkLoading]="isOkLoading">
+<nz-modal [(nzVisible)]="policyModal" nzTitle="Términos y preferencias" (nzOnCancel)="handleCancel('privatePolicy')"
+  (nzOnOk)="handleOk('privatePolicy')" [nzOkLoading]="isOkLoading" [(nzFooter)]="modalFooterNull">
   <p *nzModalContent>Recopilaremos y utilizaremos su información personal (que puede incluir cookies
     que recopilamos a través de su uso de myhouse.com y nuestros otros sitios web) para
     brindarle una experiencia de usuario personalizada (por ejemplo, si está anunciando
@@ -2162,8 +2162,10 @@
           <!--col-lg-8 col-md-10 col-sm-12 col-xs-12 d-flex-->
           <div class=" teaser-tile mt-2 mx-2 border">
             <span class="favorite favorite-need-login" data-id="1935922" data-type="estate">
-              <div class="wrapper-demo">
-                <button class="toggle-icon" title="❤ Toggle Like!"></button>
+              <div class="wrapperDemo" #wrapperDemo>    
+                  <input [checked]="false" (change)="cuoreLikeFeature(appHome.viviendaId)" class="red-heart-checkbox" #redheartcheckbox id="{{appHome.viviendaId}}" type="checkbox">
+                  <label for="{{appHome.viviendaId}}"></label>
+                <!--<button #box id="{{appHome.viviendaId}}" (click)="cuoreLikeFeature(appHome.viviendaId)" class="toggleIcon box" title="❤ Toggle Like!"></button>-->
               </div>
             </span>
             <div class="flex-grow-1 ">
@@ -2734,6 +2736,29 @@
   </div>
 </p-sidebar>
 
+<nz-modal nzCentered [(nzVisible)]="joinUsModal" (nzOnCancel)="handleCancel('joinUsModal')"
+  (nzOnOk)="handleOk('likeHome')" [nzOkLoading]="isOkLoading"  [(nzFooter)]="modalFooterNull">
+    <div *nzModalContent style="display: block;" class="restricted-message" id="restricted-message">
+      <div class="body">
+          <div class="advertisement mx-auto">
+              <!--<div class="image">
+                  <img src="" alt="Para disfrutar del chat en tiempo real cree un cuenta"/>
+                  <div class="text"><h4>Entrar o registrarse</h4></div>
+              </div>-->
+              <div class="padded">
+                  <div class="heading">Crear cuenta</div>
+                  <p>Acceda o registrese para guardar búsquedas y favoritos</p>
+                  <button tabindex="0" class="login only-one-button " routerLink="/login"><span class="readmore-button-label">ENTRAR</span></button>
+                  <button tabindex="0" class="register only-one-button " routerLink="/register"><span class="readmore-button-label">REGISTRARSE</span></button>
+                  <p class="privacy">
+                      Al continuar acepta nuestra política de privacidad <a  (click)="showModal('privatePolicy')"> Política de privacidad</a>.
+                  </p>
+              </div>
+          </div>
+      </div>
+    </div>
+</nz-modal>
+
 <!--Ghost buttons-->
 <button id="oculto" class="oculto" style="display: none;" (click)="saveService()"></button>
 <button id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]"
@@ -2742,3 +2767,5 @@
   data-bs-target="#my-alert" aria-label="Close"></button>-->
 <!--Cuando el usuario cancela borra el marker y carga las propiedades en venta (carga por defecto)-->
 <button id="restoreMap" class="restoreMap" style="display: none;" (click)="restoreMap()"></button>
+<!--heart like!-->
+<button id="likePopup" class="likePopup" style="display:none;" (click)="cuoreLikeFeature('popup')"></button>

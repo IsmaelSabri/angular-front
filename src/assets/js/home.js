@@ -10,7 +10,9 @@ function closeSmallPopup(){
   document.querySelector('.leaflet-popup-close-button').click();
   document.getElementById("restoreMap").click();
 }
-function cuoreLike() {}
+function cuoreLike() {
+  document.getElementById("likePopup").click();
+}
 //modal newHome
 /*$(".modal-toggle").on("click", function (e) {
   e.preventDefault();
@@ -70,8 +72,5 @@ $(document).ready(function(){
      $('#mySidenav, body').removeClass('active');    
   })
 })
-//card like
-$('.toggle-icon').click(function(){
-  $(this).toggleClass('-checked');
-});
+
 

@@ -7,7 +7,7 @@ import { CustomHttpResponse } from '../model/performance/custom-http-response';
 import { APIKEY } from 'src/environments/environment.prod';
 import Axios from 'axios-observable';
 import { ContactUser } from '../model/contact-user';
-
+import * as Collections from 'typescript-collections';
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private host = environment.apiUrl;
@@ -27,26 +27,14 @@ export class UserService {
     return this.http.get<User>(`${this.host}/api/user/check/${id}`);
   }
 
-  public addNewUser(user: User): Observable<User> {
+  public addNewUser(user: string): Observable<User> {
     return this.http.post<User>(`${this.host}/api/user/new`, user);
   }
 
-  public updateProfileImage(formData: FormData): Observable<HttpEvent<User>> {
-    return this.http.post<User>(`${this.host}/api/user/updateProfileImage`, formData,
-      {
-        reportProgress: true,
-        observe: 'events'
-      });
-  }
-
   public completeRegistry(user: User): Observable<CustomHttpResponse> {
-    return this.http.put<CustomHttpResponse>(`${this.host}/api/user/full/${user.id}`, user, {
+    return this.http.put<CustomHttpResponse>(`${this.host}/api/user/full`, user, {
       headers: this.httpHeaders,
     });
-  }
-
-  public checkUserById(userId: string): Observable<User> {
-    return this.http.get<User>(`${this.host}/api/user/check/${userId}`);
   }
 
   public checkEmailExists(email: string): Observable<User> {
@@ -78,6 +66,24 @@ export class UserService {
 
   public updateUser(user: User, id: string): Observable<User> {
     return this.http.put<User>(`${this.host}/api/user/${id}`, user);
+  }
+  // after login
+  public performUser(user: User): User {
+    if (user.profileImageAsString != null || user.profileImageAsString != undefined) {
+      user.profileImage = JSON.parse(user.profileImageAsString);
+    }
+    if (user.brandImageAsString != null || user.brandImageAsString != undefined) {
+      user.brandImage = JSON.parse(user.brandImageAsString);
+    }
+    if (user.likePreferencesAsString === null) {
+      user.likePreferences = [];
+    } else {
+      user.likePreferences = user.likePreferencesAsString.split(',');
+    }
+    if (user.reviewsAsString != null || user.reviewsAsString != undefined) {
+      user.reviews = JSON.parse(user.reviewsAsString);
+    }
+    return user;
   }
 
   public createUserFormData(loggedInUsername: string, user: User, profileImageAsString: File): FormData {

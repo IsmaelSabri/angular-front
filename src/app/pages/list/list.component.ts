@@ -15,6 +15,7 @@ import { DOCUMENT } from '@angular/common';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NzAlign, NzJustify } from 'ng-zorro-antd/flex';
 import { PrimeNGConfig } from 'primeng/api';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -35,6 +36,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
     primengConfig: PrimeNGConfig,
+    nzMessage: NzMessageService
   ) {
     super(
       router,
@@ -49,7 +51,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       document,
       renderer2,
       primengConfig,
-      
+      nzMessage
     );
   }
 

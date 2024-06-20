@@ -61,7 +61,7 @@ export class UserComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache();
     this.user.profileImage = JSON.parse(this.user.profileImageAsString);
-      
+
     console.log(this.user);
     //this.getUsers(true);
     //if(this.user.role=='USER_PRO'){}
@@ -109,7 +109,8 @@ export class UserComponent implements OnInit, OnDestroy {
           this.brandImageSrc = '';
           this.subscriptions.push(this.userService.updateUser(userUpdate, userUpdate.id).subscribe({
             next: (res: any) => {
-              console.log(res);
+              this.user=this.userService.performUser(res);
+              console.log(this.user);
             },
             error: (err: any) => {
               console.log(err);
@@ -134,17 +135,10 @@ export class UserComponent implements OnInit, OnDestroy {
     user.profileImageAsString = JSON.stringify(user.profileImage);
     this.subscriptions.push(this.userService.updateUser(user, user.id).subscribe({
       next: (res: any) => {
-        console.log(res);
-
         this.refreshing = false;
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        this.authenticationService.addUserToLocalCache(res.body);
-        this.authenticationService.saveToken(res.body.token);
-          this.authenticationService.saveRefreshToken(
-            res.body.refreshToken
-          );
+        this.user=this.userService.performUser(res);
+        console.log(res);
+        this.authenticationService.addUserToLocalCache(this.user);
         this.photoImage = null;
         this.notificationService.notify(NotificationType.SUCCESS, `${res.firstname} ${res.lastname} Actualizado`);
       },

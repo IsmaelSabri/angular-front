@@ -1,10 +1,7 @@
-// change buttons sale-rent property custom user
-$(".filter-status button").on("click", function (e) {
-  e.preventDefault();
-  $(".filter-status button").removeClass("active");
-  $(this).addClass("active");
-});
-
 function print(){
   console.log('funcionando en js');
 }
+// alterna los colores de las filas de los atributos
+$(document).ready(function() {
+  $(".post:even").css("background-color","#f5f5f5"); 
+});

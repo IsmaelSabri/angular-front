@@ -18,50 +18,11 @@
           <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/home-share.svg"></ion-icon></button>
           <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1" (click)="openPrivateChat(this.home.idCreador)"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>
           <!--cuore-->
-          <input type="checkbox" id="cuore" (click)="cuoreLike()" />
-                                  <label for="cuore" style="float:right;">
-                                      <svg  id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
-                                          <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
-                                              <path d="M28.9955034,43.5021565 C29.8865435,42.7463028 34.7699838,39.4111958 36.0304386,38.4371087 C41.2235681,34.4238265 43.9999258,30.3756814 44.000204,25.32827 C43.8745444,20.7084503 40.2276972,17 35.8181279,17 C33.3361339,17 31.0635318,18.1584833 29.5323721,20.1689268 L28.9999629,20.8679909 L28.4675537,20.1689268 C26.936394,18.1584833 24.6637919,17 22.181798,17 C17.6391714,17 14,20.7006448 14,25.3078158 C14,30.4281078 16.7994653,34.5060727 22.0294634,38.5288772 C23.3319753,39.530742 27.9546492,42.6675894 28.9955034,43.5021565 Z" id="heart" stroke="#fc2779"/>
-                                              <circle id="main-circ" fill="#fc2779" opacity="0" cx="29.5" cy="29.5" r="1.5"/>
-    
-                                              <g class="grp" id="grp7" opacity="0" transform="translate(7 6)">
-                                                  <circle class="cir-a" id="oval1" fill="#9CD8C3" cx="2" cy="6" r="2"/>
-                                                  <circle  class="cir-b " id="oval2" fill="#8CE8C3" cx="5" cy="2" r="2"/>
-                                              </g>
-    
-                                              <g class="grp" id="grp6" opacity="0" transform="translate(0 28)">
-                                                  <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="7" r="2"/>
-                                                  <circle class="cir-b" id="oval2" fill="#91D2FA" cx="3" cy="2" r="2"/>
-                                              </g>
-    
-                                              <g class="grp" id="grp3" opacity="0" transform="translate(52 28)">
-                                                  <circle class="cir-b" id="oval2" fill="#9CD8C3" cx="2" cy="7" r="2"/>
-                                                  <circle class="cir-a" id="oval1" fill="#8CE8C3" cx="4" cy="2" r="2"/>
-                                              </g>
-    
-                                              <g class="grp" id="grp2" opacity="0" transform="translate(44 6)">
-                                                  <circle class="cir-b" id="oval2" fill="#CC8EF5" cx="5" cy="6" r="2"/>
-                                                  <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="2" r="2"/>
-                                              </g>
-    
-                                              <g class="grp" id="grp5" opacity="0" transform="translate(14 50)">
-                                                  <circle class="cir-a" id="oval1" fill="#91D2FA" cx="6" cy="5" r="2"/>
-                                                  <circle  class="cir-b" id="oval2" fill="#91D2FA" cx="2" cy="2" r="2"/>
-                                              </g>
-    
-                                              <g class="grp" id="grp4" opacity="0" transform="translate(35 50)">
-                                                  <circle  class="cir-a" id="oval1" fill="#F48EA7" cx="6" cy="5" r="2"/>
-                                                  <circle class="cir-b" id="oval2" fill="#F48EA7" cx="2" cy="2" r="2"/>
-                                              </g>
-    
-                                              <g class="grp" id="grp1" opacity="0" transform="translate(24)">
-                                                  <circle class="cir-a" id="oval1" fill="#9FC7FA" cx="2.5" cy="3" r="2"/>
-                                                  <circle class="cir-b" id="oval2" fill="#9FC7FA" cx="7.5" cy="2" r="2"/>
-                                              </g>
-                                          </g>
-                                      </svg>
-                                  </label>
+   
+                <input [checked]="false" (change)="showModal('joinUsModalAd')" class="red-heart-checkbox" #redheartcheckbox id="{{this.home.viviendaId}}" type="checkbox">
+                <label for="{{this.home.viviendaId}}"></label>
+              <!--<button #box id="{{appHome.viviendaId}}" (click)="cuoreLikeFeature(appHome.viviendaId)" class="toggleIcon box" title="❤ Toggle Like!"></button>-->
+
           </div>
           <!--end cuore-->
         </div>
@@ -241,61 +202,61 @@
                                 <h2>Acerca de</h2>
                                 <div class="featured">
                                     <div>
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 18px; position:relative; top:2px;" src="assets/svg/house-next.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1"><ion-icon style="font-size: 18px; position:relative; " src="assets/svg/house-next.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Tipo de propiedad<!-- -->:</span><span class="value text-secondary">{{this.home.tipo}}</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 15px; position:relative; top:2px;" src="assets/svg/date1.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1"><ion-icon style="font-size: 15px; position:relative; top:2px;" src="assets/svg/date1.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Desde<!-- -->:</span><span class="value text-secondary"> {{this.home.fechaCreacion?.slice(0,10)}}</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 18px; position:relative; top:2px;" src="assets/svg/date-update.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 18px; position:relative; top:2px;" src="assets/svg/date-update.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Ultima actualización<!-- -->:</span><span class="value text-secondary">{{this.home.fechaUltimaModificacion.slice(0,10)}}</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.intake}}></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.intake}}></ion-icon></span></div>
                                         <div>
                                             <span>Consumo<!-- -->:</span><span class="value text-secondary"> {{this.home.consumo}}</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.emissions}}></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.emissions}}></ion-icon></span></div>
                                         <div>
                                             <span>Emisiones<!-- -->:</span><span class="value text-secondary"> {{this.home.emisiones}}</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.eficienciaEnergetica">
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/eco-house2.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/eco-house2.svg"></ion-icon></span></div>
                                         <div>
                                             <span style="color:#8dca3f">Alta eficiencia energética<!-- --></span><span class="value text-secondary"></span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.estado == 'Usado'">
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/used-home.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1"><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/used-home.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Estado<!-- -->:</span><span class="value text-secondary">{{this.home.estado}}</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.estado == 'A reformar'">
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/restore-home.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/restore-home.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Estado<!-- -->:</span><span class="value text-secondary">{{this.home.estado}}</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.garage > 20">
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/parking-price.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/parking-price.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Garage opcional:</span><span class="textInRow" style="color:#8dca3f;font-size:1.2em;font-weight:700;align-items: first baseline;">{{this.formatNumberWithCommas(this.home.garage)}}€&nbsp;</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/house-id.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/house-id.svg"></ion-icon></span></div>
                                         <div>
                                             <span>ID<!-- -->:</span><span class="value text-secondary">{{this.home.viviendaId}}</span>
                                         </div>
@@ -442,21 +403,21 @@
                                 <h2>Extras</h2>
                                 <div class="content">
                                     <div class="highlighted">
-                                        <span *ngIf="this.home.aireAcondicionado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/aa2.svg"></ion-icon></span>Aire acondicionado</span>
-                                        <span *ngIf="this.home.calefaccion"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/heating.svg"></ion-icon></span>Calefacción</span>
-                                        <span *ngIf="this.home.panelesSolares"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/solar_panels.svg"></ion-icon></span>Paneles solares</span>
-                                        <span *ngIf="this.home.gasNatural"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/gas_house.svg"></ion-icon></span>Gas natural</span>
-                                        <span *ngIf="this.home.amueblado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/furniture.svg"></ion-icon></span>Amueblado completo</span>
-                                        <span *ngIf="this.home.aseoEnsuite!=0"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/private-shower.svg"></ion-icon></span>{{this.home.aseoEnsuite}} Aseo ensuite</span>
+                                        <span class="post" *ngIf="this.home.aireAcondicionado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/aa2.svg"></ion-icon></span>Aire acondicionado</span>
+                                        <span class="post" *ngIf="this.home.calefaccion"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/heating.svg"></ion-icon></span>Calefacción</span>
+                                        <span class="post" *ngIf="this.home.panelesSolares"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/solar_panels.svg"></ion-icon></span>Paneles solares</span>
+                                        <span class="post" *ngIf="this.home.gasNatural"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/gas_house.svg"></ion-icon></span>Gas natural</span>
+                                        <span class="post" *ngIf="this.home.amueblado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/furniture.svg"></ion-icon></span>Amueblado completo</span>
+                                        <span class="post" *ngIf="this.home.aseoEnsuite!=0"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/private-shower.svg"></ion-icon></span>{{this.home.aseoEnsuite}} Aseo ensuite</span>
                                     </div>
                                     <div class="highlighted">
-                                        <span *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/balcony.svg"></ion-icon></span>Balcón</span>
-                                        <span *ngIf="this.home.terraza"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/terrace2.svg"></ion-icon></span>Terraza</span>
-                                        <span *ngIf="this.home.parquet"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/pq2.svg"></ion-icon></span>Parquet</span>
-                                        <span *ngIf="this.home.piscinaPrivada"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/only.svg"></ion-icon></span>Piscina Privada</span>
-                                        <span *ngIf="this.home.armariosEmpotrados"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/locker.svg"></ion-icon></span>Armarios Empotrados</span>
-                                        <span *ngIf="this.home.trastero"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/storage.svg"></ion-icon></span>Trastero</span>
-                                        <span *ngIf="this.home.cabinaHidromasaje"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/shower-tabs.svg"></ion-icon></span>Cabina de hidromasaje</span>
+                                        <span class="post" *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/balcony.svg"></ion-icon></span>Balcón</span>
+                                        <span class="post" *ngIf="this.home.terraza"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/terrace2.svg"></ion-icon></span>Terraza</span>
+                                        <span class="post" *ngIf="this.home.parquet"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/pq2.svg"></ion-icon></span>Parquet</span>
+                                        <span class="post" *ngIf="this.home.piscinaPrivada"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/only.svg"></ion-icon></span>Piscina Privada</span>
+                                        <span class="post" *ngIf="this.home.armariosEmpotrados"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/locker.svg"></ion-icon></span>Armarios Empotrados</span>
+                                        <span class="post" *ngIf="this.home.trastero"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/storage.svg"></ion-icon></span>Trastero</span>
+                                        <span class="post" *ngIf="this.home.cabinaHidromasaje"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/shower-tabs.svg"></ion-icon></span>Cabina de hidromasaje</span>
                                     </div>
                                 </div>
                             </div>
@@ -464,20 +425,20 @@
                                 <h2 >Comunidad</h2>
                                 <div class="content">
                                     <div class="highlighted">
-                                        <span *ngIf="this.home.videoPortero"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative; " src="assets/svg/videoportero.svg"></ion-icon></span>Videoportero</span>
-                                        <span *ngIf="this.home.ascensor"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; " src="assets/svg/elevator2.svg"></ion-icon></span>Ascensor</span>
-                                        <span *ngIf="this.home.zonaDeOcio"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/garden.svg"></ion-icon></span>Zona de ocio</span>
-                                        <span *ngIf="this.home.gym"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/gym.svg"></ion-icon></span>Gimnasio</span>
-                                        <span *ngIf="this.home.padel"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/padel.svg"></ion-icon></span>Padel</span>
-                                        <span *ngIf="this.home.tenis"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/tennis.svg"></ion-icon></span>Tenis</span>
-                                        <span *ngIf="this.home.golf"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/golf.svg"></ion-icon></span>Golf</span>
+                                        <span class="post" *ngIf="this.home.videoPortero"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative; " src="assets/svg/videoportero.svg"></ion-icon></span>Videoportero</span>
+                                        <span class="post" *ngIf="this.home.ascensor"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; " src="assets/svg/elevator2.svg"></ion-icon></span>Ascensor</span>
+                                        <span class="post" *ngIf="this.home.zonaDeOcio"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/garden.svg"></ion-icon></span>Zona de ocio</span>
+                                        <span class="post" *ngIf="this.home.gym"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/gym.svg"></ion-icon></span>Gimnasio</span>
+                                        <span class="post" *ngIf="this.home.padel"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/padel.svg"></ion-icon></span>Padel</span>
+                                        <span class="post" *ngIf="this.home.tenis"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/tennis.svg"></ion-icon></span>Tenis</span>
+                                        <span class="post" *ngIf="this.home.golf"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/golf.svg"></ion-icon></span>Golf</span>
                                     </div>
                                     <div class="highlighted">
-                                        <span *ngIf="this.home.piscinaComp"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/comunity-pool.svg"></ion-icon></span>Piscina comunitaria</span>
-                                        <span *ngIf="this.home.jardin"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/garden-flowers2.svg"></ion-icon></span>Zonas ajardinadas</span>
-                                        <span *ngIf="this.home.columpios"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/slide.svg"></ion-icon></span>Columpios</span>
-                                        <span *ngIf="this.home.jacuzzi"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/jacuzzi.svg"></ion-icon></span>Jacuzzi</span>
-                                        <span *ngIf="this.home.sauna"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/sauna.svg"></ion-icon></span>Sauna</span>
+                                        <span class="post" *ngIf="this.home.piscinaComp"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/comunity-pool.svg"></ion-icon></span>Piscina comunitaria</span>
+                                        <span class="post" *ngIf="this.home.jardin"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/garden-flowers2.svg"></ion-icon></span>Zonas ajardinadas</span>
+                                        <span class="post" *ngIf="this.home.columpios"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/slide.svg"></ion-icon></span>Columpios</span>
+                                        <span class="post" *ngIf="this.home.jacuzzi"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/jacuzzi.svg"></ion-icon></span>Jacuzzi</span>
+                                        <span class="post" *ngIf="this.home.sauna"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/sauna.svg"></ion-icon></span>Sauna</span>
                                     </div>
                                 </div>
                             </div>
@@ -485,15 +446,14 @@
                                 <h2>Vistas</h2>
                                 <div class="content">
                                     <div class="highlighted"><!--*ngIf="this.home.vistasDespejadas=='Ciudad'"-->
-                                        <span *ngIf="this.home.vistasDespejadas=='Ciudad'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/city.svg"></ion-icon></span>Ciudad</span>
-                                        <span *ngIf="this.home.vistasDespejadas=='Jardines'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/garden-views.svg"></ion-icon></span>Jardines</span>
-                                        <span *ngIf="this.home.vistasDespejadas=='Deslunado'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/deslunado.svg"></ion-icon></span>Deslunado</span>
-                                        <span *ngIf="this.home.vistasDespejadas=='Mar'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/sea.svg"></ion-icon></span>Mar</span>
-                                        <span *ngIf="this.home.vistasDespejadas=='Piscina'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/pool-views.svg"></ion-icon></span>Piscina</span>
-                                        <span *ngIf="this.home.vistasDespejadas=='Montaña'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/mountain.svg"></ion-icon></span>Montaña</span>
-                                        <span *ngIf="this.home.vistasDespejadas=='Río'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/river.svg"></ion-icon></span>Río</span>
+                                        <span class="post" *ngIf="this.home.vistasDespejadas=='Ciudad'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/city.svg"></ion-icon></span>Ciudad</span>
+                                        <span class="post" *ngIf="this.home.vistasDespejadas=='Jardines'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/garden-views.svg"></ion-icon></span>Jardines</span>
+                                        <span class="post" *ngIf="this.home.vistasDespejadas=='Deslunado'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/deslunado.svg"></ion-icon></span>Deslunado</span>
+                                        <span class="post" *ngIf="this.home.vistasDespejadas=='Mar'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/sea.svg"></ion-icon></span>Mar</span>
+                                        <span class="post" *ngIf="this.home.vistasDespejadas=='Piscina'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/pool-views.svg"></ion-icon></span>Piscina</span>
+                                        <span class="post" *ngIf="this.home.vistasDespejadas=='Montaña'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/mountain.svg"></ion-icon></span>Montaña</span>
+                                        <span class="post" *ngIf="this.home.vistasDespejadas=='Río'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/river.svg"></ion-icon></span>Río</span>
                                     </div>
-                                    <div class="highlighted"></div>
                                 </div>
                             </div>
                             <div class="features-block" *ngIf="this.home.videoVigilancia || this.home.recepcion24_7 || this.home.generadorEmergencia
@@ -501,88 +461,127 @@
                                 <h2>Seguridad</h2>
                                 <div class="content">
                                     <div class="highlighted">
-                                        <span *ngIf="this.home.videoVigilancia"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/cctv.svg"></ion-icon></span>Video vigilancia</span>
-                                        <span *ngIf="this.home.recepcion24_7"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/reception.svg"></ion-icon></span>Recepción 24/7</span>
-                                        <span *ngIf="this.home.generadorEmergencia"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; " src="assets/svg/highvoltage.svg"></ion-icon></span>Generador de emergencia</span>
+                                        <span class="post" *ngIf="this.home.videoVigilancia"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/cctv.svg"></ion-icon></span>Video vigilancia</span>
+                                        <span class="post" *ngIf="this.home.recepcion24_7"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/reception.svg"></ion-icon></span>Recepción 24/7</span>
+                                        <span class="post" *ngIf="this.home.generadorEmergencia"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; " src="assets/svg/highvoltage.svg"></ion-icon></span>Generador de emergencia</span>
                                     </div>
                                     <div class="highlighted">
-                                        <span *ngIf="this.home.alarmaIncendios"><span class="icon icon-deluxe "><ion-icon style="font-size: 21px; position:relative; " src="assets/svg/fire_alarm.svg"></ion-icon></span>Alarma de incendios</span>
-                                        <span *ngIf="this.home.extintores"><span class="icon icon-deluxe "><ion-icon style="font-size: 18px; position:relative;" src="assets/svg/fire_splinker.svg"></ion-icon></span>Rociadores de incendio</span>
-                                        <span *ngIf="this.home.instalacionesDiscapacitados"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; color:#666;" src="assets/svg/wheelchair.svg"></ion-icon></span>Vivienda accesible</span>
+                                        <span class="post" *ngIf="this.home.alarmaIncendios"><span class="icon icon-deluxe "><ion-icon style="font-size: 21px; position:relative; " src="assets/svg/fire_alarm.svg"></ion-icon></span>Alarma de incendios</span>
+                                        <span class="post" *ngIf="this.home.extintores"><span class="icon icon-deluxe "><ion-icon style="font-size: 18px; position:relative;" src="assets/svg/fire_splinker.svg"></ion-icon></span>Rociadores de incendio</span>
+                                        <span class="post" *ngIf="this.home.instalacionesDiscapacitados"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative; color:#666;" src="assets/svg/wheelchair.svg"></ion-icon></span>Vivienda accesible</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
-                    <!-- Aquí le invitas a registrarse para usar mas funcionalidades -->
-                    <!--<div style="display: block;" class="restricted-message">
-                        <div class="body">
-                            <div class="advertisement ">
-                                <div class="image">
-                                    <img
-                                        src=""
-                                        alt="Para disfrutar del chat en tiempo real cree un cuenta"
-                                    />
-                                    <div class="text"><h4>Entrar o registrarse</h4></div>
-                                </div>
-                                <div class="padded">
-                                    <div class="heading">Acceso vip</div>
-                                    <p>Puede acceder a información adicional con una cuenta</p>
-                                    <button tabindex="0" class="login only-one-button"><span class="readmore-button-label">ENTRAR</span></button><button tabindex="0" class="register only-one-button"><span class="readmore-button-label">REGISTRARSE</span></button>
-                                    <p class="privacy">
-                                        Al continuar acepta nuestra política de privacidad <a routerLink="/privacy-policy" target="_blank"> Política de privacidad</a>.
-                                    </p>
+                </div>
+                <!-- User not registered try to save to favorites -->
+                <nz-modal nzDraggable nzCentered [(nzVisible)]="joinUsModalAd" (nzOnCancel)="handleCancel('joinUsModalAd')"
+                    (nzOnOk)="handleOk('joinUsModalAd')" [(nzFooter)]="modalFooterNull">
+                    <ng-container *nzModalContent>
+                        <div style="display: block;" class="restricted-message">
+                            <div class="body">
+                                <div class="advertisement mx-auto">
+                                    <!--<div class="image">
+                                        <img src="https://i.ibb.co/6YkD164/unknown-house.png" alt="Para disfrutar del chat en tiempo real cree un cuenta" />
+                                        <div class="text"><h4>Todo a un click</h4></div>
+                                    </div>-->
+                                    <div class="padded">
+                                        <div class="heading">Crear cuenta</div>
+                                        <p>Acceda o registrese para guardar búsquedas y favoritos</p>
+                                        <button tabindex="0" routerLink="/login" class="login only-one-button "><span class="readmore-button-label">ENTRAR</span></button>
+                                        <button tabindex="0" routerLink="/register" class="register only-one-button "><span class="readmore-button-label">REGISTRARSE</span></button>
+                                        <p class="privacy">
+                                            Al continuar acepta nuestra política de privacidad <a (click)="showModal('privatePolicy')" > Política de privacidad</a>.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>-->
-                </div>
-                <div>
+                    </ng-container>
+                  </nz-modal>
+
+                  <!--Privacy policy-->
+                  <nz-modal [(nzVisible)]="policyModal" nzTitle="Términos y preferencias" (nzOnCancel)="handleCancel('privatePolicy')"
+                    (nzOnOk)="handleOk('privatePolicy')" [nzOkLoading]="isOkLoading" [(nzFooter)]="modalFooterNull">
+                    <p *nzModalContent>Recopilaremos y utilizaremos su información personal (que puede incluir cookies
+                        que recopilamos a través de su uso de myhouse.com y nuestros otros sitios web) para
+                        brindarle una experiencia de usuario personalizada (por ejemplo, si está anunciando
+                        una propiedad, podemos recomendarle ofrecerle productos para optimizar el rendimiento
+                        de su búsqueda o, si está buscando una propiedad, podemos recomendarle propiedades
+                        que puedan interesarle). También podemos comunicarnos con usted para promocionar nuestros
+                        servicios o los de terceros. Nuestra Política de Privacidad explica con más detalle cómo
+                        recopilamos, utilizamos y divulgamos información personal y cómo acceder, corregir o
+                        presentar quejas sobre el manejo de información personal.</p>
+                  </nz-modal>
+                   <div>
                     <div class="hidden">
-    
+                        <!--Cost renovation-->
                         <section>
-                            <h2>Propiedades similares en {{this.home.distrito}}</h2>
-                            <div class="district-filters ">
-                                <div class="filter-status">
-                                    <button tabindex="0" class="only-one-button" pRipple href=".rentTab">
-                                        <span class="bage-wrap" >Alquiler<span class="district-rent-filter">n</span></span>
-                                    </button>
-                                    <button tabindex="0" class="active only-one-button" pRipple href=".saleTab">
-                                        <span class="bage-wrap" >Venta<span class="district-rent-filter">n+1</span></span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="tab-content tabs">
-                                <div class=" similar-filter-card-body saleTab" *ngFor="let data of this.homes" let i = index >
-                                    <a style="text-decoration: none;" >
-                                        <div class="similar-filter-card "  >
-                                            <img class="image" alt="" src={{data.images[0].imageUrl}} height="80" width="112" />
-                                            <div class="content">
-                                                <div class="texts">
-                                                    <div>{{data.habitaciones}} Habitaciones en venta | {{data.distrito}} | {{data.ciudad}}</div>
-                                                    <div class="price under-market">
-                                                        <div class="old">
-                                                            <span *ngIf="this.home.precioInicial!= null || this.home.precioInicial != undefined" class="value">{{data.precioInicial}}€</span>
-                                                        </div>
-                                                        <div class="new">{{formatNumberWithCommas(data.precioFinal)}}€</div>
-                                                    </div>
-                                                </div>
-                                                <div class="featured-box featured-properties ">
-                                                    <div class="private saleTab">
-                                                        <div *ngIf="this.home.habitaciones!= null || this.home.habitaciones != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 16px; position:relative; bottom:2px;" src="assets/svg/bed-horizontal.svg"></ion-icon></span> <span class="label">{{data.habitaciones}}</span><span class="short-label">{{data.habitaciones}}</span></div>
-                                                        <div *ngIf="this.home.aseos!= null || this.home.aseos != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 16px; position:relative; bottom:2px;" src="assets/svg/bath_tub.svg"></ion-icon></span> <span class="label">{{data.aseos}}</span><span class="short-label">{{data.aseos}}</span></div>
-                                                        <div *ngIf="this.home.superficie!= null || this.home.superficie != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 12px; position:relative; bottom:2px;" src="assets/svg/size-box.svg"></ion-icon></span> <span class="label">{{data.superficie}}m²</span><span class="short-label">{{data.superficie}}m²</span></div>
-                                                        <div *ngIf="this.home.piso!= null || this.home.piso != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 13px; position:relative; bottom:2px;" src="assets/svg/stairs-tab.svg"></ion-icon></span> <span class="label">{{data.piso}}</span><span class="short-label">{{data.piso}}</span></div>
-                                                        <div *ngIf="this.home.garage!= null || this.home.garage != undefined" class="feature"><span class="icon"><ion-icon style="font-size: 16px; position:relative; bottom:2px;" src="assets/svg/car-tabs.svg"></ion-icon></span> <span class="label">{{data.garage}}</span><span class="short-label">{{data.garage}}</span></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                            <h2>Calcula tu reforma</h2>
+                            <div id="renovation-calculator" class="renovation-calculator">
+                                <div>
+                                    <div class="Stack__StackContainer-sc-12grjm-0 inUEeK sc-ylxlbb-0 kCIWLB">
+                                            <div class="kUxGCa">
+                                                    <label class="custom-radio mx-2">
+                                                        <input type="radio" name="radio" checked>
+                                                        <span class="radio-btn"><i class="bi bi-check2"></i>
+                                                          <div class="hobbies-icon mt-5">
+                                                            <ion-icon style=" position:relative;" src="assets/svg/kitchen.svg"></ion-icon>
+                                                            <h3 class="">Cocina</h3>
+                                                          </div>
+                                                        </span>
+                                                      </label>
+                                                    <label class="custom-radio mx-2">
+                                                        <input type="radio" name="radio" >
+                                                        <span class="radio-btn"><i class="bi bi-check2"></i>
+                                                          <div class="hobbies-icon mt-5">
+                                                            <ion-icon style=" position:relative;" src="assets/svg/shower-head.svg"></ion-icon>                                                  
+                                                              <h3 class="">Aseo</h3>
+                                                          </div>
+                                                        </span>
+                                                      </label>
+                                                    <label class="custom-radio mx-2">
+                                                        <input type="radio" name="radio" >
+                                                        <span class="radio-btn"><i class="bi bi-check2"></i>
+                                                          <div class="hobbies-icon mt-5">
+                                                            <ion-icon style=" position:relative;" src="assets/svg/paint-int.svg"></ion-icon>                                                  
+                                                              <h3 class="">Pintura</h3>
+                                                          </div>
+                                                        </span>
+                                                      </label>
+                                                    <label class="custom-radio mx-2">
+                                                        <input type="radio" name="radio" >
+                                                        <span class="radio-btn"><i class="bi bi-check2"></i>
+                                                          <div class="hobbies-icon mt-5">
+                                                            <ion-icon style=" position:relative;" src="assets/svg/full-reform.svg"></ion-icon>                                                  
+                                                              <h3 class="">Completo</h3>
+                                                          </div>
+                                                        </span>
+                                                      </label>
                                         </div>
-                                    </a>
+                                        <div class="Inline__InlineContainer-sc-lf7x8d-0 emGIUs">
+                                            <div>
+                                                <button class="ButtonBase-sc-18zziu4-0 cVcubB sc-ylxlbb-4 dUmiDg" (click)="showModal('restoreModal')" pRipple>Continuar</button>
+                                            </div>
+                                            <div class="sc-ylxlbb-6 lnCoUF"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                  
                             </div>
                         </section>
+                        <nz-modal
+                        nzDraggable
+                        nzCentered
+                        [(nzVisible)]="restoreModal"
+                        nzTitle="Draggable Modal"
+                        (nzOnCancel)="handleCancel('restoreModal')"
+                        (nzOnOk)="handleOk('restoreModal')">
+                        <ng-container *nzModalContent>
+                          <p>Just don't learn physics at school and your life will be full of magic and miracles.</p>
+                          <p>Day before yesterday I saw a rabbit, and yesterday a deer, and today, you.</p>
+                        </ng-container>
+                      </nz-modal>
                         
                         <section id="map" >
                             <h2>Conozca la zona</h2>
@@ -782,12 +781,13 @@
                                 <ng-template let-home pTemplate="item" let-i="index" class="mx-auto p-1 justify-content-center">
                                     <div class="col d-flex flex-row my-auto" >
                                         <div class=" teaser-tile mt-2 mx-2 border" >
-                                            <!--<span class="favorite favorite-need-login" data-id="1935922" data-type="estate">
-                                              <div class="wrapper-demo">
-                                                <button class="toggle-icon" title="❤ Toggle Like!"></button>
+                                            <span class="favorite favorite-need-login" >
+                                              <div class="wrapperDemo">
+                                                <input [checked]="false" (change)="cuoreLikeFeature(home.viviendaId)" class="red-heart-checkbox" #redheartcheckbox id="{{home.viviendaId}}" type="checkbox">
+                                                <label for="{{home.viviendaId}}"></label>
                                               </div>
-                                            </span>-->
-                                            <div class="flex-grow-1 " ><!--hace la llamada (click)="runAdCard(appHome)"-->
+                                            </span>
+                                            <div class="flex-grow-1 " >
                                                 <div class="with-img" style="position: relative;">
                                                     <p-galleria [(value)]="home.images" [circular]="true" [showItemNavigators]="false" [showThumbnails]="false" [responsiveOptions]="responsiveOptions2" [containerStyle]="{ 'max-width': '640px' }">
                                                         <ng-template pTemplate="item" let-item>
@@ -871,33 +871,6 @@
                                 </ng-template>
                             </p-carousel>
                         </section>
-                    </div>
-                    <!-- Modal login-register to save through like button -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                            <ng-container style="align-items: center;">
-                                <div class="restricted-message">
-                                    <div class="body">
-                                        <div class="advertisement ">
-                                            <div class="image">
-                                                <img width=auto height="70" style="display: block; width: 48px; max-width: 48px; min-width: 48px;" src="../../../assets/img/tmp/unknown-house.png"/>
-                                            </div>
-                                            <div class="padded">
-                                                <div class="heading">my</div>
-                                                <p>Guarda tus propiedades, descártalas y mucho mas.</p>
-                                                <button tabindex="0" class="login only-one-button" data-bs-dismiss="modal" routerLink="/login"><span class="readmore-button-label">ENTRAR</span></button>
-                                                <button tabindex="0" class="register only-one-button" data-bs-dismiss="modal" routerLink="/register"><span class="readmore-button-label">REGISTRARSE</span></button>
-                                                <p class="privacy">
-                                                    Al continuar, acepto la política de privacidad de mh<a href="/privacy-policy" target="_blank">Política de privacidad</a>.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </ng-container>
-                            </div>
-                        </div>
                     </div>
                     <!---->
                 </div>
@@ -1008,7 +981,7 @@
                                         <div class="row">
                                             <div class="col-12 d-flex flex-row ">
                                                 <input type="checkbox" [(ngModel)]="this.privatePolicy" (change)="checkBox(this.privatePolicy?true:false)" name="acceptTerms" id="acceptTerms" 
-                                                #acceptTerms="ngModel" [ngClass]="{ 'is-invalid': contactMessageForm.submitted && acceptTerms.invalid }" required><span class="ml-2 mr-1">Acepto los</span><a href="">terminos</a>
+                                                #acceptTerms="ngModel" [ngClass]="{ 'is-invalid': contactMessageForm.submitted && acceptTerms.invalid }" required><span class="ml-2 mr-1">Acepto los</span><a (click)="showModal('privatePolicy')" style="color:#8dca3f;">terminos</a>
                                             </div>
                                         </div>
                                 </ng-container>

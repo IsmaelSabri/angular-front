@@ -20,11 +20,11 @@ export class User {
   public token: string;
   public refreshToken: string;
   public likePreferences: string[] = [];
-  public LikePreferencesAsString: string;
+  public likePreferencesAsString: string;
   public brandImage: BrandImage;
   public profileImage: ProfileImage;
   public company: string;
-  public review: Review[] = [];
+  public reviews: Review[] = [];
   public reviewsAsString: string;
   public isPro: boolean = false;
 }

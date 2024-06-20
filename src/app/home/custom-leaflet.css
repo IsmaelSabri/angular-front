@@ -548,7 +548,7 @@
   overflow: hidden;
 
   position: absolute;
-  top: -0.4em;
+  top: -0.6em;
 }
 
 .p_1_2 {
@@ -570,7 +570,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  top:0.1em;
+  top:-0.1em;
   position: absolute;
 }
 
@@ -593,7 +593,7 @@
   line-height: 1.5rem;
 
   position: relative;
-  top: -0.4em;
+  top: -0.2em;
   width: 9.9em;
 }
 
@@ -653,7 +653,7 @@
   width: 100%;
 
   position: relative;
-  top: -3.8em;
+  top: -2.6em;
 }
 
 .p_4 {
@@ -675,7 +675,7 @@
   width: 100%;
 
   position: relative;
-  top: -6.2em;
+  top: -5.1em;
 }
 
 .ul_features {
@@ -694,7 +694,7 @@
 
   font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
-  top: -7.1em;
+  top: -6.1em;
 }
 
 .p_features {
@@ -713,7 +713,7 @@
 
   font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
-  top: -6.7em;
+  top: -5.8em;
   /*color: var(--ck-textPrimary);
   user-select: none;
   cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;

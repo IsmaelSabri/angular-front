@@ -74,27 +74,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.authenticationService.login(user).subscribe({
         next: (response) => {
-          localStorage.clear();
-          console.log(response);
-          console.log(response.body);
-          this.user = response.body;
-          if (response.body.brandImageAsString != null || response.body.brandImageAsString != undefined) {
-            this.user.brandImage = JSON.parse(this.user.brandImageAsString);
-          }
-          if (response.body.profileImageAsString != null || response.body.profileImageAsString != undefined) {
-            this.user.profileImage = JSON.parse(this.user.profileImageAsString);
-          }
-          if (response.body.LikePreferencesAsString != null || response.body.LikePreferencesAsString != undefined) {
-            this.user.likePreferences = JSON.parse(this.user.LikePreferencesAsString);
-          }
+          this.user=this.userService.performUser(response.body);
+          console.log(this.user);
           this.authenticationService.addUserToLocalCache(this.user);
-          this.authenticationService.saveToken(response.body.token);
-          this.authenticationService.saveRefreshToken(
-            response.body.refreshToken
-          );
-          const tokenPayload = this.authenticationService.decodedToken();
-          this.userService.setFullName(tokenPayload.name);
-          this.userService.setRole(tokenPayload.role);
           this.router.navigateByUrl('/home');
           this.showLoading = false;
         },

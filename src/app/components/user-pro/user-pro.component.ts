@@ -246,14 +246,14 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     setTimeout(() => {
       this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
         next: (res: any) => {
-          console.log(res);
-          localStorage.clear();
-          //this.authenticationService.addUserToLocalCache(res);
+          this.user=this.userService.performUser(res);
+          this.authenticationService.addUserToLocalCache(res);
+          console.log(this.user);
           this.notificationService.notify(NotificationType.SUCCESS, `Se ha actualizado el perfil`);
           this.router.navigate(['/home'])
-          setTimeout(() => {
+          /*setTimeout(() => {
             this.notificationService.notify(NotificationType.SUCCESS, `Vuelva a iniciar sesión`);
-          }, 1000);
+          }, 1000);*/
         },
         error: (err: any) => {
           console.log(err);

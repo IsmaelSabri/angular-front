@@ -87,7 +87,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { UserProComponent } from './components/user-pro/user-pro.component';
-//import { ImageCropperModule } from 'ngx-image-cropper';
+import { ImageCropperComponent } from 'ngx-image-cropper';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MatButtonModule } from '@angular/material/button';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
@@ -115,6 +115,7 @@ import { NzBackTopModule } from 'ng-zorro-antd/back-top';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { NgxLoadingModule } from "ngx-loading";
+import { NzMessageModule } from 'ng-zorro-antd/message';
 @NgModule({
   declarations: [
     AppComponent,
@@ -194,7 +195,7 @@ import { NgxLoadingModule } from "ngx-loading";
     NzLayoutModule,
     NzFlexModule,
     NzSpinModule,
-    //ImageCropperModule,
+    ImageCropperComponent,
     FileUploadModule,
     MatButtonModule,
     NzUploadModule,
@@ -220,6 +221,7 @@ import { NgxLoadingModule } from "ngx-loading";
     InputTextModule,
     ProgressSpinnerModule,
     NgxLoadingModule,
+    NzMessageModule,
   ],
   exports: [
     // to get component in another modules

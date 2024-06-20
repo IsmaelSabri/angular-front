@@ -18,7 +18,7 @@ import { BehaviorSubject } from 'rxjs';
   selector: 'app-password',
   templateUrl: './password.component.html',
   styleUrls: ['./password.component.css'],
-}) 
+})
 export class PasswordComponent extends UserComponent implements OnInit, OnDestroy {
 
   visible: boolean = true;
@@ -59,34 +59,35 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
 
   /*
   * Falta alguna verificación con fechas para validar si ha expirado un plazo para definir una contraseña
-  * (para reestablecer la contraseña da igual)
+  * (para reestablecer la contraseña da igual) moment.js etc
   */
   ngOnInit(): void {
     this.subscriptions.push(
       this.router.events.subscribe(() => {
         this.whatComponent = this.router.url.toString().substring(1, 5);
-        console.log(this.whatComponent)
-        if (this.whatComponent == 'pass') {
-          this.passTitle.next('Completar registro');
-          this.luckyId = this.router.url.toString().substring(6, 23);
-          console.log(this.luckyId);
-        } else {
-          this.passTitle.next('Cambio de contraseña');
-          this.luckyId = this.router.url.toString().substring(12, 29);
-        }
-        console.log(this.luckyId);
-        this.userService.checkUserById(this.luckyId).subscribe({
-          next: (res: any) => {
-            this.user = res;
-            this.notificationService.notify(NotificationType.SUCCESS, `Introduce tu nueva contraseña`);
-            console.log(this.user);
-          },
-          error: (error: HttpErrorResponse) => {
-            this.notificationService.notify(NotificationType.WARNING, error.error.message);
-            this.refreshing = false;
-            this.router.navigate(['/login']);
+        if (this.passTitle.getValue() == '') { // prevent DynamicChangeDetector
+          if (this.whatComponent == 'pass') {
+            this.passTitle.next('Completar registro');
+            this.luckyId = this.router.url.toString().substring(6, 23);
+            console.log(this.luckyId);
+          } else {
+            this.passTitle.next('Cambio de contraseña');
+            this.luckyId = this.router.url.toString().substring(12, 29);
           }
-        });
+          console.log(this.luckyId);
+          this.userService.getUserByUserId(this.luckyId).subscribe({
+            next: (res: any) => {
+              this.user = res;
+              this.notificationService.notify(NotificationType.SUCCESS, `Introduce tu nueva contraseña`);
+              console.log(this.user);
+            },
+            error: (error: HttpErrorResponse) => {
+              this.notificationService.notify(NotificationType.WARNING, error.error.message);
+              this.refreshing = false;
+              this.router.navigate(['/login']);
+            }
+          });
+        }
       })
     );
   }
@@ -99,7 +100,8 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
       this.subscriptions.push(
         this.userService.completeRegistry(this.user).subscribe({
           next: (res: CustomHttpResponse) => {
-            this.notificationService.notify(NotificationType.SUCCESS, res.message);
+            console.log(res);
+            this.notificationService.notify(NotificationType.SUCCESS, "Ahora puedes iniciar sesión :,>");
             this.refreshing = false;
             this.router.navigate(['/login']);
           },

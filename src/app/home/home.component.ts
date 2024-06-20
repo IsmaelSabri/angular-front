@@ -7,7 +7,7 @@ import {
   PropertyFilterOptions,
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
-import { Component, ElementRef, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Optional, Output, Renderer2, SimpleChanges, TemplateRef, ViewChild, ViewEncapsulation, } from '@angular/core';
+import { Component, ElementRef, Inject, Input, OnDestroy, OnInit, Output, QueryList, Renderer2, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { marker, LatLng, circleMarker } from 'leaflet';
 import 'leaflet.locatecontrol';
 import {
@@ -24,14 +24,13 @@ import { AuthenticationService } from '../service/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NotificationType } from '../class/notification-type.enum';
 import * as L from 'leaflet';
-//import H from '@here/maps-api-for-javascript';
 import { HomeService } from '../service/home.service';
 import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio, HomeFilterRequest } from '../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { DomSanitizer } from '@angular/platform-browser';
-import { OpenStreetMapProvider, GeoSearchControl, SearchControl, } from 'leaflet-geosearch';
+import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FormGroupDirective, NgForm, NgModel, AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, Validators, FormBuilder } from '@angular/forms';
+import { FormGroupDirective, NgModel } from '@angular/forms';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
@@ -42,8 +41,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import wordsCounter from 'word-counting'
 import { MatSidenav } from '@angular/material/sidenav';
 import { DOCUMENT } from '@angular/common';
-import { Message, PrimeNGConfig } from 'primeng/api';
-import { GalleriaThumbnails } from 'primeng/galleria';
+import { PrimeNGConfig } from 'primeng/api';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { User } from '../model/user';
 
 @Component({
   selector: 'app-home',
@@ -66,6 +66,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
     primengConfig: PrimeNGConfig,
+    protected nzMessage: NzMessageService
   ) {
     super(router, authenticationService, userService, notificationService, route, toastr, document,
       renderer2, primengConfig);
@@ -123,9 +124,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     { name: 'Aprox.', value: false },
     { name: 'Exacta', value: true }
   ];
+  modalFooterNull = null;
   shinePopup: boolean = false; //skeleton
   vistas: string[] = Object.values(Views);
-  currentPopupOpenId: string;
+  popupOpenViviendaId: string;
+  cardCheckedViviendaId: string;
+  anyPopupOpen: boolean = false;
   images = new Array<HomeImage>();// new Array(30).fill('');
   routerLinkId: number = 0;
   routerLinkModel: string;
@@ -204,7 +208,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   public restoreMap() {
     this.lg.clearLayers();
-    this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag);
+    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
   }
 
   @ViewChild('newMarkerForm') newMarkerForm: FormGroupDirective;
@@ -487,23 +491,75 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
-  // modal antdsgn
-  isVisible = false;
-  isOkLoading = false;
-  showModal(): void {
-    if (!this.isVisible) {
-      this.isVisible = true;
-    } else {
-      this.isVisible = false;
+  // modals ant-design
+  policyModal: boolean = false;
+  restoreModal: boolean = false;
+  isOkLoading: boolean = false;
+  joinUsModal: boolean = false;
+  joinUsModalAd: boolean = false;
+  showModal(modal: string): void {
+    switch (modal) {
+      case 'privatePolicy':
+        this.policyModal = true;
+        break;
+      case 'joinUsModal':
+        this.joinUsModal = true;
+        break;
+      case 'restoreModal':
+        this.restoreModal = true;
+        break;
+      case 'joinUsModalAd':
+        this.joinUsModalAd = true;
+        break;
     }
   }
-  handleOk(): void {
+
+  handleOk(method: string): void {
     this.isOkLoading = true;
-    setTimeout(() => {
-      this.isVisible = false;
-      this.isOkLoading = false;
-    }, 3000);
+    if (method == 'privatePolicy') {
+      setTimeout(() => {
+        this.policyModal = false;
+        this.isOkLoading = false;
+      }, 500);
+    } else if (method == 'joinUsModal') {
+      setTimeout(() => {
+        this.joinUsModal = false;
+        this.isOkLoading = false;
+      }, 500);
+    } else if (method == 'restoreModal') {
+      setTimeout(() => {
+        this.restoreModal = false;
+        this.isOkLoading = false;
+      }, 500);
+    } else if (method == 'joinUsModalAd') {
+      setTimeout(() => {
+        this.joinUsModalAd = false;
+        this.isOkLoading = false;
+      }, 500);
+    }
   }
+
+  handleCancel(method: string): void {
+    if (method == 'privatePolicy') {
+      this.policyModal = false;
+    } else if (method == 'joinUsModal') {
+      this.joinUsModal = false;
+    } else if (method == 'restoreModal') {
+      this.restoreModal = false;
+    } else if (method == 'joinUsModalAd') {
+      this.joinUsModalAd = false;
+    }
+  }
+
+  //modal primeng
+  mainModal: boolean = false;
+  showDialog() {
+    this.mainModal = true;
+  }
+  closeDialog() {
+    this.mainModal = false;
+  }
+
   carPlacesIndex = 0;
   @ViewChild('parkingOptional') parkingOptional: ElementRef;
   addParkingPrice(input: HTMLInputElement): void {
@@ -511,7 +567,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       const value = input.value;
       if (this.carPlaces.indexOf(value) == -1) {
         this.carPlaces = [...this.carPlaces, input.value || `New item ${this.carPlacesIndex++}`];
-        //console.log(this.parkingOptional.nativeElement.value);
       }
     }
   }
@@ -568,18 +623,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustHtml('');
   }
 
-  handleCancel(): void {
-    this.isVisible = false;
-  }
-
-  //modal primeng
-  mainModal: boolean = false;
-  showDialog() {
-    this.mainModal = true;
-  }
-  closeDialog() {
-    this.mainModal = false;
-  }
   showCityResult() {
     if (this.home.ciudad == null) {
       alert('Introduzca la provincia!');
@@ -593,6 +636,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.closeDialog();
     }
   }
+
   locationMap() {
     this.showDialog();
     if (this.map2 == null || this.map2 == undefined) {
@@ -679,50 +723,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                       <div class="col-sm-6 realeTextContainer">
                       <p class="p_1">${Home.tipo}</p>
                          <div class="realeTextContainer_2">
-                         <input type="checkbox" id="cuore" onclick="cuoreLike()"/>
-                                <label for="cuore" class="float-end ">
-                                    <svg  id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
-                                        <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
-                                            <path d="M28.9955034,43.5021565 C29.8865435,42.7463028 34.7699838,39.4111958 36.0304386,38.4371087 C41.2235681,34.4238265 43.9999258,30.3756814 44.000204,25.32827 C43.8745444,20.7084503 40.2276972,17 35.8181279,17 C33.3361339,17 31.0635318,18.1584833 29.5323721,20.1689268 L28.9999629,20.8679909 L28.4675537,20.1689268 C26.936394,18.1584833 24.6637919,17 22.181798,17 C17.6391714,17 14,20.7006448 14,25.3078158 C14,30.4281078 16.7994653,34.5060727 22.0294634,38.5288772 C23.3319753,39.530742 27.9546492,42.6675894 28.9955034,43.5021565 Z" id="heart" stroke="#fc2779"/>
-                                            <circle id="main-circ" fill="#fc2779" opacity="0" cx="29.5" cy="29.5" r="1.5"/>
-  
-                                            <g class="grp" id="grp7" opacity="0" transform="translate(7 6)">
-                                                <circle class="cir-a" id="oval1" fill="#9CD8C3" cx="2" cy="6" r="2"/>
-                                                <circle  class="cir-b " id="oval2" fill="#8CE8C3" cx="5" cy="2" r="2"/>
-                                            </g>
-  
-                                            <g class="grp" id="grp6" opacity="0" transform="translate(0 28)">
-                                                <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="7" r="2"/>
-                                                <circle class="cir-b" id="oval2" fill="#91D2FA" cx="3" cy="2" r="2"/>
-                                            </g>
-  
-                                            <g class="grp" id="grp3" opacity="0" transform="translate(52 28)">
-                                                <circle class="cir-b" id="oval2" fill="#9CD8C3" cx="2" cy="7" r="2"/>
-                                                <circle class="cir-a" id="oval1" fill="#8CE8C3" cx="4" cy="2" r="2"/>
-                                            </g>
-  
-                                            <g class="grp" id="grp2" opacity="0" transform="translate(44 6)">
-                                                <circle class="cir-b" id="oval2" fill="#CC8EF5" cx="5" cy="6" r="2"/>
-                                                <circle class="cir-a" id="oval1" fill="#CC8EF5" cx="2" cy="2" r="2"/>
-                                            </g>
-  
-                                            <g class="grp" id="grp5" opacity="0" transform="translate(14 50)">
-                                                <circle class="cir-a" id="oval1" fill="#91D2FA" cx="6" cy="5" r="2"/>
-                                                <circle  class="cir-b" id="oval2" fill="#91D2FA" cx="2" cy="2" r="2"/>
-                                            </g>
-  
-                                            <g class="grp" id="grp4" opacity="0" transform="translate(35 50)">
-                                                <circle  class="cir-a" id="oval1" fill="#F48EA7" cx="6" cy="5" r="2"/>
-                                                <circle class="cir-b" id="oval2" fill="#F48EA7" cx="2" cy="2" r="2"/>
-                                            </g>
-  
-                                            <g class="grp" id="grp1" opacity="0" transform="translate(24)">
-                                                <circle class="cir-a" id="oval1" fill="#9FC7FA" cx="2.5" cy="3" r="2"/>
-                                                <circle class="cir-b" id="oval2" fill="#9FC7FA" cx="7.5" cy="2" r="2"/>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </label>
+                          <input onclick="cuoreLike()" class="red-heart-checkbox" id="cuore${Home.viviendaId}" type="checkbox">
+                          <label for="cuore${Home.viviendaId}" class="float-end mr-3 mt-4 py-2"></label>
                          <p class="p_1_2 d-block mt-4">En ${Home.condicion}</p>
                             <p class="p_2"></p>
                             <a onclick="runPopup()" class="a_1">
@@ -757,35 +759,143 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                 className: 'popupX',
               }
             )
-            .on(
-              'click',
-              () => (
-                localStorage.removeItem('currentBuilding'),
+            .on('click', () => {
+              localStorage.removeItem('currentBuilding'),
                 localStorage.setItem('currentBuilding', JSON.stringify(Home)),
                 this.dynamicCarousel(Home.images),
                 this.drawPopup(Home),
-                this.setPopupBranding(Home)
-              )
-            )
+                this.setPopupBranding(Home),
+                this.popupOpenViviendaId = Home.viviendaId
+            })
             .on('popupopen', () => {
               this.routerLinkId = +Home.id;
               this.routerLinkModel = Home.model;
-              if (this.state) {
-                if (
-                  this.user.likePreferences != undefined &&
-                  this.user.likePreferences != null
-                ) {
-                  if (this.user.likePreferences.includes(Home.viviendaId)) {
-                    this.clickButton('cuore');
+              this.anyPopupOpen = true;
+              setTimeout(() => {
+                if (this.state) {
+                  for (let i = 0; i < this.user.likePreferences.length; i++) {
+                    if (this.user.likePreferences[i] == Home.viviendaId) {
+                      var auxId = 'cuore' + this.popupOpenViviendaId;
+                      const doc = document.getElementById(auxId) as HTMLInputElement;
+                      doc.checked = true;
+                      const doc2 = document.getElementById(Home.viviendaId) as HTMLInputElement;
+                      doc2.checked = true;
+                    }
                   }
                 }
-              }
-            }).addTo(this.map);
-          //}
+              }, 250)
+            }).on('popupclose', () => {
+              this.anyPopupOpen = false;
+            }
+            ).addTo(this.map)
         })
         this.homes = data;
       }),
     );
+  }
+
+  lockCardLike: boolean = false;
+  cuoreLikeFeature(attr: string) {
+    if (this.lockCardLike) {
+      if (this.state) {
+        this.lockCardLike = false;
+        var homeValue = '';
+        if (attr != 'popup') { // card calls
+          this.cardCheckedViviendaId = attr;
+          if (this.cardCheckedViviendaId != this.popupOpenViviendaId) {
+            homeValue = this.cardCheckedViviendaId;
+          }
+        } else { // has it
+          homeValue = this.popupOpenViviendaId;
+        }
+        // ya lo tenía
+        if (this.user.likePreferences.includes(homeValue)) {
+          this.user.likePreferences.forEach((item, index) => {
+            if (item == homeValue) this.user.likePreferences.splice(index, 1);
+          });
+          this.user.likePreferencesAsString = this.user.likePreferences.toString();
+          this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
+            next: (res: User) => {
+              this.user = this.userService.performUser(res);
+              this.authenticationService.addUserToLocalCache(this.user);
+              this.createMessage("success", "Borrado desde favoritos");
+            },
+            error: (err: any) => {
+              this.notificationService.notify(NotificationType.ERROR, err);
+            }
+          }));
+          if (attr == 'popup') {
+            this.clickButton(this.popupOpenViviendaId);
+            setTimeout(() => {
+              this.lockCardLike = true;
+            }, 500);
+          } else {
+            if (this.anyPopupOpen && this.popupOpenViviendaId === this.cardCheckedViviendaId) {
+              var auxId = 'cuore' + this.cardCheckedViviendaId;
+              const doc = document.getElementById(auxId) as HTMLInputElement;
+              doc.click();
+            }
+            setTimeout(() => {
+              this.lockCardLike = true;
+            }, 500);
+          }
+          // not has it
+        } else {
+          this.lockCardLike = false;
+          this.user.likePreferences.push(homeValue);
+          this.user.likePreferencesAsString = this.user.likePreferences.toString();
+          this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
+            next: (res: User) => {
+              this.user = this.userService.performUser(res);
+              this.authenticationService.addUserToLocalCache(this.user);
+              this.createMessage("success", "Guardado en favoritos");
+            },
+            error: (err: any) => {
+              this.notificationService.notify(NotificationType.ERROR, err);
+            }
+          }));
+          if (attr == 'popup') {
+            this.clickButton(this.popupOpenViviendaId);
+            setTimeout(() => {
+              this.lockCardLike = true;
+            }, 500);
+          } else {
+            if (this.anyPopupOpen && this.popupOpenViviendaId === this.cardCheckedViviendaId) {
+              var auxId = 'cuore' + this.cardCheckedViviendaId;
+              const doc = document.getElementById(auxId) as HTMLInputElement;
+              doc.click();
+            }
+            setTimeout(() => {
+              this.lockCardLike = true;
+            }, 500);
+          }
+        }
+      } else {
+        this.lockCardLike = false;
+        if (attr != 'popup') { // card calls
+          this.cardCheckedViviendaId = attr;
+        }
+        setTimeout(() => {
+          if (attr == 'popup') {
+            var auxId = 'cuore' + this.popupOpenViviendaId;
+            const doc = document.getElementById(auxId) as HTMLInputElement;
+            doc.click();
+            this.joinUsModal = true;
+          } else {
+            this.clickButton(this.cardCheckedViviendaId);
+            this.joinUsModal = true;
+          }
+        }, 300);
+        setTimeout(()=>{
+          this.lockCardLike = true;
+        },500);
+      }
+    }
+  }
+
+  // nzMessages
+  createMessage(type: string, content: string): void {
+    this.nzMessage.create(type, content);
   }
 
   setPopupBranding(home: Home) {
@@ -864,7 +974,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
     if (h.direccionAproximada) {
       $('.p_3').text('Ubicación aprox.');
-    } else if(h.numero!=null){
+    } else if (h.numero != null) {
       $('.p_3').text(h.tipoDeVia + ' ' + h.calle + ' ' + h.numero + ',');
     } else {
       $('.p_3').text(h.tipoDeVia + ' ' + h.calle + ',');
@@ -896,37 +1006,45 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.map = L.map('map', { renderer: L.canvas() }).setView(
       [39.46975, -0.37739],
       16  //25
-    ).on('zoomend', (e) => {
+    ).on('zoomend', () => {
       /*
       * Aquí puede cargar las viviendas respondiendo al zoom.
-      * this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag)
+      * this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag)
       * Y lo mismo para moveend
       */
-    }).on('moveend', (e) => {
+    }).on('moveend', () => {
       /*
       * console.log('mover');
         * setTimeout(()=>{
-        * this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag);
+        * this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
       * },1000);
       */
-    });
+    })
     this.user = this.authenticationService.getUserFromLocalCache();
     this.userMarkerEvents();
-    this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag); // by default load for sale 
+    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag); // by default load for sale 
     this.loadScripts();
     this.clearMap();
+    if (this.authenticationService.isUserLoggedIn()) {
+      this.setCardLike();
+    }
+    setTimeout(() => { this.lockCardLike = true; }, 2000);
   }
 
-  cuoreLikeFeature() {
-    if (this.state) {
-      if (this.user.likePreferences.includes(this.currentPopupOpenId)) {
-        this.clickButton('cuore');
-        this.user.likePreferences.filter((like) => like !== this.currentPopupOpenId);
-      } else {
-        this.user.likePreferences.push(this.currentPopupOpenId);
-      }
-    } else {
-
+  @ViewChildren('redheartcheckbox') likes4ever: QueryList<ElementRef>
+  setCardLike() {
+    if (this.user.likePreferencesAsString) {
+      setTimeout(() => {
+        if (this.state) {
+          this.likes4ever.forEach(el => {
+            this.user.likePreferences.forEach(like => {
+              if (el.nativeElement.id == like) {
+                el.nativeElement.click();
+              }
+            });
+          });
+        }
+      }, 1000);
     }
   }
 
@@ -1501,16 +1619,16 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (String(value) == 'true') {
         if (key == 'trastero' || key == 'piscinaComp') {
-          if (urlFilterRequest.includes('model@=,')) {
-            urlFilterRequest = urlFilterRequest.split('model@=,').join('model@=Flat,');
-          } else if (!urlFilterRequest.includes('model@=')) {
-            urlFilterRequest = 'model@=Flat,' + urlFilterRequest;
+          if (urlFilterRequest.includes('model@=*,')) {
+            urlFilterRequest = urlFilterRequest.split('model@=*,').join('model@=*Flat,');
+          } else if (!urlFilterRequest.includes('model@=*')) {
+            urlFilterRequest = 'model@=*Flat,' + urlFilterRequest;
           }
         } else if (key == 'panelesSolares' || key == 'inmuebleAccesible' || key == 'jacuzzi') {
-          if (urlFilterRequest.includes('model@=,')) {
-            urlFilterRequest = urlFilterRequest.split('model@=,').join('model@=Flat,');
-          } else if (!urlFilterRequest.includes('model@=')) {
-            urlFilterRequest = 'model@=Flat,' + urlFilterRequest;
+          if (urlFilterRequest.includes('model@=*,')) {
+            urlFilterRequest = urlFilterRequest.split('model@=*,').join('model@=*Flat,');
+          } else if (!urlFilterRequest.includes('model@=*')) {
+            urlFilterRequest = 'model@=*Flat,' + urlFilterRequest;
           }
         }
         urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
@@ -1534,23 +1652,23 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         if (modelOptions.slice(-1) == "|") {
           modelOptions = modelOptions.slice(0, -1);
         }
-        if (urlFilterRequest.includes('model@=Flat,')) {
-          urlFilterRequest = urlFilterRequest.split('model@=Flat,').join('');
-        } else if ('model@=House,') {
-          urlFilterRequest = urlFilterRequest.split('model@=House,').join('');
-        } else if ('model@=Flat|House,') {
-          urlFilterRequest = urlFilterRequest.split('model@=Flat|House,').join('');
-        } else if ('model@=House|Flat,') {
-          urlFilterRequest = urlFilterRequest.split('model@=House|Flat,').join('');
+        if (urlFilterRequest.includes('model@=*Flat,')) {
+          urlFilterRequest = urlFilterRequest.split('model@=*Flat,').join('');
+        } else if ('model@=*House,') {
+          urlFilterRequest = urlFilterRequest.split('model@=*House,').join('');
+        } else if ('model@=*Flat|House,') {
+          urlFilterRequest = urlFilterRequest.split('model@=*Flat|House,').join('');
+        } else if ('model@=*House|Flat,') {
+          urlFilterRequest = urlFilterRequest.split('model@=*House|Flat,').join('');
         }
-        urlFilterRequest = 'model' + '@=' + modelOptions + ',' + 'tipo' + '@=' + tipoValues + ',' + urlFilterRequest
+        urlFilterRequest = 'model' + '@=*' + modelOptions + ',' + 'tipo' + '@=*' + tipoValues + ',' + urlFilterRequest
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (key == 'descripcion') {
         var formatParam = value.split(' ').join('|');
         if (formatParam.slice(-1) == "|") {
           formatParam = formatParam.slice(0, -1);
         }
-        urlFilterRequest = 'descripcion' + '@=' + formatParam + ',' + urlFilterRequest;
+        urlFilterRequest = 'descripcion' + '@=*' + formatParam + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (key == 'estado') {
         urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
@@ -1560,25 +1678,25 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
       } else if (key == 'condicion') {
         if (value == '0') {
-          urlFilterRequest = key + '@=' + 'Alquiler' + ',' + urlFilterRequest;
+          urlFilterRequest = key + '@=*' + 'Alquiler' + ',' + urlFilterRequest;
         } else if (value == '1') {
-          urlFilterRequest = key + '@=' + 'Venta' + ',' + urlFilterRequest;
+          urlFilterRequest = key + '@=*' + 'Venta' + ',' + urlFilterRequest;
         } else if (value == '2') {
-          urlFilterRequest = key + '@=' + 'Compartir' + ',' + urlFilterRequest;
+          urlFilterRequest = key + '@=*' + 'Compartir' + ',' + urlFilterRequest;
         }
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       } else if (key == 'vistasDespejadas') {
-        if (urlFilterRequest.includes('model@=,')) {
-          urlFilterRequest = urlFilterRequest.split('model@=,').join('model@=Flat,');
-        } else if (!urlFilterRequest.includes('model@=')) {
-          urlFilterRequest = 'model@=Flat,' + urlFilterRequest;
+        if (urlFilterRequest.includes('model@=*,')) {
+          urlFilterRequest = urlFilterRequest.split('model@=*,').join('model@=*Flat,');
+        } else if (!urlFilterRequest.includes('model@=*')) {
+          urlFilterRequest = 'model@=*Flat,' + urlFilterRequest;
         }
         urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
       }
     });
-    if (urlFilterRequest.includes('model@=,')) {
-      urlFilterRequest = urlFilterRequest.split('model@=,').join('');
+    if (urlFilterRequest.includes('model@=*,')) {
+      urlFilterRequest = urlFilterRequest.split('model@=*,').join('');
     }
     console.log(urlFilterRequest);
     this.loadMarkers(urlFilterRequest);
@@ -1591,7 +1709,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
     this.wordCount = 0;
     this.homeFiltersRequest.keywords = '';
-    this.loadMarkers('condicion@=' + this.mapRentSalePriceFlag);
+    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
   }
 
   wordCount: number;

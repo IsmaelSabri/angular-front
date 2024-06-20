@@ -35,8 +35,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public onRegister(user: User): void {
     this.showLoading = true;
     console.log(user);
+    var json = JSON.stringify(user);
     this.subscriptions.push(
-      this.authenticationService.register(user).subscribe({
+      this.authenticationService.register(json).subscribe({
         next: () => {
           this.showLoading = false;
           this.notificationService.notify(NotificationType.SUCCESS, `Se ha creado tu cuenta ${user.firstname + " " + user.lastname}.
