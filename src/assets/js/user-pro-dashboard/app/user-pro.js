@@ -31,3 +31,7 @@ $(".eff").on("mousedown", function (e) {
     }
   );
 });
+
+$('.toggle-sidebar').on('click', function () {
+  $(".main-sidebar").toggleClass("open");
+});

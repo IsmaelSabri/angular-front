@@ -92,6 +92,7 @@
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  -webkit-line-clamp: 2;
   color-scheme: only light;
   font-weight: 500;
   cursor: pointer;
@@ -100,7 +101,7 @@
   color: #003073 !important;
   font-size: 18px !important;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1;
@@ -182,6 +183,7 @@
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  -webkit-line-clamp: 2;
   color-scheme: only light;
   font-weight: 400;
   cursor: pointer;
@@ -190,7 +192,7 @@
   color: #003073 !important;
   font-size: 18px !important;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1;
@@ -279,6 +281,7 @@
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  -webkit-line-clamp: 3;
   color-scheme: only light;
   font-weight: 400;
   font-size: 0.9em;
@@ -289,7 +292,7 @@
   white-space: normal;
   box-sizing: border-box;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

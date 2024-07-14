@@ -1,5 +1,5 @@
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit, ViewContainerRef } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
@@ -31,9 +31,7 @@ import Swal from 'sweetalert2'
 import { DOCUMENT } from '@angular/common';
 import { PrimeNGConfig } from 'primeng/api';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PrivateChatComponent } from 'src/app/components/private-chat/private-chat.component';
 import { ChatService } from 'src/app/service/chat.service';
-import { Message } from 'src/app/model/message';
 import { GestureHandling } from "leaflet-gesture-handling";
 import * as $ from 'jquery';
 import { HomeComponent } from 'src/app/home/home.component';
@@ -65,7 +63,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   intake: string;
   emissions: string;
   propertyOwner: User;
-  @Input() messages: Message[] = this.chatService.privateMessages;
   //maps
   mapAdd!: L.map;
   circle!: L.circle;
@@ -144,7 +141,8 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     private modalSevice: NgbModal,
     sanitizer: DomSanitizer,
     modalServiceBs: BsModalService,
-    nzMessage: NzMessageService
+    nzMessage: NzMessageService,
+    private vcr: ViewContainerRef
   ) {
     super(
       router,
@@ -180,7 +178,14 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     }
   }
 
+  getTrustedProfileImage() {
+    if (this.user?.profileImage.imageUrl != null || this.user?.profileImage.imageUrl != undefined) {
+      return this.sanitizer.bypassSecurityTrustUrl(this.user?.profileImage.imageUrl);
+    }
+  }
+
   ngOnInit(): void {
+    this.primengConfig.ripple = true;
     var x = document.getElementById('photos-section');
     x.style.display = 'none'
     // mas rápido desde localstorage después lo machaco desde la api para coger el modelo
@@ -272,7 +277,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
         // to clear circle when print any route
         this.mapEvents.add('circle');
         this.loadScripts();
-
         this.homeService.getHomes().subscribe((data) => {
           this.homes = data;
           for (let i = 0; i < this.homes.length; i++) {
@@ -287,11 +291,62 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
         this.router.navigateByUrl('/home');
       }
     }));
+    // marcar el like
+    if (this.state) {
+      //this.setCardLike();
+      setTimeout(() => {
+        if (this.user.likePreferences.includes(this.home.viviendaId)) {
+          const element = document.getElementById(this.home.viviendaId) as HTMLInputElement;
+          element.checked = true;
+        }
+      }, 1000);
+    }
     //if(Object.keys(this.home).length){
   }
 
+
+  cuoreLike(id: string) {
+    if (this.state) {
+      if (this.user.likePreferences.includes(id)) {
+        this.user.likePreferences.forEach((item, index) => {
+          if (item == id) this.user.likePreferences.splice(index, 1);
+        });
+        this.user.likePreferencesAsString = this.user.likePreferences.toString();
+        this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
+          next: (res: User) => {
+            this.user = this.userService.performUser(res);
+            this.authenticationService.addUserToLocalCache(this.user);
+            localStorage.setItem('currentBuilding', JSON.stringify(this.home));
+            this.createMessage("success", "Borrado desde favoritos");
+          },
+          error: (err: any) => {
+            this.notificationService.notify(NotificationType.ERROR, err);
+          }
+        }));
+      } else {
+        this.user.likePreferences.push(id);
+        this.user.likePreferencesAsString = this.user.likePreferences.toString();
+        this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
+          next: (res: User) => {
+            this.user = this.userService.performUser(res);
+            this.authenticationService.addUserToLocalCache(this.user);
+            localStorage.setItem('currentBuilding', JSON.stringify(this.home));
+            this.createMessage("success", "Guardado en favoritos");
+          },
+          error: (err: any) => {
+            this.notificationService.notify(NotificationType.ERROR, err);
+          }
+        }));
+      }
+    } else {
+      this.showModal('joinUsModalAd');
+      const element = document.getElementById(id) as HTMLInputElement;
+      element.checked = false;
+    }
+  }
+
   open(index: number): void {
-    this._lightbox.open(this._albums, index, { wrapAround: true});
+    this._lightbox.open(this._albums, index, { wrapAround: true });
   }
 
   submitHouseDetails() { }
@@ -373,20 +428,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       node.type = 'text/javascript';
       node.async = false;
       document.getElementsByTagName('body')[0].appendChild(node);
-    }
-  }
-
-  cuoreLike() {
-    if (this.state) {
-      // el usuario guarda en favoritos la propiedad
-      // notificationService bla bla bla
-      console.log('guardado!!');
-    } else {
-      const element = document.getElementById('exampleModal') as HTMLElement;
-      const myModal = new Modal(element);
-      myModal.show();
-      console.log('descartado!!');
-      //this.clickButton('#cuore');
     }
   }
 
@@ -524,14 +565,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     resetForm.reset();
   }
 
-  openPrivateChat(toUser: string) {
-    this.chatService.createChatConnection();
-    const modalRef = this.modalSevice.open(PrivateChatComponent);
-    modalRef.componentInstance.toUser = toUser;
-  }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-    this.chatService.stopChatConnection();
   }
 }

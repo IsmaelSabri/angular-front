@@ -97,7 +97,6 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChatService } from './service/chat.service';
-import { PrivateChatComponent } from './components/private-chat/private-chat.component';
 import { PanelModule } from 'primeng/panel';
 import { GalleriaModule } from 'primeng/galleria';
 import { DividerModule } from 'primeng/divider';
@@ -128,7 +127,6 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
     PasswordComponent,
     AdminComponent,
     UserProComponent,
-    PrivateChatComponent,
   ],
   imports: [
     BrowserModule,

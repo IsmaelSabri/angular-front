@@ -1,36 +1,77 @@
-<div id="pdfrun">
-    <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
-        <div class="container-fluid">
-          <nz-breadcrumb class="mb-0">
-            <nz-breadcrumb-item>
-                <ion-icon name="home-outline"></ion-icon>
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item>
-              <a>
-                <span nz-icon nzType="user"></span>
-                <span>Application List</span>
-              </a>
-            </nz-breadcrumb-item>
-            <nz-breadcrumb-item>Application</nz-breadcrumb-item>
-          </nz-breadcrumb>
-          <div class="float-right ">
-          <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/home-discard.svg"></ion-icon></button>
-          <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/home-share.svg"></ion-icon></button>
-          <button class="btn btn-light rounded-circle roundedButtonsNavbar mx-2 mt-1" (click)="openPrivateChat(this.home.idCreador)"><ion-icon style="font-size: 1.8em; position:relative; top:2px;" src="assets/svg/pdf-download.svg"></ion-icon></button>
-          <!--cuore-->
-   
-                <input [checked]="false" (change)="showModal('joinUsModalAd')" class="red-heart-checkbox" #redheartcheckbox id="{{this.home.viviendaId}}" type="checkbox">
-                <label for="{{this.home.viviendaId}}"></label>
-              <!--<button #box id="{{appHome.viviendaId}}" (click)="cuoreLikeFeature(appHome.viviendaId)" class="toggleIcon box" title="❤ Toggle Like!"></button>-->
+    <nav class="navbar mb-3" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="https://bulma.io">
+            <svg width="640" height="160" viewBox="0 0 640 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M170 132.571V27.5908C170 25.5451 170.915 23.93 172.746 22.7456C174.576 21.5612 176.729 20.969 179.206 20.969H210.377C232.019 20.969 242.84 30.4441 242.84 49.3943C242.84 62.5303 238.264 71.0902 229.112 75.074C234.603 77.2275 238.748 80.2692 241.548 84.1992C244.347 88.1292 245.747 93.8627 245.747 101.4V104.791C245.747 116.743 242.84 125.437 237.026 130.875C231.211 136.312 223.351 139.031 213.445 139.031H179.206C176.514 139.031 174.307 138.385 172.584 137.093C170.861 135.801 170 134.293 170 132.571ZM190.834 120.619H209.085C219.529 120.619 224.751 114.751 224.751 103.015V100.431C224.751 94.401 223.432 90.0404 220.794 87.3486C218.156 84.6568 214.253 83.3109 209.085 83.3109H190.834V120.619ZM190.834 66.8371H208.923C213.122 66.8371 216.326 65.5989 218.533 63.1225C220.74 60.646 221.844 57.2544 221.844 52.9475C221.844 48.7483 220.686 45.4374 218.371 43.0148C216.057 40.5922 212.853 39.3809 208.762 39.3809H190.834V66.8371ZM260.283 103.015V27.4293C260.283 25.2759 261.306 23.6608 263.351 22.5841C265.397 21.5074 267.873 20.969 270.781 20.969C273.688 20.969 276.164 21.5074 278.21 22.5841C280.256 23.6608 281.279 25.2759 281.279 27.4293V103.015C281.279 115.397 287.2 121.588 299.044 121.588C310.888 121.588 316.81 115.397 316.81 103.015V27.4293C316.81 25.2759 317.833 23.6608 319.879 22.5841C321.925 21.5074 324.401 20.969 327.308 20.969C330.215 20.969 332.692 21.5074 334.738 22.5841C336.783 23.6608 337.806 25.2759 337.806 27.4293V103.015C337.806 115.72 334.28 125.061 327.227 131.036C320.175 137.012 310.781 140 299.044 140C287.308 140 277.914 137.039 270.861 131.117C263.809 125.195 260.283 115.828 260.283 103.015ZM356.703 132.409V27.4293C356.703 25.2759 357.725 23.6608 359.771 22.5841C361.817 21.5074 364.293 20.969 367.201 20.969C370.108 20.969 372.584 21.5074 374.63 22.5841C376.676 23.6608 377.699 25.2759 377.699 27.4293V120.619H417.106C419.044 120.619 420.579 121.534 421.709 123.365C422.84 125.195 423.405 127.349 423.405 129.825C423.405 132.301 422.84 134.455 421.709 136.285C420.579 138.116 419.044 139.031 417.106 139.031H365.908C363.432 139.031 361.279 138.439 359.448 137.254C357.618 136.07 356.703 134.455 356.703 132.409ZM434.872 132.409V31.467C434.872 27.9138 435.868 25.2759 437.86 23.5532C439.852 21.8304 442.355 20.969 445.37 20.969C449.354 20.969 452.423 21.6689 454.576 23.0686C456.729 24.4684 459.098 27.4832 461.682 32.1131L481.548 68.2907L501.413 32.1131C503.997 27.4832 506.393 24.4684 508.6 23.0686C510.808 21.6689 513.903 20.969 517.887 20.969C520.902 20.969 523.405 21.8304 525.397 23.5532C527.389 25.2759 528.385 27.9138 528.385 31.467V132.409C528.385 134.455 527.335 136.07 525.236 137.254C523.136 138.439 520.686 139.031 517.887 139.031C514.98 139.031 512.503 138.439 510.458 137.254C508.412 136.07 507.389 134.455 507.389 132.409V62.961L488.493 96.5545C486.985 99.354 484.616 100.754 481.386 100.754C478.264 100.754 475.949 99.354 474.441 96.5545L455.868 61.6689V132.409C455.868 134.455 454.818 136.07 452.719 137.254C450.619 138.439 448.17 139.031 445.37 139.031C442.463 139.031 439.987 138.439 437.941 137.254C435.895 136.07 434.872 134.455 434.872 132.409ZM539.529 130.31C539.529 130.094 539.637 129.556 539.852 128.694L571.023 27.1063C571.669 24.8452 573.257 23.0956 575.787 21.8573C578.318 20.6191 581.198 20 584.428 20C587.658 20 590.565 20.6191 593.149 21.8573C595.734 23.0956 597.349 24.8452 597.995 27.1063L629.166 128.694C629.381 129.556 629.489 130.094 629.489 130.31C629.489 132.678 628.035 134.724 625.128 136.447C622.221 138.17 619.26 139.031 616.245 139.031C612.261 139.031 609.892 137.631 609.139 134.832L603.001 113.351H566.016L559.879 134.832C559.125 137.631 556.756 139.031 552.773 139.031C549.65 139.031 546.662 138.197 543.809 136.528C540.956 134.859 539.529 132.786 539.529 130.31ZM570.377 96.8775H598.479L584.428 47.2948L570.377 96.8775Z" fill="black" class="bd-svg-black" />
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 110L10 40L50 0L100 50L70 80L110 120L50 160L0 110Z" fill="#00D1B2"/>
+            </svg>
+          </a>
 
-          </div>
-          <!--end cuore-->
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
         </div>
-    </nav>
+      
+        <div id="navbarBasicExample" class="navbar-menu ">
+          <div class="navbar-start">
+            
+          </div>
+      
+          <div class="navbar-end" >
+            <a class="d-flex mx-2" nz-dropdown [nzDropdownMenu]="menu" id="navbarDropdown" role="button"
+              aria-expanded="false" aria-haspopup="true" *ngIf='this.state'>
+              <img height="55" width="55" class=" rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;" alt="avatar2"
+                [attr.src]="getTrustedProfileImage()" />
+            </a>
+            <nz-dropdown-menu #menu="nzDropdownMenu" nzPlacement="bottomRight" class="z-1">
+              <ul nz-menu nzSelectable>
+                <li nz-menu-item class="bg-light"><a style="font-weight: bold;" class="text-secondary">Colecciones</a></li>
+                <li nz-menu-item><a *ngIf='this.state' routerLink="/user/management">
+                    <ion-icon name="person-outline" style="position: relative; top: 2px;"></ion-icon> {{user?.username}}
+                  </a></li>
+    
+                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'><ion-icon name="notifications-outline"
+                      style="position: relative; top: 2px; font-size:16px;"></ion-icon>
+                    <p-badge styleClass="mr-2" [value]="2" severity="info"></p-badge>
+                    Notificaciones</a></li>
+    
+                <li nz-menu-item><a [routerLink]=""><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                      name="heart-half-outline"></ion-icon> Guardadas</a></li>
+                <li nz-menu-item><a routerLink="/user-pro"><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                      name="speedometer-outline"></ion-icon> Pro-area</a></li>
+                <li nz-menu-item><a routerLink="/admin"><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                      name="person-circle-outline"></ion-icon> Admin-area</a></li>
+                <li nz-menu-item><a [routerLink]=""><ion-icon name="heart-dislike-outline"
+                      style="position: relative; top: 2px; font-size:16px;"></ion-icon> Ocultas</a></li>
+                <li nz-menu-item><a [routerLink]=""><span nz-icon nzType="audit" nzTheme="outline"
+                      style="position: relative; bottom: 3px;"></span> Vistas</a></li>
+    
+                <li nz-menu-item><a *ngIf='this.state' (click)="onLogOut()" routerLink="/home">
+                    <ion-icon name="log-out-outline"
+                      style="position: relative; top: 2px; font-size:16px;"></ion-icon>&nbsp;Salir</a></li>
+              </ul>
+            </nz-dropdown-menu>
+    
+            <div class="navbar-item ">
+              <div class="buttons">
+                <a class="button is-dark" pRipple routerLink="/register" *ngIf='!this.state'>
+                  <strong>Unirse</strong>
+                </a>
+                <a class="button is-light" pRipple routerLink="/login" *ngIf='!this.state'>
+                  Entrar
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
     
     <!--brand header starts-->
     <nz-affix [nzOffsetTop]="0" >
-      <nav *ngIf='this.brandingColor!=null || this.brandingColor!=undefined' [style.background-color]="this.brandingColor" class="navbar py-0 branding-nav" role="navigation" >
+      <nav *ngIf='this.brandingColor!=null || this.brandingColor!=undefined' [style.background-color]="this.brandingColor" class="navbar py-0 branding-nav z-0" role="navigation" >
         <div class="container-fluid"  >
             <div class="mx-auto order-0 my-auto"  *ngIf="this.home.proImage!=null">
                 <a class="a-branding " >
@@ -47,8 +88,8 @@
     <!--brand header ends-->
     
     <!-- image section starts -->
-    <section id="photos-section">
-        <div id="photos" class="image-mosaic ">
+    <section id="photos-section" >
+        <div id="photos" class="image-mosaic">
             <div class="listing-status">
                 <div *ngIf="this.home.destacar" class="listing-status-item">{{this.home.destacar}}</div>
                 <div *ngIf="this.home.estado == 'Nuevo'" class="listing-status-item text-center" style="background-color: #80ed99;">{{this.home.estado}}</div>
@@ -136,18 +177,22 @@
                                     <span *ngIf="this.home.direccionAproximada" class="address-icon icon-deluxe "><ion-icon style="font-size: 1em;" src="assets/svg/no-place.svg"></ion-icon></span>
                                     <h2 *ngIf="this.home.direccionAproximada"><a>&nbsp;&nbsp;Dirección aproximada</a></h2>
                                     <h2 *ngIf="!this.home.direccionAproximada"><a href="http://maps.google.com/maps?q=&layer=c&cbll={{this.home.lat}},{{this.home.lng}}&cbp=11,0,0,0,0" target="_blank"><b>&nbsp;&nbsp;Street View</b></a></h2>
+                                    <div class="navbar-item mt-4 mx-3 likeFeature">
+                                        <input [checked]="false" (change)="cuoreLike(this.home.viviendaId)" class="red-heart-checkbox" #redheartcheckbox id="{{this.home.viviendaId}}" type="checkbox">
+                                        <label for="{{this.home.viviendaId}}"></label>
+                                    </div>
                             </div>
                                 <div class="prices">
-                                    <div class="price under-market"  >
+                                    <div class="price under-market" *ngIf=" this.home.precioInicial != 0">
                                         <span *ngIf=" this.home.precioInicial != 0" class="prefix">En venta</span>
-                                        <div *ngIf=" this.home.precioInicial != 0" class="price-container"><span class="price-value">{{this.home.precioInicial}}</span><span class="dimension"></span></div>
+                                        <div *ngIf=" this.home.precioInicial != 0" class="price-container"><span class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(this.home.precioInicial)+'€'}}</span><span class="dimension"></span></div>
                                     </div>
                                     <div class="price" *ngIf="this.home.precioFinal > 0">
-                                        <span class="prefix">En venta</span>
+                                        <span class="prefix" *ngIf="this.home.precioInicial == 0">En venta</span>
                                         <div class="price-container"><span *ngIf="this.home.precioFinal!= null || this.home.precioFinal != undefined" class="price-value">{{formatNumberWithCommas(this.home.precioFinal)}}€</span>
                                         <span *ngIf="this.home.precioFinal!= null || this.home.precioFinal != undefined" class="dimension">{{this.calcPriceM2(''+this.home.precioFinal,''+this.home.superficie)}}€/m²</span>
-                                        <div class="diff" *ngIf="this.home.precioInicial != 0">
-                                            <span class="dimension under" style="color:#8dca3f;">-{{this.discount(''+this.home.precioInicial,''+this.home.precioFinal)}}%</span>
+                                        <div class="diff float-end mt-1" *ngIf="this.home.precioInicial != 0">
+                                                <span class="dimension under " style="color:#8dca3f;">-{{this.discount(''+this.home.precioInicial,''+this.home.precioFinal)}}%</span>
                                         </div>
                                     </div>
                                     </div>
@@ -479,7 +524,7 @@
                 <nz-modal nzDraggable nzCentered [(nzVisible)]="joinUsModalAd" (nzOnCancel)="handleCancel('joinUsModalAd')"
                     (nzOnOk)="handleOk('joinUsModalAd')" [(nzFooter)]="modalFooterNull">
                     <ng-container *nzModalContent>
-                        <div style="display: block;" class="restricted-message">
+                        <div class="restricted-message">
                             <div class="body">
                                 <div class="advertisement mx-auto">
                                     <!--<div class="image">
@@ -489,8 +534,8 @@
                                     <div class="padded">
                                         <div class="heading">Crear cuenta</div>
                                         <p>Acceda o registrese para guardar búsquedas y favoritos</p>
-                                        <button tabindex="0" routerLink="/login" class="login only-one-button "><span class="readmore-button-label">ENTRAR</span></button>
-                                        <button tabindex="0" routerLink="/register" class="register only-one-button "><span class="readmore-button-label">REGISTRARSE</span></button>
+                                        <button tabindex="0" routerLink="/login" class="login only-one-button " pRipple><span class="readmore-button-label">ENTRAR</span></button>
+                                        <button tabindex="0" routerLink="/register" class="register only-one-button " pRipple><span class="readmore-button-label">REGISTRARSE</span></button>
                                         <p class="privacy">
                                             Al continuar acepta nuestra política de privacidad <a (click)="showModal('privatePolicy')" > Política de privacidad</a>.
                                         </p>
@@ -611,7 +656,7 @@
                                                     <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow"><a href="{{data.web}}">Ir a</a></td>
                                                     <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow">{{ data.distancia}}</td>
                                                     <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo}}</td>
-                                                    <td *ngIf="this.colegio[i].lat != ''" ><button (click)="setAdRoute(this.colegio[i].lat, this.colegio[i].lng, '#808080', this.sc, i)" style="height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td><!---->
+                                                    <td *ngIf="this.colegio[i].lat != ''" ><button (click)="setAdRoute(this.colegio[i].lat, this.colegio[i].lng, '#808080', this.sc, i)" pRipple style="height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td><!---->
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -640,7 +685,7 @@
                                                     <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow"><a href="{{data.web}}">Ir a</a></td>
                                                     <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow">{{ data.distancia}}</td>
                                                     <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo}}</td>
-                                                    <td *ngIf="this.universidad[i].lat != ''" ><button (click)="setAdRoute(this.universidad[i].lat, this.universidad[i].lng, '#128c7e', this.uni, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                    <td *ngIf="this.universidad[i].lat != ''" ><button (click)="setAdRoute(this.universidad[i].lat, this.universidad[i].lng, '#128c7e', this.uni, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -662,7 +707,7 @@
                                                         <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                         <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="this.mercados[i].lat != ''" ><button (click)="setAdRoute(this.mercados[i].lat, this.mercados[i].lng, '#6f5e53', this.mki, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                        <td *ngIf="this.mercados[i].lat != ''" ><button (click)="setAdRoute(this.mercados[i].lat, this.mercados[i].lng, '#6f5e53', this.mki, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -686,7 +731,7 @@
                                                         <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.lineas }}</td>
                                                         <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="this.autobus[i].lat != ''" ><button (click)="setAdRoute(this.autobus[i].lat, this.autobus[i].lng, '#960018', this.busic, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
+                                                        <td *ngIf="this.autobus[i].lat != ''" ><button (click)="setAdRoute(this.autobus[i].lat, this.autobus[i].lng, '#960018', this.busic, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -710,7 +755,7 @@
                                                         <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.lineas }}</td>
                                                         <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="this.metro[i].lat != ''" ><button (click)="setAdRoute(this.metro[i].lat, this.metro[i].lng, '#d6a323', this.swi, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
+                                                        <td *ngIf="this.metro[i].lat != ''" ><button (click)="setAdRoute(this.metro[i].lat, this.metro[i].lng, '#d6a323', this.swi, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -732,7 +777,7 @@
                                                         <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                         <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="(this.beach[i].lat != '')" ><button (click)="setAdRoute(this.beach[i].lat, this.beach[i].lng, 'dodgerblue', this.bch, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                        <td *ngIf="(this.beach[i].lat != '')" ><button (click)="setAdRoute(this.beach[i].lat, this.beach[i].lng, 'dodgerblue', this.bch, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -754,7 +799,7 @@
                                                         <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                         <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="(this.aeropuerto[i].lat != '')" ><button (click)="setAdRoute(this.aeropuerto[i].lat, this.aeropuerto[i].lng, '#3200ff', this.airp, i)" style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                        <td *ngIf="(this.aeropuerto[i].lat != '')" ><button (click)="setAdRoute(this.aeropuerto[i].lat, this.aeropuerto[i].lng, '#3200ff', this.airp, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -783,8 +828,8 @@
                                         <div class=" teaser-tile mt-2 mx-2 border" >
                                             <span class="favorite favorite-need-login" >
                                               <div class="wrapperDemo">
-                                                <input [checked]="false" (change)="cuoreLikeFeature(home.viviendaId)" class="red-heart-checkbox" #redheartcheckbox id="{{home.viviendaId}}" type="checkbox">
-                                                <label for="{{home.viviendaId}}"></label>
+                                                <input [checked]="false" (change)="cuoreLikeFeature(home.viviendaId)" class="red-heart-checkbox" #redheartcheckboxcard id="{{home.viviendaId}}card" type="checkbox">
+                                                <label for="{{home.viviendaId}}card"></label>
                                               </div>
                                             </span>
                                             <div class="flex-grow-1 " >
@@ -987,12 +1032,12 @@
                                 </ng-container>
                             </div>
                             <hr class="button-send-enquiry multihr" />
-                            <button tabindex="0" class="buttonForm submit-enquiry submit-enquiry-button-buy send-enquiry" [disabled]="contactMessageForm.invalid || showLoading "
+                            <button tabindex="0" class="buttonForm submit-enquiry submit-enquiry-button-buy send-enquiry" pRipple [disabled]="contactMessageForm.invalid || showLoading "
                             (click)="contactMessageForm.ngSubmit.emit()">
                                 <span *ngIf="showLoading" class="spinner-grow text-light" role="status"
                                         style="width: 1.5rem; height: 1.5rem; margin-top: 7px;">
                                 </span>
-                                <span class="readmore-button-label rbtn eff" *ngIf="!showLoading">Enviar consulta</span>
+                                <span class="readmore-button-label" pRipple *ngIf="!showLoading">Enviar consulta</span>
                             </button>
                         </form>
                     </div>
@@ -1029,9 +1074,7 @@
             </div>
         </div>
     </footer>
-    </div>
     <nz-back-top></nz-back-top>
-    
     <!--Ghost buttons-->
     <a id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]" target="_blank" 
       fragment={{this.routerLinkModel}}></a>

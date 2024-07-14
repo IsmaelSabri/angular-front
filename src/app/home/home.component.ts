@@ -802,13 +802,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         var homeValue = '';
         if (attr != 'popup') { // card calls
           this.cardCheckedViviendaId = attr;
-          if (this.cardCheckedViviendaId != this.popupOpenViviendaId) {
-            homeValue = this.cardCheckedViviendaId;
-          }
+          homeValue = this.cardCheckedViviendaId;
         } else { // has it
           homeValue = this.popupOpenViviendaId;
         }
-        // ya lo tenía
         if (this.user.likePreferences.includes(homeValue)) {
           this.user.likePreferences.forEach((item, index) => {
             if (item == homeValue) this.user.likePreferences.splice(index, 1);
@@ -839,8 +836,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
               this.lockCardLike = true;
             }, 500);
           }
-          // not has it
-        } else {
+        } else { // not has it
           this.lockCardLike = false;
           this.user.likePreferences.push(homeValue);
           this.user.likePreferencesAsString = this.user.likePreferences.toString();
@@ -879,16 +875,18 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
           if (attr == 'popup') {
             var auxId = 'cuore' + this.popupOpenViviendaId;
             const doc = document.getElementById(auxId) as HTMLInputElement;
-            doc.click();
+            doc.checked=false;
+            //doc.click();
             this.joinUsModal = true;
           } else {
-            this.clickButton(this.cardCheckedViviendaId);
+            const doc = this.document.getElementById(this.cardCheckedViviendaId) as HTMLInputElement;
+            doc.checked=false;
             this.joinUsModal = true;
           }
         }, 300);
-        setTimeout(()=>{
+        setTimeout(() => {
           this.lockCardLike = true;
-        },500);
+        }, 500);
       }
     }
   }
@@ -1025,6 +1023,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag); // by default load for sale 
     this.loadScripts();
     this.clearMap();
+    this.primengConfig.ripple = true;
     if (this.authenticationService.isUserLoggedIn()) {
       this.setCardLike();
     }

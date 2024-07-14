@@ -7,7 +7,6 @@ import { CustomHttpResponse } from '../model/performance/custom-http-response';
 import { APIKEY } from 'src/environments/environment.prod';
 import Axios from 'axios-observable';
 import { ContactUser } from '../model/contact-user';
-import * as Collections from 'typescript-collections';
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private host = environment.apiUrl;
@@ -83,6 +82,9 @@ export class UserService {
     if (user.reviewsAsString != null || user.reviewsAsString != undefined) {
       user.reviews = JSON.parse(user.reviewsAsString);
     }
+    if (user.chatsOpenedAsString != null || user.chatsOpenedAsString != undefined) {
+      user.chatsOpened = JSON.parse(user.chatsOpenedAsString);
+    } 
     return user;
   }
 

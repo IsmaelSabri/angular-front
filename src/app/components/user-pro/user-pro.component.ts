@@ -1,3 +1,4 @@
+import { ProfileImage } from './../../model/user';
 import { Component, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { UserComponent } from '../user/user.component';
 import { DOCUMENT } from '@angular/common';
@@ -14,8 +15,13 @@ import { PrimeNGConfig } from 'primeng/api';
 import { NgForm } from '@angular/forms';
 import { User } from 'src/app/model/user';
 import { Home } from 'src/app/model/home';
-//declare function printLogger(any);
-
+import { Chat } from 'src/app/model/chat';
+import * as signalR from '@microsoft/signalr';
+import { cssPathUserPro } from 'src/app/model/performance/css-styles';
+import { dynamicUserProScripts } from 'src/app/model/performance/js-scripts';
+import { ChatService } from 'src/app/service/chat.service';
+import { format, compareAsc, formatDistance, subDays } from "date-fns";
+import { es } from "date-fns/locale";
 @Component({
   selector: 'app-user-pro',
   templateUrl: './user-pro.component.html',
@@ -23,8 +29,16 @@ import { Home } from 'src/app/model/home';
 })
 export class UserProComponent extends UserComponent implements OnInit, OnDestroy {
 
+  protected styleUser: HTMLLinkElement[] = [];
   userUpdate: User = new User();
   homes: Home[] = [];
+
+  //users: UserModel[] = [];
+  chats: Chat[] = [];
+  selectedUserId: string = "";
+  selectedUser: User = new User();
+  hub: signalR.HubConnection | undefined;
+  message: string = "";
 
   constructor(
     renderer2: Renderer2,
@@ -37,7 +51,9 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     protected modalService: BsModalService,
     @Inject(DOCUMENT) protected document: Document,
     protected sanitizer: DomSanitizer,
-    primengConfig: PrimeNGConfig
+    primengConfig: PrimeNGConfig,
+    protected chatService: ChatService
+
   ) {
     super(
       router,
@@ -48,55 +64,105 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       toastr,
       document,
       renderer2,
-      primengConfig
+      primengConfig,
     );
+    this.hub = new signalR.HubConnectionBuilder().withUrl("https://localhost:4040/chat-hub").build();
+
+    this.hub.start().then(() => {
+      console.log("Connection is started...");
+
+      this.hub?.invoke("Connect", this.user.id);
+
+      this.hub?.on("Users", (res: User) => {
+        console.log(res);
+        this.users.find(p => p.id == res.id)!.status = res.status;
+      });
+
+      this.hub?.on("Messages", (res: Chat) => {
+        console.log(res);
+
+        if (this.selectedUserId == res.userId) {
+          this.chats.push(res);
+        }
+      })
+    })
   }
 
-  protected styleUser: HTMLLinkElement[] = [];
-   cssPath = [
-    '../../../assets/css/bootstrap.min.css',
-    'https://cdn.quilljs.com/1.3.6/quill.snow.css',
-    '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/extras.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/shards-dashboards.1.1.0.css',
-    '../../../assets/css/user-pro-style/danger.1.1.0.css',
-    '../../../assets/css/user-pro-style/danger.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/success.1.1.0.css',
-    '../../../assets/css/user-pro-style/info.1.1.0.css',
-    '../../../assets/css/user-pro-style/info.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/secondary.1.1.0.css',
-    '../../../assets/css/user-pro-style/secondary.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/success.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/warning.1.1.0.css',
-    '../../../assets/css/user-pro-style/warning.1.1.0.min.css',
-    '../../../assets/css/user-pro-style/scss/_alert.scss',
-    '../../../assets/css/user-pro-style/scss/_badge.scss',
-    '../../../assets/css/user-pro-style/scss/_button-group.scss',
-    '../../../assets/css/user-pro-style/scss/_buttons.scss',
-    '../../../assets/css/user-pro-style/scss/_card.scss',
-    '../../../assets/css/user-pro-style/scss/_custom-forms.scss',
-    '../../../assets/css/user-pro-style/scss/_custom-sliders.scss',
-    '../../../assets/css/user-pro-style/scss/_dropdown.scss',
-    '../../../assets/css/user-pro-style/scss/_icons.scss',
-    '../../../assets/css/user-pro-style/scss/_images.scss',
-    '../../../assets/css/user-pro-style/scss/_input-group.scss',
-    '../../../assets/css/user-pro-style/scss/_list-group.scss',
-    '../../../assets/css/user-pro-style/scss/_navbar.scss',
-    '../../../assets/css/user-pro-style/scss/_overrides.scss',
-    '../../../assets/css/user-pro-style/scss/_reboot.scss',
-    '../../../assets/css/user-pro-style/scss/_utilities.scss',
-    '../../../assets/css/user-pro-style/scss/_variables.scss',
-    '../../../assets/css/user-pro-style/scss/shards-dashboards.scss'
-  ];
+  changeUser(user: User) {
+    this.selectedUserId = user.id;
+    this.selectedUser = user;
+    this.subscriptions.push(this.chatService.getChats(this.user.id, this.selectedUserId).subscribe({
+      next: (res: any) => {
+        this.chats = res;
+      },
+      error: (err: any) => {
+        this.notificationService.notify(NotificationType.ERROR, `No se ha podido cargar el chat. Intentelo pasados unos minutos.` + err);
+      }
+    }));
+  }
+
+  sendMessage() {
+    const data = {
+      "userId": this.user.id,
+      "toUserId": this.selectedUserId,
+      "message": this.message
+    }
+    this.subscriptions.push(this.chatService.sendMessage(data).subscribe({
+      next: (res: any) => {
+        this.chats.push(res);
+        this.message = '';
+      },
+      error: (err: any) => {
+        this.notificationService.notify(NotificationType.ERROR, `No se ha podido enviar el mensaje. Intentelo pasados unos minutos.` + err);
+      }
+    }));
+  }
+
+  getAvatar(file: string): ProfileImage {
+    return JSON.parse(file);
+  }
+
+  date: Date;
+  formatChatDate(timestamp: string): any {
+    var newDate = new Date(timestamp);
+    var options = {
+      locale: es,
+      addSuffix: true
+    };
+    if (this.date == null || this.date == undefined) {
+      this.date = new Date(timestamp);
+      return formatDistance(this.date, Date.now(), options);
+    } else if (this.date.toLocaleString().split('')[0] != newDate.toLocaleString().split('')[0]) {
+      this.date = newDate;
+      return formatDistance(newDate, Date.now(), options);
+    } else {
+      return
+    }
+  }
+
+  formatChatHourPopup(timestamp: string): string {
+    var hora = timestamp.substring(11, 16);
+    return hora;
+  }
+
   ngOnInit(): void {
     $('#action_menu_btn').click(function () {
       $('.action_menu').toggle();
     });
+    // apaño temporal para probar el chat. Luego se añaden onclick en el anuncio
+    // y se borran desde la interfaz
+    this.subscriptions.push(this.userService.getUsers().subscribe({
+      next: (res: User[]) => {
+        this.user.chatsOpened = [...res];
+        //console.log(this.user.chatsOpened[0].profileImage.imageUrl);
+      },
+      error: (err: any) => {
+        this.notificationService.notify(NotificationType.ERROR, `No se ha podido enviar el mensaje. Intentelo pasados unos minutos.` + err);
+      }
+    }));
+
     this.primengConfig.ripple = true;
     this.loadScripts();
-    /*setTimeout(()=>{
-      printLogger('from ts to js');
-    },1000);*/
     this.user = this.authenticationService.getUserFromLocalCache();
     if (this.user.brandImageAsString != null || this.user.brandImageAsString != undefined) {
       this.user.brandImage = JSON.parse(this.user.brandImageAsString);
@@ -104,49 +170,31 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     if (this.user.profileImageAsString != null || this.user.profileImageAsString != undefined) {
       this.user.profileImage = JSON.parse(this.user.profileImageAsString);
     }
+    if (this.user.chatsOpenedAsString) {
+      this.user.chatsOpened = JSON.parse(this.user.chatsOpenedAsString);
+    }
     this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.user.color);
-    
-    for (let i = 0; i < this.cssPath.length; i++) {
+
+    for (let i = 0; i < cssPathUserPro.length; i++) {
       this.styleUser[i] = this.renderer2.createElement('link') as HTMLLinkElement;
       this.renderer2.appendChild(this.document.head, this.styleUser[i]);
       this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
-      this.renderer2.setProperty(this.styleUser[i], 'href', this.cssPath[i]);
+      this.renderer2.setProperty(this.styleUser[i], 'href', cssPathUserPro[i]);
     }
   }
   ngOnDestroy(): void {
-    for (let i = 0; i < this.cssPath.length; i++) {
+    for (let i = 0; i < cssPathUserPro.length; i++) {
       this.renderer2.removeChild(this.document.head, this.styleUser[i]);
     }
-    this.styleUser=[];
+    this.styleUser = [];
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
 
   loadScripts() {
-    const dynamicScripts = [
-      'https://buttons.github.io/buttons.js',
-      'https://cdn.quilljs.com/1.3.6/quill.js',
-      'https://code.jquery.com/jquery-3.7.1.min.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js',
-      '../../../assets/js/bootstrap.min.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js',
-      'https://unpkg.com/shards-ui@latest/dist/js/shards.min.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js',
-      '../../../assets/js/user-pro-dashboard/extras.1.1.0.min.js',
-      '../../../assets/js/user-pro-dashboard/shards-dashboards.1.1.0.js',
-      '../../../assets/js/user-pro-dashboard/shards-dashboards.1.1.0.min.js',
-      '../../../assets/js/user-pro-dashboard/app/app-blog-overview.1.1.0.js',
-      '../../../assets/js/user-pro-dashboard/app/app-blog-overview.1.1.0.min.js',
-      '../../../assets/js/user-pro-dashboard/app/app-components-overview.1.1.0.js',
-      '../../../assets/js/user-pro-dashboard/app/app-components-overview.1.1.0.min.js',
-      '../../../assets/js/user-pro-dashboard/app/app-blog-new-post.1.1.0.js',
-      '../../../assets/js/user-pro-dashboard/app/app-blog-new-post.1.1.0.min.js',
-      '../../../assets/js/user-pro-dashboard/app/user-pro.js',
-      //'../../../assets/js/bootstrap.bundle.min.js',
-    ];
-    for (let i = 0; i < dynamicScripts.length; i++) {
+    for (let i = 0; i < dynamicUserProScripts.length; i++) {
       const node = document.createElement('script');
-      node.src = dynamicScripts[i];
+      node.src = dynamicUserProScripts[i];
       node.type = 'text/javascript';
       node.async = false;
       document.getElementsByTagName('body')[0].appendChild(node);
@@ -246,7 +294,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     setTimeout(() => {
       this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
         next: (res: any) => {
-          this.user=this.userService.performUser(res);
+          this.user = this.userService.performUser(res);
           this.authenticationService.addUserToLocalCache(res);
           console.log(this.user);
           this.notificationService.notify(NotificationType.SUCCESS, `Se ha actualizado el perfil`);

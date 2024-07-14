@@ -27,6 +27,9 @@ export class User {
   public reviews: Review[] = [];
   public reviewsAsString: string;
   public isPro: boolean = false;
+  public status: string = '';
+  public chatsOpened: User[] = [];
+  public chatsOpenedAsString: string = '';
 }
 
 export class Review {

@@ -1746,7 +1746,7 @@ mat-drawer {
   color: #003073 !important;
   font-size: 18px !important;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1;
@@ -1844,7 +1844,7 @@ mat-drawer {
   color: #003073 !important;
   font-size: 18px !important;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1;
@@ -1943,8 +1943,7 @@ mat-drawer {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
-  --swiper-theme-color: #007aff;
-  --swiper-navigation-size: 44px;
+  -webkit-line-clamp: 3;
   color-scheme: only light;
   font-weight: 400;
   font-size: 0.9em;
@@ -1955,7 +1954,7 @@ mat-drawer {
   white-space: normal;
   box-sizing: border-box;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1963,8 +1962,6 @@ mat-drawer {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
-  --swiper-theme-color: #007aff;
-  --swiper-navigation-size: 44px;
   color-scheme: only light;
   line-height: 1.33;
   cursor: pointer;

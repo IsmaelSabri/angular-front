@@ -185,7 +185,7 @@
       </mat-select>
     </li>
     <li class="nav-item pr-3">
-      <a class="nav-link nav-border" onclick="runModal()"> Tipo de propiedad </a>
+      <a class="nav-link nav-border" onclick="runModal()"> Tipo de propiedad </a><!---->
     </li>
     <li class="nav-item pr-3">
       <!--<mat-select #optionInput="ngModel" multiple panelWidth="fit-content" [(ngModel)]="this.home.condicion" panelClass="example-panel" required>
@@ -228,17 +228,6 @@
           <nz-tab nzTitle="Tab 2">Content of Tab Pane 2</nz-tab>
           <nz-tab nzTitle="Tab 3">Content of Tab Pane 3</nz-tab>
         </nz-tabset>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1148,10 +1137,10 @@
                   </div>
                 </div>
                 <div class="ctnrmovility" #element>
-                  <a class="btnmov " (click)="openToogleModal(true)">Empezar</a>
+                  <a class="btnmov " pRipple (click)="openToogleModal(true)">Empezar</a>
                   <div class="modalmov">
                     <div class="header" style="border-top-right-radius: 20px 20px; border-top-left-radius: 20px 20px;">
-                      <a class="btnmov " (click)="openToogleModal(false)">Terminar</a>
+                      <a class="btnmov " pRipple (click)="openToogleModal(false)">Terminar</a>
                     </div>
                     <ng-scrollbar #scrollEl thumbClass="custom-scrollbars">
                       <div class="body">
@@ -2118,9 +2107,9 @@
               </div>
               <div class="flexible">
                 <!--<button class="button is-link is-inverted float-start" style="color:#3a3b3c;font-weight: 600;">Borrar campos</button>-->
-                <button type="button" class="button is-dark is-outlined float-end"
+                <button type="button" pRipple class="button is-dark is-outlined float-end"
                   onclick="closeModal()">Cerrar</button>&nbsp;
-                <button class="button is-dark float-end" [disabled]="!newMarkerForm.valid"
+                <button class="button is-dark float-end" pRipple [disabled]="!newMarkerForm.valid"
                   (click)="newMarkerForm.ngSubmit.emit()">Crear</button><!--type="submit"-->
               </div>
             </nz-tab>

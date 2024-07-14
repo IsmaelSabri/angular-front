@@ -8,6 +8,7 @@ import { TokenApiModel } from '../model/performance/TokenApiModel';
 import { UserService } from './user.service';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
+
   public host = environment.apiUrl;
   private token: string;
   private refreshToken: string;
