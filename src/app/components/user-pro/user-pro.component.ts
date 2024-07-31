@@ -161,6 +161,8 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       }
     }));
 
+    
+
     this.primengConfig.ripple = true;
     this.loadScripts();
     this.user = this.authenticationService.getUserFromLocalCache();

@@ -44,6 +44,7 @@ import { DOCUMENT } from '@angular/common';
 import { PrimeNGConfig } from 'primeng/api';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { User } from '../model/user';
+import { DropzoneComponent, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 @Component({
   selector: 'app-home',
@@ -497,6 +498,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   isOkLoading: boolean = false;
   joinUsModal: boolean = false;
   joinUsModalAd: boolean = false;
+  mortgageModal: boolean = false;
   showModal(modal: string): void {
     switch (modal) {
       case 'privatePolicy':
@@ -510,6 +512,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         break;
       case 'joinUsModalAd':
         this.joinUsModalAd = true;
+        break;
+      case 'mortgageModal':
+        this.mortgageModal = true;
         break;
     }
   }
@@ -536,6 +541,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         this.joinUsModalAd = false;
         this.isOkLoading = false;
       }, 500);
+    }  else if (method == 'mortgageModal') {
+      setTimeout(() => {
+        this.mortgageModal = false;
+        this.isOkLoading = false;
+      }, 500);
     }
   }
 
@@ -548,6 +558,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.restoreModal = false;
     } else if (method == 'joinUsModalAd') {
       this.joinUsModalAd = false;
+    } else if (method == 'mortgageModal') {
+      this.mortgageModal = false;
     }
   }
 
@@ -875,12 +887,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
           if (attr == 'popup') {
             var auxId = 'cuore' + this.popupOpenViviendaId;
             const doc = document.getElementById(auxId) as HTMLInputElement;
-            doc.checked=false;
+            doc.checked = false;
             //doc.click();
             this.joinUsModal = true;
           } else {
             const doc = this.document.getElementById(this.cardCheckedViviendaId) as HTMLInputElement;
-            doc.checked=false;
+            doc.checked = false;
             this.joinUsModal = true;
           }
         }, 300);
@@ -1008,8 +1020,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       /*
       * Aquí puede cargar las viviendas respondiendo al zoom.
       * this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag)
-      * Y lo mismo para moveend
+      * Y lo mismo para moveend ----> getBounds()
       */
+      /*setTimeout(()=>{
+         console.log('zoomend');
+       },2000);*/
     }).on('moveend', () => {
       /*
       * console.log('mover');
@@ -1035,13 +1050,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     if (this.user.likePreferencesAsString) {
       setTimeout(() => {
         if (this.state) {
-          this.likes4ever.forEach(el => {
-            this.user.likePreferences.forEach(like => {
-              if (el.nativeElement.id == like) {
-                el.nativeElement.click();
-              }
-            });
-          });
+          this.user.likePreferences.forEach(like => { // O(n) 
+            if (this.likes4ever.find(f => f.nativeElement.id == like)) { // O(n) por ahora no te libras
+              const doc = document.getElementById(like) as HTMLInputElement;
+              doc.checked = true;
+            }
+          })
         }
       }, 1000);
     }
@@ -1127,30 +1141,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     e.style.height = e.scrollHeight + 'px';
   }
 
-  selectedFiles?: FileList;
-  progressInfos: any[] = [];
-  message: string[] = [];
-  previews: string[] = [];
-  imageInfos?: Observable<any>;
-  filesUploadSuccessfully: number = 0;
-  // fix the previews
-  selectFiles(event: any): void {
-    this.message = [];
-    this.progressInfos = [];
-    this.selectedFiles = event.target.files;
-    this.previews = [];
-    if (this.selectedFiles && this.selectedFiles[0]) {
-      const numberOfFiles = this.selectedFiles.length;
-      for (let i = 0; i < numberOfFiles; i++) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.previews.push(e.target.result);
-        };
-        reader.readAsDataURL(this.selectedFiles[i]);
-      }
-    }
-  }
-
   rentTab = new BehaviorSubject<boolean>(false);
   shareTab = new BehaviorSubject<boolean>(undefined);
   saleTab = new BehaviorSubject<boolean>(false);
@@ -1206,29 +1196,46 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   tabIndex: number = 0;
   increaseTab() {
-    if (this.tabIndex <= 4) {
-      if (this.home.condicion == 'Venta' && this.tabIndex == 1) {
-        this.tabIndex = 4;
-      } else if (this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta' && this.tabIndex == 2) {
-        this.tabIndex = 4;
-      } else {
-        this.tabIndex++;
-      }
-      if (this.tabIndex == 5) {
-        var x = document.getElementById('nextTab');
-        x.style.display = 'none';
-      }
-    }
-    if (this.tabIndex == 1) {
-      var x = document.getElementById('prevTab');
-      x.style.display = 'block';
+    if (this.tabIndex == 0) {
+      this.whatTab('Acabados');
+    } else if ((this.home.condicion == null || this.home.condicion == undefined) && this.tabIndex == 1) {
+      this.whatTab('Alquiler');
+      console.log(this.tabIndex);
+    } else if ((this.home.condicion == null || this.home.condicion == undefined) && this.tabIndex == 2) {
+      this.whatTab('Compartir');
+      console.log(this.tabIndex);
+    } else if ((this.home.condicion == null || this.home.condicion == undefined) && this.tabIndex == 3) {
+      this.whatTab('Movilidad');
+      console.log(this.tabIndex);
+    } else if ((this.home.condicion == null || this.home.condicion == undefined) && this.tabIndex == 4) {
+      this.whatTab('Multimedia');
+    } else if ((this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta') && this.tabIndex === 1) {
+      this.whatTab('Alquiler');
+    } else if ((this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta') && this.tabIndex === 2) {
+      this.whatTab('Movilidad');
+    } else if (this.home.condicion != 'Compartir' && this.tabIndex === 2) {
+      this.whatTab('Compartir');
+    } else if (this.home.condicion === 'Compartir' && this.tabIndex === 3) {
+      this.whatTab('Movilidad');
+    } else if (this.home.condicion === 'Venta' && this.tabIndex === 0) {
+      this.whatTab('Acabados');
+    } else if (this.home.condicion === 'Venta' && this.tabIndex === 1) {
+      this.whatTab('Movilidad');
+    } else if (this.home.condicion === 'Compartir' && this.tabIndex === 1) {
+      this.whatTab('Alquiler');
+    } else if (this.home.condicion === 'Compartir' && this.tabIndex === 2) {
+      this.whatTab('Compartir');
+    } else if (this.home.condicion === 'Compartir' && this.tabIndex === 3) {
+      this.whatTab('Movilidad');
+    } else {
+      this.whatTab('Multimedia');
     }
   }
   decreaseTab() {
     if (this.tabIndex >= 1) {
       if (this.home.condicion == 'Venta' && this.tabIndex == 4) {
         this.tabIndex = 1;
-      } else if (this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta' && this.tabIndex == 4) {
+      } else if ((this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta') && this.tabIndex == 4) {
         this.tabIndex = 2;
       } else {
         this.tabIndex--;
@@ -1297,6 +1304,42 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       $("." + id).find(".ant-select-arrow").toggleClass("ant-select-arrow-down");
     else
       $("." + id).find(".ant-select-arrow").removeClass("ant-select-arrow-down");
+  }
+
+  selectedFiles?: FileList;
+  filesUploadSuccessfully: number = 0;
+  public config: DropzoneConfigInterface = {
+    clickable: true,
+    maxFiles: 60,
+    autoReset: null,
+    errorReset: null,
+    cancelReset: null,
+    maxFilesize: 32,
+    addRemoveLinks: true,
+
+  };
+  @ViewChild(DropzoneComponent) private dropComponent: DropzoneComponent;
+
+  public onUploadError(args: any): void {
+    console.log('onUploadError:', args);
+  }
+
+  public onUploadSuccess(args: any): void {
+    console.log('onUploadSuccess:', args);
+    this.selectedFiles
+  }
+
+  public onRemove(e: any) {
+    console.log(e);
+  }
+
+  public processUploads() {
+    this.selectedFiles = this.dropComponent.directiveRef.dropzone().files;
+    for (let i = 0; i < this.selectedFiles.length; i++) {
+      if (this.selectedFiles[i]) {
+        console.log(this.selectedFiles[i])
+      }
+    }
   }
 
   newHome() {
@@ -1390,7 +1433,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         'Campo requerido'
       );
     }
-    if (this.home.precioAlquiler != null && this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta') {
+    if (this.home.precioAlquiler != null && (this.home.condicion == 'Alquiler' || this.home.condicion == 'Alquiler y venta')) {
       formData.append('precioAlquiler', JSON.stringify(this.home.precioAlquiler).split('"').join('').split("'").join(''));
     }
     //detalles de alquiler
@@ -1433,11 +1476,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       if (this.user.color != null || this.user.color != undefined) {
         this.home.proColor = this.user.color;
       }
-      if (this.user.brandImage != null || this.user.brandImage != undefined || this.user.brandImage.imageUrl.length != 0) {
+      if (this.user.brandImage != null || this.user.brandImage != undefined) {
         this.home.proImage = this.user.brandImage.imageUrl;
       }
     }
-    this.message = [];
+    this.selectedFiles = this.dropComponent.directiveRef.dropzone().files; // fotos
     if (this.selectedFiles) {
       for (let i = 0; i < this.selectedFiles.length; i++) {
         if (this.selectedFiles[i]) {
@@ -1452,8 +1495,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                 imageUrl: res.data.data.url,
                 imageDeleteUrl: res.data.data.delete_url
               };
-              const msg = 'Subida correctamente: ' + this.selectedFiles[i].name;
-              this.message.push(msg);
               this.filesUploadSuccessfully = i;
               console.log('subidas: ' + this.filesUploadSuccessfully + ' cantidad: ' + this.selectedFiles.length);
               if ((this.selectedFiles.length - 1) == this.filesUploadSuccessfully) {
@@ -1467,6 +1508,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                     this.homeService.addHome(json).subscribe(() => {
                       this.router.navigate(['/home']),
                         this.notificationService.notify(NotificationType.SUCCESS, `Anuncio creado.`);
+                      this.dropComponent.directiveRef.reset();
                       var resetForm = <HTMLFormElement>document.getElementById('newMarkerForm');
                       resetForm?.reset();
                       $(".modal").removeClass("is-active");
@@ -1477,7 +1519,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             },
             error: (err: any) => {
               const msg = 'Error al procesar la imagen: ' + this.selectedFiles[i].name + ' error: ' + err;
-              this.message.push(msg);
+              this.notificationService.notify(NotificationType.ERROR, msg);
             }
           }));
         }
@@ -1653,11 +1695,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         }
         if (urlFilterRequest.includes('model@=*Flat,')) {
           urlFilterRequest = urlFilterRequest.split('model@=*Flat,').join('');
-        } else if ('model@=*House,') {
+        } else if (urlFilterRequest.includes('model@=*House,')) {
           urlFilterRequest = urlFilterRequest.split('model@=*House,').join('');
-        } else if ('model@=*Flat|House,') {
+        } else if (urlFilterRequest.includes('model@=*Flat|House,')) {
           urlFilterRequest = urlFilterRequest.split('model@=*Flat|House,').join('');
-        } else if ('model@=*House|Flat,') {
+        } else if (urlFilterRequest.includes('model@=*House|Flat,')) {
           urlFilterRequest = urlFilterRequest.split('model@=*House|Flat,').join('');
         }
         urlFilterRequest = 'model' + '@=*' + modelOptions + ',' + 'tipo' + '@=*' + tipoValues + ',' + urlFilterRequest

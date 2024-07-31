@@ -1,5 +1,5 @@
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit, ViewContainerRef, SimpleChanges } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
@@ -39,6 +39,8 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/model/user';
 import { CustomHttpResponse } from 'src/app/model/performance/custom-http-response';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { BaseChartDirective } from 'ng2-charts';
+import { Chart, ChartData, ChartType } from 'chart.js';
 
 @Component({
   selector: 'app-add',
@@ -286,24 +288,33 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       },
       error: () => {
         this.notificationService.notify(
-          NotificationType.ERROR, 'El anuncio' + this.dto.id + ' ha caducado o ha sido eliminado',
+          NotificationType.ERROR, 'El anuncio ' + this.dto.id + ' ha caducado o ha sido eliminado',
         );
         this.router.navigateByUrl('/home');
       }
     }));
     // marcar el like
     if (this.state) {
-      //this.setCardLike();
       setTimeout(() => {
         if (this.user.likePreferences.includes(this.home.viviendaId)) {
           const element = document.getElementById(this.home.viviendaId) as HTMLInputElement;
           element.checked = true;
         }
+        //this.setCardLike();
       }, 1000);
     }
     //if(Object.keys(this.home).length){
+    this.doughnutChartData = {
+      labels: ['Precio de venta', 'Impuestos y gastos', 'Entrada', 'Financiado'],
+      datasets: [
+        {
+          data: [this.home.precioFinal, +this.otherCosts(0).toFixed(0), 0, this.importeFinanciado],
+          backgroundColor: this.getRandomColors(4),
+          borderColor: this.getRandomColors(4),
+        },
+      ],
+    };
   }
-
 
   cuoreLike(id: string) {
     if (this.state) {
@@ -421,6 +432,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   loadScripts() {
     const dynamicScripts = [
       '../../../assets/js/ad.js',
+      'https://cdn.jsdelivr.net/npm/chart.js'
     ];
     for (let i = 0; i < dynamicScripts.length; i++) {
       const node = document.createElement('script');
@@ -563,6 +575,102 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     }));
     var resetForm = <HTMLFormElement>document.getElementById('contactMessageForm');
     resetForm.reset();
+  }
+
+  // sliders
+  interes: number = .1;
+  anyos: number = 1;
+  entrada: number = 0;
+  iva: number = .07;
+  importeFinanciado: number = 0;
+  importeAFinanciar: number = 0
+  pagoMensual: number = 0;
+  costeTotal: number = 0;
+  registro: number = 0;
+  notaria: number = 800;
+  gestoria: number = 300;
+  public doughnutChartData: ChartData<'bar'> = {
+    labels: [],
+    datasets: []
+  };
+
+  // chart Doughnut
+  @ViewChild(BaseChartDirective) private chart?: BaseChartDirective;
+  public doughnutChartType: ChartType = 'doughnut';
+  calculeMortgage() {
+    var tipo = (this.interes / 100 / 12);
+    this.importeAFinanciar = (this.home.precioFinal - this.entrada);
+    var mesesPagando = (this.anyos * 12);
+    var pv = this.importeAFinanciar * tipo;
+    this.pagoMensual = (pv * (Math.pow(1 + tipo, mesesPagando))) / ((Math.pow(1 + tipo, mesesPagando) - 1));
+    this.importeFinanciado = (this.pagoMensual * mesesPagando);
+    this.doughnutChartData = {
+      labels: ['Capital financiado', 'Impuestos y gastos', 'Entrada'],
+      datasets: [
+        {
+          data: [+this.importeFinanciado.toFixed(0), +this.otherCosts(0).toFixed(0), this.entrada],
+          backgroundColor: this.getRandomColors(4),
+          borderColor: this.getRandomColors(4),
+        },
+      ],
+    };
+    this.chart.update()
+  }
+
+  otherCosts(n: number) {
+    return n + this.calcIva(this.iva) + this.calcRegistroPropiedad() + this.notaria + this.gestoria;
+  }
+
+  getRandomColors(num: number): string[] {
+    const colors = [];
+    for (let i = 0; i < num; i++) {
+      colors.push(
+        `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
+      );
+    }
+    return colors;
+  }
+
+  calcIva(value: number): number {
+    return +(this.home.precioFinal * value).toFixed(0);
+  }
+
+  calcRegistroPropiedad(): number {
+    //registro de propiedad
+    var amount: number = 24.04;
+    var maxCost: number = 2181;
+    if (this.home.precioFinal <= 6010) {
+      return amount;
+    } else if (this.home.precioFinal > 6010) {
+      for (var index = 6010; index < 30050; index += 1000) {
+        amount += 1.75;
+      }
+    }
+    if (this.home.precioFinal > 30050) {
+      for (var index = 30050; index < 60101; index += 1000) {
+        amount += 1.25;
+      }
+    }
+    if (this.home.precioFinal > 60101) {
+      for (var index = 60101; index < 150253; index += 1000) {
+        amount += 0.75;
+      }
+    }
+    if (this.home.precioFinal > 150253) {
+      for (var index = 150253; index < 601012; index += 1000) {
+        amount += 0.30;
+      }
+    }
+    if (this.home.precioFinal > 601012) {
+      for (var index = 30050; index < this.home.precioFinal; index += 1000) {
+        amount += 0.20;
+      }
+    }
+    if (amount > maxCost) {
+      return maxCost;
+    } else {
+      return amount;
+    }
   }
 
   ngOnDestroy(): void {

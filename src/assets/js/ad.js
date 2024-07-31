@@ -11,3 +11,5 @@ $(document).ready(function() {
       $(".navbar-burger, .navbar-menu", $(this).closest('.navbar')).toggleClass("is-active");
   });
 });
+
+//mortgage calculator

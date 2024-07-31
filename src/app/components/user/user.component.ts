@@ -109,7 +109,7 @@ export class UserComponent implements OnInit, OnDestroy {
           this.brandImageSrc = '';
           this.subscriptions.push(this.userService.updateUser(userUpdate, userUpdate.id).subscribe({
             next: (res: any) => {
-              this.user=this.userService.performUser(res);
+              this.user = this.userService.performUser(res);
               console.log(this.user);
             },
             error: (err: any) => {
@@ -136,7 +136,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.userService.updateUser(user, user.id).subscribe({
       next: (res: any) => {
         this.refreshing = false;
-        this.user=this.userService.performUser(res);
+        this.user = this.userService.performUser(res);
         console.log(res);
         this.authenticationService.addUserToLocalCache(this.user);
         this.photoImage = null;
@@ -410,37 +410,26 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   formatNumberWithCommas(n: Number): string {
-    return JSON.stringify(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    return JSON.stringify(n)?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+
+  stringToNumber(str:number){
+    let nf = new Intl.NumberFormat('en-US');
+    nf.format(str); 
+    return str;
+  }
+
+  public getProfileImage(): string {
+    if (this.user.profileImage === null || this.user.profileImage === undefined) {
+      return '../../../assets/img/blank_image.jpg';
+    } else {
+      return this.user.profileImage.imageUrl;
+    }
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  /*loadScripts() {
-    const dynamicScripts = [
-      '../../../assets/js/user-dashboard/bootstrap-datepicker.min.js',
-      '../../../assets/js/user-dashboard/Chart.min.js',
-      '../../../assets/js/user-dashboard/Chart.roundedBarCharts.js',
-      '../../../assets/js/user-dashboard/dashboard.js',
-      '../../../assets/js/user-dashboard/hoverable-collapse.js',
-      '../../../assets/js/user-dashboard/jquery.cookie.js',
-      '../../../assets/js/user-dashboard/off-canvas.js',
-      '../../../assets/js/user-dashboard/progressbar.min.js',
-      '../../../assets/js/user-dashboard/settings.js',
-      '../../../assets/js/user-dashboard/template.js',
-      '../../../assets/js/user-dashboard/todolist.js',
-      '../../../assets/js/user-dashboard/vendor.bundle.base.js',
-      ''
-      //'../../../assets/js/bootstrap.bundle.min.js',
-    ];
-    for (let i = 0; i < dynamicScripts.length; i++) {
-      const node = document.createElement('script');
-      node.src = dynamicScripts[i];
-      node.type = 'text/javascript';
-      node.async = false;
-      document.getElementsByTagName('body')[0].appendChild(node);
-    }
-  }*/
 
 }

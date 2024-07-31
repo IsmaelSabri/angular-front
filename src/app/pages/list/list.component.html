@@ -4,25 +4,83 @@
     <div class="container">
       <!-- Logo Start -->
       <div class="logo">
-        <a href="#">
+        <a  routerLink="/home">
           <img src="assets/img/tmp/unknown-house.png" width="80px;" height="80px" alt="Real Estate" />
         </a>
       </div>
       <!-- Logo End -->
       <button class="menu-toggle">
-        <i class="ri-menu-fill bar-icon"></i>
-        <i class="ri-close-fill close-icon"></i>
+        <ion-icon name="menu"></ion-icon>
       </button>
       <div class="header-right">
+        <a class="navbar-item" id="navbarDropdown" [nzDropdownMenu]="menu" nz-dropdown role="button"
+              aria-expanded="false" aria-haspopup="true" *ngIf='this.state'>
+              <img height="65" width="65" class="rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;" alt="avatar2"
+                [attr.src]="this.user.profileImage.imageUrl" /><!---->
+            </a>
         <!-- Header Menu Start -->
         <div class="menu">
         <ul>
-            <li><a routerLink="/home">Mapa</a></li>
-            <li><a href="#">Propiedades</a></li>
-            <li><a routerLink="/register">Unirse</a></li>
-            <li><a routerLink="/login">Entrar</a></li>
+            <!--<li></li>-->
+            <!--<li><a href="#">Propiedades</a></li>-->
+            <li *ngIf="!this.state"><a routerLink="/register">Unirse</a></li>
+            <li *ngIf="!this.state"><a routerLink="/login">Entrar</a></li>
           </ul>
         </div>
+        <nz-dropdown-menu #menu="nzDropdownMenu" nzPlacement="bottomRight">
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item class="bg-light"><a style="font-weight: bold;" class="text-secondary">Colecciones</a></li>
+            <li nz-menu-item><a *ngIf='this.state' routerLink="/user/management">
+                <ion-icon name="person-outline" style="position: relative; top: 2px;"></ion-icon> {{user?.username}}
+              </a></li>
+
+            <li nz-menu-item><a [routerLink]="" *ngIf='this.state'><ion-icon name="notifications-outline"
+                  style="position: relative; top: 2px; font-size:16px;"></ion-icon>
+                <p-badge styleClass="mr-2" [value]="2" severity="info"></p-badge>
+                Notificaciones</a></li>
+
+            <li nz-menu-item><a [routerLink]=""><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                  name="heart-half-outline"></ion-icon> Guardadas</a></li>
+            <li nz-menu-item><a routerLink="/user-pro"><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                  name="speedometer-outline"></ion-icon> Pro-area</a></li>
+            <li nz-menu-item><a routerLink="/admin"><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                  name="person-circle-outline"></ion-icon> Admin-area</a></li>
+            <li nz-menu-item><a [routerLink]=""><ion-icon name="heart-dislike-outline"
+                  style="position: relative; top: 2px; font-size:16px;"></ion-icon> Ocultas</a></li>
+            <li nz-menu-item><a [routerLink]=""><span nz-icon nzType="audit" nzTheme="outline"
+                  style="position: relative; bottom: 3px;"></span> Vistas</a></li>
+
+            <li nz-submenu nzTitle="Publicar">
+              <ul>
+                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Nueva propiedad')"><i
+                      class="bi bi-house-add"></i>&nbsp;Vivienda</a></li>
+                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Proyecto nuevo')"><i
+                      class="bi bi-building"></i>&nbsp;Proyecto</a></li>
+                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Oficina')"><i
+                      class="bi bi-buildings"></i>&nbsp;Oficina</a></li>
+                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Local')"><i
+                      class="bi bi-building-fill-add"></i>&nbsp;Local</a></li>
+                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Nueva parcela')"><i
+                      class="bi bi-building-fill-add"></i>&nbsp;Terreno</a></li>
+                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Garage')"><i
+                      class="bi bi-building-fill-add"></i>&nbsp;Garage</a></li>
+                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Trastero')"><i
+                      class="bi bi-building-fill-add"></i>&nbsp;Trastero</a></li>
+                <!--<li nz-menu-item><a [routerLink]="" *ngIf='this.state' (click)="createLocationMarker();setAdTitle('Alojamiento vacacional')"><i class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>-->
+              </ul>
+            </li>
+            <li nz-menu-item><a *ngIf='this.state' (click)="onLogOut()" routerLink="/home">
+                <ion-icon name="log-out-outline"
+                  style="position: relative; top: 2px; font-size:16px;"></ion-icon>&nbsp;Salir</a></li>
+          </ul>
+        </nz-dropdown-menu>
         <!-- Header Menu End -->
         <!-- Header Cta Start -->
         <!--<div class="cta">
@@ -37,9 +95,26 @@
 
 <div class="banner-wrap">
   <div class="container">
-    <div class="banner-box " style="background:#3a3b3c;">
+    <div class="banner-box " >
       <!-- Banner Image Start -->
-  
+      <div class="banner-box__img">
+        <img
+          src="assets/images/banner-image.jpg"
+          width="1300"
+          height="634"
+          alt=""
+        />
+      </div>
+      
+      <div class="banner-box__content">
+        <h1 class="banner-box__title h">
+          Tu asistente internacional en la compra y venta de inmuebles
+        </h1>
+        <div class="banner-box__txt text-ex-large">
+          We provide a complete service for the sale, purchase or rental of
+          real estate.
+        </div>
+      </div>
         
       <!-- Banner Image End -->
       <!-- Banner Content Start -->
@@ -300,9 +375,10 @@
       <div class="col d-flex flex-row" *ngFor="let appHome of homes; let i =index"><!--col-lg-8 col-md-10 col-sm-12 col-xs-12 d-flex-->
         <div class=" teaser-tile mt-2 mx-2" >
             <span class="favorite favorite-need-login" data-id="1935922" data-type="estate">
-              <div class="wrapperDemo">
-                <button class="toggleIcon" title="❤ Toggle Like!"></button>
-              </div>
+              <div class="wrapperDemo" #wrapperDemo>    
+                <input [checked]="false" (change)="cuoreLikeFeature(appHome.viviendaId)" class="red-heart-checkbox" #redheartcheckbox id="{{appHome.viviendaId}}" type="checkbox">
+                <label for="{{appHome.viviendaId}}"></label>
+            </div>
             </span>
             <div class="flex-grow-1 " ><!--hace la llamada (click)="runAdCard(appHome)"-->
                 <div class="with-img" style="position: relative;">

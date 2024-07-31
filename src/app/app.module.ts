@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -92,7 +92,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { MatButtonModule } from '@angular/material/button';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { RippleModule } from 'primeng/ripple';
-import {MatRippleModule} from '@angular/material/core'; 
+import { MatRippleModule } from '@angular/material/core';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
@@ -115,6 +115,23 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { NgxLoadingModule } from "ngx-loading";
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { DropdownModule } from 'primeng/dropdown';
+import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { BarController, Colors, Legend } from 'chart.js';
+import { ChartModule } from 'primeng/chart';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
+import { AccordionModule } from 'primeng/accordion';
+
+export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
+  // Change this to your upload POST address:
+  url: 'https://httpbin.org/post',
+  maxFilesize: 32,
+  acceptedFiles: 'image/*'
+};
 @NgModule({
   declarations: [
     AppComponent,
@@ -133,7 +150,6 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     NotificationModule,
     NotifierModule,
     NgbModalModule,
@@ -220,6 +236,13 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
     ProgressSpinnerModule,
     NgxLoadingModule,
     NzMessageModule,
+    NzEmptyModule,
+    DropdownModule,
+    HttpClientModule,
+    NzDescriptionsModule,
+    ChartModule,
+    BaseChartDirective,
+    AccordionModule,
   ],
   exports: [
     // to get component in another modules
@@ -238,10 +261,13 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
     HomeService,
     ChatService,
     BsModalService,
+    provideHttpClient(),
+    provideCharts(withDefaultRegisterables()),
+    provideCharts({ registerables: [BarController, Legend, Colors] }),
     { provide: NZ_I18N, useValue: es_ES },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true, },
-    {
-      provide: 'SocialAuthServiceConfig',
+    { provide: DROPZONE_CONFIG, useValue: DEFAULT_DROPZONE_CONFIG, },
+    { provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,
         providers: [
@@ -254,7 +280,7 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
           {
             id: FacebookLoginProvider.PROVIDER_ID,
             provider: new FacebookLoginProvider('clientId')
-          }
+          },
         ],
         onError: (err) => {
           console.error(err);

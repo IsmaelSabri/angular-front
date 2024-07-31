@@ -56,7 +56,7 @@
         <a class="navbar-item" nz-dropdown [nzDropdownMenu]="menu" id="navbarDropdown" role="button"
           aria-expanded="false" aria-haspopup="true" *ngIf='this.state'>
           <img height="55" width="55" class="rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;" alt="avatar2"
-            [attr.src]="this.user.profileImage.imageUrl" />
+            [attr.src]="this.getProfileImage()" />
         </a>
         <nz-dropdown-menu #menu="nzDropdownMenu" nzPlacement="bottomRight">
           <ul nz-menu nzSelectable>
@@ -135,33 +135,33 @@
 <div class="collapse" id="navbarToggleExternalContent" style="border-bottom: 1px solid rgb(206, 203, 203);">
   <div class="container-fluid">
     <nav style="display: block;">
-      <ul class="nav-links nav lista1 text-center">
-        <li class="nav-item active pr-3">
+      <ul class="nav-links nav ">
+        <li class="nav-item active pr-3 mx-auto">
           <a routerLink="/home" class="nav-link text-secondary"><strong>Comprar</strong></a>
         <li class="nav-item pr-3">
           <a class="nav-link text-secondary"><strong>Vender</strong></a>
         </li>
-        <li class="nav-item pr-3">
+        <li class="nav-item pr-3 mx-auto">
           <a class="nav-link text-secondary disabled" routerLink="/_es"><strong>Vendido</strong></a>
         </li>
-        <li class="nav-item pr-3">
+        <li class="nav-item pr-3 mx-auto">
           <a routerLink="/vlog" class="nav-link text-secondary"><strong>Compartir</strong></a>
         </li>
-        <li class="nav-item pr-3">
+        <li class="nav-item pr-3 mx-auto">
           <a class="nav-link text-secondary"><strong>Ayuda</strong></a>
         </li>
-        <li class="nav-item pr-3">
+        <li class="nav-item pr-3 mx-auto">
           <a [routerLink]="" class="nav-link text-secondary"><strong>Buscar agentes</strong>
           </a>
         </li>
-        <li class="nav-item pr-3">
+        <li class="nav-item pr-3 mx-auto">
           <a routerLink="/vlog" class="nav-link text-secondary"><strong>Noticias</strong>
           </a>
         </li>
-        <li class="nav-item pr-3">
+        <li class="nav-item pr-3 mx-auto">
           <a class="nav-link text-secondary" routerLink=""><strong>Comercial</strong></a>
         </li>
-        <li class="nav-item pr-3">
+        <li class="nav-item pr-3 mx-auto">
           <a class="nav-link text-secondary" routerLink=""><strong>Vivir en España</strong></a>
         </li>
       </ul>
@@ -329,12 +329,7 @@
                       </nz-select>
                     </div>
                     <div class="col-xl col-lg-3 col-md-3 col-sm-6 align-self-start">
-                      <button 
-                          pButton 
-                          pRipple 
-                          label="Submit" 
-                          class="p-button-success">
-                      </button>
+                      
                     </div>
                   </div>
                   <!-- Tipo, estado, alquiler-venta y destacar -->
@@ -2020,7 +2015,12 @@
             </nz-tab>
             <!-- Multimedia -->
             <nz-tab nzTitle=Multimedia nz-col nzSpan="8" [nzDisabled]="false" (nzClick)="whatTab('Multimedia')">
-              <div *ngFor="let progressInfo of progressInfos" class="mb-2">
+              <!-- Fotos -->
+              <dropzone [config]="config" [message]="'Pulse o arrastre sus imágenes para subirlas'" required
+                 (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (removedFile)="onRemove($event)">
+              </dropzone>
+              <button class="btn btn-primary" (click)="processUploads()">Prueba</button>
+              <!--<div *ngFor="let progressInfo of progressInfos" class="mb-2">
                 <span>{{ progressInfo.fileName }}</span>
                 <div class="progress">
                   <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
@@ -2057,7 +2057,7 @@
                     <img src="{{ image.url }}" alt="{{ image.name }}" height="80px" />
                   </li>
                 </ul>
-              </div>
+              </div>-->
               <!-- Video para youtube -->
               <div class="form-group">
                 <ng-container>
@@ -2120,7 +2120,7 @@
         <button type="button" id="prevTab" style="display:none;" class="button is-dark is-outlined float-start"
           (click)="decreaseTab()"><i class="bi bi-arrow-left"></i></button>
         <div class="buttons is-right">
-          <button type="button" id="nextTab" class="button is-dark is-outlined float-end" (click)="increaseTab()"><i
+          <button type="button" id="nextTab" #nextTab class="button is-dark is-outlined float-end" (click)="increaseTab()"><i
               class="bi bi-arrow-right"></i></button>
         </div>
       </footer>
@@ -2154,7 +2154,6 @@
               <div class="wrapperDemo" #wrapperDemo>    
                   <input [checked]="false" (change)="cuoreLikeFeature(appHome.viviendaId)" class="red-heart-checkbox" #redheartcheckbox id="{{appHome.viviendaId}}" type="checkbox">
                   <label for="{{appHome.viviendaId}}"></label>
-                <!--<button #box id="{{appHome.viviendaId}}" (click)="cuoreLikeFeature(appHome.viviendaId)" class="toggleIcon box" title="❤ Toggle Like!"></button>-->
               </div>
             </span>
             <div class="flex-grow-1 ">

@@ -67,6 +67,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
   ];
   public alignSegment: NzAlign[] = ['flex-start', 'center', 'flex-end'];
   ngOnInit(): void {
+    this.user = this.authenticationService.getUserFromLocalCache();
     this.style = this.renderer2.createElement('link') as HTMLLinkElement;
     this.renderer2.appendChild(this.document.head, this.style);
     this.renderer2.setProperty(this.style, 'rel', 'stylesheet');
@@ -86,13 +87,8 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  printLog(){
-    console.log("funciona");
-  }
-
   loadScripts() {
     const dynamicScripts = [
-      '../../../assets/js/script.js',
       '../../../assets/js/script.min.js',
     ];
     for (let i = 0; i < dynamicScripts.length; i++) {
@@ -106,11 +102,8 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-    this.style=null;
+    //this.style=null;
     this.renderer2.removeChild(this.document.head, this.style);
   }
 
-  onSelectedHome(house: Home) {
-    console.log('now we are running');
-  }
 }

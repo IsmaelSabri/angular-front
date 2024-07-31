@@ -77,7 +77,7 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
           console.log(this.luckyId);
           this.userService.getUserByUserId(this.luckyId).subscribe({
             next: (res: any) => {
-              this.user = res;
+              this.user = this.userService.performUser(res);
               this.notificationService.notify(NotificationType.SUCCESS, `Introduce tu nueva contraseña`);
               console.log(this.user);
             },
@@ -93,7 +93,6 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
   }
 
   onSubmit(): void {
-    console.log(this.resetPasswordForm);
     this.user.password = this.psw;
     console.log(this.user);
     if (this.whatComponent == 'pass') {

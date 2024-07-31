@@ -356,22 +356,22 @@
                 </div>
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item"></li>
-                  <li class="list-group-item"><i class="fa fa-id-badge float-right"></i>{{selectedUser?.userId}}
+                  <li class="list-group-item"><i class="fa fa-id-badge float-right mr-1"></i>{{selectedUser?.userId}}
                   </li>
-                  <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{selectedUser?.email}}
+                  <li class="list-group-item"><i class="fa fa-envelope float-right mr-1"></i>{{selectedUser?.email}}
                   </li>
                   <li class="list-group-item"><i class="fas fa-shield-alt float-right"></i>{{selectedUser?.role.substring(5)}}
-                  <li *ngIf="selectedUser?.showLastaccessDate" class="list-group-item"><i
-                      class="fas fa-sign-in-alt float-right"></i>{{selectedUser?.showLastaccessDate | date: 'medium'}}
+                  <li *ngIf="selectedUser?.lastaccessDate" class="list-group-item"><i
+                      class="fas fa-sign-in-alt float-right mr-1"></i>{{selectedUser?.lastaccessDate | date: 'medium'}}
                   </li>
                   <li class="list-group-item">
                     <span [hidden]="selectedUser?.isnotLocked">
-                      <i class="fa fa-lock float-right" style="color: red;">
+                      <i class="fa fa-lock float-right mr-1" style="color: red;">
                       </i>
                       Cuenta Bloqueada
                     </span>
                     <span [hidden]="!selectedUser?.isnotLocked">
-                      <i class="fa fa-unlock float-right" style="color: green;">
+                      <i class="fa fa-unlock float-right mr-1" style="color: green;">
                       </i>
                       Cuenta Desbloqueada
                     </span>

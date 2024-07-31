@@ -4,6 +4,14 @@
   color: #76ba1b;
 }
 
+.list-group-item-success {
+ background-color: rgba(118,186,27,0.25);
+}
+
+.textFont {
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
+}
+
 #mapAdd {
   aspect-ratio: 16/9;
 }
@@ -160,6 +168,11 @@ body,
   .likeFeature {
     float: right;
   }
+}
+
+.canvas {
+  max-width: 20em;
+  max-height: 20em;
 }
 
 #module {
@@ -711,6 +724,9 @@ select {
   .typeform-popover-button {
     left: 8px !important;
     right: 8px !important;
+  }
+  .resize-slider {
+    margin-top: 0.8em;
   }
 }
 
@@ -1658,14 +1674,14 @@ body {
 }
 
 .old-price:after {
-	content: "";
-	border-bottom: 0.1em solid gray;
+  content: "";
+  border-bottom: 0.1em solid gray;
   transform: rotate(8deg);
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
 }
 
 .description-content .prices .price .dimension {
@@ -2139,7 +2155,7 @@ body {
 
 @media all and (max-width: 670px) {
   .padded {
-        margin-right:6em; 
+    margin-right: 6em;
   }
 }
 
@@ -2226,7 +2242,6 @@ body {
     margin: 0 -16px 8px;
   }
 }
-
 
 .district-filters .filter-status > button {
   -webkit-flex: 1;
@@ -4016,8 +4031,6 @@ body {
   font-size: 60px;
 }
 
-
-
 .radio-btn .hobbies-icon h3 {
   color: #555;
   font-size: 1.2em;
@@ -4035,7 +4048,7 @@ body {
 }
 
 .navbar {
-  background-color:white;
+  background-color: white;
 }
 /* bootstrap nav
 .navbar-collapse{ 
@@ -4052,7 +4065,7 @@ body {
 }*/
 
 .navbar-burger {
-  color:#3a3b3c
+  color: #3a3b3c;
 }
 
 /* Scrollbar */
@@ -4067,4 +4080,30 @@ body {
   box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.5) inset;
 }
 
-/* Tag discount */
+/* Mortgage sliders */
+
+:host ::ng-deep .p-slider-handle {
+  border-color: #3a3b3c;
+}
+
+:host ::ng-deep .p-slider .p-slider-range {
+  border-color: #3a3b3c;
+  background: #3a3b3c;
+}
+
+:host ::ng-deep .p-slider .p-slider-handle:hover {
+  border-color: #3a3b3c;
+  background: #3a3b3c;
+}
+
+:host ::ng-deep .p-slider .p-slider-handle:focus {
+  border-color: #3a3b3c;
+  box-shadow: none;
+  background: #3a3b3c;
+}
+
+.input-title {
+  color: #9e9e9e;
+  font-weight: bold;
+  letter-spacing: 0.4px;
+}

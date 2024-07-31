@@ -14,7 +14,6 @@ import { UserProComponent } from './components/user-pro/user-pro.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'admin', component: AdminComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'vlog', component: VlogComponent },
   { path: 'add/:id', component: AddComponent },
@@ -22,13 +21,14 @@ const routes: Routes = [
   { path: '_es', component: ListComponent },
   { path: 'pass', component: PasswordComponent },
   { path: 'reset-pass', component: PasswordComponent },
+  { path: 'admin', component: AdminComponent, canActivate: [AuthenticationGuard] },
   { path: 'user-pro', component: UserProComponent, canActivate: [AuthenticationGuard] },
-  { path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard] }, 
+  { path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard] },
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
 
-@NgModule({ 
+@NgModule({
   imports: [RouterModule.forRoot(routes, {})],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

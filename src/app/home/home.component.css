@@ -1011,11 +1011,7 @@ input:checked ~ .checkbox2 {
 /* end checkboxes 2 */
 
 /* Lista horizontal */
-.lista1 li {
-  display: inline;
-  padding-left: 3px;
-  padding-right: 3px;
-}
+
 
 /* Select para las emisiones y el consume sin js :> */
 
