@@ -11,7 +11,7 @@ import { CustomHttpResponse } from 'src/app/model/performance/custom-http-respon
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -36,6 +36,7 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
     toastr: ToastrService,
     private formBuilder: FormBuilder,
     primengConfig: PrimeNGConfig,
+    messageService: MessageService,
   ) {
     super(
       router,
@@ -46,7 +47,8 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
       toastr,
       document,
       renderer2,
-      primengConfig
+      primengConfig,
+      messageService,
     );
   }
 

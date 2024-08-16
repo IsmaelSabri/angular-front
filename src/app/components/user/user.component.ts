@@ -15,7 +15,7 @@ import { FileUploadStatus } from '../../model/performance/file-upload.status';
 import { Rol } from '../../class/role.enum';
 import { ToastrService } from 'ngx-toastr';
 import { DOCUMENT } from '@angular/common';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { SingleDtoHomeRequest } from 'src/app/model/home';
 
 @Component({
@@ -42,8 +42,12 @@ export class UserComponent implements OnInit, OnDestroy {
   BrandImage: File;
   brandImageRefreshing: boolean;
   imageProfileRefreshing: boolean;
+  // ad decoration
   brandingColor: any;
   brandingImage: any;
+  energyImage: any;
+  imageBadgeColor: any;
+
   dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
   // dynamic id's carousels
   idIndex = Array.from(Array(100).keys());
@@ -56,7 +60,7 @@ export class UserComponent implements OnInit, OnDestroy {
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
     protected userService: UserService, protected notificationService: NotificationService,
     protected route: ActivatedRoute, protected toastr: ToastrService, @Inject(DOCUMENT) protected document: Document,
-    protected renderer2: Renderer2, protected primengConfig: PrimeNGConfig) { }
+    protected renderer2: Renderer2, protected primengConfig: PrimeNGConfig, protected messageService: MessageService) { }
 
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache();
@@ -293,7 +297,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.router.url === '/home'
     ) {
       this.notificationService.notify(NotificationType.SUCCESS, `Has cerrado sesión`);
-      var timer = setTimeout(() => {
+      setTimeout(() => {
         window.location.reload();
       }, 2000);
     } else {
@@ -413,9 +417,9 @@ export class UserComponent implements OnInit, OnDestroy {
     return JSON.stringify(n)?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }
 
-  stringToNumber(str:number){
+  stringToNumber(str: number) {
     let nf = new Intl.NumberFormat('en-US');
-    nf.format(str); 
+    nf.format(str);
     return str;
   }
 
@@ -426,6 +430,44 @@ export class UserComponent implements OnInit, OnDestroy {
       return this.user.profileImage.imageUrl;
     }
   }
+
+  discount(priceA: string, priceB: string): number {
+    var x: number = +priceA.replace(/\,/g, '');
+    var y: number = +priceB.replace(/\,/g, '');
+    return Math.round(((((x - y) * 100) / x) * 100) / 100);
+  }
+
+  responsiveOptions = [ // carousel slick
+    {
+      breakpoint: '1199px',
+      numVisible: 1,
+      numScroll: 1
+    },
+    {
+      breakpoint: '991px',
+      numVisible: 2,
+      numScroll: 1
+    },
+    {
+      breakpoint: '767px',
+      numVisible: 1,
+      numScroll: 1
+    }
+  ];
+  responsiveOptions2: any[] = [ // carousel implicit
+    {
+      breakpoint: '1024px',
+      numVisible: 5
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1
+    }
+  ];
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());

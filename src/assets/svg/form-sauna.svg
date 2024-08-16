@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 36 36"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg674"
+   sodipodi:docname="form-sauna.svg"
+   width="36"
+   height="36"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs678" />
+  <sodipodi:namedview
+     id="namedview676"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="15.078261"
+     inkscape:cx="18.072376"
+     inkscape:cy="18.536621"
+     inkscape:window-width="1920"
+     inkscape:window-height="1044"
+     inkscape:window-x="3840"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg674" />
+  <title
+     id="title658">Монтажная область 2</title>
+  <g
+     id="g668"
+     transform="translate(-5,-5)"
+     style="fill:#6a6a6a">
+    <path
+       d="M 40.121,26.02448 40.99655,15.07959 A 0.99961,0.99961 0 0 0 40,14 h -4 a 0.99953,0.99953 0 0 0 -0.99658,0.92041 L 34.67706,19 H 11.32294 L 10.99658,14.92041 A 0.99953,0.99953 0 0 0 10,14 H 6 A 0.99961,0.99961 0 0 0 5.00342,15.07959 L 5.879,26.02448 A 0.98888,0.98888 0 0 0 5,27 v 4 a 1,1 0 0 0 1,1 h 0.3573 l 0.64612,8.07959 A 0.99953,0.99953 0 0 0 8,41 h 30 a 0.99953,0.99953 0 0 0 0.99658,-0.92041 L 39.64313,32 H 40 a 1,1 0 0 0 1,-1 V 27 A 0.98888,0.98888 0 0 0 40.121,26.02448 Z M 34.72021,30 H 7 v -2 h 32 v 2 z M 18,39 H 12.92334 L 12.36328,32 H 18 Z m 2,-18 h 6 v 5 H 20 Z M 36.92334,16 H 38.917 L 38.1167,26 H 36.12305 Z M 34.11707,26 H 28 v -5 h 6.51709 z M 15,21 h 3 v 5 h -6.11707 l -0.4,-5 z M 9.07666,16 9.877,26 H 7.8833 L 7.083,16 Z M 8.36328,32 h 1.99365 l 0.56006,7 H 8.92334 Z M 20,32 h 6 v 7 h -6 z m 8,0 h 5.63721 l -0.56055,7 H 28 Z m 9.07666,7 H 35.083 l 0.56054,-7 h 1.99366 z"
+       id="path660"
+       style="fill:#6a6a6a" />
+    <path
+       d="m 21,16 a 1,1 0 0 0 2,0 2.58427,2.58427 0 0 1 0.78076,-1.87549 4.61316,4.61316 0 0 0 0,-6.249 A 2.58427,2.58427 0 0 1 23,6 a 1,1 0 0 0 -2,0 4.52362,4.52362 0 0 0 1.21924,3.12451 2.643,2.643 0 0 1 0,3.751 A 4.52362,4.52362 0 0 0 21,16 Z"
+       id="path662"
+       style="fill:#6a6a6a" />
+    <path
+       d="m 26,16 a 1,1 0 0 0 2,0 2.58427,2.58427 0 0 1 0.78076,-1.87549 4.61316,4.61316 0 0 0 0,-6.249 A 2.58427,2.58427 0 0 1 28,6 a 1,1 0 0 0 -2,0 4.52362,4.52362 0 0 0 1.21924,3.12451 2.643,2.643 0 0 1 0,3.751 A 4.52362,4.52362 0 0 0 26,16 Z"
+       id="path664"
+       style="fill:#6a6a6a" />
+    <path
+       d="m 16,16 a 1,1 0 0 0 2,0 2.58427,2.58427 0 0 1 0.78076,-1.87549 4.61316,4.61316 0 0 0 0,-6.249 A 2.58427,2.58427 0 0 1 18,6 a 1,1 0 0 0 -2,0 4.52362,4.52362 0 0 0 1.21924,3.12451 2.643,2.643 0 0 1 0,3.751 A 4.52362,4.52362 0 0 0 16,16 Z"
+       id="path666"
+       style="fill:#6a6a6a" />
+  </g>
+  <metadata
+     id="metadata717">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Монтажная область 2</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

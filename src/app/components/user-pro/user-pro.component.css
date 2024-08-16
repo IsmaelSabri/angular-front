@@ -32,33 +32,6 @@
   }
 }
 
-.brandLabel input {
-  display: none;
-}
-
-.brandLabel {
-  padding: 1rem 1.5rem;
-  background: #bdb7ab; /*1f66fd*/
-  box-shadow: 2px 2px 2px #aaa;
-  font: 1em Arial, sans-serif;
-  color: #fff;
-  position: relative;
-  cursor: pointer;
-  /*
-  No text-selection on buttons
-  */
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  border-radius: 4px;
-  max-height: 1.4em;
-}
-
-.brandLabel:active {
-  top: 2px;
-  box-shadow: none;
-}
 
 .brandImage {
   width: 80px;
@@ -615,3 +588,201 @@ body {
   margin-top: 1vw;
 }
 
+/*edit list*/
+
+.card-list {
+  -webkit-align-items: stretch;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  border-top: 1px solid #EBEBEB;
+  color: #414141;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.card-list:hover {
+  background: #EBEBEB;
+}
+
+.card-list .image {
+  display: block;
+  height: 6em;
+  width: 8em;
+  overflow: hidden;
+}
+
+.card-list .content {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 8px 16px;
+}
+
+@media all and (max-width: 599px) {
+  .card-list .content {
+      padding:4px 16px;
+  }
+}
+
+.card-list .content .featured-box {
+  margin-top: 0px;
+}
+
+.card-list .content .featured-box .general,.card-list .content .featured-box .private,.card-list .content .featured-box .amenities {
+  margin-top: 0px;
+}
+
+@media all and (max-width: 599px) {
+  .card-list .content .featured-box .private {
+      -webkit-box-pack:start;
+      -webkit-justify-content: start;
+      -ms-flex-pack: start;
+      justify-content: start;
+  }
+}
+
+.card-list .texts {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-weight: bold;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  max-height: 3em;
+  overflow: hidden;
+}
+
+.card-list .texts .price {
+  font-weight: 800;
+}
+
+.card-list .texts .price .priceDetails {
+  font-size: 75%;
+  opacity: 0.48;
+  line-height: normal;
+  text-align: right;
+}
+
+@media all and (max-width: 599px) {
+  .card-list .texts .price .priceDetails {
+      text-align:center;
+  }
+}
+
+.card-list .texts .price.under-market {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 5px;
+}
+
+.card-list .texts .price.under-market .old {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.card-list .texts .price.under-market .old .value,.card-list .texts .price.under-market .old .priceDetails {
+  position: relative;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  -webkit-text-decoration: none !important;
+  text-decoration: none !important;
+  opacity: 0.48 !important;
+}
+
+.card-list .texts .price.under-market .old .value::after,.card-list .texts .price.under-market .old .priceDetails::after {
+  content: '';
+  border-bottom: 2px solid #414141;
+  position: absolute;
+  left: 0;
+  top: 42%;
+  width: 100%;
+}
+
+.card-list .texts .price.under-market .old .priceDetails {
+  -webkit-align-self: flex-end;
+  -ms-flex-item-align: end;
+  align-self: flex-end;
+}
+
+.card-list .texts .price.under-market .old .priceDetails::after {
+  border-bottom: 1px solid #414141;
+  top: 50%;
+}
+
+.card-list .texts .price.under-market .new .priceDetails {
+  color: #02b7f2;
+  opacity: 1;
+}
+
+.card-list .texts .price.under-market .new {
+  text-align: right;
+}
+
+.card-list .texts .price.under-market .percent {
+  font-size: 14px;
+  opacity: 0.48;
+  line-height: 10px;
+  text-align: right;
+  font-weight: 400;
+  color: #02b7f2 !important;
+}
+
+.card-list .texts .price.under-market .percent.listing {
+  line-height: 15px;
+}
+
+@media all and (max-width: 599px) {
+  .card-list .texts {
+      -webkit-box-pack:start;
+      -webkit-justify-content: start;
+      -ms-flex-pack: start;
+      justify-content: start;
+  }
+
+  .card-list .texts >:first-of-type {
+      display: none;
+  }
+}
+
+.btn-danger {
+  background-color: #f94449;
+}
+
+.btn-primary {
+  background-color: dodgerblue;
+}
+
+.btn-warning {
+  background-color: #fffd74;
+}

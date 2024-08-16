@@ -74,6 +74,9 @@
       </div>
     </div>
   </div>
+  <ngx-loading [show]="showLoading" [config]="{ backdropBorderRadius: '3px',
+              animationType: ngxLoadingAnimationTypes.rectangleBounce, }"
+    [template]="customLoadingTemplate"></ngx-loading>
 </div>
 
 <!--Modal email verification link-->

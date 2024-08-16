@@ -125,6 +125,15 @@ import { ChartModule } from 'primeng/chart';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { BaseChartDirective } from 'ng2-charts';
 import { AccordionModule } from 'primeng/accordion';
+import { DataViewModule } from 'primeng/dataview';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
 
 export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -243,6 +252,14 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ChartModule,
     BaseChartDirective,
     AccordionModule,
+    DataViewModule,
+    SplitButtonModule,
+    NzDrawerModule,
+    ToastModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputIconModule,
+    IconFieldModule,
   ],
   exports: [
     // to get component in another modules
@@ -261,6 +278,7 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     HomeService,
     ChatService,
     BsModalService,
+    MessageService,
     provideHttpClient(),
     provideCharts(withDefaultRegisterables()),
     provideCharts({ registerables: [BarController, Legend, Colors] }),

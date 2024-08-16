@@ -1,5 +1,5 @@
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit, ViewContainerRef, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit, ViewContainerRef, SimpleChanges, TemplateRef } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
@@ -29,7 +29,7 @@ import intlTelInput from 'intl-tel-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import Swal from 'sweetalert2'
 import { DOCUMENT } from '@angular/common';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ChatService } from 'src/app/service/chat.service';
 import { GestureHandling } from "leaflet-gesture-handling";
@@ -41,6 +41,7 @@ import { CustomHttpResponse } from 'src/app/model/performance/custom-http-respon
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BaseChartDirective } from 'ng2-charts';
 import { Chart, ChartData, ChartType } from 'chart.js';
+import { ngxLoadingAnimationTypes } from 'ngx-loading';
 
 @Component({
   selector: 'app-add',
@@ -60,6 +61,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   isCollapsed: boolean = true;
   privatePolicy: boolean = false;
   trustedUrl: any = '';
+  views:string[]=[];
   //home: Home;
   //propertyOwner: User;
   intake: string;
@@ -84,37 +86,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   sc = schoolIcon;
   uni = universityIcon;
   customIcon: any;
-  responsiveOptions = [ // carousel slick
-    {
-      breakpoint: '1199px',
-      numVisible: 1,
-      numScroll: 1
-    },
-    {
-      breakpoint: '991px',
-      numVisible: 2,
-      numScroll: 1
-    },
-    {
-      breakpoint: '767px',
-      numVisible: 1,
-      numScroll: 1
-    }
-  ];
-  responsiveOptions2: any[] = [ // carousel implicit
-    {
-      breakpoint: '1024px',
-      numVisible: 5
-    },
-    {
-      breakpoint: '768px',
-      numVisible: 3
-    },
-    {
-      breakpoint: '560px',
-      numVisible: 1
-    }
-  ];
+
 
   //routes
   colegio: Colegio[];
@@ -139,12 +111,14 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     private _changeDetectorRef: ChangeDetectorRef,
     public activatedRoute: ActivatedRoute,
     primengConfig: PrimeNGConfig,
+    messageService: MessageService,
     public chatService: ChatService,
-    private modalSevice: NgbModal,
     sanitizer: DomSanitizer,
     modalServiceBs: BsModalService,
     nzMessage: NzMessageService,
-    private vcr: ViewContainerRef
+    modalSevice: NgbModal,
+    private vcr: ViewContainerRef,
+
   ) {
     super(
       router,
@@ -159,9 +133,14 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       document,
       renderer2,
       primengConfig,
-      nzMessage
+      messageService,
+      nzMessage,
+      modalSevice
     );
   }
+
+  @ViewChild('customLoadingTemplate') customLoadingTemplate: TemplateRef<any>;
+  protected ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
 
   @ViewChild('phone') inputElement;
   ngAfterViewInit(): void {
@@ -190,16 +169,18 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     this.primengConfig.ripple = true;
     var x = document.getElementById('photos-section');
     x.style.display = 'none'
-    // mas rápido desde localstorage después lo machaco desde la api para coger el modelo
-    // que ese sí tiene todos los atributos
+    // 1-localstorage 2-model
     if (this.homeService.getHomeFromLocalCache()) {
       this.home = this.homeService.getHomeFromLocalCache();
     }
-    if (this.home.proColor != null || this.home.proColor != undefined) {
+    if (this.home.proColor) {
       this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.home.proColor);
     }
-    if (this.home.proImage != null || this.home.proImage != undefined) {
-      this.brandingImage = this.sanitizer.bypassSecurityTrustStyle(this.home.proImage);
+    if (this.home.proImage) {
+      this.brandingImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.proImage);
+    }
+    if (this.home.colorDestacar) {
+      this.imageBadgeColor = this.sanitizer.bypassSecurityTrustStyle(this.home.colorDestacar);
     }
     // get the owner
     this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
@@ -207,8 +188,9 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
         this.propertyOwner = res;
       }, error: () => {
         this.notificationService.notify(
-          NotificationType.ERROR, 'Propietario del anuncio' + this.dto.id + ' desconocido!',
+          NotificationType.ERROR, 'El anuncio ' + this.dto.id + 'ha caducado o ha sido eliminado!',
         );
+        this.router.navigateByUrl('/home');
       }
     }));
     //get the current home through url
@@ -237,7 +219,13 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     const homeDto = JSON.stringify(this.dto);
     this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
       next: (res) => {
-        this.home = res;
+        this.home = this.homeService.performHome(res);
+        if (this.home.energyCert) {
+          this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
+        }
+        if (this.home.vistasDespejadas) {
+          this.views=this.home.vistasDespejadas.split(',');
+        }
         if (this.state) {
           this.user = this.authenticationService.getUserFromLocalCache();
         }
@@ -327,7 +315,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
           next: (res: User) => {
             this.user = this.userService.performUser(res);
             this.authenticationService.addUserToLocalCache(this.user);
-            localStorage.setItem('currentBuilding', JSON.stringify(this.home));
+            this.homeService.addHomeToLocalCache(this.home);
             this.createMessage("success", "Borrado desde favoritos");
           },
           error: (err: any) => {
@@ -341,7 +329,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
           next: (res: User) => {
             this.user = this.userService.performUser(res);
             this.authenticationService.addUserToLocalCache(this.user);
-            localStorage.setItem('currentBuilding', JSON.stringify(this.home));
+            this.homeService.addHomeToLocalCache(this.home);
             this.createMessage("success", "Guardado en favoritos");
           },
           error: (err: any) => {
@@ -358,14 +346,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
 
   open(index: number): void {
     this._lightbox.open(this._albums, index, { wrapAround: true });
-  }
-
-  submitHouseDetails() { }
-
-  discount(priceA: string, priceB: string): number {
-    var x: number = +priceA.replace(/\,/g, '');
-    var y: number = +priceB.replace(/\,/g, '');
-    return Math.round(((((x - y) * 100) / x) * 100) / 100);
   }
 
   calcPriceM2(price: string, sup: string): number {
@@ -542,6 +522,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
 
   public contactMessage() {
     this.refreshing = true;
+    this.showLoading=true;
     const formData = new FormData();
     formData.append('fromName', this.contactUser.fromName);
     formData.append('fromAddress', this.contactUser.fromAddress);
@@ -566,7 +547,10 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
         Swal.fire({
           title: res.message,
           text: "La respuesta la recibirás en tu correo electrónico!",
-          icon: "success"
+          imageUrl: "https://unsplash.it/400/200",
+          imageWidth: 400,
+          imageHeight: 200,
+          imageAlt: "Custom image"
         });
       },
       error: (err: any) => {
@@ -575,6 +559,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     }));
     var resetForm = <HTMLFormElement>document.getElementById('contactMessageForm');
     resetForm.reset();
+    this.showLoading=false;
   }
 
   // sliders

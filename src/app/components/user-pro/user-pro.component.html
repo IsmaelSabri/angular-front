@@ -54,8 +54,8 @@
           <a class="navbar-brand w-100 mr-0" style="line-height: 25px;">
             <div class="d-table m-auto">
               <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;"
-                src="../../../assets/images/user-pro-dashboard/images/shards-dashboards-logo.svg"
-                alt="Shards Dashboard">
+                src="https://i.ibb.co/6YkD164/unknown-house.png"
+                alt="unknown-house">
               <span class="d-none d-md-inline ml-1">Dashboard</span>
             </div>
           </a>
@@ -229,7 +229,7 @@
           <div class="page-header row no-gutters py-4">
             <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
               <span class="text-uppercase page-subtitle">Dashboard</span>
-              <h3 class="page-title">Blog Overview</h3>
+              <h3 class="page-title">Last week stats</h3>
             </div>
           </div>
           <!-- End Page Header -->
@@ -240,7 +240,7 @@
                 <div class="card-body p-0 d-flex">
                   <div class="d-flex flex-column m-auto">
                     <div class="stats-small__data text-center">
-                      <span class="stats-small__label text-uppercase">Posts</span>
+                      <span class="stats-small__label text-uppercase">Views</span>
                       <h6 class="stats-small__value count my-3">2,390</h6>
                     </div>
                     <div class="stats-small__data">
@@ -256,7 +256,7 @@
                 <div class="card-body p-0 d-flex">
                   <div class="d-flex flex-column m-auto">
                     <div class="stats-small__data text-center">
-                      <span class="stats-small__label text-uppercase">Pages</span>
+                      <span class="stats-small__label text-uppercase">Likes</span>
                       <h6 class="stats-small__value count my-3">182</h6>
                     </div>
                     <div class="stats-small__data">
@@ -685,104 +685,96 @@
 
           </div>
         </div>
-        <div class="main-content-container container-fluid px-4 tab-pane fade" id="tables">
+        <div class="main-content-container container-fluid px-4 tab-pane fade " id="tables">
           <!-- Page Header -->
-          <div class="page-header row no-gutters py-4">
+          <!--<div class="page-header row no-gutters py-4">
             <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
               <span class="text-uppercase page-subtitle">Overview</span>
-              <h3 class="page-title">Data Tables</h3>
+              <h3 class="page-title">Mis propiedades</h3>
             </div>
-          </div>
+          </div>-->
           <!-- End Page Header -->
           <!-- Default Light Table -->
           <div class="row">
             <div class="col">
-              <div class="card card-small mb-4">
+              <div class="card card-small mb-4" >
                 <div class="card-header border-bottom">
                   <h6 class="m-0">Activas</h6>
                 </div>
-                <div class="card-body p-0 pb-3 text-center">
-                  <table class="table mb-0">
-                    <thead class="bg-light">
-                      <tr class="text-center">
-                        <th scope="col" class="border-0">Foto</th>
-                        <th scope="col" class="border-0">Calle</th>
-                        <th scope="col" class="border-0">Distrito</th>
-                        <th scope="col" class="border-0">Ciudad</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="text-center">
-                        <td>1</td>
-                        <td>Ali</td>
-                        <td>Kerry</td>
-                        <td>Russian Federation</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="card-body p-0 pb-3 text-center" *ngFor="let appHome of this.user.domains; let i =index">
+                 <ng-container >
+                  <div class="card-list ">
+                    <img class="image" (click)="showHome(appHome)" style="aspect-ratio:16/9;" [src]="appHome.images[0].imageUrl" alt="First slide"/>
+                    <div class="content">
+                        <div class="texts">
+                          <div>{{appHome.tipo}} en {{appHome.calle}} {{appHome.numero}} en {{appHome.condicion}} en {{appHome.ciudad}}</div>
+                            <div class="price under-market" *ngIf=" appHome.precioInicial != 0">
+                              <span *ngIf=" appHome.precioInicial != 0" class="prefix">En venta</span>
+                              <div *ngIf=" appHome.precioInicial != 0" class="price-container"><span class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span><span class="dimension"></span></div>
+                          </div>
+                          <div class="price" *ngIf="appHome.precioFinal > 0">
+                              <span class="prefix" *ngIf="appHome.precioInicial == 0">En venta</span>
+                              <div class="price-container">
+                                <span *ngIf="appHome.precioFinal!= null || appHome.precioFinal != undefined" class="price-value">{{formatNumberWithCommas(appHome.precioFinal)}}€</span>
+                              <div class="diff float-end mt-1" *ngIf="appHome.precioInicial != 0">
+                                 <span class="dimension under " style="color:#8dca3f;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
+                              </div>
+                          </div>
+                          </div>
+                          <div *ngIf="appHome.precioAlquiler != 0"  class="price">
+                              <span class="prefix">En alquiler</span>
+                              <div class="price-container"><span *ngIf=" appHome.precioAlquiler != 0" class="price-value">{{formatNumberWithCommas(appHome.precioAlquiler)}}€</span><span *ngIf="appHome.precioAlquiler!=0" class="suffix">/mes</span><span class="dimension"></span></div>
+                          </div>
+                        </div>
+                        <div class="featured-box">
+                            <div class="private">
+                                <div class="feature float-end">
+                                  <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                    <button pRipple type="button" class="btn btn-primary" data-bs-toggle="modal" href="#exampleModal">Destacar</button>
+                                    <button pRipple (click)="openDrawer();updateHome()" type="button" class="btn btn-warning">Editar</button>
+                                    <button pRipple (click)="deleteHome(appHome)" type="button" class="btn btn-danger">Borrar</button>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </ng-container>
+                  <nz-empty *ngIf="!this.user.domains"
+                  nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                  [nzNotFoundContent]="contentTpl"
+                  [nzNotFoundFooter]="footerTpl">
+                  <ng-template #contentTpl>
+                    <span>
+                      Customize
+                      <a href="#API">Description</a>
+                    </span>
+                  </ng-template>
+                  <ng-template #footerTpl>
+                    <button nz-button nzType="primary">Crear ahora</button>
+                  </ng-template>
+                </nz-empty>
                 </div>
               </div>
             </div>
           </div>
-          <!-- End Default Light Table -->
-          <!-- Default Dark Table -->
-          <div class="row">
-            <div class="col">
-              <div class="card card-small overflow-hidden mb-4">
-                <div class="card-header bg-dark">
-                  <h6 class="m-0 text-white">Inactive Users</h6>
-                </div>
-                <div class="card-body p-0 pb-3 bg-dark text-center">
-                  <table class="table table-dark mb-0">
-                    <thead class="thead-dark">
-                      <tr>
-                        <th scope="col" class="border-bottom-0">#</th>
-                        <th scope="col" class="border-bottom-0">First Name</th>
-                        <th scope="col" class="border-bottom-0">Last Name</th>
-                        <th scope="col" class="border-bottom-0">Country</th>
-                        <th scope="col" class="border-bottom-0">City</th>
-                        <th scope="col" class="border-bottom-0">Phone</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>Graham</td>
-                        <td>Brent</td>
-                        <td>Benin</td>
-                        <td>Ripabottoni</td>
-                        <td>1-512-760-9094</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>Clark</td>
-                        <td>Angela</td>
-                        <td>Estonia</td>
-                        <td>Borghetto di Vara</td>
-                        <td>1-660-850-1647</td>
-                      </tr>
-                      <tr>
-                        <td>3</td>
-                        <td>Wylie</td>
-                        <td>Joseph</td>
-                        <td>Korea, North</td>
-                        <td>Guelph</td>
-                        <td>325-4351</td>
-                      </tr>
-                      <tr>
-                        <td>4</td>
-                        <td>Garth</td>
-                        <td>Clementine</td>
-                        <td>Indonesia</td>
-                        <td>Narcao</td>
-                        <td>722-8264</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+          <!-- update drawer -->
+          <nz-drawer
+          [nzClosable]="false"
+          [nzVisible]="visibleDrawer"
+          nzPlacement="right"
+          nzTitle="Basic Drawer"
+          (nzOnClose)="closeDrawer()">
+            <ng-container *nzDrawerContent>
+              <div class="border-bottom">
+                <ion-icon name="arrow-forward-outline" (click)="closeDrawer()" style="font-size: 2em;"></ion-icon>
               </div>
-            </div>
-          </div>
+              <p>caja de texto...</p>
+              <p>caja de texto...</p>
+              <button class="btn btn-primary">Guardar</button>
+              <button class="btn btn-outline-primary ml-2" (click)="closeDrawer()" >Salir</button>
+            </ng-container>
+        </nz-drawer>
         </div>
         <div class="main-content-container container-fluid px-4 tab-pane fade" id="profile">
           <!-- Page Header -->
@@ -805,20 +797,20 @@
                   <div class="img-container" *ngIf="this.tempProfile!=null">
                     <img [src]="this.croppedImageProfile" alt="profile image">
                   </div>
-                  <p class="info full-name">Marian McGrow</p>
+                  <p class="info full-name">{{this.user.username}}</p>
                   <p class="info role">
                     <i class="fas fa-star"></i>
                     4.9 (33 valoraciones)
                   </p>
                   <p class="info place">
                     <i class="fas fa-map-marker-alt"></i>
-                    Milan, Italy
+                    Martial arts, The tournament
                   </p>
 
                   <div class="posts-info">
-                    <p><span>336</span> Posts</p>
+                    <p><span>336</span> Vendidos</p>
                     <p><span>4300</span> Likes</p>
-                    <p><span>87</span> Works</p>
+                    <p><span>{{this.user.domains.length}}</span> Publicados</p>
                   </div>
 
                   <button class="action" pRipple>Llamar</button>
@@ -902,32 +894,52 @@
                           </div>
 
                           <div class="form-group row">
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column">
-                              <label for="feInputState">Imagen corporativa</label>
-                              <label class="brandLabel">
-                                <input type="file" (change)="fileChangeEvent($event,'branding')" accept="image/*" />
-                              </label>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column align-items-center">
                               <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventBranding"
                                 [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
                                 (imageCropped)="imageCropped($event,'branding')"
                                 (imageLoaded)="imageLoaded($event,'branding')" (cropperReady)="cropperReady()"
                                 (loadImageFailed)="loadImageFailed()">
                               </image-cropper>
+                              <div class="file is-small is-boxed">
+                                <label class="file-label">
+                                  <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event,'branding')" accept="image/*"/>
+                                  <span class="file-cta">
+                                    <span class="file-icon">
+                                      <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">Imagen corporativa</span>
+                                  </span>
+                                </label>
+                              </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column">
-                              <label for="inputZip">Imagen de perfil</label>
-                              <label class="brandLabel" style="background: #88807b;">
-                                <input type="file" (change)="fileChangeEvent($event,'profile')" accept="image/*" />
-                              </label>
+                            <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column align-items-center">
                               <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventProfile"
                                 [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png" roundCropper="true"
                                 (imageCropped)="imageCropped($event,'profile')"
                                 (imageLoaded)="imageLoaded($event,'profile')" (cropperReady)="cropperReady()"
-                                (loadImageFailed)="loadImageFailed()"></image-cropper>
+                                (loadImageFailed)="loadImageFailed()">
+                              </image-cropper>
+                              <div class="file is-small is-boxed">
+                                <label class="file-label">
+                                  <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event,'profile')" accept="image/*"/>
+                                  <span class="file-cta">
+                                    <span class="file-icon">
+                                      <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">Imagen de perfil</span>
+                                  </span>
+                                </label>
+                              </div>
                             </div>
                             <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center my-auto">
                               <button type="submit" [disabled]="!editUserForm.dirty " class="button is-success"
-                                pRipple>Actualizar perfil</button>
+                                pRipple>
+                                <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+                                style="width: 1.5rem; height: 1.5rem; ">
+                                </span>
+                                <span style=" font-weight: 600;"  *ngIf="!showLoading">Actualizar perfil</span>
+                              </button>
                             </div>
                           </div>
                           <!--<div class="form-group row">
@@ -938,6 +950,9 @@
                             </div>
                           </div>-->
                         </form>
+                        <ngx-loading [show]="this.showLoading" [config]="{ backdropBorderRadius: '3px',
+                          animationType: ngxLoadingAnimationTypes.rectangleBounce, }"
+                          [template]="customLoadingTemplate"></ngx-loading>
                       </div>
                     </div>
                   </li>
@@ -1289,6 +1304,28 @@
   </div>
 </div>
 
+<!-- Edit Property modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel" style="letter-spacing: 0.5px;">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ghost buttons -->
+<a id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]"
+  fragment={{this.routerLinkModel}} target="_blank"></a>
 
 <!-- / .main-navbar tables-->
 

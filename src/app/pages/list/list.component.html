@@ -13,20 +13,22 @@
         <ion-icon name="menu"></ion-icon>
       </button>
       <div class="header-right">
-        <a class="navbar-item" id="navbarDropdown" [nzDropdownMenu]="menu" nz-dropdown role="button"
-              aria-expanded="false" aria-haspopup="true" *ngIf='this.state'>
-              <img height="65" width="65" class="rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;" alt="avatar2"
-                [attr.src]="this.user.profileImage.imageUrl" /><!---->
-            </a>
         <!-- Header Menu Start -->
         <div class="menu">
         <ul>
             <!--<li></li>-->
             <!--<li><a href="#">Propiedades</a></li>-->
-            <li *ngIf="!this.state"><a routerLink="/register">Unirse</a></li>
-            <li *ngIf="!this.state"><a routerLink="/login">Entrar</a></li>
+            <li ><a >Vivir en España</a></li>
+            <li ><a >Noticias</a></li>
+            <li ><a >Comercial</a></li>
+            <li ><a >Tendencias</a></li>
           </ul>
         </div>
+        <a class="navbar-item" id="navbarDropdown" [nzDropdownMenu]="menu" nz-dropdown role="button"
+              aria-expanded="false" aria-haspopup="true" *ngIf='this.state'>
+              <img height="65" width="65" class="rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;" alt="avatar2"
+                [attr.src]="this.user.profileImage.imageUrl" /><!---->
+            </a>
         <nz-dropdown-menu #menu="nzDropdownMenu" nzPlacement="bottomRight">
           <ul nz-menu nzSelectable>
             <li nz-menu-item class="bg-light"><a style="font-weight: bold;" class="text-secondary">Colecciones</a></li>
@@ -83,9 +85,10 @@
         </nz-dropdown-menu>
         <!-- Header Menu End -->
         <!-- Header Cta Start -->
-        <!--<div class="cta">
-          <a routerLink="/login" class="btn btn-outline-primary" >Entrar</a>
-        </div>-->
+        <div class="cta" *ngIf="!this.state">
+          <a routerLink="/register" class="btn btn-dark mr-2" >Unirse</a>
+          <a routerLink="/login" class="btn btn-outline-dark my-2" >Entrar</a>
+        </div>
         <!-- Header Cta End -->
       </div>
     </div>

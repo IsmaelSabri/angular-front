@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
@@ -6,6 +6,7 @@ import { AuthenticationService } from '../service/authentication.service';
 import { NotificationService } from '../service/notification.service';
 import { User } from '../model/user';
 import { NotificationType } from '../class/notification-type.enum';
+import { ngxLoadingAnimationTypes } from 'ngx-loading';
 
 @Component({
   selector: 'app-register',
@@ -20,6 +21,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private authenticationService: AuthenticationService,
     private notificationService: NotificationService) { }
+
+  @ViewChild('customLoadingTemplate') customLoadingTemplate: TemplateRef<any>;
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
 
   ngOnInit(): void {
     if (this.authenticationService.isUserLoggedIn()) {

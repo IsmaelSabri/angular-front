@@ -9,7 +9,7 @@
    sodipodi:docname="aa.svg"
    width="54"
    height="42.000362"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -33,36 +33,38 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="9.5125"
-     inkscape:cx="26.911958"
-     inkscape:cy="12.141919"
-     inkscape:window-width="1850"
-     inkscape:window-height="1025"
-     inkscape:window-x="1990"
-     inkscape:window-y="27"
+     inkscape:cx="26.96452"
+     inkscape:cy="20.65703"
+     inkscape:window-width="1864"
+     inkscape:window-height="1012"
+     inkscape:window-x="1976"
+     inkscape:window-y="32"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg18" />
+     inkscape:current-layer="svg18"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
   <title
      id="title2">hotel line icon (expand)</title>
   <path
      d="M 48,0 H 6 A 6,6 0 0 0 0,6 v 12 a 6,6 0 0 0 6,6 h 42 a 6,6 0 0 0 6,-6 V 6 A 6,6 0 0 0 48,0 Z M 15,20 v -2 h 24 v 2 z m 35,-2 a 2,2 0 0 1 -2,2 H 43 V 16 A 2,2 0 0 0 41,14 H 13 a 2,2 0 0 0 -2,2 v 4 H 6 A 2,2 0 0 1 4,18 V 6 A 2,2 0 0 1 6,4 h 42 a 2,2 0 0 1 2,2 z"
      id="path4"
-     style="fill:#454545" />
+     style="fill:#666666" />
   <path
      d="m 46,6 h -2 a 2,2 0 0 0 0,4 h 2 a 2,2 0 0 0 0,-4 z"
      id="path6"
-     style="fill:#454545" />
+     style="fill:#666666" />
   <path
      d="m 19.71,29 a 2,2 0 0 0 -3.42,-2 c -1,1.69 -2.15,5.25 0.24,7.85 1.21,1.32 0.36,3.44 0,3.84 A 2,2 0 0 0 16.65,41.51 2,2 0 0 0 18,42 2,2 0 0 0 19.47,41.35 c 1.74,-1.89 2.73,-6.27 0,-9.25 -0.92,-1.01 0.21,-3.01 0.24,-3.1 z"
      id="path8"
-     style="fill:#454545" />
+     style="fill:#666666" />
   <path
      d="m 28.71,29 a 2,2 0 0 0 -3.42,-2 c -1,1.69 -2.15,5.25 0.24,7.85 1.21,1.32 0.36,3.44 0,3.84 A 2,2 0 0 0 25.65,41.51 2,2 0 0 0 27,42 2,2 0 0 0 28.47,41.35 c 1.74,-1.89 2.73,-6.27 0,-9.25 -0.92,-1.01 0.21,-3.01 0.24,-3.1 z"
      id="path10"
-     style="fill:#454545" />
+     style="fill:#666666" />
   <path
      d="m 37.71,29 a 2,2 0 0 0 -3.42,-2 c -1,1.69 -2.15,5.25 0.24,7.85 1.21,1.32 0.36,3.44 0,3.84 A 2,2 0 0 0 34.65,41.51 2,2 0 0 0 36,42 2,2 0 0 0 37.47,41.35 c 1.74,-1.89 2.73,-6.27 0,-9.25 -0.92,-1.01 0.21,-3.01 0.24,-3.1 z"
      id="path12"
-     style="fill:#454545" />
+     style="fill:#666666" />
   <metadata
      id="metadata24">
     <rdf:RDF>

@@ -307,12 +307,12 @@ star:hover {
   box-shadow: 0 0 10px #dadce0;
 }
 
-.ant-tabs-nav-operations {
+/*.ant-tabs-nav-operations {
   display: none;
 }
 .ant-tabs-nav-more {
   display: none;
-}
+}*/
 
 .ant-tabs-tab-btn {
   color: #3a3b3c;
@@ -339,14 +339,14 @@ star:hover {
 .ant-tabs-nav-list {
   height: 3.8125rem;
   width: 100%;
-  white-space: nowrap;
+  /*white-space: nowrap;
   overflow: auto;
   list-style-type: none;
   position: absolute;
   top: 0px;
   display: flex;
   scroll-behavior: smooth;
-  scrollbar-width: none;
+  scrollbar-width: none;*/
 }
 
 /* Hamburger */
@@ -763,7 +763,8 @@ br {
   .custom-scrollbars {
     background-color: rgb(94, 175, 255) !important;
 
-    &:hover, &:active {
+    &:hover,
+    &:active {
       background-color: dodgerblue !important;
     }
   }
@@ -893,10 +894,6 @@ br {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.nzInput {
-  height: 1.5em;
-}
-
 /* End Modal movility */
 
 /* Css select v2 */
@@ -916,15 +913,10 @@ br {
   width: 12em;
 }
 
-.nzSelectL {
+/*.nzSelectL {
   width: 27em;
-  /*left: 0.8125em;*/
-}
-
-.nzOptionL {
-  width: 27em;
-  left: 0.5em;
-}
+  //left: 0.8125em;
+}*/
 
 /*.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
   border-color: #666;
@@ -944,6 +936,10 @@ br {
 /* Hide routin machine window */
 .leaflet-routing-alternatives-container {
   display: none;
+}
+
+.primary-badge {
+  background: #59ce72;
 }
 
 .chip {
@@ -1011,7 +1007,6 @@ input:checked ~ .checkbox2 {
 /* end checkboxes 2 */
 
 /* Lista horizontal */
-
 
 /* Select para las emisiones y el consume sin js :> */
 
@@ -1356,6 +1351,12 @@ input:checked ~ .checkbox2 {
     left: -1.4em;
   }
 }
+
+@media screen and (max-width: 576px) {
+  .accordions {
+    display: none;
+  }
+}
 /*modal empotrado
 *
 *
@@ -1501,7 +1502,7 @@ will-change:top,opacity;
   box-sizing: border-box;
   border-radius: 0 0 10px 10px;
 }
-.modal-card-body{
+.modal-card-body {
   background-color: #ffffff;
 }
 .modal-card-foot {
@@ -2257,7 +2258,7 @@ mat-drawer {
   text-align: center;
 }
 :focus {
-  outline: none; 
+  outline: none;
 }
 
 .red-heart-checkbox {
@@ -2276,7 +2277,7 @@ mat-drawer {
 }
 .red-heart-checkbox:checked + label:before {
   content: "\f004";
-  color: #F00;
+  color: #f00;
 }
 .red-heart-checkbox + label:before {
   width: 31.5px;
@@ -2298,9 +2299,11 @@ mat-drawer {
   width: 50%;
 }*/
 
-/*@media all and (max-width: 1209px) {
-
-}*/
+@media all and (max-width: 1024px) {
+  .navbar-start {
+    display: none;
+  }
+}
 .p-button-label {
   margin: auto 100% auto 100%;
 }
@@ -2338,7 +2341,6 @@ mat-drawer {
 .row-main-details .restricted-message .body {
   background: #ffffff;
 }
-
 
 .advertisement {
   display: -webkit-box;
@@ -2468,3 +2470,87 @@ mat-drawer {
   -webkit-text-decoration: none;
   text-decoration: none;
 }
+/*Sliders theme*/
+
+.p-slider .p-slider-handle {
+  border-color: #3a3b3c;
+}
+
+.p-slider .p-slider-range {
+  border-color: #3a3b3c;
+  background: #3a3b3c;
+}
+
+
+.p-slider .p-slider-handle:hover {
+  border-color: #3a3b3c;
+  background: #3a3b3c;
+}
+
+.p-slider .p-slider-handle:focus {
+  border-color: #3a3b3c;
+  box-shadow: none;
+  background: #3a3b3c;
+}
+
+.p-slider .p-slider-range:hover {
+  border-color: #3a3b3c;
+  background: #3a3b3c;
+}
+
+.p-slider .p-slider-range:focus {
+  border-color: #3a3b3c;
+  box-shadow: none;
+  background: #3a3b3c;
+}
+
+:host ::ng-deep .p-slider .p-slider-handle:hover {
+  border-color: #3a3b3c;
+  background: #3a3b3c;
+}
+
+:host ::ng-deep .p-slider .p-slider-handle:focus {
+  border-color: #3a3b3c;
+  box-shadow: none;
+  background: #3a3b3c;
+}
+
+:host ::ng-deep .p-slider .p-slider-range {
+  border-color: #3a3b3c;
+  background: #3a3b3c;
+}
+
+:host ::ng-deep .p-slider .p-slider-handle {
+  border-color: #3a3b3c;
+}
+/*End sliders theme*/
+.p-fileupload {
+  height: 1em;
+}
+
+.p-fileupload-buttonbar {
+  height: 1em;
+}
+
+.p-fileupload-content{
+  height: 1em;
+}
+
+:host ::ng-deep .p-fileupload  { 
+	display: flex; 
+	justify-content: center; 
+  height: 2em;
+}
+
+:host ::ng-deep .p-fileupload .p-fileupload-buttonbar { 
+	display: flex; 
+	justify-content: center; 
+  height: 2em;
+}
+
+:host ::ng-deep .p-fileupload .p-fileupload-content { 
+	display: flex; 
+	justify-content: center; 
+  height: 2em;
+}
+

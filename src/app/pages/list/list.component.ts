@@ -14,8 +14,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NzAlign, NzJustify } from 'ng-zorro-antd/flex';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -36,7 +37,9 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
     primengConfig: PrimeNGConfig,
-    nzMessage: NzMessageService
+    messageService: MessageService,
+    nzMessage: NzMessageService,
+    modalSevice: NgbModal,
   ) {
     super(
       router,
@@ -51,7 +54,9 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       document,
       renderer2,
       primengConfig,
-      nzMessage
+      messageService,
+      nzMessage,
+      modalSevice
     );
   }
 

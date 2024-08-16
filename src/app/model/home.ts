@@ -26,13 +26,13 @@ export class Home {
   garage: number;
   estado: string; // nuevo, usado, a-reformar
   distanciaAlMar: string;
-  creador: string; // userId
   nombreCreador: string; // username
   fechaCreacion: string;
   fechaUltimaModificacion: string;
   numeroVisitas: string;
   comentario: string;
   destacar: string;
+  colorDestacar: any = '#3a3b3c';
   model: string;
   imagesAsString: string;
   images = new Array<HomeImage>();
@@ -51,7 +51,6 @@ export class Home {
   aireAcondicionado: boolean = false;
   calefaccion: boolean = false;
   plantaMasAlta: string;
-  videoPortero: boolean = false;
   politicaPrivacidad: boolean = false;
   contadorLikes: number;
   contadorVisitas: number;
@@ -78,25 +77,34 @@ export class Home {
   supermercados: string;
   consumo: string;
   emisiones: string;
+  aerotermia: boolean = false;
+  ventilacionCruzada: boolean = false;
+  dobleAcristalamiento: boolean = false;
+  energyCertAsString: string;
+  energyCert = new HomeImage;
   generadorEmergencia: boolean = false;
   aeropuerto: string;
-  jacuzzi: boolean = false;
   vistasDespejadas: string;
   instalacionesDiscapacitados: boolean = false;
+  trastero: boolean = false;
+  golf: boolean = false;
+  gym: boolean = false;
+  jacuzzi: boolean = false;
 
   // Flat profile
-  trastero: boolean = false;
+  
   bajoOplantabaja: boolean = false;
   // Gated community ameninites
   jardin: boolean = false;
   piscinaComp: boolean = false;
   columpios: boolean = false;
-  gym: boolean = false;
   tenis: boolean = false;
   padel: boolean = false;
   sauna: boolean = false;
-  golf: boolean = false;
   zonaDeOcio: boolean = false;
+  videoPortero: boolean = false;
+
+
 
   // Room profile
   // We accept:
@@ -113,10 +121,22 @@ export class Home {
   gastos: string; // incluidos, no incluidos, luz aparte etc
 
   // NewProject profile
-  planificacion: string;
+  /*planificacion: string;
   inicioDeVentas: string;
   inicioConstruccion: string;
-  mudandose: string;
+  mudandose: string;*/
+  nombreProyecto: string;
+  estadoConstruccion: string; // terminado, en curso
+  tipos: string; // tipos
+  porcentajeTerminado: number;
+  porcentajeVendido: number;
+  habitacionesDesde: number = 0;
+  habitacionesHasta: number = 0;
+  superficieDesde: number = 0;
+  superficieHasta: number = 0;
+  precioDesde: number;
+  finDeObra: number;
+  alturas: number;
 
   // HolidayRent profile
   numeroRegistro: string;
@@ -209,7 +229,7 @@ export interface Beach {
   tiempo: string;
 }
 
-export interface HomeImage {
+export class HomeImage {
   imageUrl: string;
   imageName: string;
   imageId: string;

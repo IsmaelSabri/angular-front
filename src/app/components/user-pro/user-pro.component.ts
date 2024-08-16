@@ -1,5 +1,5 @@
 import { ProfileImage } from './../../model/user';
-import { Component, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { UserComponent } from '../user/user.component';
 import { DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,7 +11,7 @@ import { UserService } from 'src/app/service/user.service';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotificationType } from 'src/app/class/notification-type.enum';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { NgForm } from '@angular/forms';
 import { User } from 'src/app/model/user';
 import { Home } from 'src/app/model/home';
@@ -22,6 +22,13 @@ import { dynamicUserProScripts } from 'src/app/model/performance/js-scripts';
 import { ChatService } from 'src/app/service/chat.service';
 import { format, compareAsc, formatDistance, subDays } from "date-fns";
 import { es } from "date-fns/locale";
+import { ngxLoadingAnimationTypes } from 'ngx-loading';
+import { HomeService } from 'src/app/service/home.service';
+import { GalleriaThumbnails } from 'primeng/galleria';
+import { CustomHttpResponse } from 'src/app/model/performance/custom-http-response';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-user-pro',
   templateUrl: './user-pro.component.html',
@@ -32,8 +39,9 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
   protected styleUser: HTMLLinkElement[] = [];
   userUpdate: User = new User();
   homes: Home[] = [];
+  routerLinkId: number = 0;
+  routerLinkModel: string;
 
-  //users: UserModel[] = [];
   chats: Chat[] = [];
   selectedUserId: string = "";
   selectedUser: User = new User();
@@ -52,8 +60,9 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     @Inject(DOCUMENT) protected document: Document,
     protected sanitizer: DomSanitizer,
     primengConfig: PrimeNGConfig,
-    protected chatService: ChatService
-
+    messageService: MessageService,
+    protected chatService: ChatService,
+    protected homeService: HomeService
   ) {
     super(
       router,
@@ -65,6 +74,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       document,
       renderer2,
       primengConfig,
+      messageService,
     );
     this.hub = new signalR.HubConnectionBuilder().withUrl("https://localhost:4040/chat-hub").build();
 
@@ -87,6 +97,9 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       })
     })
   }
+
+  @ViewChild('customLoadingTemplate') customLoadingTemplate: TemplateRef<any>;
+  protected ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
 
   changeUser(user: User) {
     this.selectedUserId = user.id;
@@ -122,6 +135,70 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     return JSON.parse(file);
   }
 
+  visibleDrawer: boolean = false;
+  openDrawer() {
+    this.visibleDrawer = true;
+  }
+  closeDrawer() {
+    this.visibleDrawer = false;
+  }
+  updateHome() {
+    console.log('updating')
+  }
+
+  deleteHome(home: Home) {
+    Swal.fire({
+      title: "Seguro?",
+      text: "Esta acción no se puede deshacer!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#8093f1",
+      cancelButtonColor: "#ee7272",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Si, Borrar"
+    }).then((result) => {
+      /*this.subscriptions.push(this.homeService.deleteHome(home.viviendaId).subscribe({
+        next: () => {
+          localStorage.removeItem('currentBuilding');
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Anuncio borrado",
+              text: "Pulse para volver,",
+              icon: "success"
+            });
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.notificationService.notify(NotificationType.ERROR, error.message);
+        }
+      }))*/
+
+      // luego también hay que sacar del array de domains la vivienda y ver si se actualiza la vista
+    });
+
+
+  }
+
+  highlightHome() {
+
+  }
+
+  showHome(home: Home) {
+    if (home) {
+      this.homeService.addHomeToLocalCache(home);
+      this.routerLinkId = +home.id;
+      this.routerLinkModel = home.model;
+      /*setTimeout(() => {
+        $('#linkPopup').trigger('click');
+      }, 100);*/
+
+      setTimeout(() => {
+        this.clickButton('linkPopup');
+      }, 100);
+
+    }
+  }
+
   date: Date;
   formatChatDate(timestamp: string): any {
     var newDate = new Date(timestamp);
@@ -153,6 +230,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     // y se borran desde la interfaz
     this.subscriptions.push(this.userService.getUsers().subscribe({
       next: (res: User[]) => {
+        res = res.filter(user => user.userId != user.userId)
         this.user.chatsOpened = [...res];
         //console.log(this.user.chatsOpened[0].profileImage.imageUrl);
       },
@@ -160,21 +238,9 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
         this.notificationService.notify(NotificationType.ERROR, `No se ha podido enviar el mensaje. Intentelo pasados unos minutos.` + err);
       }
     }));
-
-    
-
     this.primengConfig.ripple = true;
     this.loadScripts();
     this.user = this.authenticationService.getUserFromLocalCache();
-    if (this.user.brandImageAsString != null || this.user.brandImageAsString != undefined) {
-      this.user.brandImage = JSON.parse(this.user.brandImageAsString);
-    }
-    if (this.user.profileImageAsString != null || this.user.profileImageAsString != undefined) {
-      this.user.profileImage = JSON.parse(this.user.profileImageAsString);
-    }
-    if (this.user.chatsOpenedAsString) {
-      this.user.chatsOpened = JSON.parse(this.user.chatsOpenedAsString);
-    }
     this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.user.color);
 
     for (let i = 0; i < cssPathUserPro.length; i++) {
@@ -183,15 +249,20 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
       this.renderer2.setProperty(this.styleUser[i], 'href', cssPathUserPro[i]);
     }
-  }
-  ngOnDestroy(): void {
-    for (let i = 0; i < cssPathUserPro.length; i++) {
-      this.renderer2.removeChild(this.document.head, this.styleUser[i]);
-    }
-    this.styleUser = [];
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
-  }
+    this.homeService.getHomesByQuery('userId@=*' + this.user.userId).subscribe({
+      next: (res: Home[]) => {
+        if (res) {
+          for (let i = 0; i < res.length; i++) {
+            this.user.domains[i] = this.homeService.performHome(res[i]);
+          }
+        }
+      },
+      error: (err: any) => {
+        this.notificationService.notify(NotificationType.ERROR, 'Error al cargar las viviendas' + err);
+      }
+    });
 
+  }
 
   loadScripts() {
     for (let i = 0; i < dynamicUserProScripts.length; i++) {
@@ -247,6 +318,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
   }
 
   updateUser() {
+    this.showLoading = true;
     if (this.tempBranding != null) {
       const body = new FormData();
       //var randomString = (Math.random() + 1).toString(36).substring(10);
@@ -295,22 +367,26 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     }
     setTimeout(() => {
       this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
-        next: (res: any) => {
+        next: (res: User) => {
           this.user = this.userService.performUser(res);
           this.authenticationService.addUserToLocalCache(res);
           console.log(this.user);
           this.notificationService.notify(NotificationType.SUCCESS, `Se ha actualizado el perfil`);
-          this.router.navigate(['/home'])
-          /*setTimeout(() => {
-            this.notificationService.notify(NotificationType.SUCCESS, `Vuelva a iniciar sesión`);
-          }, 1000);*/
         },
         error: (err: any) => {
           console.log(err);
         }
       }));
     }, 1500);
+    this.showLoading = false;
+  }
 
+  ngOnDestroy(): void {
+    for (let i = 0; i < cssPathUserPro.length; i++) {
+      this.renderer2.removeChild(this.document.head, this.styleUser[i]);
+    }
+    this.styleUser = [];
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
 }

@@ -1,3 +1,5 @@
+import { Home } from "./home";
+
 export class User {
   public id: string;
   public userId: string;
@@ -7,7 +9,8 @@ export class User {
   public password: string;
   public phone: string;
   public email: string;
-  public domains: string;
+  public domains: Home[] = [];
+  public domainsAsString: string;
   public lastaccessDate: Date;
   public showLastaccessDate: Date;
   public dateRegistry: Date;

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   data-name="Layer 1"
+   viewBox="0 0 50 56"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg837"
+   sodipodi:docname="form-sprinkler.svg"
+   width="50"
+   height="56"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs841" />
+  <sodipodi:namedview
+     id="namedview839"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="11.1625"
+     inkscape:cx="25.039194"
+     inkscape:cy="28.891377"
+     inkscape:window-width="1920"
+     inkscape:window-height="1044"
+     inkscape:window-x="3840"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg837" />
+  <rect
+     x="24"
+     y="34"
+     width="2"
+     height="2"
+     id="rect793"
+     style="fill:#6a6a6a" />
+  <rect
+     x="24"
+     y="38"
+     width="2"
+     height="2"
+     id="rect795"
+     style="fill:#6a6a6a" />
+  <rect
+     x="24"
+     y="42"
+     width="2"
+     height="2"
+     id="rect797"
+     style="fill:#6a6a6a" />
+  <rect
+     x="24"
+     y="46"
+     width="2"
+     height="2"
+     id="rect799"
+     style="fill:#6a6a6a" />
+  <rect
+     x="24"
+     y="50"
+     width="2"
+     height="2"
+     id="rect801"
+     style="fill:#6a6a6a" />
+  <rect
+     x="24"
+     y="54"
+     width="2"
+     height="2"
+     id="rect803"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-11.511928"
+     y="38.20657"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect805"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-15.508656"
+     y="38.201069"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect807"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-19.502453"
+     y="38.202644"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect809"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-23.499178"
+     y="38.211288"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect811"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-27.502975"
+     y="38.202858"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect813"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-31.506773"
+     y="38.204433"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect815"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-4.8425751"
+     y="44.860443"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect817"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-4.8410001"
+     y="48.864239"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect819"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-4.8564987"
+     y="52.86097"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect821"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-4.854928"
+     y="56.864761"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect823"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-4.8533535"
+     y="60.858562"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect825"
+     style="fill:#6a6a6a" />
+  <rect
+     x="-4.8517823"
+     y="64.862358"
+     width="2"
+     height="2"
+     transform="rotate(-45)"
+     id="rect827"
+     style="fill:#6a6a6a" />
+  <path
+     d="M 50,0 H 0 v 2 h 16 v 6 h -2 a 1,1 0 0 0 -1,1 v 8 a 1,1 0 0 0 1,1 h 2.27 l 3.92,12 H 18 v 2 H 32 V 30 H 29.81 L 33.73,18 H 36 a 1,1 0 0 0 1,-1 V 9 A 1,1 0 0 0 36,8 H 34 V 2 H 50 Z M 18.38,18 H 24 V 30 H 22.3 Z M 27.7,30 H 26 V 18 h 5.62 z M 32,8 h -4 v 2 h 7 v 6 H 15 v -6 h 7 V 8 H 18 V 2 h 14 z"
+     id="path829"
+     style="fill:#6a6a6a" />
+  <rect
+     x="24"
+     y="8"
+     width="2"
+     height="2"
+     id="rect831"
+     style="fill:#6a6a6a" />
+</svg>
