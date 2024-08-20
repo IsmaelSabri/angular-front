@@ -1,3 +1,56 @@
+<!--<header class="my-auto p-2">
+    <div class="container">
+        <div class="row" >
+            <div class="col-md-3 col-sm-3 col-3 my-auto float-start">
+                <div class="logo my-auto">
+                    <img src="assets/images/logo.png" class="logo w-100" alt="" style="min-height: 1.6em; min-width: 12.8em;">
+                </div>
+            </div>
+            <div class="col-md-9 col-sm-9 col-9 text-end">
+                <div class="menu-icon float-end mb-5 pr-5 mr-2" (click)="openMenu()">
+                    <div class="header__menu">
+                        <a id="header__button" class="hamburger" >
+                          <div class="hamburger__inner"></div>
+                        </a>  
+                      </div>                                     
+                </div>
+                <div class="desktop_menu z-1 my-auto" [class.mobile_menu]="menuValue">
+                    <ul>
+                        <li (click)="closeMenu()">Home</li>
+                        <li (click)="closeMenu()">About</li>
+                        <li >
+                            <a nz-dropdown [nzDropdownMenu]="menu">
+                                Hover me
+                                <i class="bi bi-chevron-down"></i>
+                              </a>
+                              <nz-dropdown-menu #menu="nzDropdownMenu">
+                                <ul nz-menu nzSelectable>
+                                  <li nz-menu-item>1st menu item</li>
+                                  <li nz-menu-item>2nd menu item</li>
+                                  <li nz-menu-item>3rd menu item</li>
+                                  <li nz-menu-item nzDanger>4th danger item</li>
+                                </ul>
+                              </nz-dropdown-menu>
+                        </li>
+                        <li (click)="closeMenu()">Contact</li>
+                        <li *ngIf='!this.state'>
+                                <div class="buttons">
+                                <a class="button is-dark" pRipple routerLink="/register" *ngIf='!this.state'>
+                                    <strong>Unirse</strong>
+                                </a>
+                                <a class="button is-light" pRipple routerLink="/login" *ngIf='!this.state'>
+                                    Entrar
+                                </a>
+                                </div>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>-->
+
     <nav class="navbar mb-3  " role="navigation" aria-label="main navigation">
         <div class="navbar-brand" >
           <a class="navbar-item" routerLink="/_es">
@@ -73,7 +126,7 @@
     <nz-affix [nzOffsetTop]="0" >
       <nav *ngIf='this.brandingColor!=null || this.brandingColor!=undefined' [style.background-color]="this.brandingColor" class="navbar py-0 branding-nav z-0" role="navigation" >
         <div class="container-fluid"  >
-            <div class="mx-auto order-0 my-auto"  *ngIf="this.home.proImage!=null">
+            <div class="mx-auto order-0 d-flex"  *ngIf="this.home.proImage!=null">
                 <a class="a-branding " >
                     <picture class="pictureBranding">
                         <img class="brandImage" [src]="this.home.proImage" alt="">

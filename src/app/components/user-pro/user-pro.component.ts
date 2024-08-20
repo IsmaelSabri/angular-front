@@ -230,7 +230,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     // y se borran desde la interfaz
     this.subscriptions.push(this.userService.getUsers().subscribe({
       next: (res: User[]) => {
-        res = res.filter(user => user.userId != user.userId)
+        res = res.filter(user => user.userId != this.user.userId)
         this.user.chatsOpened = [...res];
         //console.log(this.user.chatsOpened[0].profileImage.imageUrl);
       },
@@ -249,11 +249,12 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
       this.renderer2.setProperty(this.styleUser[i], 'href', cssPathUserPro[i]);
     }
-    this.homeService.getHomesByQuery('userId@=*' + this.user.userId).subscribe({
+    this.homeService.getHomesByQuery('IdCreador@=*' + this.user.userId).subscribe({
       next: (res: Home[]) => {
         if (res) {
+          this.user.domains = [...res]
           for (let i = 0; i < res.length; i++) {
-            this.user.domains[i] = this.homeService.performHome(res[i]);
+            this.user.domains[i].images = JSON.parse(this.user.domains[i].imagesAsString);
           }
         }
       },

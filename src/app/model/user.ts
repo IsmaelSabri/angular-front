@@ -10,7 +10,6 @@ export class User {
   public phone: string;
   public email: string;
   public domains: Home[] = [];
-  public domainsAsString: string;
   public lastaccessDate: Date;
   public showLastaccessDate: Date;
   public dateRegistry: Date;

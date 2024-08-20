@@ -15,7 +15,7 @@
   /*aspect-ratio: 16 / 9;*/
   width: 100%;
   margin: auto;
-  height: 83.9vh;
+  height: 86.9vh;
 }
 
 .fluentImage {
@@ -2464,7 +2464,7 @@ mat-drawer {
 }
 
 .advertisement .privacy a {
-  color: #8dca3f;
+  color: #7ce800;
   font-weight: 400;
   cursor: pointer;
   -webkit-text-decoration: none;

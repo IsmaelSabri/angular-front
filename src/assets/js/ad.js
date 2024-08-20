@@ -12,4 +12,8 @@ $(document).ready(function() {
   });
 });
 
-//mortgage calculator
+//navbar hamburger
+$("#header__button").click(function() {
+  $(this).toggleClass("hamburger--open");
+});
+ 

@@ -61,7 +61,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   isCollapsed: boolean = true;
   privatePolicy: boolean = false;
   trustedUrl: any = '';
-  views:string[]=[];
+  views: string[] = [];
   //home: Home;
   //propertyOwner: User;
   intake: string;
@@ -137,6 +137,16 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       nzMessage,
       modalSevice
     );
+  }
+
+
+  // navbar
+  menuValue: boolean = false;
+  openMenu() {
+    this.menuValue = !this.menuValue;
+  }
+  closeMenu() {
+    this.menuValue = false;
   }
 
   @ViewChild('customLoadingTemplate') customLoadingTemplate: TemplateRef<any>;
@@ -224,7 +234,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
           this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
         }
         if (this.home.vistasDespejadas) {
-          this.views=this.home.vistasDespejadas.split(',');
+          this.views = this.home.vistasDespejadas.split(',');
         }
         if (this.state) {
           this.user = this.authenticationService.getUserFromLocalCache();
@@ -522,7 +532,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
 
   public contactMessage() {
     this.refreshing = true;
-    this.showLoading=true;
+    this.showLoading = true;
     const formData = new FormData();
     formData.append('fromName', this.contactUser.fromName);
     formData.append('fromAddress', this.contactUser.fromAddress);
@@ -559,7 +569,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     }));
     var resetForm = <HTMLFormElement>document.getElementById('contactMessageForm');
     resetForm.reset();
-    this.showLoading=false;
+    this.showLoading = false;
   }
 
   // sliders

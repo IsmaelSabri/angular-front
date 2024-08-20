@@ -1,11 +1,12 @@
-/* #8dca3f */
+/* #7ce800 */
 .text-green {
-  /*color:#8dca3f;*/
+  /*color:#7ce800;
+  color:#7ce800;*/
   color: #76ba1b;
 }
 
 .list-group-item-success {
- background-color: rgba(118,186,27,0.25);
+  background-color: rgba(118, 186, 27, 0.25);
 }
 
 .list-group-item-secondary {
@@ -1541,7 +1542,7 @@ body {
 .description-content h2 a {
   -webkit-text-decoration: none;
   text-decoration: none;
-  color: #8dca3f;
+  color: #7ce800;
 }
 
 .description-content > * {
@@ -1603,7 +1604,7 @@ body {
 .description-content .rating a {
   vertical-align: text-top;
   margin-left: 8px;
-  color: #8dca3f;
+  color: #7ce800;
 }
 
 .description-content .address-icon {
@@ -1964,7 +1965,7 @@ body {
 }
 
 /*.features-container .features-block a {
-  color: #8dca3f;
+  color: #7ce800;
 }*/
 
 .features-container .features-block .featured {
@@ -2177,7 +2178,7 @@ body {
   text-align: center;
 }
 
-.readmore-button-label{
+.readmore-button-label {
   font-weight: 600;
   letter-spacing: 0.4px;
 }
@@ -2214,7 +2215,7 @@ body {
 }
 
 .advertisement .privacy a {
-  color: #8dca3f;
+  color: #7ce800;
   font-weight: 400;
   cursor: pointer;
   -webkit-text-decoration: none;
@@ -2267,7 +2268,7 @@ body {
 }
 
 .district-filters .filter-status > button.active {
-  background-color: #3a3b3c; /*#8dca3f*/
+  background-color: #3a3b3c; /*#7ce800*/
   color: #fff;
 }
 
@@ -2892,7 +2893,7 @@ body {
 }
 
 .zone-intro .link-name {
-  color: #8dca3f;
+  color: #7ce800;
 }
 
 @media all and (max-width: 599px) {
@@ -2976,7 +2977,7 @@ body {
 }
 
 .zone-intro .info a {
-  color: #8dca3f;
+  color: #7ce800;
 }
 
 @media all and (max-width: 599px) {
@@ -4116,8 +4117,133 @@ body {
   font-weight: bold;
   letter-spacing: 0.4px;
 }
+
 /* navbar */
-:host ::ng-deep  .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
-  background: #8dca3f;
-  color: #8dca3f;
+:host
+  ::ng-deep
+  .p-carousel
+  .p-carousel-indicators
+  .p-carousel-indicator.p-highlight
+  button {
+  background: #7ce800;
+  color: #7ce800;
 }
+
+header {
+  background: white;
+}
+/*.logo {
+  width: 90px;
+}*/
+.logo:hover {
+  cursor: pointer;
+}
+.desktop_menu {
+  margin-top: 24px;
+}
+.desktop_menu ul {
+  padding: 0;
+  margin: 0;
+}
+.desktop_menu ul li {
+  list-style-type: none;
+  color: #3a3b3c;
+  display: inline-block;
+  font-size: 18px;
+  margin-left: 26px;
+}
+.desktop_menu ul li:hover {
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #999;
+  transition: 0.3s ease-in-out;
+}
+.menu-icon {
+  display: none;
+}
+
+@media screen and (min-width: 128px) and (max-width: 900px) {
+  .desktop_menu {
+    position: fixed !important;
+    right: -280px;
+    transition: 0.4s ease-in-out;
+    top: 2.9em;
+    background: white;
+    width: 280px;
+    height: 100%;
+  }
+  .desktop_menu ul li {
+    display: block;
+    text-align: left;
+    margin: 0;
+    padding: 10px 0 10px 26px;
+    border-bottom: 1px solid grey;
+  }
+  .menu-icon {
+    display: block;
+    color: grey;
+    font-size: 40px;
+    padding-top: 10px;
+  }
+  .mobile_menu {
+    right: 0;
+    transition: 0.4s ease-in-out;
+  }
+}
+/*hamburger navbar*/
+.header__menu {
+  position: absolute;
+}
+.hamburger {
+  display: block;
+  position: absolute;
+  width: 30px;
+  height: 40px;
+  z-index: 2;
+}
+.hamburger__inner {
+  display: block;
+  
+  width: 40px;
+  height: 6px;
+  margin-top: 12px;
+  background: #3a3b3c;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+.hamburger__inner::before, .hamburger__inner::after {
+  display: block;
+  position: absolute;
+  content: "";
+  z-index: -1;
+  width: 40px;
+  height: 6px;
+  background: #3a3b3c;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+.hamburger__inner::before {
+  top: 0;
+}
+.hamburger__inner::after {
+  top: 24px;
+}
+.hamburger--open .hamburger__inner {
+  background: none;
+}
+.hamburger--open .hamburger__inner::before, .hamburger--open .hamburger__inner::after {
+  top: 12px;
+}
+.hamburger--open .hamburger__inner::before {
+  -webkit-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+.hamburger--open .hamburger__inner::after {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/*end navbar*/

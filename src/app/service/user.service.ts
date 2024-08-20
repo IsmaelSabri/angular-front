@@ -85,11 +85,6 @@ export class UserService {
     if (user.chatsOpenedAsString != null || user.chatsOpenedAsString != undefined) {
       user.chatsOpened = JSON.parse(user.chatsOpenedAsString);
     }
-    if (user.domainsAsString != null || user.domainsAsString != undefined) {
-      user.domains = JSON.parse(user.domainsAsString);
-    } else {
-      user.domains=[]
-    }
     return user;
   }
 

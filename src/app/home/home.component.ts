@@ -995,7 +995,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       ).appendTo('.ul_features');
       if (h.garage > 0) {
         if (h.garage > 10) {
-          $('<ion-icon style="font-size:1em; position:relative;" src="assets/svg/car-popup.svg"></ion-icon><ion-icon style="color:#8dca3f; margin-top:2px;" name="add-outline"></ion-icon><span class="numbers-font" style="color:#8dca3f;font-size:0.9em;">'
+          $('<ion-icon style="font-size:1em; position:relative;" src="assets/svg/car-popup.svg"></ion-icon><ion-icon style="color:#7ce800; margin-top:2px;" name="add-outline"></ion-icon><span class="numbers-font" style="color:#7ce800;font-size:0.9em;">'
             + this.formatNumberWithCommas(h.garage) + '€</span>').appendTo('.p_features');
         } else {
           $('<ion-icon style="font-size:1.1em; position:relative;" src="assets/svg/car-popup.svg"></ion-icon><span class="numbers-font" style="color:#b4b4b4;">'
@@ -1018,7 +1018,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
 
 
-    if (h.direccionAproximada) {
+    if (!h.direccionAproximada) {
       $('.p_3').text('Ubicación aprox.');
     } else if (h.numero != null) {
       $('.p_3').text(h.tipoDeVia + ' ' + h.calle + ' ' + h.numero + ',');
