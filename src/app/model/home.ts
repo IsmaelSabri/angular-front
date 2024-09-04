@@ -33,6 +33,7 @@ export class Home {
   comentario: string;
   destacar: string;
   colorDestacar: any = '#3a3b3c';
+  destacado: boolean = false;
   model: string;
   imagesAsString: string;
   images = new Array<HomeImage>();
@@ -59,11 +60,12 @@ export class Home {
   ascensor: boolean = false;
   piso: string;
   proColor: any;
-  proImage: string;
-  mascotas: string;
-  fianza: string;
+  proImage: HomeImage;
+  proImageAsString:string;
+  mascotas: string = '';
+  fianza: string = '';
   disponibilidad: string;
-  estanciaMinima: string; // meses
+  estanciaMinima: string = ''; // meses
 
   // House profile
   alarma: boolean = false;
@@ -92,7 +94,7 @@ export class Home {
   jacuzzi: boolean = false;
 
   // Flat profile
-  
+
   bajoOplantabaja: boolean = false;
   // Gated community ameninites
   jardin: boolean = false;
@@ -128,15 +130,15 @@ export class Home {
   nombreProyecto: string;
   estadoConstruccion: string; // terminado, en curso
   tipos: string; // tipos
-  porcentajeTerminado: number;
+  porcentajeTerminado: number; //progreso construcción
   porcentajeVendido: number;
   habitacionesDesde: number = 0;
   habitacionesHasta: number = 0;
   superficieDesde: number = 0;
   superficieHasta: number = 0;
-  precioDesde: number;
   finDeObra: number;
   alturas: number;
+  totalViviendasConstruidas: number;
 
   // HolidayRent profile
   numeroRegistro: string;
@@ -234,11 +236,6 @@ export class HomeImage {
   imageName: string;
   imageId: string;
   imageDeleteUrl: string;
-}
-
-export class SingleDtoHomeRequest {
-  id: string;
-  model: string;
 }
 
 export class HomeFilterRequest {

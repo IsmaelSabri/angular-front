@@ -55,7 +55,7 @@ import { LightboxModule } from 'ngx-lightbox';
 import { AdminComponent } from './components/admin/admin.component';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import es from '@angular/common/locales/es';
-import { NZ_I18N, es_ES } from 'ng-zorro-antd/i18n';
+import { NZ_DATE_LOCALE, NZ_I18N, es_ES } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -134,11 +134,20 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { EmailService } from './service/email.service';
+import { ImageService } from './service/image.service';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { es as ES} from 'date-fns/locale';
+import { ChipModule } from 'primeng/chip';
+import {MatChipsModule} from '@angular/material/chips'; 
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
 
 export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
   url: 'https://httpbin.org/post',
-  maxFilesize: 32,
+  maxFilesize: 100,
   acceptedFiles: 'image/*'
 };
 @NgModule({
@@ -260,6 +269,12 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     InputGroupAddonModule,
     InputIconModule,
     IconFieldModule,
+    NzInputNumberModule,
+    ProgressBarModule,
+    ChipModule,
+    MatChipsModule,
+    NzTagModule,
+    NzStepsModule,
   ],
   exports: [
     // to get component in another modules
@@ -277,6 +292,8 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     CookieService,
     HomeService,
     ChatService,
+    EmailService,
+    ImageService,
     BsModalService,
     MessageService,
     provideHttpClient(),
@@ -285,6 +302,7 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     { provide: NZ_I18N, useValue: es_ES },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true, },
     { provide: DROPZONE_CONFIG, useValue: DEFAULT_DROPZONE_CONFIG, },
+    { provide: NZ_DATE_LOCALE, useValue: ES },
     { provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,

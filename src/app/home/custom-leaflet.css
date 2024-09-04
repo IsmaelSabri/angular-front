@@ -283,8 +283,8 @@
   display: grid;
   border-radius: 10px;
   box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.2);
-  width: 32em;/*382px*/
-  height: 9em;/*152px;*/
+  width: 32em; /*382px*/
+  height: 9em; /*152px;*/
   margin: 0 !important;
   padding: 0 !important;
   position: absolute;
@@ -458,8 +458,8 @@
   /*padding:1rem;*/
   /*width: 26.25rem;*/
 }
-.leaflet-popup-content-wrapper{
-  height: 13.820em;
+.leaflet-popup-content-wrapper {
+  height: 13.82em;
 }
 .realeTextContainer_2 {
   -webkit-font-smoothing: antialiased;
@@ -570,8 +570,32 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  top:-0.1em;
+  top: -0.1em;
   position: absolute;
+}
+
+.tagProjectPrice {
+  user-select: none;
+  cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+  font-size: 0.55rem;
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025rem;
+  margin: 0px;
+  color: var(--ck-textSecondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  position: absolute;
+  top: -0.6em;
 }
 
 .p_2 {
@@ -597,7 +621,7 @@
   width: 9.9em;
 }
 
-.p_2Prices{
+.p_2Prices {
   color: var(--ck-textPrimary);
   user-select: none;
   cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
@@ -614,7 +638,7 @@
   margin: 0.25rem 0px;
   font-size: 1.125rem;
   line-height: 1.5rem;
-  color:#3a3b3c;
+  color: #3a3b3c;
 }
 
 .a_1 {
@@ -653,7 +677,7 @@
   width: 100%;
 
   position: relative;
-  top: -2.6em;
+  top: -3em;
 }
 
 .p_4 {
@@ -675,7 +699,7 @@
   width: 100%;
 
   position: relative;
-  top: -5.1em;
+  top: -5.6em;
 }
 
 .ul_features {
@@ -694,7 +718,7 @@
 
   font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
-  top: -6.1em;
+  top: -7em;
 }
 
 .p_features {
@@ -713,7 +737,7 @@
 
   font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
-  top: -5.8em;
+  top: -6.9em;
   /*color: var(--ck-textPrimary);
   user-select: none;
   cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
@@ -732,7 +756,7 @@
   align-items: center;
   line-height: 1rem;*/
 }
-.numbers-font{
+.numbers-font {
   font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 /* end text */
@@ -753,7 +777,11 @@
   transform: translateY(10px);
 }
 
-#map_3 .leaflet-map-pane .leaflet-popup-pane .leaflet-zoom-animated .leaflet-popup-content-wrapper{
+#map_3
+  .leaflet-map-pane
+  .leaflet-popup-pane
+  .leaflet-zoom-animated
+  .leaflet-popup-content-wrapper {
   display: flex;
   position: relative;
   /*top: 0;
@@ -770,8 +798,7 @@
   transform: translateY(10px);
 }
 
-
-.tooltipX .leaflet-popup-content-wrapper{
+.tooltipX .leaflet-popup-content-wrapper {
   height: 3em;
 }
 
@@ -912,18 +939,92 @@
   font-weight: 600;
 }
 /* End marker price icon */
-.branding-image-popup{
+.branding-image-popup {
   height: 100%;
   width: 100%;
-  object-fit:contain;
+  object-fit: contain;
   aspect-ratio: 29/4;
 }
 
-.branding-image-card{
+.branding-image-card {
   height: 100%;
   width: 100%;
-  object-fit:contain;
-  top:1em;
+  object-fit: contain;
+  top: 1em;
   aspect-ratio: 53/10;
-  padding: 0.6em 0.6em 0.6em 0.6em;
+  padding: 0.3em 0.3em 0.3em 0.3em;
 }
+
+.chip-popup {
+  padding: 2px 5px 2px 5px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  margin: 0px;
+
+  cursor: pointer;
+}
+
+.chip-popup.success {
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #32cd32;
+  color: whitesmoke;
+  letter-spacing: 0.4px;
+}
+
+.chip-popup.bleue {
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #0a58ca;
+  color: whitesmoke;
+  letter-spacing: 0.4px;
+}
+
+.chip-popup.gray {
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #3a3b3c;
+  color: whitesmoke;
+  letter-spacing: 0.4px;
+}
+
+.chip-popup.danger {
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #ef233c;
+  color: whitesmoke;
+}
+
+.chip-popup.purple {
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #6d7988;
+  color: whitesmoke;
+}
+/**/
+/*etiqueta destacado*/
+.pill-floating-label {
+  background-color: dodgerblue;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  font-size: 7px;
+  padding: 1px 3px;
+  position: absolute;
+  top: -9px;
+  right: -8px;
+  height: 13px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.pill-floating-label ::after,
+::before {
+  box-sizing: border-box;
+}
+/*end etiqueta destacado*/
+
+/*carousel delay*/
+.carousel-item {
+  transition-duration: 0s;
+}
+/*end carousel delay*/

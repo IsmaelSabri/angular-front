@@ -13,6 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
+import { ImageService } from 'src/app/service/image.service';
 
 @Component({
   selector: 'app-password',
@@ -37,6 +38,7 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
     private formBuilder: FormBuilder,
     primengConfig: PrimeNGConfig,
     messageService: MessageService,
+    imageService: ImageService
   ) {
     super(
       router,
@@ -49,6 +51,7 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
       renderer2,
       primengConfig,
       messageService,
+      imageService
     );
   }
 

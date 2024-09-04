@@ -1,14 +1,14 @@
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit, ViewContainerRef, SimpleChanges, TemplateRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit, ViewContainerRef, SimpleChanges, TemplateRef, IterableDiffers } from '@angular/core';
 import { UserComponent } from '../../components/user/user.component';
 import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
 import { UserService } from '../../service/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio, SingleDtoHomeRequest } from '../../model/home';
+import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { ContactUser } from 'src/app/model/contact-user';
-import { Lightbox } from 'ngx-lightbox';
+import { Lightbox, LightboxConfig } from 'ngx-lightbox';
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -42,6 +42,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { BaseChartDirective } from 'ng2-charts';
 import { Chart, ChartData, ChartType } from 'chart.js';
 import { ngxLoadingAnimationTypes } from 'ngx-loading';
+import { ImageService } from 'src/app/service/image.service';
+import { EmailService } from 'src/app/service/email.service';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-add',
@@ -62,6 +65,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   privatePolicy: boolean = false;
   trustedUrl: any = '';
   views: string[] = [];
+  projectFeatures: string[] = [];
   //home: Home;
   //propertyOwner: User;
   intake: string;
@@ -96,6 +100,8 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   mercados: Supermercado[];
   aeropuerto: Aeropuerto[];
   beach: Beach[];
+PropertyTo: any;
+differs;
 
   constructor(
     @Inject(DOCUMENT) document: Document,
@@ -118,7 +124,8 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     nzMessage: NzMessageService,
     modalSevice: NgbModal,
     private vcr: ViewContainerRef,
-
+    imageService: ImageService,
+    protected emailService: EmailService,
   ) {
     super(
       router,
@@ -135,7 +142,8 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       primengConfig,
       messageService,
       nzMessage,
-      modalSevice
+      modalSevice,
+      imageService,
     );
   }
 
@@ -176,18 +184,16 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   }
 
   ngOnInit(): void {
+    initFlowbite();
     this.primengConfig.ripple = true;
     var x = document.getElementById('photos-section');
     x.style.display = 'none'
     // 1-localstorage 2-model
     if (this.homeService.getHomeFromLocalCache()) {
       this.home = this.homeService.getHomeFromLocalCache();
-    }
-    if (this.home.proColor) {
-      this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.home.proColor);
-    }
-    if (this.home.proImage) {
-      this.brandingImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.proImage);
+    } else {
+      this.router.navigateByUrl('/home');
+      NotificationType.ERROR, 'El anuncio ' +  'ha caducado o ha sido eliminado!';
     }
     if (this.home.colorDestacar) {
       this.imageBadgeColor = this.sanitizer.bypassSecurityTrustStyle(this.home.colorDestacar);
@@ -195,7 +201,15 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     // get the owner
     this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
       next: (res) => {
-        this.propertyOwner = res;
+        this.propertyOwner = this.userService.performUser(res);
+        if (this.propertyOwner.isPro) {
+          if (this.propertyOwner.color) {
+            this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.propertyOwner.color);
+          }
+          if (this.propertyOwner.brandImage) {
+            this.brandingImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.propertyOwner.brandImage.imageUrl);
+          }
+        }
       }, error: () => {
         this.notificationService.notify(
           NotificationType.ERROR, 'El anuncio ' + this.dto.id + 'ha caducado o ha sido eliminado!',
@@ -235,6 +249,9 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
         }
         if (this.home.vistasDespejadas) {
           this.views = this.home.vistasDespejadas.split(',');
+        }
+        if(this.home.tipos){
+          this.projectFeatures = this.home.tipos.split(',');
         }
         if (this.state) {
           this.user = this.authenticationService.getUserFromLocalCache();
@@ -355,7 +372,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   }
 
   open(index: number): void {
-    this._lightbox.open(this._albums, index, { wrapAround: true });
+    this._lightbox.open(this._albums, index, { centerVertically:true, wrapAround:true });
   }
 
   calcPriceM2(price: string, sup: string): number {
@@ -552,7 +569,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     var obj = {};
     formData.forEach((value, key) => obj[key] = value);
     var json = JSON.stringify(obj);
-    this.subscriptions.push(this.userService.EmailMessage(json).subscribe({
+    this.subscriptions.push(this.emailService.EmailMessage(json).subscribe({
       next: (res: CustomHttpResponse) => {
         Swal.fire({
           title: res.message,

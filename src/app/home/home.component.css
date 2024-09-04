@@ -958,6 +958,11 @@ br {
   color: whitesmoke;
 }
 
+.text-bg-success {
+  background-color: #59ce72;
+  color: whitesmoke;
+}
+
 /* Checkboxes 2nd version - 2nd page */
 .item {
   display: flex;
@@ -1022,12 +1027,7 @@ input:checked ~ .checkbox2 {
 }
 
 /* Map_2 locationmap */
-.reset {
-  width: 15px;
-  color: white;
-  background: #666;
-  border-radius: 0 10px 10px 0;
-}
+
 
 .glass {
   border-radius: 10px 0 0 10px;
@@ -2554,3 +2554,14 @@ mat-drawer {
   height: 2em;
 }
 
+:host ::ng-deep  .p-progressbar .p-progressbar-value {
+  border: 0 none;
+  margin: 0;
+  background: #3a3b3c;
+}
+
+.p-progressbar .p-progressbar-value {
+  border: 0 none;
+  margin: 0;
+  background: #3a3b3c;
+}

@@ -39,13 +39,14 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.loadScripts();
   }
 
+  node:any;
   loadScripts() {
     for (let i = 0; i < dynamicAdminScripts.length; i++) {
-      const node = document.createElement('script');
-      node.src = dynamicAdminScripts[i];
-      node.type = 'text/javascript';
-      node.async = false;
-      document.getElementsByTagName('body')[0].appendChild(node);
+      this.node = document.createElement('script');
+      this.node.src = dynamicAdminScripts[i];
+      this.node.type = 'text/javascript';
+      this.node.async = false;
+      document.getElementsByTagName('body')[0].appendChild(this.node);
     }
   }
 
@@ -54,10 +55,12 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.renderer2.removeChild(this.document.head, this.styleUser[i]);
     }
     this.styleUser = [];
-    /*for (let i = 0; i < dynamicAdminScripts.length; i++) {
-      this.renderer2.removeChild(this.document.body, this.scripts[i]);
+    for (let i = 0; i < dynamicAdminScripts.length; i++) {
+      //document.getElementsByTagName('body')[0].removeChild(this.node)
+      
+      //this.renderer2.removeChild(this.document.body, this.scripts[i]);
     }
-    this.scripts = [];*/
+    this.scripts = [];
   }
 
 }

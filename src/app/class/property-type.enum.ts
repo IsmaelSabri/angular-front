@@ -1,65 +1,97 @@
-export enum PropertyType { // condicion
-  alquiloYvendo = 'Alquiler y venta',
-  alquiler = 'Alquiler',
-  venta = 'Venta',
+export enum Model {
+  Flat = 'Flat',
+  House = 'House',
+  Room = 'Room',
+  NewProject = 'NewProject',
+  Office = 'Office',
+  Local = 'Local',
+  Ground = 'Ground',
+  Garage = 'Garage',
+  JunkRoom = 'JunkRoom'
+}
+
+export enum PropertyTo { // condicion
+  AlquiloYvendo = 'Alquiler y venta',
+  Alquiler = 'Alquiler',
+  Venta = 'Venta',
+  Compartir = 'Compartir',
   //compartir = 'Compartir',
   //intercambio_vacacional = 'Intercambio vacacional',
   //nuevoProyectoObra = 'Nuevo proyecto obra nueva',
   //alquilerDias = 'Alquiler por días',
 }
 export enum PropertyTypeSelectHeader { // condicion
-  alquiloYvendo = 'Alquiler y venta',
-  alquiler = 'Alquiler',
-  venta = 'Venta',
-  compartir = 'Compartir',
+  AlquiloYvendo = 'Alquiler y venta',
+  Alquiler = 'Alquiler',
+  Venta = 'Venta',
+  Compartir = 'Compartir',
   //intercambio_vacacional = 'Intercambio vacacional',
   //nuevoProyectoObra = 'Nuevo proyecto obra nueva',
   //alquilerDias = 'Alquiler por días',
 }
 
 export enum PropertyFilterOptions {
-  alquiler = 'Alquiler',
-  venta = 'Venta',
-  compartir = 'Compartir'
+  Alquiler = 'Alquiler',
+  Venta = 'Venta',
+  Compartir = 'Compartir'
 }
 
 export enum PropertyShareType { // condicion
-  compartir = 'Compartir',
+  Compartir = 'Compartir',
 }
 
 export enum HouseType { // tipo
-  piso = 'Piso',
-  apartamento = 'Apartamento',
-  estudio = 'Estudio',
-  habitacion = 'Habitación',
-  atico = 'Ático',
-  duplex = 'Duplex',
-  chalet = 'Chalet',
-  adosado = 'Adosado',
-  pareado = 'Pareado',
-  casa_rustica = 'Casa Rústica',
-  villa = 'Villa',
+  Piso = 'Piso',
+  Apartamento = 'Apartamento',
+  Estudio = 'Estudio',
+  Habitacion = 'Habitación',
+  Atico = 'Ático',
+  Duplex = 'Duplex',
+  Chalet = 'Chalet',
+  Adosado = 'Adosado',
+  Pareado = 'Pareado',
+  Casa_rustica = 'Casa Rústica',
+  Villa = 'Villa',
 }
 
 export enum HouseTypeFilters { // tipo
-  piso = 'Piso',
-  apartamento = 'Apartamento',
-  estudio = 'Estudio',
-  atico = 'Ático',
-  duplex = 'Duplex',
-  chalet = 'Chalet',
-  adosado = 'Adosado',
-  pareado = 'Pareado',
-  casa_rustica = 'Casa Rústica',
-  villa = 'Villa',
+  Piso = 'Piso',
+  Apartamento = 'Apartamento',
+  Estudio = 'Estudio',
+  Atico = 'Ático',
+  Duplex = 'Duplex',
+  Chalet = 'Chalet',
+  Adosado = 'Adosado',
+  Pareado = 'Pareado',
+  Casa_rustica = 'Casa Rústica',
+  Villa = 'Villa',
+}
+
+export enum ProjectFeatures { // tipo
+  Pisos = 'Pisos',
+  Apartamentos = 'Apartamentos',
+  Estudios = 'Estudios',
+  Aticos = 'Áticos',
+  Duplex = 'Duplex',
+  Chalets = 'Chalets',
+  Adosados = 'Adosados',
+  Pareados = 'Pareados',
+  Casas_rusticas = 'Casas Rústicas',
+  Villas = 'Urb. de Villas',
+  Locales = 'Locales',
+  Oficinas = 'Oficinas',
+  Garages = 'Garages',
+  Trasteros = 'Trasteros'
 }
 
 export enum EmptyType {
-  solar = 'Solar',
-  terreno = 'Terreno',
-  nave = 'Nave',
-  garage = 'Garage',
-  trastero = 'Trastero',
+  Solar = 'Solar',
+  Terreno = 'Terreno',
+  Nave = 'Nave',
+  Garage = 'Garage',
+  Trastero = 'Trastero',
+  Parcela = 'Parcela',
+  SueloRustico = 'Suelo Rústico'
 }
 
 export enum Bedrooms {
@@ -88,23 +120,23 @@ export enum CarPlaces {
   uno = '1',
   dos = '2',
   tres = '3',
-  masTres = '+3'
+  masTres = '3+'
 }
 
 export enum Views {
-  ciudad = 'Ciudad',
-  jardines = 'Jardines',
-  deslunado = 'Deslunado',
-  mar = 'Mar',
-  piscina = 'Piscina',
-  montanya = 'Montaña',
-  rio = 'Río',
+  Ciudad = 'Ciudad',
+  Jardines = 'Jardines',
+  Deslunado = 'Deslunado',
+  Mar = 'Mar',
+  Piscina = 'Piscina',
+  Montanya = 'Montaña',
+  Rio = 'Río',
 }
 
 export enum PropertyState {
-  nuevo = 'Obra nueva',
-  usado = 'Usado',
-  a_reformar = 'A reformar',
+  Nuevo = 'Obra nueva',
+  Usado = 'Usado',
+  A_Reformar = 'A reformar',
 }
 
 export enum Badge {
@@ -196,6 +228,7 @@ export enum TipoDeVia {
   Via = 'Via',
   Travessera = 'Travessera',
   Polígono = 'Polígono',
+  Puente = 'Puente',
   Otros = 'Otros',
 }
 

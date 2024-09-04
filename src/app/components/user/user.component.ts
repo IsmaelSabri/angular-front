@@ -16,7 +16,8 @@ import { Rol } from '../../class/role.enum';
 import { ToastrService } from 'ngx-toastr';
 import { DOCUMENT } from '@angular/common';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
-import { SingleDtoHomeRequest } from 'src/app/model/home';
+import { ImageService } from 'src/app/service/image.service';
+import { SingleDtoHomeRequest } from 'src/app/model/dto/home-dto';
 
 @Component({
   selector: 'app-user',
@@ -50,7 +51,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
   // dynamic id's carousels
-  idIndex = Array.from(Array(100).keys());
+  idIndex = Array.from(Array(1000).keys());
 
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
@@ -60,7 +61,9 @@ export class UserComponent implements OnInit, OnDestroy {
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
     protected userService: UserService, protected notificationService: NotificationService,
     protected route: ActivatedRoute, protected toastr: ToastrService, @Inject(DOCUMENT) protected document: Document,
-    protected renderer2: Renderer2, protected primengConfig: PrimeNGConfig, protected messageService: MessageService) { }
+    protected renderer2: Renderer2, protected primengConfig: PrimeNGConfig, protected messageService: MessageService,
+    protected imageService: ImageService
+  ) { }
 
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache();
@@ -99,7 +102,7 @@ export class UserComponent implements OnInit, OnDestroy {
     const body = new FormData();
     //imgbb cannot allow to delete images through api calls only manually so
     body.append('image', this.BrandImage);
-    this.subscriptions.push(this.userService.uploadSignature(body, this.brandImageName)
+    this.subscriptions.push(this.imageService.uploadSignature(body, this.brandImageName)
       .subscribe({
         next: (res: any) => {
           userUpdate.brandImage = {
@@ -161,7 +164,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.photoImage != null) {
       const body = new FormData();
       body.append('image', this.photoImage);
-      this.subscriptions.push(this.userService.uploadSignature(body, this.fileName)
+      this.subscriptions.push(this.imageService.uploadSignature(body, this.fileName)
         .subscribe({
           next: (res: any) => {
             this.user.profileImage = {

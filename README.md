@@ -45,3 +45,13 @@ https://github.com/user-attachments/assets/23b5da2e-07ea-4365-97d8-b24fd1b01a97
 https://github.com/user-attachments/assets/ac143501-7ee3-44f5-bab2-d2dae7a10b52
 
 https://github.com/user-attachments/assets/c87afe4f-9406-4b48-9f90-687d18504a46
+
+Pro-users may custom their ads with logo and color
+
+![myhouse-front](src/assets/readme-images/custom_ad1.png)
+
+![myhouse-front](src/assets/readme-images/custom_ad2.png)
+
+![myhouse-front](src/assets/readme-images/custom_ad3.png)
+
+![myhouse-front](src/assets/readme-images/custom_ad4.png)

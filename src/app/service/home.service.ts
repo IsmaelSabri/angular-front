@@ -7,6 +7,7 @@ import {
 import { environment } from '../../environments/environment';
 import { Observable, ReplaySubject } from 'rxjs';
 import { CustomHttpResponse } from '../model/performance/custom-http-response';
+import { HomeDto } from '../model/dto/home-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class HomeService {
   private host = environment.apiUrl;
   private httpHeaders = new HttpHeaders({
     'Content-Type': 'application/json;charset=UTF-8',
+    //'Authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`
   });
   constructor(private http: HttpClient) { }
 
@@ -42,6 +44,10 @@ export class HomeService {
     });
   }
 
+  public getHomes(): Observable<Home[]> {
+    return this.http.get<Home[]>(`${this.host}/api/home/all`);
+  }
+
   public getHomesByQuery(url: string): Observable<Home[]> {
     return this.http.get<Home[]>(`${this.host}/api/home/query?filters=${url}`);
   }
@@ -52,8 +58,28 @@ export class HomeService {
     });
   }
 
-  public getHomes(): Observable<Home[]> {
-    return this.http.get<Home[]>(`${this.host}/api/home/all`);
+  public updateHome(home: Home): Observable<Home> {
+    return this.http.put<Home>(`${this.host}/api/home/home`, home);
+  }
+
+  public updateFlat(home: Home): Observable<Home> {
+    return this.http.put<Home>(`${this.host}/api/home/flat`, home);
+  }
+
+  public updateHouse(home: Home): Observable<Home> {
+    return this.http.put<Home>(`${this.host}/api/home/house`, home);
+  }
+
+  public updateRoom(home: Home): Observable<Home> {
+    return this.http.put<Home>(`${this.host}/api/home/room`, home);
+  }
+
+  public updateNewProject(home: Home): Observable<Home> {
+    return this.http.put<Home>(`${this.host}/api/home/new-project`, home);
+  }
+
+  public updateHolidayRent(home: Home): Observable<Home> {
+    return this.http.put<Home>(`${this.host}/api/home/holiday-rent`, home);
   }
 
   public getHomeFromLocalCache(): Home {
@@ -75,11 +101,14 @@ export class HomeService {
     if (home.imagesAsString) {
       home.images = JSON.parse(home.imagesAsString);
     }
+    if (home.proImageAsString) {
+      home.proImage=JSON.parse(home.proImageAsString);
+    }
     return home;
   }
 
   public deleteHome(id: string) {
-    return this.http.delete<CustomHttpResponse>(`${this.host}/api/home/${id}`);
+    return this.http.delete(`${this.host}/api/home/${id}`, { responseType: 'text' });
   }
 
 }

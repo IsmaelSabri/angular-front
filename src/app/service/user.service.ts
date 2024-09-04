@@ -1,12 +1,9 @@
-import { EventEmitter, Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpEvent, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from '../model/user';
 import { CustomHttpResponse } from '../model/performance/custom-http-response';
-import { APIKEY } from 'src/environments/environment.prod';
-import Axios from 'axios-observable';
-import { ContactUser } from '../model/contact-user';
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private host = environment.apiUrl;
@@ -100,16 +97,6 @@ export class UserService {
     formData.append('isActive', JSON.stringify(user.isactive));
     formData.append('isNonLocked', JSON.stringify(user.isnotLocked));
     return formData;
-  }
-
-  public uploadSignature(body: FormData, name: string): Observable<any> {
-    return Axios.post(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${name}`, body);
-  }
-
-  public EmailMessage(contactUser: string): Observable<CustomHttpResponse> {
-    return this.http.post<CustomHttpResponse>(`${this.host}/api/email/email-contact`, contactUser, {
-      headers: this.httpHeaders,
-    });
   }
 
   public getRole() {

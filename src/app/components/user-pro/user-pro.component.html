@@ -79,14 +79,14 @@
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link active" data-bs-toggle="tab" href="#stats">
-              <i class="material-icons">edit</i>
-              <span>Mi estado</span>
+              <i class="material-icons">trending_up</i>
+              <span>Estado</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link " data-bs-toggle="tab" href="#reviews">
-              <i class="material-icons">vertical_split</i>
-              <span>Blog Posts</span>
+              <i class="material-icons">star</i>
+              <span>Valoraciones</span>
             </a>
           </li>
           <li class="nav-item">
@@ -96,15 +96,15 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link " href="">
-              <i class="material-icons">view_module</i>
-              <span>Forms &amp; Components</span>
+            <a class="nav-link " disabled >
+              <i class="material-icons">remove_circle</i>
+              <span>Reservado</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link " data-bs-toggle="tab" href="#tables">
-              <i class="material-icons">table_chart</i>
-              <span>Mis inmuebles</span>
+              <i class="material-icons">home</i>
+              <span>Anuncios</span>
             </a>
           </li>
           <li class="nav-item">
@@ -115,8 +115,8 @@
           </li>
           <li class="nav-item">
             <a class="nav-link " data-bs-toggle="tab" href="#ads">
-              <i class="material-icons">error</i>
-              <span>Mis propiedades</span>
+              <i class="material-icons">favorite</i>
+              <span>Favoritos</span>
             </a>
           </li>
         </ul>
@@ -701,10 +701,10 @@
                 <div class="card-header border-bottom">
                   <h6 class="m-0">Activas</h6>
                 </div>
-                <div class="card-body p-0 pb-3 text-center" *ngFor="let appHome of this.user.domains; let i =index">
+                <div class="card-body p-0  text-center" *ngFor="let appHome of this.user.domains; let i =index">
                  <ng-container >
                   <div class="card-list ">
-                    <img class="image" (click)="showHome(appHome)" style="aspect-ratio:16/9;" [src]="appHome.images[0].imageUrl" alt="First slide"/>
+                    <img class="image" *ngIf="appHome.images" (click)="showHome(appHome)" style="aspect-ratio:16/9;" [src]="appHome.images[0].imageUrl" alt="First slide"/>
                     <div class="content">
                         <div class="texts">
                           <div>{{appHome.tipo}} en {{appHome.calle}} {{appHome.numero}} en {{appHome.condicion}} en {{appHome.ciudad}}</div>

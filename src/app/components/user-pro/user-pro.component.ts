@@ -1,3 +1,4 @@
+import { HomeDto } from './../../model/dto/home-dto';
 import { ProfileImage } from './../../model/user';
 import { Component, Inject, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { UserComponent } from '../user/user.component';
@@ -28,7 +29,8 @@ import { GalleriaThumbnails } from 'primeng/galleria';
 import { CustomHttpResponse } from 'src/app/model/performance/custom-http-response';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
-
+import { ImageService } from 'src/app/service/image.service';
+import _ from 'lodash';
 @Component({
   selector: 'app-user-pro',
   templateUrl: './user-pro.component.html',
@@ -62,7 +64,8 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     primengConfig: PrimeNGConfig,
     messageService: MessageService,
     protected chatService: ChatService,
-    protected homeService: HomeService
+    protected homeService: HomeService,
+    protected imageService: ImageService
   ) {
     super(
       router,
@@ -75,6 +78,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       renderer2,
       primengConfig,
       messageService,
+      imageService
     );
     this.hub = new signalR.HubConnectionBuilder().withUrl("https://localhost:4040/chat-hub").build();
 
@@ -157,26 +161,22 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       cancelButtonText: "Cancelar",
       confirmButtonText: "Si, Borrar"
     }).then((result) => {
-      /*this.subscriptions.push(this.homeService.deleteHome(home.viviendaId).subscribe({
-        next: () => {
-          localStorage.removeItem('currentBuilding');
-          if (result.isConfirmed) {
-            Swal.fire({
-              title: "Anuncio borrado",
-              text: "Pulse para volver,",
-              icon: "success"
-            });
+      if (result.isConfirmed) {
+        var homeId = home.viviendaId;
+        this.subscriptions.push(this.homeService.deleteHome(home.id).subscribe({
+          next: (res: any) => {
+            this.notificationService.notify(NotificationType.INFO, 'Anuncio borrado')
+            localStorage.removeItem('currentBuilding');
+            this.user.domains.forEach((item, index) => {
+              if (item.viviendaId == homeId) this.user.domains.splice(index, 1);
+            })
+          },
+          error: (error: any) => {
+            this.notificationService.notify(NotificationType.ERROR, error.message);
           }
-        },
-        error: (error: HttpErrorResponse) => {
-          this.notificationService.notify(NotificationType.ERROR, error.message);
-        }
-      }))*/
-
-      // luego también hay que sacar del array de domains la vivienda y ver si se actualiza la vista
+        }))
+      }
     });
-
-
   }
 
   highlightHome() {
@@ -249,12 +249,17 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
       this.renderer2.setProperty(this.styleUser[i], 'href', cssPathUserPro[i]);
     }
+    this.getOwnHomes()
+
+  }
+
+  public getOwnHomes() {
     this.homeService.getHomesByQuery('IdCreador@=*' + this.user.userId).subscribe({
       next: (res: Home[]) => {
         if (res) {
           this.user.domains = [...res]
           for (let i = 0; i < res.length; i++) {
-            this.user.domains[i].images = JSON.parse(this.user.domains[i].imagesAsString);
+            this.user.domains[i] = this.homeService.performHome(this.user.domains[i]);
           }
         }
       },
@@ -262,7 +267,6 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
         this.notificationService.notify(NotificationType.ERROR, 'Error al cargar las viviendas' + err);
       }
     });
-
   }
 
   loadScripts() {
@@ -324,7 +328,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       const body = new FormData();
       //var randomString = (Math.random() + 1).toString(36).substring(10);
       body.append('image', this.tempBranding);
-      this.subscriptions.push(this.userService.uploadSignature(body, this.tempBranding.name)
+      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempBranding.name)
         .subscribe({
           next: (res: any) => {
             this.user.brandImage = {
@@ -346,7 +350,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     if (this.tempProfile != null) {
       const body = new FormData();
       body.append('image', this.tempProfile);
-      this.subscriptions.push(this.userService.uploadSignature(body, this.tempProfile.name)
+      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempProfile.name,)
         .subscribe({
           next: (res: any) => {
             this.user.profileImage = {
@@ -366,21 +370,42 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
           }
         }));
     }
+    this.user.username = this.user.firstname + ' ' + this.user.lastname
     setTimeout(() => {
       this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
         next: (res: User) => {
           this.user = this.userService.performUser(res);
           this.authenticationService.addUserToLocalCache(res);
           console.log(this.user);
+          this.getOwnHomes();
+          setTimeout(() => { this.tunedHomesAfterUpdateUser(); }, 1000)
           this.notificationService.notify(NotificationType.SUCCESS, `Se ha actualizado el perfil`);
         },
         error: (err: any) => {
           console.log(err);
         }
       }));
-    }, 1500);
+    }, 1000);
     this.showLoading = false;
   }
+
+  tunedHomesAfterUpdateUser() {
+    if (this.user.brandImageAsString && this.user.color && this.user.isPro) {
+      _.map(this.user.domains, (x) => {
+        x.proColor = this.user.color;
+        x.proImageAsString = this.user.brandImageAsString;
+        this.subscriptions.push(this.homeService.updateHome(x).subscribe({
+          next: (res) => {
+            this.notificationService.notify(NotificationType.SUCCESS, `vivienda tuneada con id: ` + res.viviendaId);
+          },
+          error: (err: any) => {
+            this.notificationService.notify(NotificationType.ERROR, `error al tunear la vivienda` + err);
+          }
+        }));
+      })
+    }
+  }
+
 
   ngOnDestroy(): void {
     for (let i = 0; i < cssPathUserPro.length; i++) {

@@ -126,10 +126,10 @@
     <nz-affix [nzOffsetTop]="0" >
       <nav *ngIf='this.brandingColor!=null || this.brandingColor!=undefined' [style.background-color]="this.brandingColor" class="navbar py-0 branding-nav z-0" role="navigation" >
         <div class="container-fluid"  >
-            <div class="mx-auto order-0 d-flex"  *ngIf="this.home.proImage!=null">
+            <div class="mx-auto order-0" *ngIf="this.brandingImage!=null">
                 <a class="a-branding " >
                     <picture class="pictureBranding">
-                        <img class="brandImage" [src]="this.home.proImage" alt="">
+                        <img class="brandImage" [src]="this.brandingImage" alt="">
                     </picture>
                 </a>
               </div>
@@ -226,7 +226,7 @@
                     <section id="overview" class="description-section " style="filter: none;">
                         <div class="description-content ">
                             <div>
-                                    <h1 class="headline alone">{{this.home.tipo}} en {{this.home.condicion}} en {{this.home.ciudad}}</h1>
+                                    <h1 class="headline alone">{{this.home.tipo}} <span *ngIf="this.home.condicion!='Compartir'">en </span><span *ngIf="this.home.condicion=='Compartir'">para </span><span class="text-lowercase">{{this.home.condicion}}</span> en {{this.home.ciudad}}</h1>
                                     <span *ngIf="this.home.direccionAproximada" class="address-icon icon-deluxe "><ion-icon style="font-size: 1em;" src="assets/svg/place.svg"></ion-icon></span>
                                     <span *ngIf="!this.home.direccionAproximada" class="address-icon icon-deluxe "><ion-icon style="font-size: 1em;" src="assets/svg/no-place.svg"></ion-icon></span>
                                     <h2 nz-tooltip [nzTooltipTrigger]="'hover'" nzTooltipTitle="La dirección se muestra como aproximada por deseo del/la anunciante" *ngIf="!this.home.direccionAproximada"><a>&nbsp;&nbsp;Dirección aproximada</a></h2>
@@ -238,14 +238,15 @@
                             </div>
                                 <div class="prices">
                                     <div class="price under-market" *ngIf=" this.home.precioInicial != 0">
-                                        <span *ngIf=" this.home.precioInicial != 0" class="prefix">En venta</span>
-                                        <div *ngIf=" this.home.precioInicial != 0" class="price-container"><span class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(this.home.precioInicial)+'€'}}</span><span class="dimension"></span></div>
+                                        <span *ngIf=" this.home.precioInicial" class="prefix">En venta</span>
+                                        <div *ngIf=" this.home.precioInicial" class="price-container"><span class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(this.home.precioInicial)+'€'}}</span><span class="dimension"></span></div>
                                     </div>
                                     <div class="price" *ngIf="this.home.precioFinal > 0">
-                                        <span class="prefix" *ngIf="this.home.precioInicial == 0">En venta</span>
-                                        <div class="price-container"><span *ngIf="this.home.precioFinal!= null || this.home.precioFinal != undefined" class="price-value">{{formatNumberWithCommas(this.home.precioFinal)}}€</span>
-                                        <span *ngIf="this.home.precioFinal!= null || this.home.precioFinal != undefined" class="dimension">{{this.calcPriceM2(''+this.home.precioFinal,''+this.home.superficie)}}€/m²</span>
-                                        <div class="diff float-end mt-1" *ngIf="this.home.precioInicial != 0">
+                                        <span class="prefix" *ngIf="this.home.precioInicial == 0 && this.home.model!='NewProject'">En venta</span>
+                                        <span class="prefix" *ngIf="this.home.precioInicial == 0 && this.home.model=='NewProject'">Desde</span>
+                                        <div class="price-container"><span *ngIf="this.home.precioFinal" class="price-value">{{formatNumberWithCommas(this.home.precioFinal)}}€</span>
+                                        <span *ngIf="this.home.precioFinal && this.home.model!='NewProject'" class="dimension">{{this.calcPriceM2(''+this.home.precioFinal,''+this.home.superficie)}}€/m²</span>
+                                        <div class="diff float-end mt-1" *ngIf="this.home.precioInicial != 0 && this.home.model!='NewProject'">
                                                 <span class="dimension under " style="color:#8dca3f;">-{{this.discount(''+this.home.precioInicial,''+this.home.precioFinal)}}%</span>
                                         </div>
                                     </div>
@@ -263,7 +264,7 @@
                             <div>
                                 <span class="value">{{this.home.aseos}}</span><span class="label"><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/bath-white.svg"></ion-icon><br><span class="text">Aseos</span></span>
                             </div>
-                            <div>
+                            <div *ngIf="this.home.orientacion">
                                 <span class="value">{{this.home.orientacion}}</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/compass-white.svg"></ion-icon><br><span class="text">Orientación</span></span>
                             </div>
                             <div *ngIf="this.home.piso">
@@ -272,8 +273,11 @@
                             <div *ngIf="!this.home.piso && this.home.bajoOplantabaja">
                                 <span class="value">PB</span><span class="label"><ion-icon style="font-size: 24px; position:relative; top:3px;" src="assets/svg/first-floor-white.svg"></ion-icon><br><span class="text">Bajo</span></span>
                             </div>
-                            <div *ngIf="this.home.garage < 20 && this.home.garage !== 0">
+                            <div *ngIf="this.home.garage < 4 && this.home.garage !== 0">
                                 <span class="value">{{this.home.garage}}</span><span class="label"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/garage-white.svg"></ion-icon><br><span class="text">Garage</span></span>
+                            </div>
+                            <div *ngIf="this.home.garage == 4">
+                                <span class="value">+3</span><span class="label"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/garage-white.svg"></ion-icon><br><span class="text">Garage</span></span>
                             </div>
                             <div>
                                 <span class="value">{{this.home.superficie}}m²</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/size-box-white.svg"></ion-icon><br><span class="text">Superficie</span></span>
@@ -334,21 +338,31 @@
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.estado == 'Obra nueva'">
-                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/tag.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 21px; position:relative; top:2px;" src="assets/svg/tag.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Estado<!-- -->:</span><span class="value text-secondary">Nuevo</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.intake}}></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 ">
+                                            <ion-icon *ngIf="this.home.consumo" style="font-size: 24px; position:relative; top:2px;" src={{this.intake}}></ion-icon>
+                                            <ion-icon *ngIf="!this.home.consumo" style="font-size: 24px; position:relative; top:2px;" src="assets/svg/three-points.svg"></ion-icon>
+                                        </span></div>
                                         <div>
-                                            <span>Consumo<!-- -->:</span><span class="value text-secondary"> {{this.home.consumo}}</span>
+                                            <span>Consumo<!-- -->:</span>
+                                            <span *ngIf="this.home.consumo" class="value text-secondary"> {{this.home.consumo}}</span>
+                                            <span *ngIf="!this.home.consumo" class="value text-secondary">No disponible</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src={{this.emissions}}></ion-icon></span></div>
+                                        <div class="icon-container"><span class="ml-0 mt-1 ">
+                                            <ion-icon *ngIf="this.home.emisiones" style="font-size: 24px; position:relative; top:2px;" src={{this.emissions}}></ion-icon>
+                                            <ion-icon *ngIf="!this.home.emisiones" style="font-size: 24px; position:relative; top:2px;" src="assets/svg/three-points.svg"></ion-icon>
+                                        </span></div>
                                         <div>
-                                            <span>Emisiones<!-- -->:</span><span class="value text-secondary"> {{this.home.emisiones}}</span>
+                                            <span>Emisiones<!-- -->:</span>
+                                            <span *ngIf="this.home.emisiones" class="value text-secondary"> {{this.home.emisiones}}</span>
+                                            <span *ngIf="!this.home.emisiones" class="value text-secondary">No disponible</span>
                                         </div>
                                     </div>
                                     <div>
@@ -373,7 +387,7 @@
                                             <span style="color:#8dca3f">Alta eficiencia energética<!-- --></span><span class="value text-secondary"></span>
                                         </div>
                                     </div>
-                                    <div *ngIf="this.home.garage > 20">
+                                    <div *ngIf="this.home.garage >= 5">
                                         <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/parking-price.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Garage opcional:</span><span class="textInRow" style="color:#8dca3f;font-size:1.2em;font-weight:700;align-items: first baseline;">{{this.formatNumberWithCommas(this.home.garage)}}€&nbsp;</span>
@@ -387,7 +401,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="features-block" *ngIf="this.home.precioAlquiler!=0 && this.home.fianza || this.home.mascotas || this.home.disponibilidad || this.home.estanciaMinima">
+                            <div class="features-block" *ngIf="this.home.precioAlquiler!=0 && (this.home.fianza || this.home.mascotas || this.home.disponibilidad || this.home.estanciaMinima
+                            || this.home.sepuedeFumar || this.home.seadmitenParejas || this.home.seadmitenMenoresdeedad || this.home.seadmitenJubilados || this.home.seadmitenMochileros
+                            || this.home.seadmiteLGTBI || this.home.propietarioviveEnlacasa || this.home.perfilCompartir || this.home.habitantesActualmente || this.home.ambiente || this.home.gastos)">
                                 <h2 *ngIf="this.home.condicion=='Alquiler' || this.home.condicion=='Alquiler y venta'">En alquiler</h2>
                                 <h2 *ngIf="this.home.condicion=='Compartir'">Para compartir</h2>
                                 <div class="featured">
@@ -423,73 +439,73 @@
                                     </div>
                                     <!--Se puede fumar-->
                                     <div *ngIf="this.home.condicion=='Compartir'&&this.home.sepuedeFumar"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative; top:2px;" src="assets/svg/smoking-ok.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 22px; position:relative; top:2px;" src="assets/svg/smoking-ok.svg"></ion-icon></span></div>
                                         <div><span>Fumar:</span><span class="value text-green">Si</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.condicion=='Compartir'&&!this.home.sepuedeFumar"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/no-smoking.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/no-smoking.svg"></ion-icon></span></div>
                                         <div><span>Fumar:</span><span class="value text-danger">No</span>
                                         </div>
                                     </div>
                                     <!--Se admiten parejas-->
                                     <div *ngIf="this.home.condicion=='Compartir'&&this.home.seadmitenParejas"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative; top:2px;" src="assets/svg/couples-ok.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 22px; position:relative; top:2px;" src="assets/svg/couples-ok.svg"></ion-icon></span></div>
                                         <div><span>Se admiten parejas:</span><span class="value text-green">Si</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.condicion=='Compartir'&&!this.home.seadmitenParejas"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/couples-no.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/couples-no.svg"></ion-icon></span></div>
                                         <div><span>Se admiten parejas:</span><span class="value text-danger">No</span>
                                         </div>
                                     </div>
                                     <!--Se admiten menores de edad-->
                                     <div *ngIf="this.home.condicion=='Compartir'&&this.home.seadmitenMenoresdeedad"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/teenagers-ok.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/teenagers-ok.svg"></ion-icon></span></div>
                                         <div><span>Se admiten menores:</span><span class="value text-green">Si</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.condicion=='Compartir'&&!this.home.seadmitenMenoresdeedad"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/teenagers-no.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 22px; position:relative;" src="assets/svg/teenagers-no.svg"></ion-icon></span></div>
                                         <div><span>Se admiten menores:</span><span class="value text-danger">No</span>
                                         </div>
                                     </div>
                                     <!--Se admiten jubilados-->
                                     <div *ngIf="this.home.condicion=='Compartir'&&this.home.seadmitenJubilados"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 26px; position:relative;" src="assets/svg/older-ok.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 26px; position:relative;" src="assets/svg/older-ok.svg"></ion-icon></span></div>
                                         <div><span>Se admiten jubilados:</span><span class="value text-green">Si</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.condicion=='Compartir'&&!this.home.seadmitenJubilados"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/older-no.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/older-no.svg"></ion-icon></span></div>
                                         <div><span>Se admiten jubilados:</span><span class="value text-danger">No</span>
                                         </div>
                                     </div>
                                     <!--Se admiten mochileros-->
                                     <div *ngIf="this.home.condicion=='Compartir'&&this.home.seadmitenMochileros"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/backpacker-ok.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/backpacker-ok.svg"></ion-icon></span></div>
                                         <div><span>Se admiten mochileros:</span><span class="value text-green">Si</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.condicion=='Compartir'&&!this.home.seadmitenMochileros"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative;" src="assets/svg/backpacker-no.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 28px; position:relative;" src="assets/svg/backpacker-no.svg"></ion-icon></span></div>
                                         <div><span>Se admiten mochileros:</span><span class="value text-danger">No</span>
                                         </div>
                                     </div>
                                     <!--Se admite LGTBI-->
                                     <div *ngIf="this.home.condicion=='Compartir'&&this.home.seadmiteLGTBI"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/lgtbi.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/lgtbi.svg"></ion-icon></span></div>
                                         <div><span>Se admite LGTBI:</span><span class="value text-green">Si</span>
                                         </div>
                                     </div>
                                     <div *ngIf="this.home.condicion=='Compartir'&&!this.home.seadmiteLGTBI"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/lgtbi.svg"></ion-icon></span></div>
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/lgtbi.svg"></ion-icon></span></div>
                                         <div><span>Se admite LGTBI:</span><span class="value text-danger">No</span>
                                         </div>
                                     </div>
                                     <!--Propietario vive en la casa? -->
-                                    <div *ngIf="this.home.condicion=='Compartir' && this.home.propietarioviveEnlacasa!=null || this.home.propietarioviveEnlacasa!=undefined"> 
-                                        <div class="icon-container"><span class="icon icon-deluxe "><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/propietarioVive.svg"></ion-icon></span></div>
+                                    <div *ngIf="this.home.condicion=='Compartir'">
+                                        <div class="icon-container"><span class="icon icon-deluxe mr-2 mb-2"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/propietarioVive.svg"></ion-icon></span></div>
                                         <div *ngIf="this.home.propietarioviveEnlacasa">
                                             <span>El propietario vive en la casa?</span><span class="value text-green">Si</span>
                                         </div>
@@ -523,6 +539,53 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="features-block" *ngIf="this.home.model=='NewProject'&&this.home.tipos">
+                                <h2>Promoción</h2>
+                                <div class="row">
+                                    <h5 class="text-secondary ml-2">Tipologías</h5>
+                                    <div class="col d-flex justify-content-start ml-2" *ngFor="let opt of this.projectFeatures">
+                                        <p-chip *ngIf="opt=='Pisos'" label="Pisos" />
+                                        <p-chip *ngIf="opt=='Apartamentos'" label="Apartamentos" />
+                                        <p-chip *ngIf="opt=='Estudios'" label="Estudios" />
+                                        <p-chip *ngIf="opt=='Áticos'" label="Áticos" />
+                                        <p-chip *ngIf="opt=='Duplex'" label="Duplex" />
+                                        <p-chip *ngIf="opt=='Chalets'" label="Chalets" />
+                                        <p-chip *ngIf="opt=='Adosados'" label="Adosados" />
+                                        <p-chip *ngIf="opt=='Pareados'" label="Pareados" />
+                                        <p-chip *ngIf="opt=='Casas Rústicas'" label="Casas Rústicas" />
+                                        <p-chip *ngIf="opt=='Urb. de Villas'" label="Urb. de Villas" />
+                                        <p-chip *ngIf="opt=='Locales'" label="Locales" />
+                                        <p-chip *ngIf="opt=='Oficinas'" label="Oficinas" />
+                                        <p-chip *ngIf="opt=='Garages'" label="Garages" />
+                                        <p-chip *ngIf="opt=='Trasteros'" label="Trasteros" />
+                                        <!--<nz-tag *ngIf="opt=='Pisos'" [nzColor]="'default'">Pisos</nz-tag>
+                                        <nz-tag *ngIf="opt=='Apartamentos'" [nzColor]="'default'">Apartamentos</nz-tag>
+                                        <nz-tag *ngIf="opt=='Estudios'" [nzColor]="'default'">Estudios</nz-tag>
+                                        <nz-tag *ngIf="opt=='Áticos'" [nzColor]="'default'">Áticos</nz-tag>
+                                        <nz-tag *ngIf="opt=='Duplex'" [nzColor]="'default'">Duplex</nz-tag>
+                                        <nz-tag *ngIf="opt=='Chalets'"  [nzColor]="'default'">Chalets</nz-tag>
+                                        <nz-tag *ngIf="opt=='Adosados'" [nzColor]="'default'">Adosados</nz-tag>
+                                        <nz-tag *ngIf="opt=='Pareados'" [nzColor]="'default'">Pareados</nz-tag>
+                                        <nz-tag *ngIf="opt=='Casas Rústicas'" [nzColor]="'default'">Casas Rústicas</nz-tag>
+                                        <nz-tag *ngIf="opt=='Urb. de Villas'" [nzColor]="'default'">Urb. de Villas</nz-tag>
+                                        <nz-tag *ngIf="opt=='Locales'" [nzColor]="'default'">Locales</nz-tag>
+                                        <nz-tag *ngIf="opt=='Oficinas'" [nzColor]="'default'">Oficinas</nz-tag>
+                                        <nz-tag *ngIf="opt=='Garages'" [nzColor]="'default'">Garages</nz-tag>
+                                        <nz-tag *ngIf="opt=='Trasteros'" [nzColor]="'default'">Trasteros</nz-tag>-->
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <h5 class="text-muted ml-2">Estado</h5>
+                                    <div class="col d-flex justify-content-center ml-2">
+                                        <nz-steps [nzCurrent]="1" [nzProgressDot]="''">
+                                            <nz-step nzTitle="Finished" nzDescription="You can hover on the dot."></nz-step>
+                                            <nz-step nzTitle="In Progress" nzDescription="You can hover on the dot."></nz-step>
+                                            <nz-step nzTitle="Waiting" nzDescription="You can hover on the dot."></nz-step>
+                                            <nz-step nzTitle="Waiting" nzDescription="You can hover on the dot."></nz-step>
+                                          </nz-steps>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="features-block">
                                 <h2>Extras</h2>
                                 <div class="content">
@@ -537,8 +600,9 @@
                                     </div>
                                     <div class="highlighted">
                                         <span class="post" *ngIf="this.home.amueblado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/furniture.svg"></ion-icon></span>Amueblado completo</span>
-                                        <span class="post" *ngIf="this.home.aseoEnsuite!=0"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/private-shower.svg"></ion-icon></span>{{this.home.aseoEnsuite}} Aseo ensuite</span>
-                                        <span class="post" *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/balcony.svg"></ion-icon></span>Balcón</span>
+                                        <span class="post" [hidden]="this.home.aseoEnsuite==6" *ngIf="this.home.aseoEnsuite"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/private-shower.svg"></ion-icon></span>{{this.home.aseoEnsuite}} Aseo ensuite</span>
+                                        <span class="post" *ngIf="this.home.aseoEnsuite==6"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/private-shower.svg"></ion-icon></span>+5 Aseo ensuite</span>
+                                        <span class="post" *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/balcony2.svg"></ion-icon></span>Balcón</span>
                                         <span class="post" *ngIf="this.home.terraza"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/terrace2.svg"></ion-icon></span>Terraza</span>
                                         <span class="post" *ngIf="this.home.parquet"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/pq2.svg"></ion-icon></span>Parquet</span>
                                         <span class="post" *ngIf="this.home.piscinaPrivada"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/form-ppool.svg"></ion-icon></span>Piscina en propiedad</span>
@@ -572,10 +636,10 @@
                             <div class="features-block" *ngIf="this.home.vistasDespejadas">
                                 <h2>Vistas</h2>
                                 <div class="content">
-                                    <div class="highlighted" *ngFor="let opt of views"><!--*ngIf="this.home.vistasDespejadas=='Ciudad'"-->
+                                    <div class="highlighted" *ngFor="let opt of views">
                                         <span class="post" *ngIf="opt=='Ciudad'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/city.svg"></ion-icon></span>Ciudad</span>
                                         <span class="post" *ngIf="opt=='Jardines'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/garden-views.svg"></ion-icon></span>Jardines</span>
-                                        <span class="post" *ngIf="opt=='Deslunado'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/deslunado.svg"></ion-icon></span>Deslunado</span>
+                                        <span class="post" *ngIf="opt=='Deslunado'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/stars.svg"></ion-icon></span>Deslunado</span>
                                         <span class="post" *ngIf="opt=='Mar'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/sea.svg"></ion-icon></span>Mar</span>
                                         <span class="post" *ngIf="opt=='Piscina'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/pool-views.svg"></ion-icon></span>Piscina</span>
                                         <span class="post" *ngIf="opt=='Montaña'"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/mountain.svg"></ion-icon></span>Montaña</span>
@@ -644,12 +708,12 @@
                    <div>
                     <div class="hidden">
                         <!--Cost renovation-->
-                        <section>
+                        <section *ngIf="(this.home.condicion=='Venta'||this.home.condicion=='Alquiler y venta')&&this.home.estado!='Obra nueva'">
                             <h2>Calcula tu reforma</h2>
                             <div id="renovation-calculator" class="renovation-calculator">
                                 <div>
-                                    <div class="Stack__StackContainer-sc-12grjm-0 inUEeK sc-ylxlbb-0 kCIWLB">
-                                            <div class="kUxGCa">
+                                    <div class="renovation-container">
+                                            <div class="renovation-box">
                                                     <label class="custom-radio mx-2">
                                                         <input type="radio" name="radio" checked>
                                                         <span class="radio-btn"><i class="bi bi-check2"></i>
@@ -687,9 +751,9 @@
                                                         </span>
                                                       </label>
                                         </div>
-                                        <div class="Inline__InlineContainer-sc-lf7x8d-0 emGIUs">
+                                        <div class="inline-container">
                                             <div>
-                                                <button class="ButtonBase-sc-18zziu4-0 cVcubB sc-ylxlbb-4 dUmiDg" (click)="showModal('restoreModal')" pRipple>Continuar</button>
+                                                <button class="send-button" (click)="showModal('restoreModal')" pRipple>Continuar</button>
                                             </div>
                                             <div class="sc-ylxlbb-6 lnCoUF"></div>
                                         </div>
@@ -896,7 +960,7 @@
                         <section id="profiles" class="videoAdd ">
                             <!--Youtube video-->
                             <h2 *ngIf="this.home.video">Video</h2>
-                            <div *ngIf="this.home.video" class="video-container">
+                                <div *ngIf="this.home.video" class="video-container">
                                 <iframe [src]="getTrustedUrl()" width="100%" height="100%"></iframe>
                             </div>
                         </section>
@@ -1092,7 +1156,7 @@
                                                           <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-toilet.svg"></ion-icon>
                                                             <span style="font-size: 0.8em; margin-left: 2px;">{{home.aseos}}</span>
                                                         </div>
-                                                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
+                                                        <div *ngIf="home.orientacion" class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
                                                           <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-facing.svg"></ion-icon>
                                                             <span style="font-size: 0.8em; margin-left: 2px;">{{home.orientacion}}</span>
                                                         </div>
@@ -1162,8 +1226,8 @@
             <div id="chat-box-goto" class="chat-box  chat-contact-form " style="border-radius: 10px 10px 10px 10px;">
                 <div class="agent-info border border-bottom-0 text-center" id="agent-info"
                 *ngIf='this.brandingColor!=null || this.brandingColor!=undefined' [style.background-color]="this.brandingColor">
-                    <picture class="pictureBranding mx-auto" *ngIf='this.home.proImage!=null || this.home.proImage!=undefined'>
-                        <img class="branding-image-card" [src]="this.home.proImage" alt="">
+                    <picture class="pictureBranding mx-auto" *ngIf='this.brandingImage!=null || this.brandingImage!=undefined'>
+                        <img class="branding-image-card" [src]="this.brandingImage" alt="">
                     </picture>
                 </div>
                 <div class="agent-info border border-bottom-0" id="agent-info2"
