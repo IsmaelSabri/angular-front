@@ -57,7 +57,7 @@ export class HomeService {
       headers: this.httpHeaders,
     });
   }
-
+  // update
   public updateHome(home: Home): Observable<Home> {
     return this.http.put<Home>(`${this.host}/api/home/home`, home);
   }
@@ -81,7 +81,7 @@ export class HomeService {
   public updateHolidayRent(home: Home): Observable<Home> {
     return this.http.put<Home>(`${this.host}/api/home/holiday-rent`, home);
   }
-
+  // local storage
   public getHomeFromLocalCache(): Home {
     if (localStorage.getItem('currentBuilding')) {
       return JSON.parse(localStorage.getItem('currentBuilding'));
@@ -93,7 +93,7 @@ export class HomeService {
     localStorage.removeItem('currentBuilding');
     localStorage.setItem('currentBuilding', JSON.stringify(home));
   }
-
+  // perform from db
   public performHome(home: Home): Home {
     if (home.energyCertAsString) {
       home.energyCert = JSON.parse(home.energyCertAsString);
@@ -102,11 +102,16 @@ export class HomeService {
       home.images = JSON.parse(home.imagesAsString);
     }
     if (home.proImageAsString) {
-      home.proImage=JSON.parse(home.proImageAsString);
+      home.proImage = JSON.parse(home.proImageAsString);
+    }
+    if (home.likeMeForeverAsString === null) {
+      home.likeMeForever = [];
+    } else {
+      home.likeMeForever = home.likeMeForeverAsString.split(',');
     }
     return home;
   }
-
+  // delete
   public deleteHome(id: string) {
     return this.http.delete(`${this.host}/api/home/${id}`, { responseType: 'text' });
   }

@@ -22,6 +22,10 @@
   aspect-ratio: 16 / 9;
 }
 
+.textFont {
+  font-family: Lufga, "Helvetica Neue", Roboto, sans-serif;
+}
+
 .star {
   color: #ffc107;
   font-size: 30px;
@@ -1028,7 +1032,6 @@ input:checked ~ .checkbox2 {
 
 /* Map_2 locationmap */
 
-
 .glass {
   border-radius: 10px 0 0 10px;
 }
@@ -1045,14 +1048,13 @@ input:checked ~ .checkbox2 {
   border-radius: 10px 10px 10px 10px;
   position: absolute;
 }
-/*Geosearch*/
-.results {
+/*.results {
   background: white;
 }
 
 .geosearch {
   background: white;
-}
+}*/
 /* end map_2 locationmap*/
 
 .ant-checkbox-checked .ant-checkbox-inner {
@@ -2481,7 +2483,6 @@ mat-drawer {
   background: #3a3b3c;
 }
 
-
 .p-slider .p-slider-handle:hover {
   border-color: #3a3b3c;
   background: #3a3b3c;
@@ -2532,29 +2533,29 @@ mat-drawer {
   height: 1em;
 }
 
-.p-fileupload-content{
+.p-fileupload-content {
   height: 1em;
 }
 
-:host ::ng-deep .p-fileupload  { 
-	display: flex; 
-	justify-content: center; 
+:host ::ng-deep .p-fileupload {
+  display: flex;
+  justify-content: center;
   height: 2em;
 }
 
-:host ::ng-deep .p-fileupload .p-fileupload-buttonbar { 
-	display: flex; 
-	justify-content: center; 
+:host ::ng-deep .p-fileupload .p-fileupload-buttonbar {
+  display: flex;
+  justify-content: center;
   height: 2em;
 }
 
-:host ::ng-deep .p-fileupload .p-fileupload-content { 
-	display: flex; 
-	justify-content: center; 
+:host ::ng-deep .p-fileupload .p-fileupload-content {
+  display: flex;
+  justify-content: center;
   height: 2em;
 }
 
-:host ::ng-deep  .p-progressbar .p-progressbar-value {
+:host ::ng-deep .p-progressbar .p-progressbar-value {
   border: 0 none;
   margin: 0;
   background: #3a3b3c;
@@ -2564,4 +2565,40 @@ mat-drawer {
   border: 0 none;
   margin: 0;
   background: #3a3b3c;
+}
+
+/* pricing cards */
+.mat-button-toggle {
+  background-color: #306cee;
+  color: #ffffff;
+  border-radius: .375em !important;
+}
+
+.mat-button-toggle:hover {
+  background-color: transparent !important;
+  color: #7ce800 !important;
+}
+
+.mat-button-toggle-checked {
+  background-color: #3a3b3c !important;
+  color: #ffffff !important;
+}
+
+.price-tag {
+  text-align: center;
+  font-weight: 500;
+}
+
+.symbol {
+  font-size: 1.5em;
+}
+
+.amount {
+  letter-spacing: -2px;
+  font-size: 2.1em;
+}
+
+.after {
+  color: #3b3b3b;
+  font-weight: 500;
 }

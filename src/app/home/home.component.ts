@@ -1,6 +1,6 @@
 import { FileUploadStatus } from './../model/performance/file-upload.status';
 import {
-  PropertyTo, HouseType, Bedrooms, Bathrooms, Badge, PropertyState, Enseñanza, Institucion,
+  PropertyTo, HouseType, Bedrooms, Bathrooms, BadgeDestacar, PropertyState, Enseñanza, Institucion,
   RamasConocimiento, EmisionesCO2, ConsumoEnergetico, TipoDeVia, Orientacion, Provincias, PrecioMinimoAlquiler,
   PrecioMaximoAlquiler, PrecioMinimoVenta, PrecioMaximoVenta, Superficie, Views, PropertyShareType, CarPlaces,
   PropertyTypeSelectHeader,
@@ -8,6 +8,7 @@ import {
   PropertyFilterOptions,
   Model,
   ProjectFeatures,
+  NewProjectType,
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
 import { Component, ElementRef, Inject, Input, OnDestroy, OnInit, Output, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
@@ -32,31 +33,33 @@ import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeIma
 import { ToastrService } from 'ngx-toastr';
 import { DomSanitizer } from '@angular/platform-browser';
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { FormControl, FormGroup, FormGroupDirective, NgModel, Validators } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
+import { FormGroupDirective, NgForm, NgModel } from '@angular/forms';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
 import { APIKEY } from 'src/environments/environment.prod';
 import * as $ from 'jquery';
 import Axios from 'axios-observable';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import wordsCounter from 'word-counting'
 import { MatSidenav } from '@angular/material/sidenav';
 import { DOCUMENT } from '@angular/common';
 import { PrimeNGConfig } from 'primeng/api';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { User } from '../model/user';
 import { DropzoneComponent, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { ngxLoadingAnimationTypes } from 'ngx-loading';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from 'primeng/api';
-import { differenceInCalendarDays } from 'date-fns';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 import { ImageService } from '../service/image.service';
 import { HomeDto } from '../model/dto/home-dto';
 import _ from 'lodash';
 import { initFlowbite } from 'flowbite';
+
+
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -108,34 +111,34 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   homeDto: HomeDto = new HomeDto();
   homeFiltersRequest: HomeFilterRequest = new HomeFilterRequest();
   homes: Home[] = [];
-  state: boolean = this.authenticationService.isUserLoggedIn();
   opt = {};
   mydate = new Date().getTime();
-  condicion: string[] = Object.values(PropertyTo);
-  condicionHeader: string[] = Object.values(PropertyTypeSelectHeader);
-  condicionFiltros: string[] = Object.values(PropertyFilterOptions);
-  condicion2: string[] = Object.values(PropertyShareType);
-  tipo: string[] = Object.values(HouseType);
-  tipoFilters: string[] = Object.values(HouseTypeFilters);
-  bedrooms: string[] = Object.values(Bedrooms);
-  bathrooms: string[] = Object.values(Bathrooms);
-  badge: string[] = Object.values(Badge);
-  propertyState: string[] = Object.values(PropertyState);
+  // enums para los select
+  public badge: string[] = Object.values(BadgeDestacar);
+  public bathRooms: string[] = Object.values(Bathrooms);
+  public bedrooms: string[] = Object.values(Bedrooms);
+  public calificacion_emisiones: string[] = Object.values(EmisionesCO2);
+  public calificacion_consumo: string[] = Object.values(ConsumoEnergetico);
+  public carPlaces: string[] = Object.values(CarPlaces);
+  public condicion: string[] = Object.values(PropertyTo);
+  public condicion2: string[] = Object.values(PropertyShareType);
+  public condicionFiltros: string[] = Object.values(PropertyFilterOptions);
+  public condicionHeader: string[] = Object.values(PropertyTypeSelectHeader);
+  public orientacion: string[] = Object.values(Orientacion);
+  public propertyState: string[] = Object.values(PropertyState);
+  public proyectoNuevo: string[] = Object.values(NewProjectType);
+  public tipo_de_via: string[] = Object.values(TipoDeVia);
+  public tipo: string[] = Object.values(HouseType);
+  public tipoFilters: string[] = Object.values(HouseTypeFilters);
   ensenyanza: string[] = Object.values(Enseñanza);
   institucion: string[] = Object.values(Institucion);
   ramas: string[] = Object.values(RamasConocimiento);
-  calificacion_emisiones: string[] = Object.values(EmisionesCO2);
-  calificacion_consumo: string[] = Object.values(ConsumoEnergetico);
-  tipo_de_via: string[] = Object.values(TipoDeVia);
-  orientacion: string[] = Object.values(Orientacion);
-  bathRooms: string[] = Object.values(Bathrooms);
   provincias: string[] = Object.values(Provincias);
   precioMinimoAlquiler: string[] = Object.values(PrecioMinimoAlquiler);
   precioMaximoAlquiler: string[] = Object.values(PrecioMaximoAlquiler);
   precioMinimoVenta: string[] = Object.values(PrecioMinimoVenta);
   precioMaximoVenta: string[] = Object.values(PrecioMaximoVenta);
   superficie: string[] = Object.values(Superficie);
-  carPlaces: string[] = Object.values(CarPlaces);
   model: string[] = Object.values(Model);
   projectFeatures: string[] = Object.values(ProjectFeatures);
   value!: number;
@@ -206,11 +209,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   mapEvents = new Set<string>();
   // save points
   nearlyMarkers = new Map<string, L.Marker>();
-  today = new Date();
-  disabledDatePost = (current: Date): boolean =>
-    differenceInCalendarDays(current, this.today) > 0;
-  disabledDatePre = (current: Date): boolean =>
-    differenceInCalendarDays(current, this.today) < 0;
+
   // icons
   bch = beachIcon;
   airp = airportIcon;
@@ -623,14 +622,24 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     const modalRef = this.modalServiceBs.show(``);
   }
 
+  visiblePricingDrawer: boolean = false;
+  showPricingDrawer() {
+    this.visiblePricingDrawer = true;
+  }
+
+  closePricingDrawer() {
+    this.visiblePricingDrawer = false;
+  }
+
   sidebarFullScreenVisible: boolean = false;
   showFullScreenSidebar() {
     this.sidebarFullScreenVisible = true;
   }
 
-  carPlacesIndex = 0;
+  // garage select custom en Home & user-pro
+  public carPlacesIndex = 0;
   @ViewChild('parkingOptional') parkingOptional: ElementRef;
-  addParkingPrice(input: HTMLInputElement): void {
+  public addParkingPrice(input: HTMLInputElement): void {
     if (this.parkingOptional.nativeElement.value) {
       const value = input.value;
       if (this.carPlaces.indexOf(value) == -1) {
@@ -639,7 +648,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  dateMonthFormat:Date;
+  dateMonthFormat: Date; // para que no maree. El método asigna el mes
   fechaDisponibleAlquiler: any;
   setMonth(result: Date) {
     if (result) {
@@ -663,11 +672,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       console.log(this.fechaDisponibleAlquiler);
     }
   }
-
-  // tamaño de los select para las tablas de proximidades
-  size: NzSelectSizeType = 'small';
-  sizeM: NzSelectSizeType = 'default';
-  sizeL: NzSelectSizeType = 'large';
 
   protected setTextfieldValue(
     optionSelected: string,
@@ -728,12 +732,27 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
   }
 
+  newProjects: Home[] = [];
+  loadNewProjects() {
+    this.subscriptions.push(
+      this.homeService.getHomesByQuery('model@=*NewProject,').subscribe({
+        next: (res: Home[]) => {
+          this.newProjects = [...res];
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      })
+    );
+  }
+
   public loadMarkers(url: string) {
     this.ngOnDestroy();
     this.getLocation();
     this.map.eachLayer((layer) => {
       layer.remove();
     });
+    this.loadNewProjects()
     //tileLayerSelect().addTo(map);
     //tileLayerWMSSelect().addTo(map);
     //tileLayerCP().addTo(map); // Codigos postales
@@ -764,7 +783,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             },
             { draggable: true, locateControl: true, bounceOnAdd: true }
           ).on('add', () => {
-            if (Home.destacado) {
+            if (Home.destacado.featured) {
               setTimeout(() => {
                 $('<div class="pill-floating-label">destacado</div>').appendTo("." + Home.viviendaId);
               }, 1000);
@@ -844,8 +863,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
               this.anyPopupOpen = true;
               setTimeout(() => {
                 if (this.state) {
-                  for (let i = 0; i < this.user.likePreferences.length; i++) {
-                    if (this.user.likePreferences[i] == Home.viviendaId) {
+                  for (let i = 0; i < Home.likeMeForever.length; i++) {
+                    if (Home.likeMeForever[i] == this.user.userId) {
                       var auxId = 'cuore' + this.popupOpenViviendaId;
                       const doc = document.getElementById(auxId) as HTMLInputElement;
                       doc.checked = true;
@@ -868,32 +887,36 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             }
             ).addTo(this.map)
         })
-        this.homes = data;
+        this.homes = [...data];
+        if (this.authenticationService.isUserLoggedIn()) {
+          this.setCardLike();
+        }
       }),
     );
   }
 
   lockCardLike: boolean = false;
-  cuoreLikeFeature(attr: string) {
+  cuoreLikeFeature(attr: string, hm: Home) {
     if (this.lockCardLike) {
       if (this.state) {
+        var selectedHome = this.homeService.performHome(hm);
         this.lockCardLike = false;
         var homeValue = '';
+        var userValue = this.user.userId;
         if (attr != 'popup') { // card calls
           this.cardCheckedViviendaId = attr;
           homeValue = this.cardCheckedViviendaId;
         } else { // has it
           homeValue = this.popupOpenViviendaId;
         }
-        if (this.user.likePreferences.includes(homeValue)) {
-          this.user.likePreferences.forEach((item, index) => {
-            if (item == homeValue) this.user.likePreferences.splice(index, 1);
+        if (selectedHome.likeMeForever.includes(userValue)) {
+          selectedHome.likeMeForever.forEach((item, index) => {
+            if (item == userValue) selectedHome.likeMeForever.splice(index, 1);
           });
-          this.user.likePreferencesAsString = this.user.likePreferences.toString();
-          this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
-            next: (res: User) => {
-              this.user = this.userService.performUser(res);
-              this.authenticationService.addUserToLocalCache(this.user);
+          selectedHome.likeMeForeverAsString = selectedHome.likeMeForever.toString();
+          this.subscriptions.push(this.homeService.updateHome(selectedHome).subscribe({
+            next: (res: Home) => {
+              this.homeService.addHomeToLocalCache(res);
               this.createMessage("success", "Borrado desde favoritos");
             },
             error: (err: any) => {
@@ -917,12 +940,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
           }
         } else { // not has it
           this.lockCardLike = false;
-          this.user.likePreferences.push(homeValue);
-          this.user.likePreferencesAsString = this.user.likePreferences.toString();
-          this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
-            next: (res: User) => {
-              this.user = this.userService.performUser(res);
-              this.authenticationService.addUserToLocalCache(this.user);
+          selectedHome.likeMeForever.push(userValue);
+          selectedHome.likeMeForeverAsString = selectedHome.likeMeForever.toString();
+          this.subscriptions.push(this.homeService.updateHome(selectedHome).subscribe({
+            next: (res: Home) => {
+              this.homeService.addHomeToLocalCache(res);
               this.createMessage("success", "Guardado en favoritos");
             },
             error: (err: any) => {
@@ -976,13 +998,15 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   setPopupBranding(home: Home) {
-    if (home.proColor != null || home.proColor != undefined) {
-      var x = document.getElementById('brandingcontainer');
-      x.style.display = 'flex';
-      x.style.backgroundColor = home.proColor;
-      if (home.proImage != null || home.proImage != undefined) {
-        $('<img class="branding-image-popup" src="' + home.proImage.imageUrl + '" >').appendTo('.brandingcontainer');
-      }
+    if (home.proColor) {
+      setTimeout(() => {
+        var x = document.getElementById('brandingcontainer');
+        x.style.display = 'flex';
+        x.style.backgroundColor = home.proColor;
+        if (home.proImage != null || home.proImage != undefined) {
+          $('<img class="branding-image-popup" src="' + home.proImage.imageUrl + '" >').appendTo('.brandingcontainer');
+        }
+      }, 200);
     }
   }
 
@@ -1034,9 +1058,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         x.classList.add("mt-2");
       }, 300)
     }
-    
-    
-    
+
+
+
     else if (h.condicion == PropertyTo.Alquiler) {
       $('.p_2').text(this.formatNumberWithCommas(h.precioAlquiler) + '€');
       $('.p_1_2').text('En ' + h.condicion);
@@ -1138,20 +1162,20 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     setTimeout(() => { this.lockCardLike = true; }, 2000);
   }
 
-  @ViewChildren('redheartcheckbox') likes4ever: QueryList<ElementRef>
+  //@ViewChildren('redheartcheckbox') likes4ever: QueryList<ElementRef>
   setCardLike() {
-    if (this.user.likePreferencesAsString) {
-      setTimeout(() => {
-        if (this.state) {
-          this.user.likePreferences.forEach(like => { // O(n) 
-            if (this.likes4ever.find(f => f.nativeElement.id == like)) { // O(n) por ahora no te libras
-              const doc = document.getElementById(like) as HTMLInputElement;
+    setTimeout(() => {
+      if (this.state) {
+        this.homes.forEach(hm => { // O(n) 
+          hm.likeMeForever.forEach(lk => {
+            if (lk == this.user.userId) {
+              const doc = document.getElementById(hm.viviendaId) as HTMLInputElement;
               doc.checked = true;
             }
           })
-        }
-      }, 1000);
-    }
+        })
+      }
+    }, 500);
   }
 
   getLocation() {
@@ -1226,9 +1250,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.map.flyTo([this.beforeCoords.lat, this.beforeCoords.lng], 18);
   }
 
-  rentTab = new BehaviorSubject<boolean>(false);
-  shareTab = new BehaviorSubject<boolean>(undefined);
-  saleTab = new BehaviorSubject<boolean>(false);
   conditionTabs() {
     if (this.homeDto.tipo == 'Habitación') {
       this.shareTab.next(false);
@@ -1268,7 +1289,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.rentTab.next(false);
     } else {
       this.shareTab.next(undefined);
-      this.saleTab.next(false);
+      this.saleTab.next(true);
+      this.rentTab.next(false);
+      this.homeDto.precioFinal = null;
     }
   }
 
@@ -1294,6 +1317,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       console.log(this.tabIndex);
     } else if ((this.homeDto.condicion == null || this.homeDto.condicion == undefined) && this.tabIndex == 4) {
       this.whatTab('Multimedia');
+      this.showPricingDrawer();
     } else if ((this.homeDto.condicion == 'Alquiler' || this.homeDto.condicion == 'Alquiler y venta') && this.tabIndex === 1) {
       this.whatTab('Alquiler');
     } else if ((this.homeDto.condicion == 'Alquiler' || this.homeDto.condicion == 'Alquiler y venta') && this.tabIndex === 2) {
@@ -1314,6 +1338,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.whatTab('Movilidad');
     } else {
       this.whatTab('Multimedia');
+      this.showPricingDrawer();
     }
   }
   decreaseTab() {
@@ -1381,6 +1406,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       x.style.display = 'none';
       var x = document.getElementById('prevTab');
       x.style.display = 'block';
+      this.showPricingDrawer();
     }
   }
 
@@ -1405,7 +1431,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   // Dropzone
   selectedFiles?: FileList;
   filesUploadSuccessfully: number = 0;
-  fileProgress:number[]=[]
+  fileProgress: number[] = []
   public config: DropzoneConfigInterface = {
     clickable: true,
     maxFiles: 60,
@@ -1417,7 +1443,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   };
   @ViewChild(DropzoneComponent) private dropComponent: DropzoneComponent;
-
   public onUploadError(args: any): void {
     console.log('onUploadError:', args);
   }
@@ -1431,26 +1456,71 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     console.log(e);
   }
 
-  //Cropper energy
+  // energy form new home
   imageChangedEventEnergy: any = null;
   croppedImageEnergy: any = null;
   tempEnergy: File = null;
   tempEnergyTagName: string;
-  fileChangeEvent(event: any) {
-    this.imageChangedEventEnergy = event;
-    if (event.target.files[0].name) {
-      this.tempEnergyTagName = event.target.files[0].name
+  // energy edit form user-pro
+  imageChangedEventEnergyUpdate: any = null;
+  croppedImageEnergyUpdate: any = null;
+  tempEnergyUpdate: File = null;
+  tempEnergyTagNameUpdate: string;
+  // branding
+  imageChangedEventBranding: any = null;
+  imageChangedEventProfile: any = null;
+  croppedImageBranding: any = null;
+  // profile
+  croppedImageProfile: any = null;
+  tempBranding: File = null;
+  tempProfile: File = null;
+  fileChangeEvent(event: any, option: string): void {
+    if (option === 'branding') {
+      this.imageChangedEventBranding = event;
+    } else if (option === 'profile') {
+      this.imageChangedEventProfile = event;
+    } else if (option === 'energy') {
+      this.imageChangedEventEnergy = event;
+      if (event.target.files[0].name) {
+        this.tempEnergyTagName = event.target.files[0].name
+      }
+    } else if (option === 'energyUpdate') {
+      this.imageChangedEventEnergyUpdate = event;
+      if (event.target.files[0].name) {
+        this.tempEnergyTagNameUpdate = event.target.files[0].name
+      }
     }
   }
 
-  imageCropped(event: ImageCroppedEvent) {
+  imageCropped(event: ImageCroppedEvent, option: string) {
     var randomString = (Math.random() + 1).toString(36).substring(7);
-    this.croppedImageEnergy = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
-    this.tempEnergy = new File([event.blob], randomString + '.jpg');
+    if (option === 'branding') {
+      this.croppedImageBranding = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+      this.tempBranding = new File([event.blob], randomString + '.jpg');
+    } else if (option === 'profile') {
+      this.croppedImageProfile = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+      this.tempProfile = new File([event.blob], randomString + '.jpg');
+    } else if (option === 'energy') {
+      this.croppedImageEnergy = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+      this.tempEnergy = new File([event.blob], randomString + '.jpg');
+    } else if (option === 'energyUpdate') {
+      this.croppedImageEnergyUpdate = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+      this.tempEnergyUpdate = new File([event.blob], randomString + '.jpg');
+    }
   }
-  // image events enables the form to update full user
-  imageLoaded(image: LoadedImage) {
-    this.newMarkerForm.control.markAsDirty();
+
+  @ViewChild('editUserForm') updateUserForm: NgForm; // edit user pro
+  @ViewChild('updateHomeForm') updateHomeForm: NgForm; // edit home pro
+  imageLoaded(image: LoadedImage, option: string) {
+    if (option == 'branding') {
+      this.updateUserForm.control.markAsDirty();
+    } else if (option == 'profile') {
+      this.updateUserForm.control.markAsDirty();
+    } else if (option == 'energy') {
+      this.newMarkerForm.control.markAsDirty();
+    } else if (option == 'energyUpdate') {
+      this.updateHomeForm.control.markAsDirty();
+    }
   }
 
   cropperReady() {
@@ -1459,6 +1529,18 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   loadImageFailed() {
     // show message
     this.notificationService.notify(NotificationType.ERROR, `Algo salio mal. Por favor intentelo pasados unos minutos.`);
+  }
+
+  clearEnergySelection(option: string) {
+    if (option == 'energy') {
+      this.tempEnergy = null;
+      this.imageChangedEventEnergy = null;
+      this.tempEnergyTagName = '';
+    } else if (option == 'energyUpdate') {
+      this.tempEnergyUpdate = null;
+      this.imageChangedEventEnergyUpdate = null;
+      this.tempEnergyTagNameUpdate = '';
+    }
   }
 
   configProgress = {
@@ -1655,11 +1737,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
     // branding at home to popup
     if (this.user.isPro) {
-      if (this.user.color != null || this.user.color != undefined) {
+      if (this.user.color) {
         formData.append('proColor', this.user.color);
       }
-      if (this.user.brandImage != null || this.user.brandImage != undefined) {
-        formData.append('proImage', this.user.brandImage.imageUrl);
+      if (this.user.brandImage) {
+        formData.append('proImageAsString', JSON.stringify(this.user.brandImage));
       }
     }
     // energy cert
@@ -1693,9 +1775,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     // fotos
     this.selectedFiles = this.dropComponent.directiveRef.dropzone().files;
     if (this.selectedFiles) {
-      var x = this.document.getElementsByClassName('progress-bar')[0]
-      x.classList.remove('d-none');
-      x.classList.add('d-block');
       for (let i = 0; i < this.selectedFiles.length; i++) {
         if (this.selectedFiles[i]) {
           const body = new FormData();
@@ -1748,8 +1827,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                           this.showLoading = false;
                         this.notificationService.notify(NotificationType.SUCCESS, `Anuncio creado.`);
                         this.dropComponent.directiveRef.reset();
-                        x.classList.remove('d-block');
-                        x.classList.add('d-none');
                         var resetForm = <HTMLFormElement>document.getElementById('newMarkerForm');
                         resetForm?.reset();
                         $(".modal").removeClass("is-active");
@@ -1757,8 +1834,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                       error: (err: any) => {
                         this.notificationService.notify(NotificationType.ERROR, err);
                         this.showLoading = false;
-                        x.classList.remove('d-block');
-                        x.classList.add('d-none');
                       }
                     })
                   );
@@ -1769,8 +1844,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
               const msg = 'Error al procesar la imagen: ' + this.selectedFiles[i].name + ' error: ' + err;
               this.notificationService.notify(NotificationType.ERROR, msg);
               this.showLoading = false;
-              x.classList.remove('d-block');
-              x.classList.add('d-none');
             }
           }));
         }

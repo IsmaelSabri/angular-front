@@ -8,10 +8,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { ContactUser } from 'src/app/model/contact-user';
-import { Lightbox, LightboxConfig } from 'ngx-lightbox';
+import { Lightbox } from 'ngx-lightbox';
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import * as L from 'leaflet';
 import {
   tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes,
@@ -23,7 +22,6 @@ import {
 } from '../../model/maps/icons';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
-import { Modal } from 'bootstrap';
 import { APIKEY } from 'src/environments/environment.prod';
 import intlTelInput from 'intl-tel-input';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -45,6 +43,7 @@ import { ngxLoadingAnimationTypes } from 'ngx-loading';
 import { ImageService } from 'src/app/service/image.service';
 import { EmailService } from 'src/app/service/email.service';
 import { initFlowbite } from 'flowbite';
+import { nzStatus } from 'src/app/class/ant-design.enum';
 
 @Component({
   selector: 'app-add',
@@ -91,6 +90,10 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   uni = universityIcon;
   customIcon: any;
 
+  // timeline
+  inicioVentas: string;
+  inicioConstruccion: string;
+  mudandose: string;
 
   //routes
   colegio: Colegio[];
@@ -100,8 +103,8 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   mercados: Supermercado[];
   aeropuerto: Aeropuerto[];
   beach: Beach[];
-PropertyTo: any;
-differs;
+  PropertyTo: any;
+  differs;
 
   constructor(
     @Inject(DOCUMENT) document: Document,
@@ -113,17 +116,14 @@ differs;
     route: ActivatedRoute,
     toastr: ToastrService,
     homeService: HomeService,
-    private _lightbox: Lightbox,
-    private _changeDetectorRef: ChangeDetectorRef,
-    public activatedRoute: ActivatedRoute,
+    protected _lightbox: Lightbox,
     primengConfig: PrimeNGConfig,
     messageService: MessageService,
-    public chatService: ChatService,
+    protected chatService: ChatService,
     sanitizer: DomSanitizer,
     modalServiceBs: BsModalService,
     nzMessage: NzMessageService,
-    modalSevice: NgbModal,
-    private vcr: ViewContainerRef,
+    modalService: NgbModal,
     imageService: ImageService,
     protected emailService: EmailService,
   ) {
@@ -142,7 +142,7 @@ differs;
       primengConfig,
       messageService,
       nzMessage,
-      modalSevice,
+      modalService,
       imageService,
     );
   }
@@ -191,66 +191,17 @@ differs;
     // 1-localstorage 2-model
     if (this.homeService.getHomeFromLocalCache()) {
       this.home = this.homeService.getHomeFromLocalCache();
-    } else {
-      this.router.navigateByUrl('/home');
-      NotificationType.ERROR, 'El anuncio ' +  'ha caducado o ha sido eliminado!';
-    }
-    if (this.home.colorDestacar) {
-      this.imageBadgeColor = this.sanitizer.bypassSecurityTrustStyle(this.home.colorDestacar);
-    }
-    // get the owner
-    this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
-      next: (res) => {
-        this.propertyOwner = this.userService.performUser(res);
-        if (this.propertyOwner.isPro) {
-          if (this.propertyOwner.color) {
-            this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.propertyOwner.color);
-          }
-          if (this.propertyOwner.brandImage) {
-            this.brandingImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.propertyOwner.brandImage.imageUrl);
-          }
-        }
-      }, error: () => {
-        this.notificationService.notify(
-          NotificationType.ERROR, 'El anuncio ' + this.dto.id + 'ha caducado o ha sido eliminado!',
-        );
-        this.router.navigateByUrl('/home');
-      }
-    }));
-    //get the current home through url
-    this.subscriptions.push(
-      this.activatedRoute.fragment.subscribe({
-        next: (model) => {
-          this.dto.model = model;
-          this.activatedRoute.params.subscribe({
-            next: (params) => {
-              this.dto.id = params['id'];
-            }, error: (errorResponse: HttpErrorResponse) => {
-              this.notificationService.notify(
-                NotificationType.ERROR,
-                errorResponse.error.message + 'Cannot catch home id'
-              );
-            }
-          })
-        },
-        error: (errorResponse: HttpErrorResponse) => {
-          this.notificationService.notify(
-            NotificationType.ERROR,
-            errorResponse.error.message + 'Cannot catch home model'
-          );
-        }
-      }));
-    const homeDto = JSON.stringify(this.dto);
-    this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
-      next: (res) => {
-        this.home = this.homeService.performHome(res);
-        if (this.home.energyCert) {
+      if (this.home) {
+        this.subscriptions.push(this.homeService.getHomesByQuery('model@=*' + this.home.model + ',' + 'viviendaId@=*' + this.home.viviendaId + ',').subscribe({
+          next: (res) => {
+            this.home = this.homeService.performHome(res[0]);
+            if (this.home.energyCert) {
           this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
         }
         if (this.home.vistasDespejadas) {
           this.views = this.home.vistasDespejadas.split(',');
         }
-        if(this.home.tipos){
+        if (this.home.tipos) {
           this.projectFeatures = this.home.tipos.split(',');
         }
         if (this.state) {
@@ -294,6 +245,125 @@ differs;
         // to clear circle when print any route
         this.mapEvents.add('circle');
         this.loadScripts();
+        this.timelineStatus();
+        this.homeService.getHomes().subscribe((data) => {
+          this.homes = data;
+          for (let i = 0; i < this.homes.length; i++) {
+            this.homes[i].images = JSON.parse(this.homes[i].imagesAsString);
+          }
+        })
+          },
+          error: () => {
+            this.router.navigateByUrl('/home');
+            NotificationType.ERROR, 'El anuncio ' + 'ha caducado o ha sido eliminado!';
+          }
+        })
+        )
+      }
+    } else {
+      this.router.navigateByUrl('/home');
+      NotificationType.ERROR, 'El anuncio ' + 'ha caducado o ha sido eliminado!';
+    }
+    if (this.home.colorDestacar) {
+      this.imageBadgeColor = this.sanitizer.bypassSecurityTrustStyle(this.home.colorDestacar);
+    }
+    // get the owner
+    this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
+      next: (res) => {
+        this.propertyOwner = this.userService.performUser(res);
+        if (this.propertyOwner.isPro) {
+          if (this.propertyOwner.color) {
+            this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.propertyOwner.color);
+          }
+          if (this.propertyOwner.brandImage) {
+            this.brandingImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.propertyOwner.brandImage.imageUrl);
+          }
+        }
+      }, error: () => {
+        this.notificationService.notify(
+          NotificationType.ERROR, 'El anuncio ' + this.dto.id + 'ha caducado o ha sido eliminado!',
+        );
+        this.router.navigateByUrl('/home');
+      }
+    }));
+    //get the current home through url
+    /*this.subscriptions.push(
+      this.route.fragment.subscribe({
+        next: (model) => {
+          this.dto.model = model;
+          this.route.params.subscribe({
+            next: (params) => {
+              this.dto.id = params['id'];
+            }, error: (errorResponse: HttpErrorResponse) => {
+              this.notificationService.notify(
+                NotificationType.ERROR,
+                errorResponse.error.message + 'Cannot catch home id'
+              );
+            }
+          })
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.notificationService.notify(
+            NotificationType.ERROR,
+            errorResponse.error.message + 'Cannot catch home model'
+          );
+        }
+      }));
+    const homeDto = JSON.stringify(this.dto);
+    this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
+      next: (res) => {
+        this.home = this.homeService.performHome(res);
+        if (this.home.energyCert) {
+          this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
+        }
+        if (this.home.vistasDespejadas) {
+          this.views = this.home.vistasDespejadas.split(',');
+        }
+        if (this.home.tipos) {
+          this.projectFeatures = this.home.tipos.split(',');
+        }
+        if (this.state) {
+          this.user = this.authenticationService.getUserFromLocalCache();
+        }
+        setTimeout(() => {
+          for (let i = 0; i < this.home.images.length; i++) {
+            const src = this.home.images[i].imageUrl + i + '.jpg';
+            const caption = i + 1 + ' / ' + this.home.images.length;
+            const thumb = this.home.images[i].imageUrl + i + '.jpg';
+            const album = {
+              src: src,
+              caption: caption,
+              thumb: thumb,
+            };
+            this._albums.push(album);
+          }
+        }, 1000);
+        this.home.images = JSON.parse(this.home.imagesAsString);
+        var y = document.getElementById('skeleton-section');
+        y.style.display = 'none';
+        x.style.display = 'block';
+        this.setEnergyFeatures(
+          this.home.consumo.substring(0, 1),
+          this.home.emisiones.substring(0, 1)
+        );
+        L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
+        this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
+          [this.home.lat, this.home.lng],
+          17
+        );
+        Stadia_OSMBright().addTo(this.mapAdd);
+        this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
+        this.colegio = JSON.parse(this.home.colegios);
+        this.universidad = JSON.parse(this.home.universidades);
+        this.mercados = JSON.parse(this.home.supermercados);
+        this.autobus = JSON.parse(this.home.bus);
+        this.aeropuerto = JSON.parse(this.home.aeropuerto);
+        this.beach = JSON.parse(this.home.distanciaAlMar);
+        this.metro = JSON.parse(this.home.metro);
+        // to clear circle when print any route
+        this.mapEvents.add('circle');
+        this.loadScripts();
+        this.timelineStatus();
         this.homeService.getHomes().subscribe((data) => {
           this.homes = data;
           for (let i = 0; i < this.homes.length; i++) {
@@ -307,11 +377,11 @@ differs;
         );
         this.router.navigateByUrl('/home');
       }
-    }));
+    }));*/
     // marcar el like
     if (this.state) {
       setTimeout(() => {
-        if (this.user.likePreferences.includes(this.home.viviendaId)) {
+        if (this.home.likeMeForever.includes(this.user.userId)) {
           const element = document.getElementById(this.home.viviendaId) as HTMLInputElement;
           element.checked = true;
         }
@@ -333,15 +403,17 @@ differs;
 
   cuoreLike(id: string) {
     if (this.state) {
-      if (this.user.likePreferences.includes(id)) {
-        this.user.likePreferences.forEach((item, index) => {
-          if (item == id) this.user.likePreferences.splice(index, 1);
+      var selectedHome = this.home;
+      var userValue = this.user.userId;
+      if (selectedHome.likeMeForever.includes(userValue)) {
+        selectedHome.likeMeForever.forEach((item, index) => {
+          if (item == userValue) selectedHome.likeMeForever.splice(index, 1);
         });
-        this.user.likePreferencesAsString = this.user.likePreferences.toString();
-        this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
-          next: (res: User) => {
-            this.user = this.userService.performUser(res);
-            this.authenticationService.addUserToLocalCache(this.user);
+        selectedHome.likeMeForeverAsString = selectedHome.likeMeForever.toString();
+        this.subscriptions.push(this.homeService.updateHome(selectedHome).subscribe({
+          next: (res: Home) => {
+            var homeaux = this.homeService.performHome(res);
+            this.home.likeMeForever = [...homeaux.likeMeForever]
             this.homeService.addHomeToLocalCache(this.home);
             this.createMessage("success", "Borrado desde favoritos");
           },
@@ -350,12 +422,12 @@ differs;
           }
         }));
       } else {
-        this.user.likePreferences.push(id);
-        this.user.likePreferencesAsString = this.user.likePreferences.toString();
-        this.subscriptions.push(this.userService.updateUser(this.user, this.user.id).subscribe({
-          next: (res: User) => {
-            this.user = this.userService.performUser(res);
-            this.authenticationService.addUserToLocalCache(this.user);
+        this.home.likeMeForever.push(userValue);
+        this.home.likeMeForeverAsString = this.home.likeMeForever.toString();
+        this.subscriptions.push(this.homeService.updateHome(this.home).subscribe({
+          next: (res: Home) => {
+            var homeaux = this.homeService.performHome(res);
+            this.home.likeMeForever = [...homeaux.likeMeForever]
             this.homeService.addHomeToLocalCache(this.home);
             this.createMessage("success", "Guardado en favoritos");
           },
@@ -372,7 +444,7 @@ differs;
   }
 
   open(index: number): void {
-    this._lightbox.open(this._albums, index, { centerVertically:true, wrapAround:true });
+    this._lightbox.open(this._albums, index, { centerVertically: true, wrapAround: true });
   }
 
   calcPriceM2(price: string, sup: string): number {
@@ -447,6 +519,22 @@ differs;
       node.type = 'text/javascript';
       node.async = false;
       document.getElementsByTagName('body')[0].appendChild(node);
+    }
+  }
+
+  timelineStatus() {
+    if (this.home.porcentajeTerminado == 0) {
+      this.inicioVentas = nzStatus.wait;
+      this.inicioConstruccion = nzStatus.wait;
+      this.mudandose = nzStatus.wait;
+    } else if (this.home.porcentajeTerminado > 0 && this.home.porcentajeTerminado < 100) {
+      this.inicioVentas = nzStatus.finish;
+      this.inicioConstruccion = nzStatus.wait;
+      this.mudandose = nzStatus.wait;
+    } else if (this.home.porcentajeTerminado == 100) {
+      this.inicioVentas = nzStatus.finish;
+      this.inicioConstruccion = nzStatus.finish;
+      this.mudandose = nzStatus.finish;
     }
   }
 

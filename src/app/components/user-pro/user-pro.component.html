@@ -1,4 +1,646 @@
-<!-- puntos de colores para cambiar el color
+<!-- destacar modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel" style="letter-spacing: 0.5px;">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ghost buttons -->
+<a id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]"
+  fragment={{this.routerLinkModel}} target="_blank"></a>
+
+<!-- / .main-navbar tables-->
+
+<!-- End Default Dark Table -->
+<!--<div class="promo-popup animated">
+
+  <div class="pp-intro-bar"> Need More Templates?
+    <span class="close">
+      <i class="material-icons">close</i>
+    </span>
+    <span class="up">
+      <i class="material-icons">keyboard_arrow_up</i>
+    </span>
+  </div>
+  <div class="pp-inner-content">
+    <h2>Dashboard Pro</h2>
+    <p>A premium & modern Bootstrap admin dashboard template pack.</p>
+    <a class="pp-cta extra-action">More Demos</a>
+  </div>
+</div>-->
+
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav class="example-sidenav mt-5" mode="side" [class.mat-elevation-z4]="true" mode="side"
+    [ngClass]="'fullscreen-nav'" [fixedInViewport]="true" [fixedTopGap]="0" [fixedBottomGap]="0">
+    <!--col-lg-8 col-md-10 col-sm-12 col-xs-12 d-flex-->
+    <nav class="navbar bg-body-tertiary bg-secondary fixed-top">
+      <div class="container-fluid">
+        <a class="btn btn-success my-auto float-start" (click)="sidenav.toggle();"><ion-icon
+            name="arrow-back-outline"></ion-icon>&nbsp;Volver</a>
+      </div>
+    </nav>
+    <ng-container class=" mb-5" *ngIf="this.tipo.includes(this.home.tipo)">
+      <form #updateHomeForm="ngForm" (ngSubmit)="updateHome()" id="updateHomeForm">
+        <p-card header="General">
+          <!--1st row-->
+          <div class="form-group row mt-3">
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex flex-column">
+              <label for="tipodevia" class="text-nowrap">Tipo de vía</label>
+              <nz-select panelWidth="fit-content" #tipodevia name="tipodevia" class="viaSelect w-100"
+                nzPlaceHolder="Calle, avenida, plaza..." [nzSize]="sizeM" [(ngModel)]="this.home.tipoDeVia"
+                (nzOpenChange)="rotateArrows($event,'viaSelect')">
+                <nz-option *ngFor="let opt of tipo_de_via" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <label for="calle">Nombre</label>
+              <input #calle nz-input placeholder="Nombre de la vía p. ej. Paseo de la Castellana..."
+                [(ngModel)]="this.home.calle" name="calle" id="calle" />
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <label for="numero">Numero</label>
+              <input nz-input #numero placeholder="Número" ngModel pattern="\d*" maxlength="6"
+                (keypress)="numberOnly($event)" name="numero" [(ngModel)]="this.home.numero" />
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <label for="piso">Piso</label>
+              <nz-input-group>
+                <div nz-row>
+                  <div nz-col nzSpan="10" class="float-start">
+                    <input nz-input #piso placeholder="Piso" ngModel pattern="\d*" maxlength="4"
+                      (keypress)="numberOnly($event)" name="piso" [(ngModel)]="this.home.piso" />
+                  </div>
+                  <div nz-col nzSpan="4" class="text-center">
+                    <label class="mt-1">de</label>
+                  </div>
+                  <div nz-col nzSpan="10" class="float-end">
+                    <input nz-input #plantaMasAlta ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
+                      name="plantaMasAlta" [(ngModel)]="this.home.plantaMasAlta" />
+                  </div>
+                </div>
+              </nz-input-group>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <label for="bajoOP">Planta baja</label>
+              <ng-container>
+                <div nz-row>
+                  <div nz-col nzSpan="24" class="float-start">
+                    <!--<mat-checkbox (change)="checkBox(this.home.bajoOplantabaja?true:false)" 
+                          checked="{{this.home.bajoOplantabaja}}" [(ngModel)]="this.home.bajoOplantabaja">Es un bajo</mat-checkbox>-->
+                    <p-checkbox [(ngModel)]="this.home.bajoOplantabaja"
+                      (ngModelChange)="checkBox(this.home.bajoOplantabaja?true:false)" [binary]="true"
+                      label="Es un bajo" class="my-auto" />
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <label for="cp">CP</label>
+              <input nz-input #cp placeholder="Código postal" ngModel pattern="\d*" maxlength="5"
+                (keypress)="numberOnly($event)" name="cp" [(ngModel)]="this.home.cp" />
+            </div>
+          </div>
+          <!--2nd row-->
+          <div class="form-group row mt-2 align-items-center">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-auto">
+              <label for="distrito">Distrito</label>
+              <input nz-input #distrito placeholder="Distrito" [(ngModel)]="this.home.distrito" name="distrito" />
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6  align-self-start">
+              <label for="superficie">Superficie</label>
+              <input #superficie nz-input ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)"
+                name="superficie" [(ngModel)]="this.home.superficie" placeholder="M²" />
+            </div>
+            <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 align-self-start">
+              <label for="habitaciones" class=" text-nowrap">Dormitorios</label>
+              <input #habitaciones nz-input ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
+                name="habitaciones" [(ngModel)]="this.home.habitaciones" placeholder="0" />
+            </div>
+            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 align-self-start">
+              <label for="banyos">Aseos</label>
+              <input nz-input #banyos ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)" name="banyos"
+                [(ngModel)]="this.home.aseos" placeholder="0" />
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 align-items-center d-flex flex-column align-items-center">
+              <label for="aseoEnsuiteInput" class="text-nowrap">Aseo ensuite</label>
+              <nz-select #aseoEnsuiteInput name="aseoEnsuiteInput" class="d-block flex-column aseoensuiteSelect w-100"
+                nzPlaceHolder="0" [nzSize]="sizeM" [(ngModel)]="this.home.aseoEnsuite"
+                (nzOpenChange)="rotateArrows($event,'aseoensuiteSelect')">
+                <nz-option *ngFor="let opt of bathRooms" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-2 col-sm-6 col-xs-12 mx-auto">
+              <label for="tipo" class="text-nowrap">Tipo</label>
+              <nz-select #typeInput name="typeInput" class="d-block flex-column typeSelect" nzPlaceHolder="Seleccione"
+                [nzSize]="sizeM" [(ngModel)]="this.home.tipo" (ngModelChange)="formFieldControl()"
+                (nzOpenChange)="rotateArrows($event,'typeSelect')">
+                <nz-option *ngFor="let opt of tipo" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <!--3rd row-->
+          <div class="form-group row mt-2 align-items-center">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex flex-column">
+              <label for="estado" class="text-nowrap">Estado</label>
+              <nz-select #stateInput="ngModel" class="d-block flex-column estadoSelect w-100" name="stateInput"
+                nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.estado"
+                (nzOpenChange)="rotateArrows($event,'estadoSelect')">
+                <nz-option *ngFor="let opt of propertyState" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex flex-column">
+              <label for="estado" class="text-nowrap">Condición</label>
+              <nz-select #optionInput0 class="d-block flex-column condicionSelect" name="optionInput0"
+                nzPlaceHolder="Compartir" [nzSize]="sizeM" [(ngModel)]="this.home.condicion"
+                (ngModelChange)="formFieldControl()" (nzOpenChange)="rotateArrows($event,'condicionSelect')">
+                <nz-option *ngFor="let opt of condicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="precioFinal">Precio de venta</label>
+              <input nz-input placeholder="€" [(ngModel)]="this.home.precioFinal" ngModel pattern="\d*" maxlength="8"
+                #precioFinal (keypress)="numberOnly($event)" name="precioFinal" [disabled]="this.saleTab.value" />
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="precioAlquiler">Precio/mes</label>
+              <input nz-input placeholder="€/mes" [(ngModel)]="this.home.precioAlquiler" ngModel pattern="\d*"
+                maxlength="5" #precioAlquiler (keypress)="numberOnly($event)" name="precioAlquiler"
+                [disabled]="this.home.condicion=='Venta'" [disabled]="this.rentTab.value" />
+            </div>
+          </div>
+          <!--4rd row-->
+          <div class="form-group row mt-2 align-items-center">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="badgeInput" class="text-nowrap">Destacar</label>
+              <nz-select class="d-block destacarSelect w-100" #badgeInput="ngModel" name="badgeInput" nzPlaceHolder=""
+                [nzSize]="sizeM" [(ngModel)]="this.home.destacar"
+                (nzOpenChange)="rotateArrows($event,'destacarSelect')">
+                <nz-option *ngFor="let opt of badge" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="colorDestacar" class="">Color Destacar</label>
+              <div class="text-center">
+                <nz-color-picker nzTrigger="hover" name="colorDestacar" (ngModelChange)="checkBox($event)"
+                  [(ngModel)]="this.home.colorDestacar"></nz-color-picker>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="yearBuild">Antiguedad</label>
+              <nz-date-picker id="yearBuild" #yearBuild nzMode="year" nzFormat="yyyy" (ngModelChange)="checkBox($event)"
+                class="d-block flex-column" name="yearBuild" [(ngModel)]="this.yearAntiguedad"
+                [nzDisabledDate]="disabledDatePost"></nz-date-picker>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="Orientacion">Orientación</label>
+              <nz-select #Orientacion="ngModel" name="Orientacion" [nzPlaceHolder]="this.home.orientacion"
+                class="d-block flex-column orientacionSelect w-100"
+                (nzOpenChange)="rotateArrows($event,'orientacionSelect')" [nzSize]="sizeM"
+                [(ngModel)]="this.home.orientacion">
+                <nz-option *ngFor="let opt of orientacion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <!--5th row-->
+          <div class="form-group row mt-2 align-items-center">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="garage">Garage&nbsp;<i nz-tooltip [nzTooltipTrigger]="'click'"
+                  nzTooltipTitle="Si la plaza se vende aparte introduzca el precio adicional"
+                  class="bi bi-info-square"></i></label>
+              <nz-select #garage name="garageInput" nzPlacement="topRight" class="d-block flex-column garageSelect"
+                [nzPlaceHolder]="this.home.garage" [nzDropdownRender]="renderTemplate" [nzSize]="sizeM"
+                (nzOpenChange)="rotateArrows($event,'garageSelect')" [(ngModel)]="this.home.garage">
+                <nz-option *ngFor="let opt of carPlaces" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+              <ng-template #renderTemplate>
+                <p-divider type="dashed"></p-divider>
+                <div class="container d-flex text-nowrap mt-2">
+                  <input class="d-block" id="parkingOptional" nz-input #parkingOptional style="width:84px;"
+                    (keypress)="numberOnly($event)" />
+                  <a class="add-item d-block" (click)="addParkingPrice(parkingOptional)" nzTooltipPlacement="top"
+                    nz-tooltip nzTooltipTitle="Puedes añadir el precio adicional de venta o de alquiler de la plaza">
+                    <ion-icon name="add-outline"></ion-icon>Precio
+                  </a>
+                </div>
+              </ng-template>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="city" class="d-flex flex-start">Ciudad</label>
+              <button name="city" class="button is-success is-outlined is-small w-100" id="provButton"
+                (click)="locationMap()">{{this.home.ciudad}}</button>
+              <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
+                [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}">
+                <div id="map_2" style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
+                </div>
+                <div class="row my-2 mx-3">
+                  <button name="city" class="button is-dark is-outlined is-small" id="provButton2"
+                    (click)="showCityResult()">Guardar</button>
+                </div>
+              </p-dialog>
+              <input #ciudad nz-input ngModel name="ciudad" class="form-control" [(ngModel)]="this.home.ciudad"
+                style="display:none;" required>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 mx-auto">
+              <label for="viewsInput">Vistas</label>
+              <nz-select #viewsInput name="viewsInput" class="d-block flex-column vistasSelect w-100"
+                (nzOpenChange)="rotateArrows($event,'vistasSelect')" nzPlaceHolder="Seleccione" [nzSize]="sizeM"
+                [(ngModel)]="this.preSelectedViews" nzMode="multiple" nzAllowClear>
+                <nz-option *ngFor="let opt of vistas" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+              <!--<p-floatLabel>
+                    <label for="float-label" class="text-white d-block">Vistas</label>
+                    <p-multiSelect [options]="views | keyvalue" optionLabel="value" placeholder="Vistas"
+                      [maxSelectedLabels]="11" display="chip" [showClear]="true" [panelStyle]="{'width':'100%'}"
+                      [selectionLimit]="11" [virtualScroll]="true" inputId="float-label" optionValue="value"
+                      (onChange)="setReactiveValues($event.value,'vistas')" name="vistas" [filter]="true"
+                      [virtualScrollItemSize]="43" class="multiselect-custom-virtual-scroll w-100"
+                      [(ngModel)]="this.preSelectedViews">
+                    </p-multiSelect>
+                  </p-floatLabel>-->
+            </div>
+          </div>
+          <!--6th row-->
+          <div class="form-group row mt-2 align-items-center">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
+              <label for="descripcion" class="required">Descripción</label>
+              <textarea rows="6" class="" required nz-input [(ngModel)]="this.home.descripcion"></textarea>
+            </div>
+          </div>
+        </p-card>
+        <!--Energía y climatización-->
+        <div class="form-group row mt-3 align-items-center">
+          <p-card header="Energía y climatización">
+            <div class="col-12">
+              <mat-button-toggle (change)="this.home.aireAcondicionado= $event.source.checked"
+                [checked]="this.home.aireAcondicionado" [value]="this.home.aireAcondicionado" class="mx-1 my-1">Aire
+                acondicionado
+              </mat-button-toggle>
+              <mat-button-toggle (change)="this.home.calefaccion= $event.source.checked"
+                [checked]="this.home.calefaccion" [value]="this.home.calefaccion" class="mx-1 my-1">Calefacción
+              </mat-button-toggle>
+              <mat-button-toggle (change)="this.home.gasNatural= $event.source.checked" [checked]="this.home.gasNatural"
+                [value]="this.home.gasNatural" class="mx-1 my-1">Gas natural
+              </mat-button-toggle>
+              <mat-button-toggle (change)="this.home.aerotermia= $event.source.checked" [checked]="this.home.aerotermia"
+                [value]="this.home.aerotermia" class="mx-1 my-1">Aerotermia
+              </mat-button-toggle>
+              <mat-button-toggle (change)="this.home.dobleAcristalamiento= $event.source.checked"
+                [checked]="this.home.dobleAcristalamiento" [value]="this.home.dobleAcristalamiento"
+                class="mx-1 my-1">Doble acristalamiento
+              </mat-button-toggle>
+              <mat-button-toggle (change)="this.home.panelesSolares= $event.source.checked"
+                [checked]="this.home.panelesSolares" [value]="this.home.panelesSolares" class="mx-1 my-1">Paneles
+                solares
+              </mat-button-toggle>
+              <mat-button-toggle (change)="this.home.ventilacionCruzada= $event.source.checked"
+                [checked]="this.home.ventilacionCruzada" [value]="this.home.ventilacionCruzada"
+                class="mx-1 my-1">Ventilación cruzada
+              </mat-button-toggle>
+            </div>
+            <div class="form-group row mt-3 align-items-center">
+              <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 mx-auto">
+                <label for="emisiones">Emisiones</label>
+                <nz-select class="nzSelectL w-100 emisionesSelect" nzPlaceHolder="Emisiones" [nzSize]="size"
+                  name="emisiones" [(ngModel)]="this.home.emisiones"
+                  (nzOpenChange)="rotateArrows($event,'emisionesSelect')">
+                  <nz-option *ngFor="let opt of calificacion_emisiones" [nzValue]=opt
+                    [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 mx-auto">
+                <label for="consumo">Consumo</label>
+                <nz-select class="nzSelectL w-100 consumoSelect" nzPlaceHolder="Consumo" [nzSize]="size"
+                  [(ngModel)]="this.home.consumo" (click)="rotateArrows($event,'consumoSelect')" name="consumo">
+                  <nz-option *ngFor="let opt of calificacion_consumo" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 mx-auto">
+                <label for="consumo" class="my-auto">Certificado energético</label>
+                <div class="container" *ngIf="this.home.energyCertAsString && !this.imageChangedEventEnergyUpdate">
+                  <img [src]="this.energyImage" style="aspect-ratio: 16/9;" alt="">
+                </div>
+                <div class="container">
+                  <div class="row">
+                    <image-cropper [imageChangedEvent]="imageChangedEventEnergyUpdate" [maintainAspectRatio]="false"
+                      [aspectRatio]="16 / 9" format="png" (imageCropped)="imageCropped($event,'energyUpdate')"
+                      (imageLoaded)="imageLoaded($event,'energyUpdate')" (cropperReady)="cropperReady()"
+                      (loadImageFailed)="loadImageFailed()">
+                    </image-cropper>
+                  </div>
+                  <div class="row">
+                    <div class="col-10">
+                      <div class="file is-small is-light is-boxed">
+                        <label class="file-label">
+                          <input class="file-input" type="file" name="resume"
+                            (change)="fileChangeEvent($event,'energyUpdate')" accept="image/*" />
+                          <span class="file-cta">
+                            <c-badge color="success text-nowrap">{{this.tempEnergyTagNameUpdate}}</c-badge>
+                            <span class="file-icon" style="color:#999;">
+                              <i class="fas fa-cloud-upload-alt color-secondary"></i>
+                            </span>
+                            <span class="file-label text-secondary">Etiqueta</span>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <button *ngIf="this.tempEnergyTagNameUpdate" class="my-auto btn-close"
+                        (click)="clearEnergySelection('energyUpdate')"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </p-card>
+        </div>
+        <!--Comunidad-->
+        <div class="form-group row mt-3 align-items-center">
+          <p-card header="Comunidad">
+            <mat-button-toggle (change)="this.home.videoPortero= $event.source.checked"
+              [checked]="this.home.videoPortero" [value]="this.home.videoPortero" class="mx-1 my-1">Video
+              portero
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.piscinaComp= $event.source.checked" [checked]="this.home.piscinaComp"
+              [value]="this.home.piscinaComp" class="mx-1 my-1">Piscina
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.tenis= $event.source.checked" [checked]="this.home.tenis"
+              [value]="this.home.tenis" class="mx-1 my-1">Tenis
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.padel= $event.source.checked" [checked]="this.home.padel"
+              [value]="this.home.padel" class="mx-1 my-1">Padel
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.sauna= $event.source.checked" [checked]="this.home.sauna"
+              [value]="this.home.sauna" class="mx-1 my-1">Sauna
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.zonaDeOcio= $event.source.checked" [checked]="this.home.zonaDeOcio"
+              [value]="this.home.zonaDeOcio" class="mx-1 my-1">Zona de ocio
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.jardin= $event.source.checked" [checked]="this.home.jardin"
+              [value]="this.home.jardin" class="mx-1 my-1">Zonas verdes
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.columpios= $event.source.checked" [checked]="this.home.columpios"
+              [value]="this.home.columpios" class="mx-1 my-1">Zona infantil
+            </mat-button-toggle>
+          </p-card>
+        </div>
+        <div class="form-group row mt-3 align-items-center">
+          <p-card header="Seguridad">
+            <mat-button-toggle (change)="this.home.recepcion24_7= $event.source.checked"
+              [checked]="this.home.recepcion24_7" [value]="this.home.recepcion24_7" class="mx-1 my-1">Recepción 24/7
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.videoVigilancia= $event.source.checked"
+              [checked]="this.home.videoVigilancia" [value]="this.home.videoVigilancia" class="mx-1 my-1">Video
+              vigilancia
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.alarmaIncendios= $event.source.checked"
+              [checked]="this.home.alarmaIncendios" [value]="this.home.alarmaIncendios" class="mx-1 my-1">Alarma de
+              incendios
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.extintores= $event.source.checked" [checked]="this.home.extintores"
+              [value]="this.home.extintores" class="mx-1 my-1">Rociadores de incendio
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.generadorEmergencia= $event.source.checked"
+              [checked]="this.home.generadorEmergencia" [value]="this.home.generadorEmergencia"
+              class="mx-1 my-1">Generador de emergencia
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.instalacionesDiscapacitados= $event.source.checked"
+              [checked]="this.home.instalacionesDiscapacitados" [value]="this.home.instalacionesDiscapacitados"
+              class="mx-1 my-1">Vivienda accesible
+            </mat-button-toggle>
+          </p-card>
+        </div>
+        <div class="form-group row mt-3 align-items-center">
+          <p-card header="Extras">
+            <mat-button-toggle (change)="this.home.ascensor= $event.source.checked" [checked]="this.home.ascensor"
+              [value]="this.home.ascensor" class="mx-1 my-1">Ascensor
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.terraza= $event.source.checked" [checked]="this.home.terraza"
+              [value]="this.home.terraza" class="mx-1 my-1">Terraza
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.balcon= $event.source.checked" [checked]="this.home.balcon"
+              [value]="this.home.balcon" class="mx-1 my-1">Balcón
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.parquet= $event.source.checked" [checked]="this.home.parquet"
+              [value]="this.home.parquet" class="mx-1 my-1">Parquet
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.cabinaHidromasaje= $event.source.checked"
+              [checked]="this.home.cabinaHidromasaje" [value]="this.home.cabinaHidromasaje" class="mx-1 my-1">Cabina de
+              hidromasaje
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.jacuzzi= $event.source.checked" [checked]="this.home.jacuzzi"
+              [value]="this.home.jacuzzi" class="mx-1 my-1">Jacuzzi
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.piscinaPrivada= $event.source.checked"
+              [checked]="this.home.piscinaPrivada" [value]="this.home.piscinaPrivada" class="mx-1 my-1">Piscina
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.gym= $event.source.checked" [checked]="this.home.gym"
+              [value]="this.home.gym" class="mx-1 my-1">Gimnasio
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.golf= $event.source.checked" [checked]="this.home.golf"
+              [value]="this.home.golf" class="mx-1 my-1">Golf a pocos km
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.armariosEmpotrados= $event.source.checked"
+              [checked]="this.home.armariosEmpotrados" [value]="this.home.armariosEmpotrados" class="mx-1 my-1">Armarios
+              empotrados
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.amueblado= $event.source.checked" [checked]="this.home.amueblado"
+              [value]="this.home.amueblado" class="mx-1 my-1">Amueblado completo
+            </mat-button-toggle>
+            <mat-button-toggle (change)="this.home.trastero= $event.source.checked" [checked]="this.home.trastero"
+              [value]="this.home.trastero" class="mx-1 my-1">Trastero
+            </mat-button-toggle>
+          </p-card>
+        </div>
+        <div class="form-group row mt-3 align-items-center"
+          *ngIf="this.home.condicion=='Alquiler' || this.home.condicion == 'Alquiler y venta' || this.home.condicion == 'Compartir'">
+          <p-card header="Condiciones de alquiler">
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="fianza">Fianza</label>
+                <mat-button-toggle-group name="fianza" aria-label="fianza" [(ngModel)]="this.home.fianza">
+                  <mat-button-toggle value="No">No</mat-button-toggle>
+                  <mat-button-toggle value="1">1 Mes</mat-button-toggle>
+                  <mat-button-toggle value="2">2 Meses</mat-button-toggle>
+                  <mat-button-toggle value="+2">Consultar</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="mascotas">Se admiten mascotas</label>
+                <mat-button-toggle-group name="mascotas" aria-label="mascotas" [(ngModel)]="this.home.mascotas">
+                  <mat-button-toggle value="Si">Si</mat-button-toggle>
+                  <mat-button-toggle value="No">No</mat-button-toggle>
+                  <mat-button-toggle value="Consultar">Consultar</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block text-nowrap" for="estancia">Tipo de estancia</label>
+                <mat-button-toggle-group name="estancia" aria-label="estancia" [(ngModel)]="this.home.estanciaMinima">
+                  <mat-button-toggle value="Anual">Anual</mat-button-toggle>
+                  <mat-button-toggle value="Temporal">Temporal</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <div class="ml-3">
+                  <label class="d-block" for="monthAvailable">Disponibilidad</label>
+                  <nz-date-picker id="monthAvailable" #monthAvailable nzMode="month" nzFormat="yyyy/MM"
+                    [(ngModel)]="this.dateMonthFormat" (ngModelChange)="setMonth($event)"
+                    [nzDisabledDate]="disabledDatePre" name="monthAvailable" class="mt-1"></nz-date-picker>&nbsp;
+                  <i nz-tooltip [nzTooltipTrigger]="'click'"
+                    nzTooltipTitle="Si la vivienda no está vacía, seleccione el mes para cuando estará disponible"
+                    class="bi bi-info-square"></i>
+                </div>
+              </div>
+            </div>
+          </p-card>
+        </div>
+        <div class="form-group row mt-3 align-items-center" *ngIf="this.home.condicion == 'Compartir'">
+          <p-card header="Acerca de compartir">
+            <div class="row">
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="fumar">Se puede fumar</label>
+                <mat-button-toggle-group name="fumar" aria-label="fumar" [(ngModel)]="this.home.sepuedeFumar">
+                  <mat-button-toggle [value]="true">Si</mat-button-toggle>
+                  <mat-button-toggle [value]="false">No</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="parejas">Se admiten parejas</label>
+                <mat-button-toggle-group name="parejas" aria-label="parejas" [(ngModel)]="this.home.seadmitenParejas">
+                  <mat-button-toggle [value]="true">Si</mat-button-toggle>
+                  <mat-button-toggle [value]="false">No</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="menores">Se admiten menores de edad</label>
+                <mat-button-toggle-group name="menores" aria-label="menores"
+                  [(ngModel)]="this.home.seadmitenMenoresdeedad">
+                  <mat-button-toggle [value]="true">Si</mat-button-toggle>
+                  <mat-button-toggle [value]="false">No</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="mochileros">Se admiten mochileros</label>
+                <mat-button-toggle-group name="mochileros" aria-label="mochileros"
+                  [(ngModel)]="this.home.seadmitenMochileros">
+                  <mat-button-toggle [value]="true">Si</mat-button-toggle>
+                  <mat-button-toggle [value]="false">No</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="jubilados">Se admiten jubilados</label>
+                <mat-button-toggle-group name="jubilados" aria-label="jubilados"
+                  [(ngModel)]="this.home.seadmitenJubilados">
+                  <mat-button-toggle [value]="true">Si</mat-button-toggle>
+                  <mat-button-toggle [value]="false">No</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="lgtbi">Se admite LGTBI</label>
+                <mat-button-toggle-group name="lgtbi" aria-label="lgtbi" [(ngModel)]="this.home.seadmiteLGTBI">
+                  <mat-button-toggle [value]="true">Si</mat-button-toggle>
+                  <mat-button-toggle [value]="false">No</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="propietariovive">El propietario vive en la casa</label>
+                <mat-button-toggle-group name="propietariovive" aria-label="propietariovive"
+                  [(ngModel)]="this.home.propietarioviveEnlacasa">
+                  <mat-button-toggle [value]="true">Si</mat-button-toggle>
+                  <mat-button-toggle [value]="false">No</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="gastos">Gastos</label>
+                <mat-button-toggle-group name="gastos" aria-label="gastos" [(ngModel)]="this.home.gastos">
+                  <mat-button-toggle value="Incluidos">Incluidos</mat-button-toggle>
+                  <mat-button-toggle value="Aparte">Aparte</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="perfil_compartir">Perfil</label>
+                <nz-input-group class="float-start" [nzSuffix]="perfilCompartir" [nzSize]="size">
+                  <input nz-input #perfil_compartir name="perfil_compartir"
+                    [(ngModel)]="this.homeDto.perfilCompartir" />
+                </nz-input-group>
+                <ng-template #perfilCompartir>
+                  <i nz-tooltip [nzTooltipTrigger]="'click'" nzTooltipTitle="Hombre, mujer, indiferente"
+                    class="bi bi-info-square"></i>
+                </ng-template>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="ambienteCompartir">Ambiente</label>
+                <nz-input-group class="float-start" [nzSuffix]="ambienteCompartir" [nzSize]="size">
+                  <input nz-input #ambiente_compartir name="ambienteCompartir" [(ngModel)]="this.home.ambiente" />
+                </nz-input-group>
+                <ng-template #ambienteCompartir>
+                  <i nz-tooltip [nzTooltipTrigger]="'click'" nzTooltipTitle="Ninguno, estudiantes, funcionarios..."
+                    class="bi bi-info-square"></i>
+                </ng-template>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                <label class="d-block" for="habitantes">Habitantes actualmente</label>
+                <nz-input-group class="float-start" [nzSuffix]="habitantesActualmente" [nzSize]="size">
+                  <input nz-input #habitantes_Actualmente name="habitantes"
+                    [(ngModel)]="this.home.habitantesActualmente" />
+                </nz-input-group>
+                <ng-template #habitantesActualmente>
+                  <i nz-tooltip [nzTooltipTrigger]="'click'" nzTooltipTitle="Ninguno, 1, 2..."
+                    class="bi bi-info-square"></i>
+                </ng-template>
+              </div>
+            </div>
+          </p-card>
+        </div>
+        <ng-container class="form-group row mt-3 align-items-center">
+          <p-card header="Movilidad">
+            <ng-container class="row">
+              <ul nz-menu nzMode="inline">
+                <li nz-submenu nzTitle="Navigation One" nzIcon="mail">
+                    
+                </li>
+                <li nz-submenu nzTitle="Navigation Two" nzIcon="appstore">
+                  <ul>
+
+                  </ul>
+                </li>
+                <li nz-submenu nzTitle="Navigation Three" nzIcon="setting">
+                  <ul>
+
+                  </ul>
+                </li>
+              </ul>
+              <div style="height: 50vh;">
+                <div id="map_3" #map_3 class="w-100 h-100 d-flex pr-0 mt-2 z-3 form-control">
+                </div>
+              </div>
+            </ng-container>
+          </p-card>
+        </ng-container>
+        <div class="form-group row mt-3 align-items-center">
+          <p-card header="Multimedia">
+          </p-card>
+        </div>
+      </form>
+    </ng-container>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-- puntos de colores para cambiar el color
 <div class="color-switcher animated">
   <h5>Accent Color</h5>
   <ul class="accent-colors">
@@ -45,109 +687,106 @@
 <div class="color-switcher-toggle animated pulse infinite">
   <i class="material-icons">settings</i>
 </div>-->
-<div class="container-fluid">
-  <div class="row">
-    <!-- Main Sidebar -->
-    <aside class="main-sidebar col-12 col-md-3 col-lg-2 px-0 "><!--open-->
-      <div class="main-navbar">
-        <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
-          <a class="navbar-brand w-100 mr-0" style="line-height: 25px;">
-            <div class="d-table m-auto">
-              <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;"
-                src="https://i.ibb.co/6YkD164/unknown-house.png"
-                alt="unknown-house">
-              <span class="d-none d-md-inline ml-1">Dashboard</span>
-            </div>
-          </a>
-          <a class="toggle-sidebar d-sm-inline d-md-none d-lg-none">
-            <i class="material-icons">&#xE5C4;</i>
-          </a>
-        </nav>
-      </div>
-      <form action="#" class="main-sidebar__search w-100 border-right d-sm-flex d-md-none d-lg-none">
-        <div class="input-group input-group-seamless ml-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              <i class="fas fa-search"></i>
-            </div>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Main Sidebar -->
+        <aside class="main-sidebar col-12 col-md-3 col-lg-2 px-0 "><!--open-->
+          <div class="main-navbar">
+            <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
+              <a class="navbar-brand w-100 mr-0" style="line-height: 25px;">
+                <div class="d-table m-auto">
+                  <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;"
+                    src="https://i.ibb.co/6YkD164/unknown-house.png" alt="unknown-house">
+                  <span class="d-none d-md-inline ml-1">Dashboard</span>
+                </div>
+              </a>
+              <a class="toggle-sidebar d-sm-inline d-md-none d-lg-none">
+                <i class="material-icons">&#xE5C4;</i>
+              </a>
+            </nav>
           </div>
-          <input class="navbar-search form-control" type="text" placeholder="Search for something..."
-            aria-label="Search">
-        </div>
-      </form>
-      <div class="nav-wrapper">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#stats">
-              <i class="material-icons">trending_up</i>
-              <span>Estado</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " data-bs-toggle="tab" href="#reviews">
-              <i class="material-icons">star</i>
-              <span>Valoraciones</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " data-bs-toggle="tab" href="#messages">
-              <i class="material-icons">chat</i>
-              <span>Mensajes</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " disabled >
-              <i class="material-icons">remove_circle</i>
-              <span>Reservado</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " data-bs-toggle="tab" href="#tables">
-              <i class="material-icons">home</i>
-              <span>Anuncios</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " data-bs-toggle="tab" href="#profile">
-              <i class="material-icons">person</i>
-              <span>Perfil</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " data-bs-toggle="tab" href="#ads">
-              <i class="material-icons">favorite</i>
-              <span>Favoritos</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </aside>
-    <!-- End Main Sidebar -->
-    <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3 bg-white">
-      <div class="main-navbar sticky-top bg-white">
-        <!-- Main Navbar -->
-        <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0 bg-white">
-          <div class="main-navbar__search w-100 d-none d-md-flex d-lg-flex"
-            *ngIf='this.brandingColor!=null || this.brandingColor!=undefined'
-            [style.background-color]="this.brandingColor">
-            <div class="mx-auto order-0 d-flex"
-              *ngIf="this.tempBranding==null && this.user.brandImageAsString!=undefined || this.user.brandImageAsString!=null">
-              <a class="navbar-brand d-none d-md-block">
-                <img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">
-              </a>
+          <form action="#" class="main-sidebar__search w-100 border-right d-sm-flex d-md-none d-lg-none">
+            <div class="input-group input-group-seamless ml-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="fas fa-search"></i>
+                </div>
+              </div>
+              <input class="navbar-search form-control" type="text" placeholder="Search for something..."
+                aria-label="Search">
             </div>
-            <div class="mx-auto order-0"
-              *ngIf="this.tempBranding==null && this.user.brandImageAsString==undefined || this.user.brandImageAsString==null">
-              <a class="navbar-brand d-none d-md-block">
-                <!--<img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">-->
-              </a>
-            </div>
-            <div class="mx-auto order-0 d-flex" *ngIf="this.tempBranding!=null">
-              <a class="navbar-brand d-none d-md-block">
-                <img class="brandImage" [src]="this.croppedImageBranding" alt="">
-              </a>
-            </div>
-            <!--<div class="input-group input-group-seamless ml-3">
+          </form>
+          <div class="nav-wrapper">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#stats">
+                  <i class="material-icons">trending_up</i>
+                  <span>Estado</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " data-bs-toggle="tab" href="#reviews">
+                  <i class="material-icons">star</i>
+                  <span>Valoraciones</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " data-bs-toggle="tab" href="#messages">
+                  <i class="material-icons">chat</i>
+                  <span>Mensajes</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " disabled>
+                  <i class="material-icons">remove_circle</i>
+                  <span>Reservado</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " data-bs-toggle="tab" href="#tables">
+                  <i class="material-icons">home</i>
+                  <span>Anuncios</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " data-bs-toggle="tab" href="#profile">
+                  <i class="material-icons">person</i>
+                  <span>Perfil</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " data-bs-toggle="tab" href="#ads">
+                  <i class="material-icons">favorite</i>
+                  <span>Favoritos</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </aside>
+        <!-- End Main Sidebar -->
+        <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3 bg-white">
+          <div class="main-navbar sticky-top bg-white">
+            <!-- Main Navbar -->
+            <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0 bg-white">
+              <div class="main-navbar__search w-100 d-none d-md-flex d-lg-flex" *ngIf='this.brandingColor'
+                [style.background-color]="this.brandingColor">
+                <div class="mx-auto order-0 d-flex" *ngIf="this.tempBranding==null && this.user.brandImageAsString">
+                  <a class="navbar-brand d-none d-md-block">
+                    <img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">
+                  </a>
+                </div>
+                <div class="mx-auto order-0"
+                  *ngIf="this.tempBranding==null && (this.user.brandImageAsString==undefined || this.user.brandImageAsString==null)">
+                  <a class="navbar-brand d-none d-md-block">
+                    <!--<img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">-->
+                  </a>
+                </div>
+                <div class="mx-auto order-0 d-flex" *ngIf="this.tempBranding!=null">
+                  <a class="navbar-brand d-none d-md-block">
+                    <img class="brandImage" [src]="this.croppedImageBranding" alt="">
+                  </a>
+                </div>
+                <!--<div class="input-group input-group-seamless ml-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
                   <i class="fas fa-search"></i>
@@ -156,502 +795,511 @@
               <input class="navbar-search form-control" type="text" placeholder="Search for something..."
                 aria-label="Search">
             </div>-->
-          </div>
-          <ul class="navbar-nav border-left flex-row ">
-            <li class="nav-item border-right dropdown notifications">
-              <a class="nav-link nav-link-icon text-center" href="" role="button" id="dropdownMenuLink"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <div class="nav-link-icon__wrapper">
-                  <i class="material-icons">&#xE7F4;</i>
-                  <span class="badge badge-pill badge-danger">2</span>
-                </div>
-              </a>
-              <div class="dropdown-menu dropdown-menu-small" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="">
-                  <div class="notification__icon-wrapper">
-                    <div class="notification__icon">
-                      <i class="material-icons">&#xE6E1;</i>
+              </div>
+              <ul class="navbar-nav border-left flex-row ">
+                <li class="nav-item border-right dropdown notifications">
+                  <a class="nav-link nav-link-icon text-center" href="" role="button" id="dropdownMenuLink"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="nav-link-icon__wrapper">
+                      <i class="material-icons">&#xE7F4;</i>
+                      <span class="badge badge-pill badge-danger">2</span>
                     </div>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-small" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="">
+                      <div class="notification__icon-wrapper">
+                        <div class="notification__icon">
+                          <i class="material-icons">&#xE6E1;</i>
+                        </div>
+                      </div>
+                      <div class="notification__content">
+                        <span class="notification__category">Analytics</span>
+                        <p>Your website’s active users count increased by
+                          <span class="text-success text-semibold">28%</span> in the last week. Great job!
+                        </p>
+                      </div>
+                    </a>
+                    <a class="dropdown-item" href="">
+                      <div class="notification__icon-wrapper">
+                        <div class="notification__icon">
+                          <i class="material-icons">&#xE8D1;</i>
+                        </div>
+                      </div>
+                      <div class="notification__content">
+                        <span class="notification__category">Sales</span>
+                        <p>Last week your store’s sales count decreased by
+                          <span class="text-danger text-semibold">5.52%</span>. It could have been worse!
+                        </p>
+                      </div>
+                    </a>
+                    <a class="dropdown-item notification__all text-center" href=""> View all Notifications </a>
                   </div>
-                  <div class="notification__content">
-                    <span class="notification__category">Analytics</span>
-                    <p>Your website’s active users count increased by
-                      <span class="text-success text-semibold">28%</span> in the last week. Great job!
-                    </p>
+                </li>
+                <li class="nav-item dropdown" ngbDropdown>
+                  <a class="nav-link dropdown-toggle text-nowrap px-3" ngbDropdownToggle role="button"
+                    aria-haspopup="true" aria-expanded="false">
+                    <img class="user-avatar rounded-circle mr-2" [src]="this.user?.profileImage.imageUrl"
+                      alt="User Avatar">
+                    <span class="d-none d-md-inline-block">{{this.user?.firstname}} {{this.user?.lastname}}</span>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-small" ngbDropdownMenu>
+                    <a class="dropdown-item bg-white" ngbDropdownItem routerLink="/home">
+                      <i class="material-icons">map</i> Mapa</a>
+                    <a class="dropdown-item bg-white" ngbDropdownItem routerLink="/admin">
+                      <i class="material-icons">storage</i> Admin area</a>
+                    <a class="dropdown-item bg-white" ngbDropdownItem>
+                      <i class="material-icons">note_add</i> Add New Post</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-danger bg-white" ngbDropdownItem (click)="onLogOut()"
+                      routerLink="/home">
+                      <i class="material-icons text-danger">&#xE879;</i> Salir </a>
                   </div>
+                </li>
+              </ul>
+              <nav class="nav">
+                <a class="nav-link nav-link-icon toggle-sidebar d-md-inline d-lg-none text-center border-left">
+                  <i class="material-icons">&#xE5D2;</i>
                 </a>
-                <a class="dropdown-item" href="">
-                  <div class="notification__icon-wrapper">
-                    <div class="notification__icon">
-                      <i class="material-icons">&#xE8D1;</i>
-                    </div>
-                  </div>
-                  <div class="notification__content">
-                    <span class="notification__category">Sales</span>
-                    <p>Last week your store’s sales count decreased by
-                      <span class="text-danger text-semibold">5.52%</span>. It could have been worse!
-                    </p>
-                  </div>
-                </a>
-                <a class="dropdown-item notification__all text-center" href=""> View all Notifications </a>
-              </div>
-            </li>
-            <li class="nav-item dropdown" ngbDropdown>
-              <a class="nav-link dropdown-toggle text-nowrap px-3" ngbDropdownToggle role="button" aria-haspopup="true"
-                aria-expanded="false">
-                <img class="user-avatar rounded-circle mr-2" [src]="this.user?.profileImage.imageUrl" alt="User Avatar">
-                <span class="d-none d-md-inline-block">{{this.user?.firstname}} {{this.user?.lastname}}</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-small" ngbDropdownMenu>
-                <a class="dropdown-item bg-white" ngbDropdownItem routerLink="/home">
-                  <i class="material-icons">map</i> Mapa</a>
-                <a class="dropdown-item bg-white" ngbDropdownItem routerLink="/admin">
-                  <i class="material-icons">storage</i> Admin area</a>
-                <a class="dropdown-item bg-white" ngbDropdownItem>
-                  <i class="material-icons">note_add</i> Add New Post</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger bg-white" ngbDropdownItem (click)="onLogOut()" routerLink="/home">
-                  <i class="material-icons text-danger">&#xE879;</i> Salir </a>
-              </div>
-            </li>
-          </ul>
-          <nav class="nav">
-            <a class="nav-link nav-link-icon toggle-sidebar d-md-inline d-lg-none text-center border-left">
-              <i class="material-icons">&#xE5D2;</i>
-            </a>
-          </nav>
-        </nav>
-      </div>
-      <!-- / .main-navbar -->
-      <div class="tab-content">
-        <div class="main-content-container container-fluid px-4 tab-pane fade show active" id="stats">
-          <!-- Page Header -->
-          <div class="page-header row no-gutters py-4">
-            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-              <span class="text-uppercase page-subtitle">Dashboard</span>
-              <h3 class="page-title">Last week stats</h3>
-            </div>
+              </nav>
+            </nav>
           </div>
-          <!-- End Page Header -->
-          <!-- Small Stats Blocks -->
-          <div class="row">
-            <div class="col-lg col-md-6 col-sm-6 mb-4">
-              <div class="stats-small stats-small--1 card card-small">
-                <div class="card-body p-0 d-flex">
-                  <div class="d-flex flex-column m-auto">
-                    <div class="stats-small__data text-center">
-                      <span class="stats-small__label text-uppercase">Views</span>
-                      <h6 class="stats-small__value count my-3">2,390</h6>
-                    </div>
-                    <div class="stats-small__data">
-                      <span class="stats-small__percentage stats-small__percentage--increase">4.7%</span>
-                    </div>
-                  </div>
-                  <canvas height="120" class="blog-overview-stats-small-1"></canvas>
+          <!-- / .main-navbar -->
+          <div class="tab-content">
+            <div class="main-content-container container-fluid px-4 tab-pane fade " id="stats">
+              <!-- Page Header -->
+              <div class="page-header row no-gutters py-4">
+                <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                  <span class="text-uppercase page-subtitle">Dashboard</span>
+                  <h3 class="page-title">Last week stats</h3>
                 </div>
               </div>
-            </div>
-            <div class="col-lg col-md-6 col-sm-6 mb-4">
-              <div class="stats-small stats-small--1 card card-small">
-                <div class="card-body p-0 d-flex">
-                  <div class="d-flex flex-column m-auto">
-                    <div class="stats-small__data text-center">
-                      <span class="stats-small__label text-uppercase">Likes</span>
-                      <h6 class="stats-small__value count my-3">182</h6>
-                    </div>
-                    <div class="stats-small__data">
-                      <span class="stats-small__percentage stats-small__percentage--increase">12.4%</span>
-                    </div>
-                  </div>
-                  <canvas height="120" class="blog-overview-stats-small-2"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg col-md-4 col-sm-6 mb-4">
-              <div class="stats-small stats-small--1 card card-small">
-                <div class="card-body p-0 d-flex">
-                  <div class="d-flex flex-column m-auto">
-                    <div class="stats-small__data text-center">
-                      <span class="stats-small__label text-uppercase">Comments</span>
-                      <h6 class="stats-small__value count my-3">8,147</h6>
-                    </div>
-                    <div class="stats-small__data">
-                      <span class="stats-small__percentage stats-small__percentage--decrease">3.8%</span>
-                    </div>
-                  </div>
-                  <canvas height="120" class="blog-overview-stats-small-3"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg col-md-4 col-sm-6 mb-4">
-              <div class="stats-small stats-small--1 card card-small">
-                <div class="card-body p-0 d-flex">
-                  <div class="d-flex flex-column m-auto">
-                    <div class="stats-small__data text-center">
-                      <span class="stats-small__label text-uppercase">Users</span>
-                      <h6 class="stats-small__value count my-3">2,413</h6>
-                    </div>
-                    <div class="stats-small__data">
-                      <span class="stats-small__percentage stats-small__percentage--increase">12.4%</span>
-                    </div>
-                  </div>
-                  <canvas height="120" class="blog-overview-stats-small-4"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg col-md-4 col-sm-12 mb-4">
-              <div class="stats-small stats-small--1 card card-small">
-                <div class="card-body p-0 d-flex">
-                  <div class="d-flex flex-column m-auto">
-                    <div class="stats-small__data text-center">
-                      <span class="stats-small__label text-uppercase">Subscribers</span>
-                      <h6 class="stats-small__value count my-3">17,281</h6>
-                    </div>
-                    <div class="stats-small__data">
-                      <span class="stats-small__percentage stats-small__percentage--decrease">2.4%</span>
-                    </div>
-                  </div>
-                  <canvas height="120" class="blog-overview-stats-small-5"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- End Small Stats Blocks -->
-          <div class="row">
-            <!-- Users Stats -->
-            <div class="col-lg-8 col-md-12 col-sm-12 mb-4">
-              <div class="card card-small">
-                <div class="card-header border-bottom">
-                  <h6 class="m-0">Users</h6>
-                </div>
-                <div class="card-body pt-0">
-                  <div class="row border-bottom py-2 bg-light">
-                    <div class="col-12 col-sm-6">
-                      <div id="blog-overview-date-range"
-                        class="input-daterange input-group input-group-sm my-auto ml-auto mr-auto ml-sm-auto mr-sm-0"
-                        style="max-width: 350px;">
-                        <input type="text" class="input-sm form-control" name="start" placeholder="Start Date"
-                          id="blog-overview-date-range-1">
-                        <input type="text" class="input-sm form-control" name="end" placeholder="End Date"
-                          id="blog-overview-date-range-2">
-                        <span class="input-group-append">
-                          <span class="input-group-text">
-                            <i class="material-icons"></i>
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="col-12 col-sm-6 d-flex mb-2 mb-sm-0">
-                      <button type="button"
-                        class="btn btn-sm btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0">View Full Report
-                        &rarr;</button>
-                    </div>
-                  </div>
-                  <canvas height="130" style="max-width: 100% !important;" class="blog-overview-users"></canvas>
-                </div>
-              </div>
-            </div>
-            <!-- End Users Stats -->
-            <!-- Users By Device Stats -->
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small h-100">
-                <div class="card-header border-bottom">
-                  <h6 class="m-0">Users by device</h6>
-                </div>
-                <div class="card-body d-flex py-0">
-                  <canvas height="220" class="blog-users-by-device m-auto"></canvas>
-                </div>
-                <div class="card-footer border-top">
-                  <div class="row">
-                    <div class="col">
-                      <select class="custom-select custom-select-sm" style="max-width: 130px;">
-                        <option selected>Last Week</option>
-                        <option value="1">Today</option>
-                        <option value="2">Last Month</option>
-                        <option value="3">Last Year</option>
-                      </select>
-                    </div>
-                    <div class="col text-right view-report">
-                      <a href="">Full report &rarr;</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- End Users By Device Stats -->
-            <!-- New Draft Component -->
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-              <!-- Quick Post -->
-              <div class="card card-small h-100">
-                <div class="card-header border-bottom">
-                  <h6 class="m-0">New Draft</h6>
-                </div>
-                <div class="card-body d-flex flex-column">
-                  <form class="quick-post-form">
-                    <div class="form-group">
-                      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        placeholder="Brave New World">
-                    </div>
-                    <div class="form-group">
-                      <textarea class="form-control"
-                        placeholder="Words can be like X-rays if you use them properly..."></textarea>
-                    </div>
-                    <div class="form-group mb-0">
-                      <button type="submit" class="btn btn-accent">Create Draft</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              <!-- End Quick Post -->
-            </div>
-            <!-- End New Draft Component -->
-            <!-- Discussions Component -->
-            <div class="col-lg-5 col-md-12 col-sm-12 mb-4">
-              <div class="card card-small blog-comments">
-                <div class="card-header border-bottom">
-                  <h6 class="m-0 text-muted">Top 3 de esta semana</h6>
-                </div>
-                <div class="card-body p-0">
-                  <div class="blog-comments__item d-flex p-3">
-                    <div class="blog-comments__avatar mr-3">
-                      <img src="../../../assets/images/user-pro-dashboard/images/avatars/1.jpg" alt="User avatar" />
-                    </div>
-                    <div class="blog-comments__content">
-                      <div class="blog-comments__meta text-muted">
-                        <a class="text-secondary" href="">James Johnson</a> on
-                        <a class="text-secondary" href="">Hello World!</a>
-                        <span class="text-muted">– 3 days ago</span>
-                      </div>
-                      <p class="m-0 my-1 mb-2 text-muted">Well, the way they make shows is, they make one show ...</p>
-                      <div class="blog-comments__actions">
-                        <div class="btn-group btn-group-sm">
-                          <button type="button" class="btn btn-white">
-                            <span class="text-success">
-                              <i class="material-icons">check</i>
-                            </span> Approve </button>
-                          <button type="button" class="btn btn-white">
-                            <span class="text-danger">
-                              <i class="material-icons">clear</i>
-                            </span> Reject </button>
-                          <button type="button" class="btn btn-white">
-                            <span class="text-light">
-                              <i class="material-icons">more_vert</i>
-                            </span> Edit </button>
+              <!-- End Page Header -->
+              <!-- Small Stats Blocks -->
+              <div class="row">
+                <div class="col-lg col-md-6 col-sm-6 mb-4">
+                  <div class="stats-small stats-small--1 card card-small">
+                    <div class="card-body p-0 d-flex">
+                      <div class="d-flex flex-column m-auto">
+                        <div class="stats-small__data text-center">
+                          <span class="stats-small__label text-uppercase">Views</span>
+                          <h6 class="stats-small__value count my-3">2,390</h6>
+                        </div>
+                        <div class="stats-small__data">
+                          <span class="stats-small__percentage stats-small__percentage--increase">4.7%</span>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div class="blog-comments__item d-flex p-3">
-                    <div class="blog-comments__avatar mr-3">
-                      <img src="../../../assets/images/user-pro-dashboard/images/avatars/2.jpg" alt="User avatar" />
-                    </div>
-                    <div class="blog-comments__content">
-                      <div class="blog-comments__meta text-muted">
-                        <a class="text-secondary" href="">James Johnson</a> on
-                        <a class="text-secondary" href="">Hello World!</a>
-                        <span class="text-muted">– 4 days ago</span>
-                      </div>
-                      <p class="m-0 my-1 mb-2 text-muted">After the avalanche, it took us a week to climb out. Now...
-                      </p>
-                      <div class="blog-comments__actions">
-                        <div class="btn-group btn-group-sm">
-                          <button type="button" class="btn btn-white">
-                            <span class="text-success">
-                              <i class="material-icons">check</i>
-                            </span> Approve </button>
-                          <button type="button" class="btn btn-white">
-                            <span class="text-danger">
-                              <i class="material-icons">clear</i>
-                            </span> Reject </button>
-                          <button type="button" class="btn btn-white">
-                            <span class="text-light">
-                              <i class="material-icons">more_vert</i>
-                            </span> Edit </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="blog-comments__item d-flex p-3">
-                    <div class="blog-comments__avatar mr-3">
-                      <img src="../../../assets/images/user-pro-dashboard/images/avatars/3.jpg" alt="User avatar" />
-                    </div>
-                    <div class="blog-comments__content">
-                      <div class="blog-comments__meta text-muted">
-                        <a class="text-secondary" href="">James Johnson</a> on
-                        <a class="text-secondary" href="">Hello World!</a>
-                        <span class="text-muted">– 5 days ago</span>
-                      </div>
-                      <p class="m-0 my-1 mb-2 text-muted">My money's in that office, right? If she start giving me...
-                      </p>
-                      <div class="blog-comments__actions">
-                        <div class="btn-group btn-group-sm">
-                          <button type="button" class="btn btn-white">
-                            <span class="text-success">
-                              <i class="material-icons">check</i>
-                            </span> Approve </button>
-                          <button type="button" class="btn btn-white">
-                            <span class="text-danger">
-                              <i class="material-icons">clear</i>
-                            </span> Reject </button>
-                          <button type="button" class="btn btn-white">
-                            <span class="text-light">
-                              <i class="material-icons">more_vert</i>
-                            </span> Edit </button>
-                        </div>
-                      </div>
+                      <canvas height="120" class="blog-overview-stats-small-1"></canvas>
                     </div>
                   </div>
                 </div>
-                <div class="card-footer border-top">
-                  <div class="row">
-                    <div class="col text-center view-report">
-                      <button type="submit" class="btn btn-white">View All Comments</button>
+                <div class="col-lg col-md-6 col-sm-6 mb-4">
+                  <div class="stats-small stats-small--1 card card-small">
+                    <div class="card-body p-0 d-flex">
+                      <div class="d-flex flex-column m-auto">
+                        <div class="stats-small__data text-center">
+                          <span class="stats-small__label text-uppercase">Likes</span>
+                          <h6 class="stats-small__value count my-3">182</h6>
+                        </div>
+                        <div class="stats-small__data">
+                          <span class="stats-small__percentage stats-small__percentage--increase">12.4%</span>
+                        </div>
+                      </div>
+                      <canvas height="120" class="blog-overview-stats-small-2"></canvas>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg col-md-4 col-sm-6 mb-4">
+                  <div class="stats-small stats-small--1 card card-small">
+                    <div class="card-body p-0 d-flex">
+                      <div class="d-flex flex-column m-auto">
+                        <div class="stats-small__data text-center">
+                          <span class="stats-small__label text-uppercase">Comments</span>
+                          <h6 class="stats-small__value count my-3">8,147</h6>
+                        </div>
+                        <div class="stats-small__data">
+                          <span class="stats-small__percentage stats-small__percentage--decrease">3.8%</span>
+                        </div>
+                      </div>
+                      <canvas height="120" class="blog-overview-stats-small-3"></canvas>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg col-md-4 col-sm-6 mb-4">
+                  <div class="stats-small stats-small--1 card card-small">
+                    <div class="card-body p-0 d-flex">
+                      <div class="d-flex flex-column m-auto">
+                        <div class="stats-small__data text-center">
+                          <span class="stats-small__label text-uppercase">Users</span>
+                          <h6 class="stats-small__value count my-3">2,413</h6>
+                        </div>
+                        <div class="stats-small__data">
+                          <span class="stats-small__percentage stats-small__percentage--increase">12.4%</span>
+                        </div>
+                      </div>
+                      <canvas height="120" class="blog-overview-stats-small-4"></canvas>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg col-md-4 col-sm-12 mb-4">
+                  <div class="stats-small stats-small--1 card card-small">
+                    <div class="card-body p-0 d-flex">
+                      <div class="d-flex flex-column m-auto">
+                        <div class="stats-small__data text-center">
+                          <span class="stats-small__label text-uppercase">Subscribers</span>
+                          <h6 class="stats-small__value count my-3">17,281</h6>
+                        </div>
+                        <div class="stats-small__data">
+                          <span class="stats-small__percentage stats-small__percentage--decrease">2.4%</span>
+                        </div>
+                      </div>
+                      <canvas height="120" class="blog-overview-stats-small-5"></canvas>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <!-- End Discussions Component -->
-            <!-- Top Referrals Component -->
-            <div class="col-lg-3 col-md-12 col-sm-12 mb-4">
-              <div class="card card-small">
-                <div class="card-header border-bottom">
-                  <h6 class="m-0 text-muted">Ranking</h6>
-                </div>
-                <div class="card-body p-0">
-                  <ul class="list-group list-group-small list-group-flush">
-                    <li class="list-group-item d-flex px-3">
-                      <span class="text-semibold text-fiord-blue">GitHub</span>
-                      <span class="ml-auto text-right text-semibold text-reagent-gray">19,291</span>
-                    </li>
-                    <li class="list-group-item d-flex px-3">
-                      <span class="text-semibold text-fiord-blue">Stack Overflow</span>
-                      <span class="ml-auto text-right text-semibold text-reagent-gray">11,201</span>
-                    </li>
-                    <li class="list-group-item d-flex px-3">
-                      <span class="text-semibold text-fiord-blue">Hacker News</span>
-                      <span class="ml-auto text-right text-semibold text-reagent-gray">9,291</span>
-                    </li>
-                    <li class="list-group-item d-flex px-3">
-                      <span class="text-semibold text-fiord-blue">Reddit</span>
-                      <span class="ml-auto text-right text-semibold text-reagent-gray">8,281</span>
-                    </li>
-                    <li class="list-group-item d-flex px-3">
-                      <span class="text-semibold text-fiord-blue">The Next Web</span>
-                      <span class="ml-auto text-right text-semibold text-reagent-gray">7,128</span>
-                    </li>
-                    <li class="list-group-item d-flex px-3">
-                      <span class="text-semibold text-fiord-blue">Tech Crunch</span>
-                      <span class="ml-auto text-right text-semibold text-reagent-gray">6,218</span>
-                    </li>
-                    <li class="list-group-item d-flex px-3">
-                      <span class="text-semibold text-fiord-blue">YouTube</span>
-                      <span class="ml-auto text-right text-semibold text-reagent-gray">1,218</span>
-                    </li>
-                    <li class="list-group-item d-flex px-3">
-                      <span class="text-semibold text-fiord-blue">Adobe</span>
-                      <span class="ml-auto text-right text-semibold text-reagent-gray">827</span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="card-footer border-top">
-                  <div class="row">
-                    <div class="col">
-                      <select class="custom-select custom-select-sm">
-                        <option selected>Last Week</option>
-                        <option value="1">Today</option>
-                        <option value="2">Last Month</option>
-                        <option value="3">Last Year</option>
-                      </select>
+              <!-- End Small Stats Blocks -->
+              <div class="row">
+                <!-- Users Stats -->
+                <div class="col-lg-8 col-md-12 col-sm-12 mb-4">
+                  <div class="card card-small">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0">Users</h6>
                     </div>
-                    <div class="col text-right view-report">
-                      <a href="">Full report &rarr;</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- End Top Referrals Component -->
-          </div>
-        </div>
-        <!--Messages-->
-        <div class="main-content-container container-fluid tab-pane fade " id="messages">
-          <!--<div class="page-header row no-gutters py-4">-->
-          <div class="col-12 col-sm-4 text-center text-sm-left mb-0 mr-2 " style="min-width: 70%;">
-            <!--<span class="text-uppercase page-subtitle">Mensajes</span>
-            <h3 class="page-title">Mis notificaciones</h3>-->
-            <div class="row clearfix">
-              <div class="col-lg-12 mt-2">
-                <div class="card chat-app">
-                  <div id="plist" class="people-list border-top">
-                    <div class="input-group" style="position: relative;">
-                      <input type="text" class="form-control" placeholder="Search..." style="padding-left:35px;">
-                      <i class="fa fa-search" style="position: absolute; top:10px; left: 15px;"></i>
-                    </div>
-                    <ul class="list-unstyled chat-list mt-2 mb-0">
-                      @for(user of this.user.chatsOpened; track user){
-                      <li class="clearfix" [ngClass]="selectedUserId == user.id ? 'active' : ''"
-                        (click)="changeUser(user)">
-                        <img *ngIf="this.user.profileImageAsString" src="{{getAvatar(user.profileImageAsString).imageUrl}}" alt="avatar">
-                        <img *ngIf="!this.user.profileImageAsString" src="{{getProfileImage()}}" alt="avatar">
-                        <div class="about">
-                          <div class="name">{{user.username}}</div>
-                          <div class="status"> <i class="fa fa-circle"
-                              [ngClass]="user.status === 'online' ? 'online' : 'offline'"></i> {{user.status}} </div>
+                    <div class="card-body pt-0">
+                      <div class="row border-bottom py-2 bg-light">
+                        <div class="col-12 col-sm-6">
+                          <div id="blog-overview-date-range"
+                            class="input-daterange input-group input-group-sm my-auto ml-auto mr-auto ml-sm-auto mr-sm-0"
+                            style="max-width: 350px;">
+                            <input type="text" class="input-sm form-control" name="start" placeholder="Start Date"
+                              id="blog-overview-date-range-1">
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End Date"
+                              id="blog-overview-date-range-2">
+                            <span class="input-group-append">
+                              <span class="input-group-text">
+                                <i class="material-icons"></i>
+                              </span>
+                            </span>
+                          </div>
                         </div>
-                      </li>
-                      }
-                    </ul>
+                        <div class="col-12 col-sm-6 d-flex mb-2 mb-sm-0">
+                          <button type="button"
+                            class="btn btn-sm btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0">View Full
+                            Report
+                            &rarr;</button>
+                        </div>
+                      </div>
+                      <canvas height="130" style="max-width: 100% !important;" class="blog-overview-users"></canvas>
+                    </div>
                   </div>
-                  @if(selectedUserId){
-                  <div class="chat">
-                    <div class="chat-header clearfix">
+                </div>
+                <!-- End Users Stats -->
+                <!-- Users By Device Stats -->
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small h-100">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0">Users by device</h6>
+                    </div>
+                    <div class="card-body d-flex py-0">
+                      <canvas height="220" class="blog-users-by-device m-auto"></canvas>
+                    </div>
+                    <div class="card-footer border-top">
                       <div class="row">
-                        <div class="col-lg-6">
-                          <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_info">
-                            <img src="{{getAvatar(selectedUser.profileImageAsString).imageUrl}}" alt="avatar">
-                          </a>
-                          <div class="chat-about">
-                            <h6 class="m-b-0">{{selectedUser.username}}</h6>
-                            <small>{{selectedUser.status}}</small>
+                        <div class="col">
+                          <select class="custom-select custom-select-sm" style="max-width: 130px;">
+                            <option selected>Last Week</option>
+                            <option value="1">Today</option>
+                            <option value="2">Last Month</option>
+                            <option value="3">Last Year</option>
+                          </select>
+                        </div>
+                        <div class="col text-right view-report">
+                          <a href="">Full report &rarr;</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Users By Device Stats -->
+                <!-- New Draft Component -->
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                  <!-- Quick Post -->
+                  <div class="card card-small h-100">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0">New Draft</h6>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                      <form class="quick-post-form">
+                        <div class="form-group">
+                          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                            placeholder="Brave New World">
+                        </div>
+                        <div class="form-group">
+                          <textarea class="form-control"
+                            placeholder="Words can be like X-rays if you use them properly..."></textarea>
+                        </div>
+                        <div class="form-group mb-0">
+                          <button type="submit" class="btn btn-accent">Create Draft</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <!-- End Quick Post -->
+                </div>
+                <!-- End New Draft Component -->
+                <!-- Discussions Component -->
+                <div class="col-lg-5 col-md-12 col-sm-12 mb-4">
+                  <div class="card card-small blog-comments">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0 text-muted">Top 3 de esta semana</h6>
+                    </div>
+                    <div class="card-body p-0">
+                      <div class="blog-comments__item d-flex p-3">
+                        <div class="blog-comments__avatar mr-3">
+                          <img src="../../../assets/images/user-pro-dashboard/images/avatars/1.jpg" alt="User avatar" />
+                        </div>
+                        <div class="blog-comments__content">
+                          <div class="blog-comments__meta text-muted">
+                            <a class="text-secondary" href="">James Johnson</a> on
+                            <a class="text-secondary" href="">Hello World!</a>
+                            <span class="text-muted">– 3 days ago</span>
+                          </div>
+                          <p class="m-0 my-1 mb-2 text-muted">Well, the way they make shows is, they make one show ...
+                          </p>
+                          <div class="blog-comments__actions">
+                            <div class="btn-group btn-group-sm">
+                              <button type="button" class="btn btn-white">
+                                <span class="text-success">
+                                  <i class="material-icons">check</i>
+                                </span> Approve </button>
+                              <button type="button" class="btn btn-white">
+                                <span class="text-danger">
+                                  <i class="material-icons">clear</i>
+                                </span> Reject </button>
+                              <button type="button" class="btn btn-white">
+                                <span class="text-light">
+                                  <i class="material-icons">more_vert</i>
+                                </span> Edit </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="blog-comments__item d-flex p-3">
+                        <div class="blog-comments__avatar mr-3">
+                          <img src="../../../assets/images/user-pro-dashboard/images/avatars/2.jpg" alt="User avatar" />
+                        </div>
+                        <div class="blog-comments__content">
+                          <div class="blog-comments__meta text-muted">
+                            <a class="text-secondary" href="">James Johnson</a> on
+                            <a class="text-secondary" href="">Hello World!</a>
+                            <span class="text-muted">– 4 days ago</span>
+                          </div>
+                          <p class="m-0 my-1 mb-2 text-muted">After the avalanche, it took us a week to climb out.
+                            Now...
+                          </p>
+                          <div class="blog-comments__actions">
+                            <div class="btn-group btn-group-sm">
+                              <button type="button" class="btn btn-white">
+                                <span class="text-success">
+                                  <i class="material-icons">check</i>
+                                </span> Approve </button>
+                              <button type="button" class="btn btn-white">
+                                <span class="text-danger">
+                                  <i class="material-icons">clear</i>
+                                </span> Reject </button>
+                              <button type="button" class="btn btn-white">
+                                <span class="text-light">
+                                  <i class="material-icons">more_vert</i>
+                                </span> Edit </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="blog-comments__item d-flex p-3">
+                        <div class="blog-comments__avatar mr-3">
+                          <img src="../../../assets/images/user-pro-dashboard/images/avatars/3.jpg" alt="User avatar" />
+                        </div>
+                        <div class="blog-comments__content">
+                          <div class="blog-comments__meta text-muted">
+                            <a class="text-secondary" href="">James Johnson</a> on
+                            <a class="text-secondary" href="">Hello World!</a>
+                            <span class="text-muted">– 5 days ago</span>
+                          </div>
+                          <p class="m-0 my-1 mb-2 text-muted">My money's in that office, right? If she start giving
+                            me...
+                          </p>
+                          <div class="blog-comments__actions">
+                            <div class="btn-group btn-group-sm">
+                              <button type="button" class="btn btn-white">
+                                <span class="text-success">
+                                  <i class="material-icons">check</i>
+                                </span> Approve </button>
+                              <button type="button" class="btn btn-white">
+                                <span class="text-danger">
+                                  <i class="material-icons">clear</i>
+                                </span> Reject </button>
+                              <button type="button" class="btn btn-white">
+                                <span class="text-light">
+                                  <i class="material-icons">more_vert</i>
+                                </span> Edit </button>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="chat-history " style="height: 65vh; width: 100%; overflow-y: scroll; ">
-                      <ul class="mb-0">
-                        @for(chat of chats; track chat){
-                        @if(selectedUserId != chat.userId){
-                        <li class="clearfix d-flex" style="flex-direction: column; width: 100%; align-items:flex-end;">
-                          <div class="message-data">
-                            <span class="badge text-bg-secondary">{{formatChatDate(chat.date)}}</span>
-                          </div>
-                          <div class="message-box my-message">
-                            <p>{{chat.message}}<br><span>{{formatChatHourPopup(chat.date)}}</span></p>
-                          </div>
+                    <div class="card-footer border-top">
+                      <div class="row">
+                        <div class="col text-center view-report">
+                          <button type="submit" class="btn btn-white">View All Comments</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Discussions Component -->
+                <!-- Top Referrals Component -->
+                <div class="col-lg-3 col-md-12 col-sm-12 mb-4">
+                  <div class="card card-small">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0 text-muted">Ranking</h6>
+                    </div>
+                    <div class="card-body p-0">
+                      <ul class="list-group list-group-small list-group-flush">
+                        <li class="list-group-item d-flex px-3">
+                          <span class="text-semibold text-fiord-blue">GitHub</span>
+                          <span class="ml-auto text-right text-semibold text-reagent-gray">19,291</span>
                         </li>
-                        }@else {
-                        <li class="clearfix">
-                          <div class="message-data">
-                            <span class="badge text-bg-secondary">{{formatChatDate(chat.date)}}</span>
+                        <li class="list-group-item d-flex px-3">
+                          <span class="text-semibold text-fiord-blue">Stack Overflow</span>
+                          <span class="ml-auto text-right text-semibold text-reagent-gray">11,201</span>
+                        </li>
+                        <li class="list-group-item d-flex px-3">
+                          <span class="text-semibold text-fiord-blue">Hacker News</span>
+                          <span class="ml-auto text-right text-semibold text-reagent-gray">9,291</span>
+                        </li>
+                        <li class="list-group-item d-flex px-3">
+                          <span class="text-semibold text-fiord-blue">Reddit</span>
+                          <span class="ml-auto text-right text-semibold text-reagent-gray">8,281</span>
+                        </li>
+                        <li class="list-group-item d-flex px-3">
+                          <span class="text-semibold text-fiord-blue">The Next Web</span>
+                          <span class="ml-auto text-right text-semibold text-reagent-gray">7,128</span>
+                        </li>
+                        <li class="list-group-item d-flex px-3">
+                          <span class="text-semibold text-fiord-blue">Tech Crunch</span>
+                          <span class="ml-auto text-right text-semibold text-reagent-gray">6,218</span>
+                        </li>
+                        <li class="list-group-item d-flex px-3">
+                          <span class="text-semibold text-fiord-blue">YouTube</span>
+                          <span class="ml-auto text-right text-semibold text-reagent-gray">1,218</span>
+                        </li>
+                        <li class="list-group-item d-flex px-3">
+                          <span class="text-semibold text-fiord-blue">Adobe</span>
+                          <span class="ml-auto text-right text-semibold text-reagent-gray">827</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="card-footer border-top">
+                      <div class="row">
+                        <div class="col">
+                          <select class="custom-select custom-select-sm">
+                            <option selected>Last Week</option>
+                            <option value="1">Today</option>
+                            <option value="2">Last Month</option>
+                            <option value="3">Last Year</option>
+                          </select>
+                        </div>
+                        <div class="col text-right view-report">
+                          <a href="">Full report &rarr;</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Top Referrals Component -->
+              </div>
+            </div>
+            <!--Messages-->
+            <div class="main-content-container container-fluid tab-pane fade " id="messages">
+              <!--<div class="page-header row no-gutters py-4">-->
+              <div class="col-12 col-sm-4 text-center text-sm-left mb-0 mr-2 " style="min-width: 70%;">
+                <!--<span class="text-uppercase page-subtitle">Mensajes</span>
+            <h3 class="page-title">Mis notificaciones</h3>-->
+                <div class="row clearfix">
+                  <div class="col-lg-12 mt-2">
+                    <div class="card chat-app">
+                      <div id="plist" class="people-list border-top">
+                        <div class="input-group" style="position: relative;">
+                          <input type="text" class="form-control" placeholder="Search..." style="padding-left:35px;">
+                          <i class="fa fa-search" style="position: absolute; top:10px; left: 15px;"></i>
+                        </div>
+                        <ul class="list-unstyled chat-list mt-2 mb-0">
+                          @for(user of this.user.chatsOpened; track user){
+                          <li class="clearfix" [ngClass]="selectedUserId == user.id ? 'active' : ''"
+                            (click)="changeUser(user)">
+                            <img *ngIf="this.user.profileImageAsString"
+                              src="{{getAvatar(user.profileImageAsString).imageUrl}}" alt="avatar">
+                            <img *ngIf="!this.user.profileImageAsString" src="{{getProfileImage()}}" alt="avatar">
+                            <div class="about">
+                              <div class="name">{{user.username}}</div>
+                              <div class="status"> <i class="fa fa-circle"
+                                  [ngClass]="user.status === 'online' ? 'online' : 'offline'"></i> {{user.status}}
+                              </div>
+                            </div>
+                          </li>
+                          }
+                        </ul>
+                      </div>
+                      @if(selectedUserId){
+                      <div class="chat">
+                        <div class="chat-header clearfix">
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_info">
+                                <img src="{{getAvatar(selectedUser.profileImageAsString).imageUrl}}" alt="avatar">
+                              </a>
+                              <div class="chat-about">
+                                <h6 class="m-b-0">{{selectedUser.username}}</h6>
+                                <small>{{selectedUser.status}}</small>
+                              </div>
+                            </div>
                           </div>
-                          <div class="message-box friend-message">
-                            <p>{{chat.message}}<br>
-                              <span>{{formatChatHourPopup(chat.date)}}</span>
-                              <!--<span class="tick"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="15"
+                        </div>
+                        <div class="chat-history " style="height: 65vh; width: 100%; overflow-y: scroll; ">
+                          <ul class="mb-0">
+                            @for(chat of chats; track chat){
+                            @if(selectedUserId != chat.userId){
+                            <li class="clearfix d-flex"
+                              style="flex-direction: column; width: 100%; align-items:flex-end;">
+                              <div class="message-data">
+                                <span class="badge text-bg-secondary">{{formatChatDate(chat.date)}}</span>
+                              </div>
+                              <div class="message-box my-message">
+                                <p>{{chat.message}}<br><span>{{formatChatHourPopup(chat.date)}}</span></p>
+                              </div>
+                            </li>
+                            }@else {
+                            <li class="clearfix">
+                              <div class="message-data">
+                                <span class="badge text-bg-secondary">{{formatChatDate(chat.date)}}</span>
+                              </div>
+                              <div class="message-box friend-message">
+                                <p>{{chat.message}}<br>
+                                  <span>{{formatChatHourPopup(chat.date)}}</span>
+                                  <!--<span class="tick"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="15"
                                   id="msg-dblcheck-ack" x="2063" y="2076">
                                   <path
                                     d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"
                                     fill="#4fc3f7" />
                                 </svg></span>-->
-                            </p>
-                          </div>
-                        </li>
-                        }
-                        }
-                      </ul>
-                    </div>
-                    <!-- El de origen
+                                </p>
+                              </div>
+                            </li>
+                            }
+                            }
+                          </ul>
+                        </div>
+                        <!-- El de origen
                     <div class="chat-message clearfix d-block">
                       <div class="input-group mb-0">
                         <div (click)="sendMessage()"  class="input-group-prepend">
@@ -664,173 +1312,180 @@
                       </div>
                     </div>-->
 
-                   
-                    <div id="input-section">
-                      <input type="text" pInputText [(ngModel)]="message" />
-                      <button class="send" (click)="sendMessage()" [disabled]="!message">
-                        <div class="circle "><ion-icon name="send"></ion-icon></div>
-                      </button>
+
+                        <div id="input-section">
+                          <input type="text" pInputText [(ngModel)]="message" />
+                          <button class="send" (click)="sendMessage()" [disabled]="!message">
+                            <div class="circle "><ion-icon name="send"></ion-icon></div>
+                          </button>
+                        </div>
+
+
+
+                      </div>
+                      }@else {}
                     </div>
-
-                    
-
                   </div>
-                  }@else {}
                 </div>
               </div>
-            </div>
-          </div>
-          <!--</div>-->
-          <div class="row ">
+              <!--</div>-->
+              <div class="row ">
 
-          </div>
-        </div>
-        <div class="main-content-container container-fluid px-4 tab-pane fade " id="tables">
-          <!-- Page Header -->
-          <!--<div class="page-header row no-gutters py-4">
+              </div>
+            </div>
+            <div class="main-content-container container-fluid px-4 tab-pane fade show active" id="tables">
+              <!-- Page Header -->
+              <!--<div class="page-header row no-gutters py-4">
             <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
               <span class="text-uppercase page-subtitle">Overview</span>
               <h3 class="page-title">Mis propiedades</h3>
             </div>
           </div>-->
-          <!-- End Page Header -->
-          <!-- Default Light Table -->
-          <div class="row">
-            <div class="col">
-              <div class="card card-small mb-4" >
-                <div class="card-header border-bottom">
-                  <h6 class="m-0">Activas</h6>
-                </div>
-                <div class="card-body p-0  text-center" *ngFor="let appHome of this.user.domains; let i =index">
-                 <ng-container >
-                  <div class="card-list ">
-                    <img class="image" *ngIf="appHome.images" (click)="showHome(appHome)" style="aspect-ratio:16/9;" [src]="appHome.images[0].imageUrl" alt="First slide"/>
-                    <div class="content">
-                        <div class="texts">
-                          <div>{{appHome.tipo}} en {{appHome.calle}} {{appHome.numero}} en {{appHome.condicion}} en {{appHome.ciudad}}</div>
-                            <div class="price under-market" *ngIf=" appHome.precioInicial != 0">
-                              <span *ngIf=" appHome.precioInicial != 0" class="prefix">En venta</span>
-                              <div *ngIf=" appHome.precioInicial != 0" class="price-container"><span class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span><span class="dimension"></span></div>
-                          </div>
-                          <div class="price" *ngIf="appHome.precioFinal > 0">
-                              <span class="prefix" *ngIf="appHome.precioInicial == 0">En venta</span>
-                              <div class="price-container">
-                                <span *ngIf="appHome.precioFinal!= null || appHome.precioFinal != undefined" class="price-value">{{formatNumberWithCommas(appHome.precioFinal)}}€</span>
-                              <div class="diff float-end mt-1" *ngIf="appHome.precioInicial != 0">
-                                 <span class="dimension under " style="color:#7ce800;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
+              <!-- End Page Header -->
+              <!-- Default Light Table -->
+              <div class="row">
+                <div class="col">
+                  <div class="card card-small mb-4">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0">Activas</h6>
+                    </div>
+                    <div class="card-body p-0  text-center" *ngFor="let appHome of this.user.domains; let i =index">
+                      <ng-container>
+                        <div class="card-list ">
+                          <img class="image" *ngIf="appHome.images" (click)="showHome(appHome)"
+                            style="aspect-ratio:16/9;" [src]="appHome.images[0].imageUrl" alt="First slide" />
+                          <div class="content">
+                            <div class="texts">
+                              <div>{{appHome.tipo}} en {{appHome.calle}} {{appHome.numero}} en {{appHome.condicion}} en
+                                {{appHome.ciudad}}</div>
+                              <div class="price under-market" *ngIf=" appHome.precioInicial != 0">
+                                <span *ngIf=" appHome.precioInicial != 0" class="prefix">En venta</span>
+                                <div *ngIf=" appHome.precioInicial != 0" class="price-container"><span
+                                    class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span><span
+                                    class="dimension"></span></div>
                               </div>
-                          </div>
-                          </div>
-                          <div *ngIf="appHome.precioAlquiler != 0"  class="price">
-                              <span class="prefix">En alquiler</span>
-                              <div class="price-container"><span *ngIf=" appHome.precioAlquiler != 0" class="price-value">{{formatNumberWithCommas(appHome.precioAlquiler)}}€</span><span *ngIf="appHome.precioAlquiler!=0" class="suffix">/mes</span><span class="dimension"></span></div>
-                          </div>
-                        </div>
-                        <div class="featured-box">
-                            <div class="private">
-                                <div class="feature float-end">
-                                  <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                    <button pRipple type="button" class="btn btn-primary" data-bs-toggle="modal" href="#exampleModal">Destacar</button>
-                                    <button pRipple (click)="openDrawer();updateHome()" type="button" class="btn btn-warning">Editar</button>
-                                    <button pRipple (click)="deleteHome(appHome)" type="button" class="btn btn-danger">Borrar</button>
+                              <div class="price" *ngIf="appHome.precioFinal > 0">
+                                <span class="prefix" *ngIf="appHome.precioInicial == 0">En venta</span>
+                                <div class="price-container">
+                                  <span *ngIf="appHome.precioFinal!= null || appHome.precioFinal != undefined"
+                                    class="price-value">{{formatNumberWithCommas(appHome.precioFinal)}}€</span>
+                                  <div class="diff float-end mt-1" *ngIf="appHome.precioInicial != 0">
+                                    <span class="dimension under "
+                                      style="color:#7ce800;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
                                   </div>
+                                </div>
+                              </div>
+                              <div *ngIf="appHome.precioAlquiler != 0" class="price">
+                                <span class="prefix">En alquiler</span>
+                                <div class="price-container"><span *ngIf=" appHome.precioAlquiler != 0"
+                                    class="price-value">{{formatNumberWithCommas(appHome.precioAlquiler)}}€</span><span
+                                    *ngIf="appHome.precioAlquiler!=0" class="suffix">/mes</span><span
+                                    class="dimension"></span></div>
                               </div>
                             </div>
+                            <div class="featured-box">
+                              <div class="private">
+                                <div class="feature float-end">
+                                  <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                    <button pRipple type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                      href="#exampleModal">Destacar</button>
+                                    <button pRipple (click)="sidenav.toggle();updateHome();openSidenav(appHome)"
+                                      type="button" class="btn btn-warning z-0">Editar</button>
+                                    <button pRipple (click)="deleteHome(appHome)" type="button"
+                                      class="btn btn-danger">Borrar</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
+                      </ng-container>
+                      <nz-empty *ngIf="!this.user.domains"
+                        nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                        [nzNotFoundContent]="contentTpl" [nzNotFoundFooter]="footerTpl">
+                        <ng-template #contentTpl>
+                          <span>
+                            Customize
+                            <a href="#API">Description</a>
+                          </span>
+                        </ng-template>
+                        <ng-template #footerTpl>
+                          <button nz-button nzType="primary">Crear ahora</button>
+                        </ng-template>
+                      </nz-empty>
                     </div>
-                </div>
-                </ng-container>
-                  <nz-empty *ngIf="!this.user.domains"
-                  nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                  [nzNotFoundContent]="contentTpl"
-                  [nzNotFoundFooter]="footerTpl">
-                  <ng-template #contentTpl>
-                    <span>
-                      Customize
-                      <a href="#API">Description</a>
-                    </span>
-                  </ng-template>
-                  <ng-template #footerTpl>
-                    <button nz-button nzType="primary">Crear ahora</button>
-                  </ng-template>
-                </nz-empty>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <!-- update drawer -->
-          <!--<nz-drawer
-          [nzClosable]="false"
-          [nzVisible]="visibleDrawer"
-          nzPlacement="right"
-          nzTitle="Basic Drawer"
-          (nzOnClose)="closeDrawer()">
-            <ng-container *nzDrawerContent>
-              <div class="border-bottom">
-                <ion-icon name="arrow-forward-outline" (click)="closeDrawer()" style="font-size: 2em;"></ion-icon>
-              </div>
-              <p>caja de texto...</p>
-              <p>caja de texto...</p>
-              <button class="btn btn-primary">Guardar</button>
-              <button class="btn btn-outline-primary ml-2" (click)="closeDrawer()" >Salir</button>
-            </ng-container>
-        </nz-drawer>-->
-        <p-sidebar [(visible)]="visibleDrawer" [fullScreen]="true">
-          <ng-template pTemplate="header">
-              <span class="font-semibold text-xl">
-                  Sidebar
+              <!-- update drawer -->
+
+              <!--<p-sidebar [(visible)]="visibleDrawer" [fullScreen]="true">
+            <ng-template pTemplate="header">
+              <span class="font-semibold text-xl border-bottom w-100 pb-2">
+                <button class="btn btn-outline-light text-white" (click)="closeDrawer()">Cancelar</button>
               </span>
-          </ng-template>
-          <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat.
-          </p>
-      </p-sidebar>
-        </div>
-        <div class="main-content-container container-fluid px-4 tab-pane fade" id="profile">
-          <!-- Page Header -->
-          <!--<div class="page-header row no-gutters py-4">
+            </ng-template>
+            <ng-template class="z-0" pTemplate="body">
+              <div class="row z-1">
+                <div class="col-12">
+                  
+                  
+
+                  <div class="container" *ngIf="this.home.tipo=='Proyecto nuevo'">
+                    <p>Esto va en New project!</p>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </p-sidebar>-->
+
+
+            </div>
+            <div class="main-content-container container-fluid px-4 tab-pane fade" id="profile">
+              <!-- Page Header -->
+              <!--<div class="page-header row no-gutters py-4">
             <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
               <span class="text-uppercase page-subtitle">Overview</span>
               <h3 class="page-title">User Profile</h3>
             </div>
           </div>-->
-          <!-- End Page Header -->
-          <!-- Default Light Table -->
-          <div class="row mt-5">
-            <div class="col-lg-4">
+              <!-- End Page Header -->
+              <!-- Default Light Table -->
+              <div class="row mt-5">
+                <div class="col-lg-4">
 
-              <div class="card card-small mb-4 pt-3">
-                <div class="profile-container">
-                  <div class="img-container" *ngIf="this.tempProfile==null">
-                    <img [src]="this.user.profileImage.imageUrl" alt="profile image">
-                  </div>
-                  <div class="img-container" *ngIf="this.tempProfile!=null">
-                    <img [src]="this.croppedImageProfile" alt="profile image">
-                  </div>
-                  <p class="info full-name">{{this.user.username}}</p>
-                  <p class="info role">
-                    <i class="fas fa-star"></i>
-                    4.9 (33 valoraciones)
-                  </p>
-                  <p class="info place">
-                    <i class="fas fa-map-marker-alt"></i>
-                    Martial arts, The tournament
-                  </p>
+                  <div class="card card-small mb-4 pt-3">
+                    <div class="profile-container">
+                      <div class="img-container" *ngIf="this.tempProfile==null">
+                        <img [src]="this.user.profileImage.imageUrl" alt="profile image">
+                      </div>
+                      <div class="img-container" *ngIf="this.tempProfile!=null">
+                        <img [src]="this.croppedImageProfile" alt="profile image">
+                      </div>
+                      <p class="info full-name">{{this.user.username}}</p>
+                      <p class="info role">
+                        <i class="fas fa-star"></i>
+                        4.9 (33 valoraciones)
+                      </p>
+                      <p class="info place">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Martial arts, The tournament
+                      </p>
 
-                  <div class="posts-info">
-                    <p><span>336</span> Vendidos</p>
-                    <p><span>4300</span> Likes</p>
-                    <p>
-                      <span *ngIf="this.user.domains">{{this.user.domains.length}}</span>
-                      <span *ngIf="!this.user.domains">0</span>
-                      Publicados</p>
-                  </div>
+                      <div class="posts-info">
+                        <p><span>336</span> Vendidos</p>
+                        <p><span>4300</span> Likes</p>
+                        <p>
+                          <span *ngIf="this.user.domains">{{this.user.domains.length}}</span>
+                          <span *ngIf="!this.user.domains">0</span>
+                          Publicados
+                        </p>
+                      </div>
 
-                  <button class="action" pRipple>Llamar</button>
-                  <button class="action message" pRipple>Chat</button>
-                </div>
-                <!--<div class="card-header border-bottom text-center">
+                      <button class="action" pRipple>Llamar</button>
+                      <button class="action message" pRipple>Chat</button>
+                    </div>
+                    <!--<div class="card-header border-bottom text-center">
                   <div class="mb-3 mx-auto" *ngIf="this.imageChangedEventProfile==null">
                     <img class="rounded-circle" [src]="this.user.profileImage.imageUrl"
                       alt="User Avatar" width="110">
@@ -860,439 +1515,516 @@
                   </li>
                 </ul>-->
 
-              </div>
-            </div>
-            <div class="col-lg-8">
-              <div class="card card-small mb-4">
-                <div class="card-header border-bottom">
-                  <h6 class="m-0">Mi perfil</h6>
+                  </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item p-3">
-                    <div class="row">
-                      <div class="col">
-                        <form #editUserForm="ngForm" (ngSubmit)="updateUser()" id="editUserForm">
-                          <div class="form-group row">
-                            <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                              <label for="feFirstName">Nombre</label>
-                              <input type="text" class="form-control" id="firstname" name="firstname"
-                                [(ngModel)]="this.user.firstname">
-                            </div>
-                            <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                              <label for="feLastName">Apellido</label>
-                              <input type="text" class="form-control" id="feLastName" name="lastname"
-                                [(ngModel)]="this.user.lastname">
-                            </div>
-                            <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                              <label for="feEmailAddress">Email</label>
-                              <input type="email" class="form-control" id="feEmailAddress" name="email"
-                                [(ngModel)]="this.user.email">
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                              <label for="feInputPhone">Teléfono</label>
-                              <input type="text" class="form-control" id="feInputPhone" name="phone"
-                                [(ngModel)]="this.user.phone">
-                            </div>
-                            <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                              <label for="fePassword">Empresa</label>
-                              <input type="text" class="form-control" id="feCompany" name="company"
-                                [(ngModel)]="this.user.company" [value]="">
-                            </div>
-                            <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                              <label for="feInputColor">Color corporativo</label>
-                              <nz-color-picker class="form-control" nzTrigger="hover" nzSize="small"
-                                [(ngModel)]="this.user.color" id="brandingcolor"></nz-color-picker>
-                            </div>
-                          </div>
+                <div class="col-lg-8">
+                  <div class="card card-small mb-4">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0">Mi perfil</h6>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item p-3">
+                        <div class="row">
+                          <div class="col">
+                            <form #editUserForm="ngForm" (ngSubmit)="updateUser()" id="editUserForm">
+                              <div class="form-group row">
+                                <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                  <label for="feFirstName">Nombre</label>
+                                  <input type="text" class="form-control" id="firstname" name="firstname"
+                                    [(ngModel)]="this.user.firstname">
+                                </div>
+                                <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                  <label for="feLastName">Apellido</label>
+                                  <input type="text" class="form-control" id="feLastName" name="lastname"
+                                    [(ngModel)]="this.user.lastname">
+                                </div>
+                                <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                  <label for="feEmailAddress">Email</label>
+                                  <input type="email" class="form-control" id="feEmailAddress" name="email"
+                                    [(ngModel)]="this.user.email">
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                  <label for="feInputPhone">Teléfono</label>
+                                  <input type="text" class="form-control" id="feInputPhone" name="phone"
+                                    [(ngModel)]="this.user.phone">
+                                </div>
+                                <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                  <label for="fePassword">Empresa</label>
+                                  <input type="text" class="form-control" id="feCompany" name="company"
+                                    [(ngModel)]="this.user.company" [value]="">
+                                </div>
+                                <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                  <label for="feInputColor">Color corporativo</label>
+                                  <nz-color-picker class="form-control" nzTrigger="hover" nzSize="small"
+                                    [(ngModel)]="this.user.color" id="brandingcolor"></nz-color-picker>
+                                </div>
+                              </div>
 
-                          <div class="form-group row">
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column align-items-center">
-                              <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventBranding"
-                                [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
-                                (imageCropped)="imageCropped($event,'branding')"
-                                (imageLoaded)="imageLoaded($event,'branding')" (cropperReady)="cropperReady()"
-                                (loadImageFailed)="loadImageFailed()">
-                              </image-cropper>
-                              <div class="file is-small is-boxed">
-                                <label class="file-label">
-                                  <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event,'branding')" accept="image/*"/>
-                                  <span class="file-cta">
-                                    <span class="file-icon">
-                                      <i class="fas fa-upload"></i>
+                              <div class="form-group row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column align-items-center">
+                                  <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventBranding"
+                                    [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
+                                    (imageCropped)="imageCropped($event,'branding')"
+                                    (imageLoaded)="imageLoaded($event,'branding')" (cropperReady)="cropperReady()"
+                                    (loadImageFailed)="loadImageFailed()">
+                                  </image-cropper>
+                                  <div class="file is-small is-boxed">
+                                    <label class="file-label">
+                                      <input class="file-input" type="file" name="resume"
+                                        (change)="fileChangeEvent($event,'branding')" accept="image/*" />
+                                      <span class="file-cta">
+                                        <span class="file-icon">
+                                          <i class="fas fa-upload"></i>
+                                        </span>
+                                        <span class="file-label">Imagen corporativa</span>
+                                      </span>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div
+                                  class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column align-items-center">
+                                  <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventProfile"
+                                    [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png" roundCropper="true"
+                                    (imageCropped)="imageCropped($event,'profile')"
+                                    (imageLoaded)="imageLoaded($event,'profile')" (cropperReady)="cropperReady()"
+                                    (loadImageFailed)="loadImageFailed()">
+                                  </image-cropper>
+                                  <div class="file is-small is-boxed">
+                                    <label class="file-label">
+                                      <input class="file-input" type="file" name="resume"
+                                        (change)="fileChangeEvent($event,'profile')" accept="image/*" />
+                                      <span class="file-cta">
+                                        <span class="file-icon">
+                                          <i class="fas fa-upload"></i>
+                                        </span>
+                                        <span class="file-label">Imagen de perfil</span>
+                                      </span>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center my-auto">
+                                  <button type="submit" [disabled]="!editUserForm.dirty " class="button is-success"
+                                    pRipple>
+                                    <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+                                      style="width: 1.5rem; height: 1.5rem; ">
                                     </span>
-                                    <span class="file-label">Imagen corporativa</span>
-                                  </span>
-                                </label>
+                                    <span style=" font-weight: 600;" *ngIf="!showLoading">Actualizar perfil</span>
+                                  </button>
+                                </div>
                               </div>
-                            </div>
-                            <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column align-items-center">
-                              <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventProfile"
-                                [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png" roundCropper="true"
-                                (imageCropped)="imageCropped($event,'profile')"
-                                (imageLoaded)="imageLoaded($event,'profile')" (cropperReady)="cropperReady()"
-                                (loadImageFailed)="loadImageFailed()">
-                              </image-cropper>
-                              <div class="file is-small is-boxed">
-                                <label class="file-label">
-                                  <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event,'profile')" accept="image/*"/>
-                                  <span class="file-cta">
-                                    <span class="file-icon">
-                                      <i class="fas fa-upload"></i>
-                                    </span>
-                                    <span class="file-label">Imagen de perfil</span>
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                            <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center my-auto">
-                              <button type="submit" [disabled]="!editUserForm.dirty " class="button is-success"
-                                pRipple>
-                                <span *ngIf="showLoading" class="spinner-border text-light" role="status"
-                                style="width: 1.5rem; height: 1.5rem; ">
-                                </span>
-                                <span style=" font-weight: 600;"  *ngIf="!showLoading">Actualizar perfil</span>
-                              </button>
-                            </div>
-                          </div>
-                          <!--<div class="form-group row">
+                              <!--<div class="form-group row">
                             <div class="form-group col-md-12">
                               <label for="feDescription">Description</label>
                               <textarea class="form-control" name="feDescription"
                                 rows="5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio eaque, quidem, commodi soluta qui quae minima obcaecati quod dolorum sint alias, possimus illum assumenda eligendi cumque?</textarea>
                             </div>
                           </div>-->
-                        </form>
-                        <ngx-loading [show]="this.showLoading" [config]="{ backdropBorderRadius: '3px',
+                            </form>
+                            <ngx-loading [show]="this.showLoading" [config]="{ backdropBorderRadius: '3px',
                           animationType: ngxLoadingAnimationTypes.rectangleBounce, }"
-                          [template]="customLoadingTemplate"></ngx-loading>
+                              [template]="customLoadingTemplate"></ngx-loading>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!-- End Default Light Table -->
+            </div>
+            <div class="main-content-container container-fluid px-4 tab-pane fade" id="reviews">
+              <!-- Page Header -->
+              <div class="page-header row no-gutters py-4">
+                <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                  <span class="text-uppercase page-subtitle">Components</span>
+                  <h6 class="page-title text-muted">Mis valoraciones</h6>
+                </div>
+              </div>
+              <!-- End Page Header -->
+              <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post card-post--1">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/1.jpeg');">
+                      <a href="#" class="card-post__category badge badge-pill badge-dark">Business</a>
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/0.jpg');">Written
+                          by Anna Kunis</a>
                       </div>
                     </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <!-- End Default Light Table -->
-        </div>
-        <div class="main-content-container container-fluid px-4 tab-pane fade" id="reviews">
-          <!-- Page Header -->
-          <div class="page-header row no-gutters py-4">
-            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-              <span class="text-uppercase page-subtitle">Components</span>
-              <h6 class="page-title text-muted">Mis valoraciones</h6>
-            </div>
-          </div>
-          <!-- End Page Header -->
-          <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small card-post card-post--1">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/1.jpeg');">
-                  <a href="#" class="card-post__category badge badge-pill badge-dark">Business</a>
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/0.jpg');">Written
-                      by Anna Kunis</a>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">Conduct at an replied removal an amongst</a>
-                  </h5>
-                  <p class="card-text d-inline-block mb-3">However venture pursuit he am mr cordial. Forming musical am
-                    hearing studied be luckily. But in for determine what would see...</p>
-                  <span class="text-muted">28 February 2024</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small card-post card-post--1">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/2.jpeg');">
-                  <a href="#" class="card-post__category badge badge-pill badge-info">Travel</a>
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/1.jpg');">Written
-                      by James Jamerson</a>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">Off tears are day blind smile alone had ready</a>
-                  </h5>
-                  <p class="card-text d-inline-block mb-3">Is at purse tried jokes china ready decay an. Small its shy
-                    way had woody downs power. To denoting admitted speaking learning my...</p>
-                  <span class="text-muted">29 February 2024</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small card-post card-post--1">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/3.jpeg');">
-                  <a href="#" class="card-post__category badge badge-pill badge-primary">Technology</a>
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/2.jpg');">Written
-                      by Jimmy Jackson</a>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">Difficult in delivered extensive at direction</a>
-                  </h5>
-                  <p class="card-text d-inline-block mb-3">Is at purse tried jokes china ready decay an. Small its shy
-                    way had woody downs power. To denoting admitted speaking learning my...</p>
-                  <span class="text-muted">29 February 2024</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small card-post card-post--1">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/4.jpeg');">
-                  <a href="#" class="card-post__category badge badge-pill badge-warning">Technology</a>
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/3.jpg');">Written
-                      by John James</a>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">It so numerous if he may outlived disposal</a>
-                  </h5>
-                  <p class="card-text d-inline-block mb-3">How but sons mrs lady when. Her especially are unpleasant out
-                    alteration continuing unreserved ready road market resolution...</p>
-                  <span class="text-muted">29 February 2024</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-6 col-sm-12 mb-4">
-              <div class="card card-small card-post card-post--aside card-post--1">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/5.jpeg');">
-                  <a href="#" class="card-post__category badge badge-pill badge-info">Travel</a>
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/0.jpg');">Written
-                      by Anna Ken</a>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">Attention he extremity unwilling on otherwise cars backwards
-                      yet</a>
-                  </h5>
-                  <p class="card-text d-inline-block mb-3">Conviction up partiality as delightful is discovered. Yet
-                    jennings resolved disposed exertion you off. Left did fond drew fat head poor jet pan flying over...
-                  </p>
-                  <span class="text-muted">29 February 2024</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6 col-sm-12 mb-4">
-              <div class="card card-small card-post card-post--aside card-post--1">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/6.jpeg');">
-                  <a href="#" class="card-post__category badge badge-pill badge-dark">Business</a>
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/1.jpg');">Written
-                      by Jamie James</a>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">Totally words widow one downs few age every seven if miss part
-                      by fact</a>
-                  </h5>
-                  <p class="card-text d-inline-block mb-3">Discovered had get considered projection who favourable.
-                    Necessary up knowledge it tolerably. Unwilling departure education to admitted speaking...</p>
-                  <span class="text-muted">29 February 2024</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-4">
-              <div class="card card-small card-post mb-4">
-                <div class="card-body">
-                  <h5 class="card-title">Had denoting properly jointure which well books beyond</h5>
-                  <p class="card-text text-muted"> In said to of poor full be post face snug. Introduced imprudence see
-                    say unpleasing devonshire acceptance son. Exeter longer...</p>
-                </div>
-                <div class="card-footer border-top d-flex">
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/1.jpg');">Written
-                      by James Khan</a>
-                    <div class="d-flex flex-column justify-content-center ml-3">
-                      <span class="card-post__author-name">James Khan</span>
-                      <small class="text-muted">21 March 2011</small>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">Conduct at an replied removal an amongst</a>
+                      </h5>
+                      <p class="card-text d-inline-block mb-3">However venture pursuit he am mr cordial. Forming musical
+                        am
+                        hearing studied be luckily. But in for determine what would see...</p>
+                      <span class="text-muted">28 February 2024</span>
                     </div>
                   </div>
-                  <div class="my-auto ml-auto">
-                    <a class="btn btn-sm btn-white" href="#">
-                      <i class="far fa-bookmark mr-1"></i> Bookmark </a>
-                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="card card-small card-post mb-4">
-                <div class="card-body">
-                  <h5 class="card-title">Husbands ask repeated resolved but laughter debating</h5>
-                  <p class="card-text text-muted">It abode words began enjoy years no do ﻿no. Tried spoil as heart visit
-                    blush or. Boy possible blessing sensible set but margaret interest. Off tears...</p>
-                </div>
-                <div class="card-footer border-top d-flex">
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/2.jpg');">Written
-                      by Anna Kunis</a>
-                    <div class="d-flex flex-column justify-content-center ml-3">
-                      <span class="card-post__author-name">Chris Jones</span>
-                      <small class="text-muted">21 March 2011</small>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post card-post--1">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/2.jpeg');">
+                      <a href="#" class="card-post__category badge badge-pill badge-info">Travel</a>
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/1.jpg');">Written
+                          by James Jamerson</a>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">Off tears are day blind smile alone had ready</a>
+                      </h5>
+                      <p class="card-text d-inline-block mb-3">Is at purse tried jokes china ready decay an. Small its
+                        shy
+                        way had woody downs power. To denoting admitted speaking learning my...</p>
+                      <span class="text-muted">29 February 2024</span>
                     </div>
                   </div>
-                  <div class="my-auto ml-auto">
-                    <a class="btn btn-sm btn-white" href="#">
-                      <i class="far fa-bookmark mr-1"></i> Bookmark </a>
-                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="card card-small card-post mb-4">
-                <div class="card-body">
-                  <h5 class="card-title">Instantly gentleman contained belonging exquisite now direction</h5>
-                  <p class="card-text text-muted">West room at sent if year. Numerous indulged distance old law you.
-                    Total state as merit court green decay he. Steepest merit checking railway...</p>
-                </div>
-                <div class="card-footer border-top d-flex">
-                  <div class="card-post__author d-flex">
-                    <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
-                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/3.jpg');">Written
-                      by Anna Kunis</a>
-                    <div class="d-flex flex-column justify-content-center ml-3">
-                      <span class="card-post__author-name">Mark Jameson</span>
-                      <small class="text-muted">21 March 2011</small>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post card-post--1">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/3.jpeg');">
+                      <a href="#" class="card-post__category badge badge-pill badge-primary">Technology</a>
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/2.jpg');">Written
+                          by Jimmy Jackson</a>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">Difficult in delivered extensive at direction</a>
+                      </h5>
+                      <p class="card-text d-inline-block mb-3">Is at purse tried jokes china ready decay an. Small its
+                        shy
+                        way had woody downs power. To denoting admitted speaking learning my...</p>
+                      <span class="text-muted">29 February 2024</span>
                     </div>
                   </div>
-                  <div class="my-auto ml-auto">
-                    <a class="btn btn-sm btn-white" href="#">
-                      <i class="far fa-bookmark mr-1"></i> Bookmark </a>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post card-post--1">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/4.jpeg');">
+                      <a href="#" class="card-post__category badge badge-pill badge-warning">Technology</a>
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/3.jpg');">Written
+                          by John James</a>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">It so numerous if he may outlived disposal</a>
+                      </h5>
+                      <p class="card-text d-inline-block mb-3">How but sons mrs lady when. Her especially are unpleasant
+                        out
+                        alteration continuing unreserved ready road market resolution...</p>
+                      <span class="text-muted">29 February 2024</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post card-post--aside card-post--1">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/5.jpeg');">
+                      <a href="#" class="card-post__category badge badge-pill badge-info">Travel</a>
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/0.jpg');">Written
+                          by Anna Ken</a>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">Attention he extremity unwilling on otherwise cars backwards
+                          yet</a>
+                      </h5>
+                      <p class="card-text d-inline-block mb-3">Conviction up partiality as delightful is discovered. Yet
+                        jennings resolved disposed exertion you off. Left did fond drew fat head poor jet pan flying
+                        over...
+                      </p>
+                      <span class="text-muted">29 February 2024</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post card-post--aside card-post--1">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/6.jpeg');">
+                      <a href="#" class="card-post__category badge badge-pill badge-dark">Business</a>
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/1.jpg');">Written
+                          by Jamie James</a>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">Totally words widow one downs few age every seven if miss
+                          part
+                          by fact</a>
+                      </h5>
+                      <p class="card-text d-inline-block mb-3">Discovered had get considered projection who favourable.
+                        Necessary up knowledge it tolerably. Unwilling departure education to admitted speaking...</p>
+                      <span class="text-muted">29 February 2024</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="card card-small card-post mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title">Had denoting properly jointure which well books beyond</h5>
+                      <p class="card-text text-muted"> In said to of poor full be post face snug. Introduced imprudence
+                        see
+                        say unpleasing devonshire acceptance son. Exeter longer...</p>
+                    </div>
+                    <div class="card-footer border-top d-flex">
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/1.jpg');">Written
+                          by James Khan</a>
+                        <div class="d-flex flex-column justify-content-center ml-3">
+                          <span class="card-post__author-name">James Khan</span>
+                          <small class="text-muted">21 March 2011</small>
+                        </div>
+                      </div>
+                      <div class="my-auto ml-auto">
+                        <a class="btn btn-sm btn-white" href="#">
+                          <i class="far fa-bookmark mr-1"></i> Bookmark </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="card card-small card-post mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title">Husbands ask repeated resolved but laughter debating</h5>
+                      <p class="card-text text-muted">It abode words began enjoy years no do ﻿no. Tried spoil as heart
+                        visit
+                        blush or. Boy possible blessing sensible set but margaret interest. Off tears...</p>
+                    </div>
+                    <div class="card-footer border-top d-flex">
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/2.jpg');">Written
+                          by Anna Kunis</a>
+                        <div class="d-flex flex-column justify-content-center ml-3">
+                          <span class="card-post__author-name">Chris Jones</span>
+                          <small class="text-muted">21 March 2011</small>
+                        </div>
+                      </div>
+                      <div class="my-auto ml-auto">
+                        <a class="btn btn-sm btn-white" href="#">
+                          <i class="far fa-bookmark mr-1"></i> Bookmark </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="card card-small card-post mb-4">
+                    <div class="card-body">
+                      <h5 class="card-title">Instantly gentleman contained belonging exquisite now direction</h5>
+                      <p class="card-text text-muted">West room at sent if year. Numerous indulged distance old law you.
+                        Total state as merit court green decay he. Steepest merit checking railway...</p>
+                    </div>
+                    <div class="card-footer border-top d-flex">
+                      <div class="card-post__author d-flex">
+                        <a href="#" class="card-post__author-avatar card-post__author-avatar--small"
+                          style="background-image: url('../../../assets/images/user-pro-dashboard/images/avatars/3.jpg');">Written
+                          by Anna Kunis</a>
+                        <div class="d-flex flex-column justify-content-center ml-3">
+                          <span class="card-post__author-name">Mark Jameson</span>
+                          <small class="text-muted">21 March 2011</small>
+                        </div>
+                      </div>
+                      <div class="my-auto ml-auto">
+                        <a class="btn btn-sm btn-white" href="#">
+                          <i class="far fa-bookmark mr-1"></i> Bookmark </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post h-100">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/7.jpeg');">
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">Extremity so attending objection as engrossed</a>
+                      </h5>
+                      <p class="card-text">Morning prudent removal an letters by. On could my in order never it. Or
+                        excited
+                        certain sixteen it to parties colonel not seeing...</p>
+                    </div>
+                    <div class="card-footer text-muted border-top py-3">
+                      <span class="d-inline-block">By
+                        <a class="text-fiord-blue" href="#">Alene Trenton</a> in
+                        <a class="text-fiord-blue" href="#">News</a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post h-100">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/8.jpeg');">
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">Bed sincerity yet therefore forfeited his </a>
+                      </h5>
+                      <p class="card-text">Pursuit chamber as elderly amongst on. Distant however warrant farther to of.
+                        My
+                        justice wishing prudent waiting in be...</p>
+                    </div>
+                    <div class="card-footer text-muted border-top py-3">
+                      <span class="d-inline-block">By
+                        <a class="text-fiord-blue" href="#">Chris Jamie</a> in
+                        <a class="text-fiord-blue" href="#">News</a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post h-100">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/9.jpeg');">
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">Object remark lively all did feebly excuse our</a>
+                      </h5>
+                      <p class="card-text">Speaking throwing breeding betrayed children my to. Me marianne no he
+                        horrible
+                        produced ye. Sufficient unpleasing and...</p>
+                    </div>
+                    <div class="card-footer text-muted border-top py-3">
+                      <span class="d-inline-block">By
+                        <a class="text-fiord-blue" href="#">Monica Jordan</a> in
+                        <a class="text-fiord-blue" href="#">News</a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                  <div class="card card-small card-post h-100">
+                    <div class="card-post__image"
+                      style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/10.jpeg');">
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <a class="text-fiord-blue" href="#">His followed carriage proposal entrance</a>
+                      </h5>
+                      <p class="card-text">For county now sister engage had season better had waited. Occasional mrs
+                        interested far expression directly as regard...</p>
+                    </div>
+                    <div class="card-footer text-muted border-top py-3">
+                      <span class="d-inline-block">By
+                        <a class="text-fiord-blue" href="#">Monica Jordan</a> in
+                        <a class="text-fiord-blue" href="#">News</a>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small card-post h-100">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/7.jpeg');">
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">Extremity so attending objection as engrossed</a>
-                  </h5>
-                  <p class="card-text">Morning prudent removal an letters by. On could my in order never it. Or excited
-                    certain sixteen it to parties colonel not seeing...</p>
-                </div>
-                <div class="card-footer text-muted border-top py-3">
-                  <span class="d-inline-block">By
-                    <a class="text-fiord-blue" href="#">Alene Trenton</a> in
-                    <a class="text-fiord-blue" href="#">News</a>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small card-post h-100">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/8.jpeg');">
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">Bed sincerity yet therefore forfeited his </a>
-                  </h5>
-                  <p class="card-text">Pursuit chamber as elderly amongst on. Distant however warrant farther to of. My
-                    justice wishing prudent waiting in be...</p>
-                </div>
-                <div class="card-footer text-muted border-top py-3">
-                  <span class="d-inline-block">By
-                    <a class="text-fiord-blue" href="#">Chris Jamie</a> in
-                    <a class="text-fiord-blue" href="#">News</a>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small card-post h-100">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/9.jpeg');">
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">Object remark lively all did feebly excuse our</a>
-                  </h5>
-                  <p class="card-text">Speaking throwing breeding betrayed children my to. Me marianne no he horrible
-                    produced ye. Sufficient unpleasing and...</p>
-                </div>
-                <div class="card-footer text-muted border-top py-3">
-                  <span class="d-inline-block">By
-                    <a class="text-fiord-blue" href="#">Monica Jordan</a> in
-                    <a class="text-fiord-blue" href="#">News</a>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-              <div class="card card-small card-post h-100">
-                <div class="card-post__image"
-                  style="background-image: url('../../../assets/images/user-pro-dashboard/images/content-management/10.jpeg');">
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">
-                    <a class="text-fiord-blue" href="#">His followed carriage proposal entrance</a>
-                  </h5>
-                  <p class="card-text">For county now sister engage had season better had waited. Occasional mrs
-                    interested far expression directly as regard...</p>
-                </div>
-                <div class="card-footer text-muted border-top py-3">
-                  <span class="d-inline-block">By
-                    <a class="text-fiord-blue" href="#">Monica Jordan</a> in
-                    <a class="text-fiord-blue" href="#">News</a>
-                  </span>
+            <div class="main-content-container container-fluid px-4 tab-pane fade" id="ads">
+              <!-- Page Header -->
+              <div class="row">
+                <div class="col">
+                  <div class="card card-small mb-4">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0">Favoritos</h6>
+                    </div>
+                    <div class="card-body p-0  text-center" *ngFor="let appHome of this.userFavourites; let i =index">
+                      <ng-container>
+                        <div class="card-list ">
+                          <img class="image" *ngIf="appHome.images" (click)="showHome(appHome)"
+                            style="aspect-ratio:16/9;" [src]="appHome.images[0].imageUrl" alt="First slide" />
+                          <div class="content">
+                            <div class="texts">
+                              <div>{{appHome.tipo}} en {{appHome.calle}} {{appHome.numero}} en {{appHome.condicion}} en
+                                {{appHome.ciudad}}</div>
+                              <div class="price under-market" *ngIf=" appHome.precioInicial != 0">
+                                <span *ngIf=" appHome.precioInicial != 0" class="prefix">En venta</span>
+                                <div *ngIf=" appHome.precioInicial != 0" class="price-container"><span
+                                    class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span><span
+                                    class="dimension"></span></div>
+                              </div>
+                              <div class="price" *ngIf="appHome.precioFinal > 0">
+                                <span class="prefix" *ngIf="appHome.precioInicial == 0">En venta</span>
+                                <div class="price-container">
+                                  <span *ngIf="appHome.precioFinal!= null || appHome.precioFinal != undefined"
+                                    class="price-value">{{formatNumberWithCommas(appHome.precioFinal)}}€</span>
+                                  <div class="diff float-end mt-1" *ngIf="appHome.precioInicial != 0">
+                                    <span class="dimension under "
+                                      style="color:#7ce800;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div *ngIf="appHome.precioAlquiler != 0" class="price">
+                                <span class="prefix">En alquiler</span>
+                                <div class="price-container"><span *ngIf=" appHome.precioAlquiler != 0"
+                                    class="price-value">{{formatNumberWithCommas(appHome.precioAlquiler)}}€</span><span
+                                    *ngIf="appHome.precioAlquiler!=0" class="suffix">/mes</span><span
+                                    class="dimension"></span></div>
+                              </div>
+                            </div>
+                            <div class="featured-box">
+                              <div class="private">
+                                <div class="feature float-end my-auto">
+                                  <input [checked]="false" (change)="cuoreLike(appHome)" class="red-heart-checkbox"
+                                    #redheartcheckbox id="{{appHome.viviendaId}}" type="checkbox">
+                                  <label for="{{appHome.viviendaId}}"></label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <nz-empty *ngIf="!this.user.domains"
+                        nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                        [nzNotFoundContent]="contentTpl" [nzNotFoundFooter]="footerTpl">
+                        <ng-template #contentTpl>
+                          <span>
+                            Customize
+                            <a href="#API">Description</a>
+                          </span>
+                        </ng-template>
+                        <ng-template #footerTpl>
+                          <button nz-button nzType="primary">Crear ahora</button>
+                        </ng-template>
+                      </nz-empty>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="main-content-container container-fluid px-4 tab-pane fade" id="ads">
-          <!-- Page Header -->
-          <div class="page-header row no-gutters py-4">
-            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-              <span class="text-uppercase page-subtitle">Anuncios</span>
-              <h6 class="page-title text-muted">Disponibles</h6>
-            </div>
-          </div>
-          <!--viviendas
+              <!--viviendas
           
           aquí va el componente que contiene las tarjetas de home - despues de la migración
           
           -->
 
-        </div>
-      </div>
+            </div>
+          </div>
 
-      <!--y<footer class="main-footer d-flex p-2 px-3 bg-white border-top">
+          <!--y<footer class="main-footer d-flex p-2 px-3 bg-white border-top">
         <ul class="nav">
           <li class="nav-item">
             <a class="nav-link" href="">Home</a>
@@ -1314,49 +2046,8 @@
           <a rel="nofollow">Isma SL</a>
         </span>
       </footer>-->
-    </main>
-  </div>
-</div>
-
-<!-- Edit Property modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel" style="letter-spacing: 0.5px;">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        </main>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- Ghost buttons -->
-<a id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]"
-  fragment={{this.routerLinkModel}} target="_blank"></a>
-
-<!-- / .main-navbar tables-->
-
-<!-- End Default Dark Table -->
-<!--<div class="promo-popup animated">
-
-  <div class="pp-intro-bar"> Need More Templates?
-    <span class="close">
-      <i class="material-icons">close</i>
-    </span>
-    <span class="up">
-      <i class="material-icons">keyboard_arrow_up</i>
-    </span>
-  </div>
-  <div class="pp-inner-content">
-    <h2>Dashboard Pro</h2>
-    <p>A premium & modern Bootstrap admin dashboard template pack.</p>
-    <a class="pp-cta extra-action">More Demos</a>
-  </div>
-</div>-->
+  </mat-sidenav-content>
+</mat-sidenav-container>

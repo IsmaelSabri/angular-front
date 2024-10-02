@@ -1,10 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import "https://use.fontawesome.com/releases/v5.8.1/css/all.css";
 @import "node_modules/angular-notifier/styles";
-@import url("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css");
+@import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/*@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';*/
 /*@import "@coreui/coreui/scss/coreui.scss"; // está por cdn ahora*/
-/*@import "bulma/css/bulma.css";*/
+/*tailwind*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

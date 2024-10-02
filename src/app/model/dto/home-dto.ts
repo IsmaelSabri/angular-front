@@ -66,6 +66,7 @@ export class HomeDto {
     fianza: any;
     disponibilidad: any;
     estanciaMinima: any;
+    likeMe4everAsString: any;
 
     // House profile
     alarma: any = false;

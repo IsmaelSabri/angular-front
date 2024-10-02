@@ -257,7 +257,8 @@
                                     </div>
                                 </div>
                         </div>
-                        <div class="acerca-de-container ">
+                        <!-- Home card models -->
+                        <div class="acerca-de-container " *ngIf="this.tipo.includes(this.home.tipo)">
                             <div>
                                 <span class="value">{{this.home.habitaciones}}</span><span class="label"><ion-icon style="font-size: 24px; color:white;" src="assets/svg/bed-white.svg" ></ion-icon><br><span class="text">Dormitorios</span></span>
                             </div>
@@ -286,6 +287,29 @@
                                 <span class="value">{{this.home.antiguedad}}</span><span class="label"><ion-icon style="font-size: 22px; position:relative; top:2px;" src="assets/svg/build-white.svg"></ion-icon><br><span class="text">Antiguedad</span></span>
                             </div>
                         </div>
+                        <!-- New project card models -->
+                        <div class="acerca-de-container " *ngIf="this.home.tipo=='Proyecto nuevo'">
+                            <div>
+                                <span class="value">{{this.home.habitacionesDesde+'-'+this.home.habitacionesHasta}}</span><span class="label"><ion-icon style="font-size: 24px; color:white;" src="assets/svg/bed-white.svg" ></ion-icon><br><span class="text">Dormitorios</span></span>
+                            </div>
+                            <div>
+                                <span class="value" style="font-size: 1em;">{{this.home.superficieDesde+'-'+this.home.superficieHasta}}m²</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/size-box-white.svg"></ion-icon><br><span class="text">Superficie</span></span>
+                            </div>
+                            <div *ngIf="this.home.alturas">
+                                <span class="value">{{this.home.alturas}}</span><span class="label"><ion-icon style="font-size: 24px; position:relative; top:3px;" src="assets/svg/stairs_white.svg"></ion-icon><br><span class="text">Alturas</span></span>
+                            </div>
+                            <div *ngIf="this.home.totalViviendasConstruidas">
+                                <span class="value">{{this.home.totalViviendasConstruidas}}</span><span class="label"><ion-icon style="font-size: 25px; position:relative; top:3px;" src="assets/svg/homes-units-white.svg"></ion-icon><br><span class="text">Unidades</span></span>
+                            </div>
+                            <div *ngIf="this.home.porcentajeTerminado > 0 && this.home.porcentajeTerminado <= 100">
+                                <span class="value">{{this.home.porcentajeTerminado}}%</span><span class="label"><ion-icon style="font-size: 24px; position:relative; top:3px;" src="assets/svg/grua_white.svg"></ion-icon><br><span class="text">Progreso</span></span>
+                            </div>
+                            <div *ngIf="(this.home.porcentajeTerminado == 100) && (this.home.antiguedad)">
+                                <span class="value">{{this.home.antiguedad}}</span><span class="label"><ion-icon style="font-size: 24px; position:relative; top:3px;" src="assets/svg/real-estate.svg"></ion-icon><br><span class="text">Obra terminada</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Descripción -->
                         <div class="readmore-open " >
                             <h2>{{this.home.habitaciones}} Habitaciones en venta <i class="bi bi-grip-vertical" style="color:#d9d9d9;font-size:0.8em;"></i> {{this.home.distrito}} <i class="bi bi-grip-vertical" style="color:#d9d9d9;font-size:0.8em;"></i> {{this.home.ciudad}}</h2>
                             <span class="description-box">
@@ -539,53 +563,46 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- chips con las tipologías -->
                             <div class="features-block" *ngIf="this.home.model=='NewProject'&&this.home.tipos">
-                                <h2>Promoción</h2>
-                                <div class="row">
-                                    <h5 class="text-secondary ml-2">Tipologías</h5>
-                                    <div class="col d-flex justify-content-start ml-2" *ngFor="let opt of this.projectFeatures">
-                                        <p-chip *ngIf="opt=='Pisos'" label="Pisos" />
-                                        <p-chip *ngIf="opt=='Apartamentos'" label="Apartamentos" />
-                                        <p-chip *ngIf="opt=='Estudios'" label="Estudios" />
-                                        <p-chip *ngIf="opt=='Áticos'" label="Áticos" />
-                                        <p-chip *ngIf="opt=='Duplex'" label="Duplex" />
-                                        <p-chip *ngIf="opt=='Chalets'" label="Chalets" />
-                                        <p-chip *ngIf="opt=='Adosados'" label="Adosados" />
-                                        <p-chip *ngIf="opt=='Pareados'" label="Pareados" />
-                                        <p-chip *ngIf="opt=='Casas Rústicas'" label="Casas Rústicas" />
-                                        <p-chip *ngIf="opt=='Urb. de Villas'" label="Urb. de Villas" />
-                                        <p-chip *ngIf="opt=='Locales'" label="Locales" />
-                                        <p-chip *ngIf="opt=='Oficinas'" label="Oficinas" />
-                                        <p-chip *ngIf="opt=='Garages'" label="Garages" />
-                                        <p-chip *ngIf="opt=='Trasteros'" label="Trasteros" />
-                                        <!--<nz-tag *ngIf="opt=='Pisos'" [nzColor]="'default'">Pisos</nz-tag>
-                                        <nz-tag *ngIf="opt=='Apartamentos'" [nzColor]="'default'">Apartamentos</nz-tag>
-                                        <nz-tag *ngIf="opt=='Estudios'" [nzColor]="'default'">Estudios</nz-tag>
-                                        <nz-tag *ngIf="opt=='Áticos'" [nzColor]="'default'">Áticos</nz-tag>
-                                        <nz-tag *ngIf="opt=='Duplex'" [nzColor]="'default'">Duplex</nz-tag>
-                                        <nz-tag *ngIf="opt=='Chalets'"  [nzColor]="'default'">Chalets</nz-tag>
-                                        <nz-tag *ngIf="opt=='Adosados'" [nzColor]="'default'">Adosados</nz-tag>
-                                        <nz-tag *ngIf="opt=='Pareados'" [nzColor]="'default'">Pareados</nz-tag>
-                                        <nz-tag *ngIf="opt=='Casas Rústicas'" [nzColor]="'default'">Casas Rústicas</nz-tag>
-                                        <nz-tag *ngIf="opt=='Urb. de Villas'" [nzColor]="'default'">Urb. de Villas</nz-tag>
-                                        <nz-tag *ngIf="opt=='Locales'" [nzColor]="'default'">Locales</nz-tag>
-                                        <nz-tag *ngIf="opt=='Oficinas'" [nzColor]="'default'">Oficinas</nz-tag>
-                                        <nz-tag *ngIf="opt=='Garages'" [nzColor]="'default'">Garages</nz-tag>
-                                        <nz-tag *ngIf="opt=='Trasteros'" [nzColor]="'default'">Trasteros</nz-tag>-->
-                                    </div>
-                                </div>
-                                <div class="row mt-1">
-                                    <h5 class="text-muted ml-2">Estado</h5>
-                                    <div class="col d-flex justify-content-center ml-2">
-                                        <nz-steps [nzCurrent]="1" [nzProgressDot]="''">
-                                            <nz-step nzTitle="Finished" nzDescription="You can hover on the dot."></nz-step>
-                                            <nz-step nzTitle="In Progress" nzDescription="You can hover on the dot."></nz-step>
-                                            <nz-step nzTitle="Waiting" nzDescription="You can hover on the dot."></nz-step>
-                                            <nz-step nzTitle="Waiting" nzDescription="You can hover on the dot."></nz-step>
-                                          </nz-steps>
+                                <h2>Disponible</h2>
+                                <div class="row p-0">
+                                    <div class="col d-flex justify-content-start ml-2 p-0"><!-- *ngFor="let opt of this.projectFeatures">-->
+                                        <mat-chip-listbox class="mat-mdc-chip-list-stacked mt-2 mb-2" aria-label="Cutest spaces">
+                                            @for (opt of projectFeatures; track opt) {
+                                              <mat-chip-option selected>{{opt}}</mat-chip-option>
+                                            }
+                                          </mat-chip-listbox>
                                     </div>
                                 </div>
                             </div>
+                             <!-- Estado del proyecto -->
+                             <div class="features-block" *ngIf="this.home.model=='NewProject'&&this.home.estadoConstruccion=='EnCurso'">
+                                <h2>Estado</h2>
+                                <div class="col d-flex justify-content-center ml-2">
+                                      <nz-steps class="mt-2" nzDirection="vertical">
+                                        <nz-step nzTitle="Planificación" nzStatus="finish" [nzIcon]="iconTemplateSolution" [nzDescription]="descriptionTemplateSolution"></nz-step>
+                                        <nz-step nzTitle="Inicio de ventas" [nzStatus]="this.inicioVentas" [nzIcon]="iconTemplateHome" [nzDescription]="descriptionTemplateHome"></nz-step>
+                                        <nz-step nzTitle="Inicio de construcción"  [nzStatus]="this.inicioConstruccion" [nzIcon]="iconTemplateBuild" [nzDescription]="descriptionTemplateBuild"></nz-step>
+                                        <nz-step nzTitle="Mudándose" [nzStatus]="this.mudandose" [nzIcon]="iconTemplateKey" [nzDescription]="descriptionTemplateKey"></nz-step>
+                                      </nz-steps>
+                                      <ng-template #iconTemplateSolution><span nz-icon class="text-secondary" nzType="solution"></span></ng-template>
+                                      <ng-template #iconTemplateHome><span nz-icon class="text-secondary" nzType="home"></span></ng-template>
+                                      <ng-template #iconTemplateBuild><span nz-icon class="text-secondary" nzType="build"></span></ng-template>
+                                      <ng-template #iconTemplateKey><ion-icon style="font-size: 1.1em;" name="key-outline"></ion-icon></ng-template>
+                                      <ng-template #descriptionTemplateSolution> <ion-icon style="color: #8dca3f; font-size: 1.8em;" name="checkmark-done-outline"></ion-icon> </ng-template>
+                                      <ng-template #descriptionTemplateHome><span>En comercialización</span></ng-template>
+                                      <ng-template #descriptionTemplateBuild>
+                                        <span *ngIf="this.home.porcentajeTerminado > 0 && this.home.porcentajeTerminado < 100" class="text-secondary">Obra iniciada</span>
+                                        <span *ngIf="this.home.porcentajeTerminado == 100" class="text-secondary">Obra terminada</span>
+                                      </ng-template>
+                                      <ng-template #descriptionTemplateKey>
+                                        <h6 *ngIf="this.home.porcentajeTerminado<100" class="text-secondary textFont" style="letter-spacing: .4px;">{{this.home.finDeObra}}</h6>
+                                        <nz-tag  *ngIf="this.home.porcentajeTerminado==100"  [nzColor]="'blue'">Entrega inmediata</nz-tag>
+                                      </ng-template>
+                                </div>
+                             </div>
+                            <!-- Extras -->
                             <div class="features-block">
                                 <h2>Extras</h2>
                                 <div class="content">
@@ -602,7 +619,7 @@
                                         <span class="post" *ngIf="this.home.amueblado"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/furniture.svg"></ion-icon></span>Amueblado completo</span>
                                         <span class="post" [hidden]="this.home.aseoEnsuite==6" *ngIf="this.home.aseoEnsuite"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/private-shower.svg"></ion-icon></span>{{this.home.aseoEnsuite}} Aseo ensuite</span>
                                         <span class="post" *ngIf="this.home.aseoEnsuite==6"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/private-shower.svg"></ion-icon></span>+5 Aseo ensuite</span>
-                                        <span class="post" *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/balcony2.svg"></ion-icon></span>Balcón</span>
+                                        <span class="post" *ngIf="this.home.balcon"><span class="icon icon-deluxe "><ion-icon style="font-size: 28px; position:relative; " src="assets/svg/balcony3.svg"></ion-icon></span>Balcón</span>
                                         <span class="post" *ngIf="this.home.terraza"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/terrace2.svg"></ion-icon></span>Terraza</span>
                                         <span class="post" *ngIf="this.home.parquet"><span class="icon icon-deluxe "><ion-icon style="font-size: 25px; position:relative; " src="assets/svg/pq2.svg"></ion-icon></span>Parquet</span>
                                         <span class="post" *ngIf="this.home.piscinaPrivada"><span class="icon icon-deluxe "><ion-icon style="font-size: 30px; position:relative; " src="assets/svg/form-ppool.svg"></ion-icon></span>Piscina en propiedad</span>
@@ -1128,7 +1145,7 @@
                                         <div class=" teaser-tile mt-2 mx-2 border" >
                                             <span class="favorite favorite-need-login" >
                                               <div class="wrapperDemo">
-                                                <input [checked]="false" (change)="cuoreLikeFeature(home.viviendaId)" class="red-heart-checkbox" #redheartcheckboxcard id="{{home.viviendaId}}card" type="checkbox">
+                                                <input [checked]="false" (change)="cuoreLikeFeature(home.viviendaId,home)" class="red-heart-checkbox" #redheartcheckboxcard id="{{home.viviendaId}}card" type="checkbox">
                                                 <label for="{{home.viviendaId}}card"></label>
                                               </div>
                                             </span>
@@ -1325,7 +1342,7 @@
                                 <ng-container>
                                         <div class="row">
                                             <div class="col-12 d-flex flex-row ">
-                                                <input type="checkbox" [(ngModel)]="this.privatePolicy" (change)="checkBox(this.privatePolicy?true:false)" name="acceptTerms" id="acceptTerms" 
+                                                <input class="mt-1" type="checkbox" [(ngModel)]="this.privatePolicy" (change)="checkBox(this.privatePolicy?true:false)" name="acceptTerms" id="acceptTerms" 
                                                 #acceptTerms="ngModel" [ngClass]="{ 'is-invalid': contactMessageForm.submitted && acceptTerms.invalid }" required><span class="ml-2 mr-1">Acepto los</span><a (click)="showModal('privatePolicy')" style="color:#8dca3f;">terminos</a>
                                             </div>
                                         </div>

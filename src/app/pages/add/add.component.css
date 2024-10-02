@@ -4234,3 +4234,8 @@ header {
 }
 
 /*end navbar*/
+/*angular material chips bg*/
+.mat-mdc-standard-chip.mdc-evolution-chip--selected:not(.mdc-evolution-chip--disabled) {
+  background-color: #bbb;
+}
+/*end angular material chips bg rgba(0, 0, 0, .45)*/

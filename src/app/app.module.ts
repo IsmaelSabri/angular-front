@@ -138,12 +138,18 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { EmailService } from './service/email.service';
 import { ImageService } from './service/image.service';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { es as ES} from 'date-fns/locale';
+import { es as ES } from 'date-fns/locale';
 import { ChipModule } from 'primeng/chip';
-import {MatChipsModule} from '@angular/material/chips'; 
+import { MatChipsModule } from '@angular/material/chips';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
-
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { NgToggleModule } from 'ng-toggle-button';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
   url: 'https://httpbin.org/post',
@@ -275,6 +281,13 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     MatChipsModule,
     NzTagModule,
     NzStepsModule,
+    NzIconModule,
+    NzSwitchModule,
+    MatButtonToggleModule,
+    FloatLabelModule,
+    ToggleButtonModule,
+    NgToggleModule,
+    NzMenuModule,
   ],
   exports: [
     // to get component in another modules
@@ -303,7 +316,8 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true, },
     { provide: DROPZONE_CONFIG, useValue: DEFAULT_DROPZONE_CONFIG, },
     { provide: NZ_DATE_LOCALE, useValue: ES },
-    { provide: 'SocialAuthServiceConfig',
+    {
+      provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,
         providers: [

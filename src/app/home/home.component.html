@@ -205,10 +205,10 @@
       <a class="nav-link nav-border" (click)="this.sidebarVisible = true"><ion-icon name="options-outline"
           style="position: relative; top: 2px;"></ion-icon> Filtros </a>
     </li>
-    <li class="nav-item pr-3">
+    <!--<li class="nav-item pr-3">
       <a class="nav-link nav-border" (click)="setAdTitle('Proyecto nuevo')" onclick="runModal()"><ion-icon style="position: relative; top: 2px;"
           name="list-outline"></ion-icon> ProyectoForm </a>
-    </li>
+    </li>-->
   </ul>
 </div>
 
@@ -255,7 +255,7 @@
                   <!--Piso, número, cp y antiguedad-->
                   <div class="form-group row mt-3">
                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                      <label for="numero">Piso</label>
+                      <label for="piso">Piso</label>
                       <nz-input-group>
                         <div nz-row>
                           <div nz-col nzSpan="10" class="float-start">
@@ -378,7 +378,7 @@
                     <!--Caso base-->
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column"
                       *ngIf="this.shareTab.value==undefined">
-                      <label style="display:block;" class="required" for="optionInput">Alquiler - Venta ...</label>
+                      <label class="required d-block" for="optionInput">Alquiler - Venta ...</label>
                       <nz-select #optionInput2 class="d-block flex-column condicionSelect" name="optionInput2"
                         nzPlaceHolder="Alquiler - venta" [nzSize]="sizeM" [(ngModel)]="this.homeDto.condicion"
                         (ngModelChange)="conditionTabs()" (nzOpenChange)="rotateArrows($event,'condicionSelect')">
@@ -407,7 +407,7 @@
                       </nz-input-group>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column">
-                      <label style="display:block;" for="badge">Destacar</label>
+                      <label class="d-block" for="badge">Destacar</label>
                       <nz-select class="d-block destacarSelect" #badgeInput="ngModel" name="badgeInput" nzPlaceHolder=""
                         [nzSize]="sizeM" [(ngModel)]="this.homeDto.destacar" panelWidth="fit-content"
                         (nzOpenChange)="rotateArrows($event,'destacarSelect')">
@@ -479,7 +479,7 @@
                         <button name="city" class="button is-danger is-outlined is-small" id="provButton"
                           (click)="locationMap()">Ciudad</button>
                         <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
-                          [style]="{width: '50vw'}">
+                        [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}">
                           <div id="map_2"
                             style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
                           </div>
@@ -762,23 +762,32 @@
                     <br>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <image-cropper [imageChangedEvent]="imageChangedEventEnergy"
-                                [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
-                                (imageCropped)="imageCropped($event)"
-                                (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
-                                (loadImageFailed)="loadImageFailed()">
-                    </image-cropper>
-                    <div class="file is-small is-light is-boxed">
-                      <label class="file-label">
-                        <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event)" accept="image/*"/>
-                        <span class="file-cta">
-                          <span class="badge primary-badge text-nowrap">{{this.tempEnergyTagName}}</span>
-                            <span class="file-icon" style="color:#999;">
-                              <i class="fas fa-cloud-upload-alt color-secondary"></i>
+                    <div class="row">
+                      <image-cropper [imageChangedEvent]="imageChangedEventEnergy"
+                                  [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
+                                  (imageCropped)="imageCropped($event,'energy')"
+                                  (imageLoaded)="imageLoaded($event,'energy')" (cropperReady)="cropperReady()"
+                                  (loadImageFailed)="loadImageFailed()">
+                      </image-cropper>
+                    </div>
+                    <div class="row">
+                      <div class="col-10">
+                        <div class="file is-small is-light is-boxed">
+                          <label class="file-label">
+                            <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event,'energy')" accept="image/*"/>
+                            <span class="file-cta">
+                              <span class="badge primary-badge text-nowrap">{{this.tempEnergyTagName}}</span>
+                                <span class="file-icon" style="color:#999;">
+                                  <i class="fas fa-cloud-upload-alt color-secondary"></i>
+                                </span>
+                              <span class="file-label text-secondary">Certificado energético</span>
                             </span>
-                          <span class="file-label text-secondary">Certificado energético</span>
-                        </span>
-                      </label>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <button *ngIf="this.tempEnergyTagName" class="my-auto btn-close" (click)="clearEnergySelection('energy')"></button>
+                      </div>
                     </div>
                   </div>
                   <br>
@@ -1331,7 +1340,7 @@
                   </div>
                   <div class="col">
                     <nz-input-group class="mt-2 float-start" [nzSuffix]="habitantesActualmente" [nzSize]="size">
-                      <input  nz-input #habitantes_Actualmente name="ambienteCompartir"
+                      <input  nz-input #habitantes_Actualmente name="habitantes-act"
                         [(ngModel)]="this.homeDto.habitantesActualmente" />
                     </nz-input-group>
                     <ng-template #habitantesActualmente>
@@ -2263,15 +2272,11 @@
               </div>
             </nz-tab>
             <!-- Multimedia -->
-            <nz-tab nzTitle=Multimedia nz-col nzSpan="8" (nzClick)="whatTab('Multimedia')">
+            <nz-tab nzTitle=Multimedia nz-col nzSpan="8" (nzClick)="whatTab('Multimedia');showPricingDrawer()">
               <!-- Fotos -->
               <dropzone [config]="config" [message]="'Pulse o arrastre sus imágenes para subirlas'" required
                 (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (removedFile)="onRemove($event)">
               </dropzone>
-              <!-- progress bar -->
-              <div class="container" class="d-none progress-bar">
-                <p-progressBar [value]="this.fileStatus.total" />
-              </div>
               <!-- Video para youtube -->
               <div class="form-group">
                 <ng-container>
@@ -2295,7 +2300,6 @@
                   </div>
                 </ng-container>
               </div>
-              <!--textarea-->
               <div class="form-group">
                 <ng-container>
                   <div class="row mt-3">
@@ -2361,10 +2365,10 @@
         <!--Ad Card-->
         <div class="col d-flex flex-row" *ngFor="let appHome of homes; let i =index">
           <!--col-lg-8 col-md-10 col-sm-12 col-xs-12 d-flex-->
-          <div class=" teaser-tile mt-2 mx-2 border">
+          <div class=" teaser-tile mt-2 mx-2 border" *ngFor="let appHomeP of newProjects; let j =index">
             <span class="favorite favorite-need-login" data-id="1935922" data-type="estate">
               <div class="wrapperDemo" #wrapperDemo>
-                <input [checked]="false" (change)="cuoreLikeFeature(appHome.viviendaId)" class="red-heart-checkbox"
+                <input [checked]="false" (change)="cuoreLikeFeature(appHome.viviendaId, appHome)" class="red-heart-checkbox"
                   #redheartcheckbox id="{{appHome.viviendaId}}" type="checkbox">
                 <label for="{{appHome.viviendaId}}"></label>
               </div>
@@ -2400,7 +2404,8 @@
                   </picture>
                 </div>
               </div>
-              <div class="desc">
+              <!-- Home models-->
+              <div class="desc" *ngIf="this.tipo.includes(appHome.tipo)">
                 <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
                     class="text-secondary">{{appHome.tipo}}</span> </div>
                 <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}}
@@ -2438,12 +2443,52 @@
                   </div>
                 </div>
               </div>
+              <!-- New project models -->
+              <div class="desc" *ngIf="appHomeP.tipo=='Proyecto nuevo' && (appHomeP.viviendaId==appHome.viviendaId)">
+                <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
+                    class="text-secondary">{{appHome.tipo}}</span> </div>
+                <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}}
+                  <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}
+                </div>
+                <div class="units mx-2">
+                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
+                    <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
+                    <span style="font-size: 0.8em;">{{appHomeP.habitacionesDesde+'-'+appHomeP.habitacionesHasta}}</span>
+                  </div>
+                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
+                    <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
+                      name="expand-outline"></ion-icon>
+                    <span style="font-size: 0.8em;">{{appHomeP.superficieDesde+'-'+appHomeP.superficieHasta}}m²</span>
+                  </div>
+                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="itemsP">
+                    <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
+                      src="assets/svg/project-card-units.svg"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px;">{{appHomeP.totalViviendasConstruidas}}</span>
+                  </div>
+                  <!--En curso-->
+                  <div class="unit-item mx-1 my-auto" *ngIf="(appHomeP.estadoConstruccion=='EnCurso' && appHomeP.finDeObra)" data-toggle="tooltip" data-placement="top" title="waitingP"> 
+                          <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"name="key-outline"></ion-icon>
+                          <span style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">{{appHomeP.finDeObra}}</span>
+                  </div>
+                  <!--Terminado-->
+                  <div class="unit-item mx-1 my-auto" *ngIf="(appHomeP.estadoConstruccion=='Terminado')" data-toggle="tooltip" data-placement="top" title="finishedP"> 
+                    <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"name="key-outline"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px; color:dodgerblue;">Disponible</span>
+                  </div>
+                </div>
+              </div>
               <div class="txt h-100p b-none pt-0">
                 <div class="clamp-3" (click)="runAdCard(appHome,'homeList')">{{appHome.descripcion}}</div>
               </div>
               <div class="price">
                 <div class="price-item">
+                  <!--NewProject tag-->
+                  <span class="text-uppercase" style="font-size:.7em;letter-spacing: .5px;" *ngIf="appHome.tipo=='Proyecto nuevo'">desde</span>
+                  <!--home price value-->
                   {{drawMarker(appHome)+'€'}}
+                  <!--home discount-->
+                  <span *ngIf="appHome.precioInicial" class="price-value text-decoration-line-through old-price textFont" style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span>
+                  <span class="ml-1 textFont" *ngIf="appHome.precioInicial != 0 && this.home.model!='NewProject'" style="color:#8dca3f; font-size: .8em;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
                 </div>
               </div>
               <!--<div class="social-actions">
@@ -2962,6 +3007,37 @@
   </div>
 </nz-modal>
 
+<!--Pricing drawer
+<nz-drawer
+[nzClosable]="true"
+[nzVisible]="visiblePricingDrawer"
+nzPlacement="right"
+nzTitle="Basic Drawer"
+(nzOnClose)="closePricingDrawer()">
+<ng-container *nzDrawerContent>
+  
+
+  <div class="card">
+    <div class="card-header">
+      <h6 class="my-auto font-semibold">Destacar anuncio&nbsp;</h6>
+    </div>
+    <div class="card-body">
+      <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-1"></ion-icon> Primeras posiciones en el listado de tu zona</p>
+      <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-1"></ion-icon> El anuncio destaca en el listado y en el mapa</p>
+      
+    </div>
+    <div class="card-footer">
+      <mat-button-toggle>Guardar</mat-button-toggle>
+      <div class="price-tag float-end ml-auto">
+        <span class="amount">4,95</span>
+        <span class="symbol">€</span>
+        <span class="after">/1 semana</span>
+     </div>
+    </div>
+  </div>
+</ng-container>
+</nz-drawer>-->
+
 <!--Ghost buttons-->
 <button id="oculto" class="oculto" style="display: none;" (click)="saveService()"></button>
 <a id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]"
@@ -2971,4 +3047,4 @@
 <!--Cuando el usuario cancela borra el marker y carga las propiedades en venta (carga por defecto)-->
 <button id="restoreMap" class="restoreMap" style="display: none;" (click)="restoreMap()"></button>
 <!--heart like!-->
-<button id="likePopup" class="likePopup" style="display:none;" (click)="cuoreLikeFeature('popup')"></button>
+<button id="likePopup" class="likePopup" style="display:none;" (click)="cuoreLikeFeature('popup',this.homeService.getHomeFromLocalCache())"></button>

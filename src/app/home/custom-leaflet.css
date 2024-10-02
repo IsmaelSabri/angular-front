@@ -1025,6 +1025,6 @@
 
 /*carousel delay*/
 .carousel-item {
-  transition-duration: 0s;
+  transition-duration: .150s;
 }
 /*end carousel delay*/

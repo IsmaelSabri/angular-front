@@ -33,7 +33,7 @@ export class Home {
   comentario: string;
   destacar: string;
   colorDestacar: any = '#3a3b3c';
-  destacado: boolean = false;
+  destacado: Featured;
   model: string;
   imagesAsString: string;
   images = new Array<HomeImage>();
@@ -61,11 +61,13 @@ export class Home {
   piso: string;
   proColor: any;
   proImage: HomeImage;
-  proImageAsString:string;
+  proImageAsString: string;
   mascotas: string = '';
   fianza: string = '';
   disponibilidad: string;
   estanciaMinima: string = ''; // meses
+  likeMeForever: string[] = [];
+  likeMeForeverAsString: string;
 
   // House profile
   alarma: boolean = false;
@@ -165,6 +167,13 @@ export class Home {
   valoracionesUsuarios: string;
   valoraciones: number;
   starRatingAverage: number;
+}
+
+export class Featured {
+  featured: boolean = false;
+  featuredFrom: Date;
+  featuredTo: Date;
+  featuredTimes: number = 0;
 }
 
 export interface Colegio {

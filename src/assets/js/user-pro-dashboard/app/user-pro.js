@@ -35,3 +35,18 @@ $(".eff").on("mousedown", function (e) {
 $('.toggle-sidebar').on('click', function () {
   $(".main-sidebar").toggleClass("open");
 });
+
+function runModal() {
+  $(".mdl").toggleClass("is-active");
+}
+
+function closeModal() {
+  $(".mdl").removeClass("is-active");
+}
+
+function rotateArrows(e, id) {
+  if (e.preventDefault())
+    $("." + id).find(".ant-select-arrow").toggleClass("ant-select-arrow-down");
+  else
+    $("." + id).find(".ant-select-arrow").removeClass("ant-select-arrow-down");
+}

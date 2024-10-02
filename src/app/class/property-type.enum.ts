@@ -7,7 +7,8 @@ export enum Model {
   Local = 'Local',
   Ground = 'Ground',
   Garage = 'Garage',
-  JunkRoom = 'JunkRoom'
+  JunkRoom = 'JunkRoom',
+  HolidayRent = 'HolidayRent'
 }
 
 export enum PropertyTo { // condicion
@@ -52,6 +53,10 @@ export enum HouseType { // tipo
   Pareado = 'Pareado',
   Casa_rustica = 'Casa Rústica',
   Villa = 'Villa',
+}
+
+export enum NewProjectType {
+  proyectoNuevo = 'Proyecto nuevo'
 }
 
 export enum HouseTypeFilters { // tipo
@@ -139,7 +144,7 @@ export enum PropertyState {
   A_Reformar = 'A reformar',
 }
 
-export enum Badge {
+export enum BadgeDestacar {
   precio_negociable = 'Precio negociable',
   urge_vender = 'Urge vender',
   listo_para_mudarse = 'Listo para su bienvenida',

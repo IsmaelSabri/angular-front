@@ -71,11 +71,6 @@ export class UserService {
     if (user.brandImageAsString != null || user.brandImageAsString != undefined) {
       user.brandImage = JSON.parse(user.brandImageAsString);
     }
-    if (user.likePreferencesAsString === null) {
-      user.likePreferences = [];
-    } else {
-      user.likePreferences = user.likePreferencesAsString.split(',');
-    }
     if (user.reviewsAsString != null || user.reviewsAsString != undefined) {
       user.reviews = JSON.parse(user.reviewsAsString);
     }

@@ -1,6 +1,6 @@
-import { HomeDto } from './../../model/dto/home-dto';
+import { BadgeDestacar, PropertyState, PropertyTo } from './../../class/property-type.enum';
 import { ProfileImage } from './../../model/user';
-import { Component, Inject, OnDestroy, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { UserComponent } from '../user/user.component';
 import { DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -21,34 +21,53 @@ import * as signalR from '@microsoft/signalr';
 import { cssPathUserPro } from 'src/app/model/performance/css-styles';
 import { dynamicUserProScripts } from 'src/app/model/performance/js-scripts';
 import { ChatService } from 'src/app/service/chat.service';
-import { format, compareAsc, formatDistance, subDays } from "date-fns";
+import { formatDistance } from "date-fns";
 import { es } from "date-fns/locale";
 import { ngxLoadingAnimationTypes } from 'ngx-loading';
 import { HomeService } from 'src/app/service/home.service';
-import { GalleriaThumbnails } from 'primeng/galleria';
-import { CustomHttpResponse } from 'src/app/model/performance/custom-http-response';
-import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { ImageService } from 'src/app/service/image.service';
 import _ from 'lodash';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { Bathrooms, HouseType, TipoDeVia, Views } from 'src/app/class/property-type.enum';
+import { nzSize } from 'src/app/class/ant-design.enum';
+import { NzSelectSizeType } from 'ng-zorro-antd/select';
+import { initFlowbite } from 'flowbite';
+import { BehaviorSubject } from 'rxjs';
+import { MatSidenav } from '@angular/material/sidenav';
+import * as L from 'leaflet';
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import { grayPointerIcon, homeicon } from 'src/app/model/maps/icons';
+import { Jawg_Sunny, Stadia_OSMBright } from 'src/app/model/maps/functions';
+import { HomeComponent } from 'src/app/home/home.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import * as $ from 'jquery';
+
 @Component({
   selector: 'app-user-pro',
   templateUrl: './user-pro.component.html',
   styleUrl: './user-pro.component.css'
 })
-export class UserProComponent extends UserComponent implements OnInit, OnDestroy {
+export class UserProComponent extends HomeComponent implements OnInit, OnDestroy {
 
   protected styleUser: HTMLLinkElement[] = [];
   userUpdate: User = new User();
   homes: Home[] = [];
+  home: Home = new Home();
   routerLinkId: number = 0;
   routerLinkModel: string;
+  map2!: L.Map; // map geocoding search location
+
 
   chats: Chat[] = [];
   selectedUserId: string = "";
   selectedUser: User = new User();
   hub: signalR.HubConnection | undefined;
   message: string = "";
+
+  vistas: string[] = Object.values(Views);
+  @ViewChild('sidenav') sidenav: MatSidenav;
+  resizeStyleListSidenav = { "max-width": `100vh !important`, };
 
   constructor(
     renderer2: Renderer2,
@@ -58,14 +77,16 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    protected modalService: BsModalService,
+    protected modalServiceBs: BsModalService,
     @Inject(DOCUMENT) protected document: Document,
     protected sanitizer: DomSanitizer,
     primengConfig: PrimeNGConfig,
     messageService: MessageService,
     protected chatService: ChatService,
     protected homeService: HomeService,
-    protected imageService: ImageService
+    protected imageService: ImageService,
+    protected nzMessage: NzMessageService,
+    protected modalService: NgbModal,
   ) {
     super(
       router,
@@ -74,10 +95,15 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       notificationService,
       route,
       toastr,
+      homeService,
+      sanitizer,
+      modalServiceBs,
       document,
       renderer2,
       primengConfig,
       messageService,
+      nzMessage,
+      modalService,
       imageService
     );
     this.hub = new signalR.HubConnectionBuilder().withUrl("https://localhost:4040/chat-hub").build();
@@ -100,6 +126,30 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
         }
       })
     })
+  }
+
+  formFieldControl() {
+    if (this.home.tipo == 'Habitación') {
+      this.saleTab.next(true);
+      this.rentTab.next(false);
+      this.home.precioFinal = null;
+      this.home.condicion = 'Compartir';
+    } else if (this.home.condicion == 'Venta') {
+      this.rentTab.next(true);
+      this.saleTab.next(false);
+      this.home.precioAlquiler = null;
+    } else if (this.home.condicion == 'Alquiler y venta') {
+      this.rentTab.next(false);
+      this.saleTab.next(false);
+    } else if (this.home.condicion == 'Alquiler') {
+      this.saleTab.next(true);
+      this.home.precioFinal = null;
+      this.rentTab.next(false);
+    } else {
+      this.saleTab.next(true);
+      this.rentTab.next(false);
+      this.home.precioFinal = null;
+    }
   }
 
   @ViewChild('customLoadingTemplate') customLoadingTemplate: TemplateRef<any>;
@@ -139,15 +189,52 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     return JSON.parse(file);
   }
 
-  visibleDrawer: boolean = false;
-  openDrawer() {
-    this.visibleDrawer = true;
+  visibleSidenav: boolean = false;
+  preSelectedViews: string[] = []
+  yearAntiguedad: Date;
+  openSidenav(home: Home) {
+    this.subscriptions.push(this.homeService.getHomesByQuery('model@=*' + home.model + ',' + 'viviendaId@=*' + home.viviendaId + ',').subscribe({
+      next: (res) => {
+        if (res) {
+          this.home = this.homeService.performHome(res[0]);
+          this.visibleSidenav = true;
+          this.preSelectedViews = this.home.vistasDespejadas.split(',');
+          this.yearAntiguedad = new Date(this.home.antiguedad + '-1-1');
+          if (this.home.energyCertAsString) {
+            this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
+          }
+          if (this.imageChangedEventEnergyUpdate) {
+            this.croppedImageEnergyUpdate = null;
+            this.imageChangedEventEnergyUpdate = null;
+            this.tempEnergyUpdate = null;
+            this.tempEnergyTagNameUpdate = null;
+          }
+          setTimeout(() => {
+            if (this.map3 == undefined) {
+              this.map3 = L.map('map_3', {
+                renderer: L.canvas(),
+                invalidateSize: true,
+              }).setView([this.home.lat, this.home.lng], 15);
+              //Stadia_OSMBright().addTo(this.map3);
+              Jawg_Sunny().addTo(this.map3);
+              this.markerHouse = new L.marker([this.home.lat, this.home.lng], {
+                draggable: false,
+                icon: homeicon,
+              });
+              this.markerHouse.addTo(this.map3);
+            }
+          }, 1000);
+        }
+      },
+      error: () => { }
+    }))
   }
+
   closeDrawer() {
-    this.visibleDrawer = false;
+    this.visibleSidenav = false;
   }
   updateHome() {
-    console.log('updating')
+    //console.log('updating')
   }
 
   deleteHome(home: Home) {
@@ -226,6 +313,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     $('#action_menu_btn').click(function () {
       $('.action_menu').toggle();
     });
+    initFlowbite();
     // apaño temporal para probar el chat. Luego se añaden onclick en el anuncio
     // y se borran desde la interfaz
     this.subscriptions.push(this.userService.getUsers().subscribe({
@@ -250,7 +338,8 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       this.renderer2.setProperty(this.styleUser[i], 'href', cssPathUserPro[i]);
     }
     this.getOwnHomes()
-
+    this.getFavourites();
+    this.setCardLike()
   }
 
   public getOwnHomes() {
@@ -269,6 +358,74 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     });
   }
 
+  userFavourites: Home[] = [];
+  public getFavourites() {
+    this.homeService.getHomesByQuery('LikeMeForeverAsString@=*' + this.user.userId).subscribe({
+      next: (res: Home[]) => {
+        if (res) {
+          this.userFavourites = [...res]
+          for (let i = 0; i < res.length; i++) {
+            this.userFavourites[i] = this.homeService.performHome(this.userFavourites[i]);
+          }
+        }
+      },
+      error: (err: any) => {
+        this.notificationService.notify(NotificationType.ERROR, 'Error al cargar los favoritos' + err);
+      }
+    });
+  }
+
+  // nzMessages
+  createMessage(type: string, content: string): void {
+    this.nzMessage.create(type, content, {});
+  }
+
+  cuoreLike(home: Home) {
+    if (this.state) {
+      var selectedHome = home;
+      var userValue = this.user.userId;
+      if (selectedHome.likeMeForever.includes(userValue)) {
+        selectedHome.likeMeForever.forEach((item, index) => {
+          if (item == userValue) selectedHome.likeMeForever.splice(index, 1);
+        });
+        selectedHome.likeMeForeverAsString = selectedHome.likeMeForever.toString();
+        this.subscriptions.push(this.homeService.updateHome(selectedHome).subscribe({
+          next: () => {
+            this.notificationService.notify(NotificationType.DEFAULT, 'Borrado desde favoritos');
+            //this.createMessage("success", "Borrado desde favoritos");
+          },
+          error: (err: any) => {
+            this.notificationService.notify(NotificationType.ERROR, err);
+          }
+        }));
+      } else {
+        selectedHome.likeMeForever.push(userValue);
+        selectedHome.likeMeForeverAsString = selectedHome.likeMeForever.toString();
+        this.subscriptions.push(this.homeService.updateHome(selectedHome).subscribe({
+          next: () => {
+            this.notificationService.notify(NotificationType.DEFAULT, 'Guardado en favoritos');
+            //this.createMessage("success", "Guardado en favoritos");
+          },
+          error: (err: any) => {
+            this.notificationService.notify(NotificationType.ERROR, err);
+          }
+        }));
+      }
+    }
+  }
+
+  @ViewChildren('redheartcheckbox') likes4ever: QueryList<ElementRef>
+  setCardLike() {
+    setTimeout(() => {
+      if (this.state) {
+        this.likes4ever.forEach(f => {
+          const doc = document.getElementById(f.nativeElement.id) as HTMLInputElement;
+          doc.checked = true;
+        });
+      }
+    }, 500);
+  }
+
   loadScripts() {
     for (let i = 0; i < dynamicUserProScripts.length; i++) {
       const node = document.createElement('script');
@@ -277,49 +434,6 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
       node.async = false;
       document.getElementsByTagName('body')[0].appendChild(node);
     }
-  }
-
-  imageChangedEventBranding: any = null;
-  imageChangedEventProfile: any = null;
-  croppedImageBranding: any = null;
-  croppedImageProfile: any = null;
-  tempBranding: File = null;
-  tempProfile: File = null;
-  @ViewChild('editUserForm') updateUserForm: NgForm;
-  fileChangeEvent(event: any, option: string): void {
-    if (option === 'branding') {
-      this.imageChangedEventBranding = event;
-    } else {
-      this.imageChangedEventProfile = event;
-    }
-  }
-  imageCropped(event: ImageCroppedEvent, option: string) {
-    var randomString = (Math.random() + 1).toString(36).substring(7);
-    if (option === 'branding') {
-      this.croppedImageBranding = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
-      //this.tempBranding = event.blob; 
-      this.tempBranding = new File([event.blob], randomString + '.jpg');
-      //console.log(this.tempBranding);
-    } else {
-      this.croppedImageProfile = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
-      this.tempProfile = new File([event.blob], randomString + '.jpg');
-    }
-    // event.blob can be used to upload the cropped image
-  }
-  // image events enables the form to update full user
-  imageLoaded(image: LoadedImage, option: string) {
-    if (option == 'branding') {
-      this.updateUserForm.control.markAsDirty();
-    } else if (option == 'profile') {
-      this.updateUserForm.control.markAsDirty();
-    }
-  }
-  cropperReady() {
-    // cropper ready
-  }
-  loadImageFailed() {
-    // show message
-    this.notificationService.notify(NotificationType.ERROR, `Algo salio mal. Por favor intentelo pasados unos minutos.`);
   }
 
   updateUser() {
@@ -378,6 +492,7 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
           this.authenticationService.addUserToLocalCache(res);
           console.log(this.user);
           this.getOwnHomes();
+          this.getFavourites();
           setTimeout(() => { this.tunedHomesAfterUpdateUser(); }, 1000)
           this.notificationService.notify(NotificationType.SUCCESS, `Se ha actualizado el perfil`);
         },
@@ -406,6 +521,49 @@ export class UserProComponent extends UserComponent implements OnInit, OnDestroy
     }
   }
 
+  // update city form
+  showCityResult() {
+    if (this.home.ciudad == null) {
+      alert('Introduzca la provincia!');
+    } else {
+      this.home.ciudad = this.home.ciudad.split(' ')[0].replace(',', '');
+      this.closeDialog();
+    }
+  }
+
+  locationMap() {
+    this.showDialog();
+    if (this.map2 == null || this.map2 == undefined) {
+      const search = GeoSearchControl({
+        provider: new OpenStreetMapProvider(),
+        popupFormat: ({ result }) => (this.home.ciudad = result.label),
+        searchLabel: 'Ciudad',
+        resultFormat: ({ result }) => result.label,
+        marker: {
+          icon: grayPointerIcon,
+          draggable: false,
+        },
+      });
+      setTimeout(() => {
+        var x = document.getElementById('map_2');
+        x.style.display = 'flex';
+        this.map2 = L.map('map_2', { renderer: L.canvas() }).setView(
+          [40.4380986, -3.8443428],
+          5
+        );
+        //this.getLocation();
+        Stadia_OSMBright().addTo(this.map2);
+        //tileLayerHere().addTo(this.map2);
+        this.map2.addControl(search);
+      }, 300)
+    }
+  }
+
+  checkBox(param): any {
+    //console.log(param)
+    //setTimeout(() => { console.log(this.home.aireAcondicionado) }, 1000);
+
+  }
 
   ngOnDestroy(): void {
     for (let i = 0; i < cssPathUserPro.length; i++) {

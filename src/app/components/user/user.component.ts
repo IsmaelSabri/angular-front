@@ -1,5 +1,5 @@
 import { BrandImage } from './../../model/user';
-import { Component, OnInit, OnDestroy, ViewChild, Inject, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Inject, Renderer2, ElementRef } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user.service';
@@ -18,6 +18,9 @@ import { DOCUMENT } from '@angular/common';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { ImageService } from 'src/app/service/image.service';
 import { SingleDtoHomeRequest } from 'src/app/model/dto/home-dto';
+import { NzSelectSizeType } from 'ng-zorro-antd/select';
+import { differenceInCalendarDays } from 'date-fns';
+import { TipoDeVia, Bathrooms, HouseType, PropertyState, PropertyTo, Orientacion, BadgeDestacar, CarPlaces, ConsumoEnergetico, EmisionesCO2 } from 'src/app/class/property-type.enum';
 
 @Component({
   selector: 'app-user',
@@ -38,25 +41,45 @@ export class UserComponent implements OnInit, OnDestroy {
   private currentUsername: string;
   public fileStatus = new FileUploadStatus();
   public showLoading: boolean;
-  brandImageSrc: string = '';
-  brandImageName: string;
-  BrandImage: File;
-  brandImageRefreshing: boolean;
-  imageProfileRefreshing: boolean;
+  public state: boolean = this.authenticationService.isUserLoggedIn();
+  public brandImageSrc: string = '';
+  public brandImageName: string;
+  public BrandImage: File;
+  public brandImageRefreshing: boolean;
+  public imageProfileRefreshing: boolean;
   // ad decoration
-  brandingColor: any;
-  brandingImage: any;
-  energyImage: any;
-  imageBadgeColor: any;
+  public brandingColor: any;
+  public brandingImage: any;
+  public energyImage: any;
+  public imageBadgeColor: any;
 
-  dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
+
+
+  // conditionTabs() - Home, formFieldControl() - User-pro
+  public rentTab = new BehaviorSubject<boolean>(false);
+  public shareTab = new BehaviorSubject<boolean>(undefined);
+  public saleTab = new BehaviorSubject<boolean>(false);
+
+  public dto: SingleDtoHomeRequest = new SingleDtoHomeRequest();
   // dynamic id's carousels
-  idIndex = Array.from(Array(1000).keys());
+  public idIndex = Array.from(Array(1000).keys());
+
+    // tamaño de los select para las tablas de proximidades
+    size: NzSelectSizeType = 'small';
+    sizeM: NzSelectSizeType = 'default';
+    sizeL: NzSelectSizeType = 'large';
 
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
     fileSource: new FormControl('', [Validators.required])
   });
+
+  // manejo de fechas. Pinta los pre y post
+  public today = new Date();
+  public disabledDatePost = (current: Date): boolean =>
+    differenceInCalendarDays(current, this.today) > 0;
+  public disabledDatePre = (current: Date): boolean =>
+    differenceInCalendarDays(current, this.today) < 0;
 
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
     protected userService: UserService, protected notificationService: NotificationService,

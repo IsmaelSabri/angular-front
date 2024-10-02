@@ -21,8 +21,6 @@ export class User {
   public role: string;
   public token: string;
   public refreshToken: string;
-  public likePreferences: string[] = [];
-  public likePreferencesAsString: string;
   public brandImage: BrandImage;
   public profileImage: ProfileImage;
   public company: string;

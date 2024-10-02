@@ -74,3 +74,5 @@ $(document).ready(function(){
 })
 
 
+// pricing cards
+
