@@ -9,6 +9,7 @@ import {
   Model,
   ProjectFeatures,
   NewProjectType,
+  NearlyServices,
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
 import { Component, ElementRef, Inject, Input, OnDestroy, OnInit, Output, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
@@ -56,6 +57,7 @@ import { ImageService } from '../service/image.service';
 import { HomeDto } from '../model/dto/home-dto';
 import _ from 'lodash';
 import { initFlowbite } from 'flowbite';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 
 
@@ -85,6 +87,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     protected nzMessage: NzMessageService,
     protected modalSevice: NgbModal,
     protected imageService: ImageService,
+    protected notification: NzNotificationService
   ) {
     super(router, authenticationService, userService, notificationService, route, toastr, document,
       renderer2, primengConfig, messageService, imageService);
@@ -93,17 +96,16 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   map!: L.map; // map allocates homes
   map2!: L.Map; // map geocoding search location
   map3!: L.Map; // map to set nearly services
-  //hereMap!: H.Map;
   lg = new L.LayerGroup(); // para añadir un nuevo marker
   contained = new L.LayerGroup(); // responde a los eventos de mapa cargando los markers en su area visible
-  mp!: L.Marker;
+  markerPoint!: L.Marker;
   markerHouse!: L.Marker; // punto de referencia para los servicios
   markerSchool!: L.Marker;
   fg = L.featureGroup(); // template for services
   popup = L.popup();
-  beforeCoords!: L.LatLng; // app user coordinates at the beggining
-  afterCoords!: L.LatLng; // coordinates where the user wants to put his house
-  nextCoords!: L.LatLng; // temp coordinates to put any service
+  userLocationCoords!: L.LatLng; // app user coordinates at the beggining
+  waypointsFrom!: L.LatLng; // coordinates where the user wants to put his house
+  waypointsTo!: L.LatLng; // temp coordinates to put any service
   public adTitle = new BehaviorSubject<string>('Nueva propiedad');
   public adTitleAction$ = this.adTitle.asObservable();
   home: Home = new Home();
@@ -124,23 +126,26 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   public condicion2: string[] = Object.values(PropertyShareType);
   public condicionFiltros: string[] = Object.values(PropertyFilterOptions);
   public condicionHeader: string[] = Object.values(PropertyTypeSelectHeader);
+  public ensenyanza: string[] = Object.values(Enseñanza);
+  public model: string[] = Object.values(Model);
+  public nearlyServices: string[] = Object.values(NearlyServices);
   public orientacion: string[] = Object.values(Orientacion);
+  public precioMinimoAlquiler: string[] = Object.values(PrecioMinimoAlquiler);
+  public precioMinimoVenta: string[] = Object.values(PrecioMinimoVenta);
+  public precioMaximoAlquiler: string[] = Object.values(PrecioMaximoAlquiler);
+  public precioMaximoVenta: string[] = Object.values(PrecioMaximoVenta);
+  public projectFeatures: string[] = Object.values(ProjectFeatures);
   public propertyState: string[] = Object.values(PropertyState);
+  public provincias: string[] = Object.values(Provincias);
   public proyectoNuevo: string[] = Object.values(NewProjectType);
+  public superficie: string[] = Object.values(Superficie);
   public tipo_de_via: string[] = Object.values(TipoDeVia);
   public tipo: string[] = Object.values(HouseType);
   public tipoFilters: string[] = Object.values(HouseTypeFilters);
-  ensenyanza: string[] = Object.values(Enseñanza);
+  public vistas: string[] = Object.values(Views);
   institucion: string[] = Object.values(Institucion);
   ramas: string[] = Object.values(RamasConocimiento);
-  provincias: string[] = Object.values(Provincias);
-  precioMinimoAlquiler: string[] = Object.values(PrecioMinimoAlquiler);
-  precioMaximoAlquiler: string[] = Object.values(PrecioMaximoAlquiler);
-  precioMinimoVenta: string[] = Object.values(PrecioMinimoVenta);
-  precioMaximoVenta: string[] = Object.values(PrecioMaximoVenta);
-  superficie: string[] = Object.values(Superficie);
-  model: string[] = Object.values(Model);
-  projectFeatures: string[] = Object.values(ProjectFeatures);
+
   value!: number;
   decision: any[] = [
     { name: 'Aprox.', value: false },
@@ -148,7 +153,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   ];
   modalFooterNull = null;
   shinePopup: boolean = false; //skeleton
-  vistas: string[] = Object.values(Views);
   popupOpenViviendaId: string;
   cardCheckedViviendaId: string;
   anyPopupOpen: boolean = false;
@@ -204,7 +208,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   ];
 
   // enable-disable textfields
-  stateTexfields = Array.from({ length: 4 }, () => new Array(6).fill(false));
+  stateTextfields = Array.from({ length: 4 }, () => new Array(6).fill(false));
   // add-delete temp routes
   mapEvents = new Set<string>();
   // save points
@@ -230,6 +234,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   public restoreMap() {
     this.lg.clearLayers();
     this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+    if (this.mapEvents.has('control')) {
+      this.map3.eachLayer(function (layer) {
+        layer.remove();
+      });
+      Jawg_Sunny().addTo(this.map3);
+      this.mapEvents.delete('control');
+      this.markerHouse.addTo(this.map3);
+    }
   }
 
   @ViewChild('newMarkerForm') newMarkerForm: FormGroupDirective;
@@ -241,21 +253,21 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   public openToogleModal(flag: boolean) {
     if (flag) {
-      if (this.afterCoords == null || this.afterCoords == undefined) {
+      if (this.waypointsFrom == null || this.waypointsFrom == undefined) { // if(this.waypointsFrom) da error y no carga el mapa
         // remove to production
-        this.afterCoords = this.beforeCoords;
+        this.waypointsFrom = this.userLocationCoords;
       }
-      this.nextCoords = this.afterCoords;
+      this.waypointsTo = this.waypointsFrom;
       this.element.nativeElement.classList.add('modal-open');
       // cargar el siguiente mapa
       if (this.map3 == undefined) {
         this.map3 = L.map('map_3', {
           renderer: L.canvas(),
           invalidateSize: true,
-        }).setView([this.afterCoords.lat, this.afterCoords.lng], 15);
+        }).setView([this.waypointsFrom.lat, this.waypointsFrom.lng], 15);
         //Stadia_OSMBright().addTo(this.map3);
         Jawg_Sunny().addTo(this.map3);
-        this.markerHouse = new L.marker(this.afterCoords, {
+        this.markerHouse = new L.marker(this.waypointsFrom, {
           draggable: false,
           icon: homeicon,
         });
@@ -276,10 +288,21 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     idButtonAfter: string,
     idButtonDelete: string,
     iRow: number,
-    jCol: number
+    jCol: number,
+    el: HTMLElement
   ) {
-    this.messageService.add({ severity: 'success', summary: 'Arrastra el marcador', detail: 'Y pulsa para guardar' });
-    this.nextCoords = this.afterCoords;
+    el.scrollIntoView({
+      behavior: 'auto',
+      block: 'center',
+      inline: 'center'
+    });
+    //this.messageService.add({ severity: 'success', summary: 'Arrastra el marcador', detail: 'Y pulsa para guardar' });
+    this.notification.blank(
+      'Arrastra el marcador',
+      'Y pulsa para guardar',
+      { nzPlacement: 'topRight', nzDuration: 2300, nzStyle: { 'border-radius': '.5em', 'background-color': '#3a3b3c', 'color': 'white', 'margin-top': '2em' } }
+    );
+    this.waypointsTo = this.waypointsFrom;
     this.serviceGoal = serviceParam;
     this.indexGoal = index;
     this.buttonBefore = idButtonBefore;
@@ -309,8 +332,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         },
       }),
       waypoints: [
-        L.latLng(this.afterCoords.lat, this.afterCoords.lng),
-        L.latLng(this.nextCoords.lat - 0.001, this.nextCoords.lng + 0.001),
+        L.latLng(this.waypointsFrom.lat, this.waypointsFrom.lng),
+        L.latLng(this.waypointsTo.lat - .001, this.waypointsTo.lng + .001),
       ],
       createMarker: function (i, wp, nWps) {
         if (i == 0) {
@@ -329,9 +352,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             bounceOnAdd: true,
           }).bindPopup(
             `
-            <div class="buttons has-addons is-centered " style="left:-0.18em;top:0;botton:0;position:absolute; ">
-              <button class="button is-link" onclick="saveService()">Guardar</button>
-              <button class="button is-link is-light" onclick="closeSmallPopup()">Cancelar</button>
+            <div class="buttons has-addons is-centered d-flex flex-start" style="left:-0.18em;top:0;bottom:0;position:absolute; ">
+              <button class="button is-link" onclick="saveService()" type="button" >Guardar</button>
+              <button class="button is-link is-light" onclick="closeSmallPopup()" type="button" >Cancelar</button>
             </div>
             `, {
             offset: [6, -44],
@@ -351,7 +374,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     control.on('routesfound', (e) => {
       var routes = e.routes;
       var summary = routes[0].summary;
-      //this.nextCoords=e.waypoints;
+      //this.waypointsTo=e.waypoints;
       console.log(
         (summary.totalDistance / 1000).toFixed(2) +
         ' km. ' +
@@ -360,60 +383,60 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       );
       var waypoints = e.waypoints || [];
       var destination = waypoints[waypoints.length - 1];
-      this.nextCoords = destination.latLng;
-      console.log(this.nextCoords);
+      this.waypointsTo = destination.latLng;
+      console.log(this.waypointsTo);
       switch (this.serviceGoal) {
         case 'colegio':
-          this.colegio[this.indexGoal].lat = this.nextCoords.lat;
-          this.colegio[this.indexGoal].lng = this.nextCoords.lng;
+          this.colegio[this.indexGoal].lat = this.waypointsTo.lat;
+          this.colegio[this.indexGoal].lng = this.waypointsTo.lng;
           this.colegio[this.indexGoal].distancia =
             (summary.totalDistance / 1000).toFixed(2) + ' km.';
           this.colegio[this.indexGoal].tiempo =
             Math.round((summary.totalTime % 3600) / 60) + ' minutos';
           break;
         case 'universidad':
-          this.universidad[this.indexGoal].lat = this.nextCoords.lat;
-          this.universidad[this.indexGoal].lng = this.nextCoords.lng;
+          this.universidad[this.indexGoal].lat = this.waypointsTo.lat;
+          this.universidad[this.indexGoal].lng = this.waypointsTo.lng;
           this.universidad[this.indexGoal].distancia =
             (summary.totalDistance / 1000).toFixed(2) + ' km.';
           this.universidad[this.indexGoal].tiempo =
             Math.round((summary.totalTime % 3600) / 60) + ' minutos';
           break;
         case 'autobus':
-          this.autobus[this.indexGoal].lat = this.nextCoords.lat;
-          this.autobus[this.indexGoal].lng = this.nextCoords.lng;
+          this.autobus[this.indexGoal].lat = this.waypointsTo.lat;
+          this.autobus[this.indexGoal].lng = this.waypointsTo.lng;
           this.autobus[this.indexGoal].distancia =
             (summary.totalDistance / 1000).toFixed(2) + ' km.';
           this.autobus[this.indexGoal].tiempo =
             Math.round((summary.totalTime % 3600) / 60) + ' minutos';
           break;
         case 'metro':
-          this.metro[this.indexGoal].lat = this.nextCoords.lat;
-          this.metro[this.indexGoal].lng = this.nextCoords.lng;
+          this.metro[this.indexGoal].lat = this.waypointsTo.lat;
+          this.metro[this.indexGoal].lng = this.waypointsTo.lng;
           this.metro[this.indexGoal].distancia =
             (summary.totalDistance / 1000).toFixed(2) + ' km.';
           this.metro[this.indexGoal].tiempo =
             Math.round((summary.totalTime % 3600) / 60) + ' minutos';
           break;
         case 'mercados':
-          this.mercados[this.indexGoal].lat = this.nextCoords.lat;
-          this.mercados[this.indexGoal].lng = this.nextCoords.lng;
+          this.mercados[this.indexGoal].lat = this.waypointsTo.lat;
+          this.mercados[this.indexGoal].lng = this.waypointsTo.lng;
           this.mercados[this.indexGoal].distancia =
             (summary.totalDistance / 1000).toFixed(2) + ' km.';
           this.mercados[this.indexGoal].tiempo =
             Math.round((summary.totalTime % 3600) / 60) + ' minutos';
           break;
         case 'aeropuerto':
-          this.aeropuerto[this.indexGoal].lat = this.nextCoords.lat;
-          this.aeropuerto[this.indexGoal].lng = this.nextCoords.lng;
+          this.aeropuerto[this.indexGoal].lat = this.waypointsTo.lat;
+          this.aeropuerto[this.indexGoal].lng = this.waypointsTo.lng;
           this.aeropuerto[this.indexGoal].distancia =
             (summary.totalDistance / 1000).toFixed(2) + ' km.';
           this.aeropuerto[this.indexGoal].tiempo =
             Math.round((summary.totalTime % 3600) / 60) + ' minutos';
           break;
         case 'beach':
-          this.beach[this.indexGoal].lat = this.nextCoords.lat;
-          this.beach[this.indexGoal].lng = this.nextCoords.lng;
+          this.beach[this.indexGoal].lat = this.waypointsTo.lat;
+          this.beach[this.indexGoal].lng = this.waypointsTo.lng;
           this.beach[this.indexGoal].distancia =
             (summary.totalDistance / 1000).toFixed(2) + ' km.';
           this.beach[this.indexGoal].tiempo =
@@ -423,8 +446,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     });
     this.mapEvents.add('control');
     //control.on('waypointschanged', ()=>);
-    /*this.mp.on('move', () => (this.afterCoords = this.mp.getLatLng()));
-    this.mp.on('moveend', () => console.log(this.afterCoords));
+    /*this.mp.on('move', () => (this.waypointsFrom = this.mp.getLatLng()));
+    this.mp.on('moveend', () => console.log(this.waypointsFrom));
     this.mp.on('dragend', () => this.mp.openPopup());*/
   }
 
@@ -462,15 +485,17 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveService() {
-    var x = document.getElementById(this.buttonBefore);
-    x.style.display = 'none';
-    x = document.getElementById(this.buttonAfter);
-    x.style.display = 'block';
-    x = document.getElementById(this.buttonDelete);
-    x.style.display = 'block';
-    this.stateTexfields[this.row][this.col] = true;
-    console.log(this.stateTexfields);
+  saveService(flag: string) {
+    if (flag == 'home') {
+      var x = document.getElementById(this.buttonBefore);
+      x.style.display = 'none';
+      x = document.getElementById(this.buttonAfter);
+      x.style.display = 'block';
+      x = document.getElementById(this.buttonDelete);
+      x.style.display = 'block';
+    }
+    this.stateTextfields[this.row][this.col] = true;
+    console.log(this.stateTextfields);
     if (this.mapEvents.has('control')) {
       this.map3.eachLayer(function (layer) {
         layer.remove();
@@ -478,37 +503,35 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       Jawg_Sunny().addTo(this.map3);
       this.mapEvents.delete('control');
     }
+    this.markerHouse = new L.marker(this.waypointsFrom, {
+      draggable: false,
+      icon: homeicon,
+    });
     this.markerHouse.addTo(this.map3);
-    /*formatParamMarker: L.Marker([this.nextCoords.lat,this.nextCoords.lng],{icon:this.customIcon, draggable:false});
-      this.nearlyMarkers.set(this.indexGoal.toString()+this.serviceGoal.toString(),this.mp);
-      this.nearlyMarkers.forEach((key:string,value:L.marker)=>{
-         marker:L.marker([value.lat,value.lng]).addTo(this.map3);
-      })*/
-    //this.map3.flyTo([this.afterCoords.lat, this.afterCoords.lng], 20);
-    //console.log(this.row + ' ' );
-    /*switch(this.serviceGoal){
-      case 'colegio':
-        this.colegio[this.indexGoal]
-    }*/
-    // this.colegio[0].distancia=;
-    /*console.log('Estás en ts !!!');
-     console.log();
-     var x = JSON.stringify(this.colegio)
-     var y = JSON.parse(x);*/
-
-    /*for (let i = 0; i < this.aeropuerto.length; i++) {
-      console.log(this.aeropuerto[i])
-     }*/
+    if (flag == 'home') {
+      let top = document.getElementsByClassName('body')[0];
+      if (top !== null) {
+        top.scrollIntoView();
+        top = null;
+      }
+    } else if (flag == 'user-pro') {
+      let top = document.getElementsByClassName('mobility-modal')[0];
+      if (top !== null) {
+        top.scrollIntoView();
+        top = null;
+      }
+    }
   }
 
   reRackService(row: number, col: number, btnBeforeId: string, btnAfterId: string, btnDltId: string) {
+    console.log(btnBeforeId)
     var x = document.getElementById(btnBeforeId); //  array:string, index:number,
     x.style.display = 'block';
     x = document.getElementById(btnAfterId);
     x.style.display = 'none';
     x = document.getElementById(btnDltId);
     x.style.display = 'none';
-    this.stateTexfields[row][col] = false;
+    this.stateTextfields[row][col] = false;
     console.log(row + ' ' + col);
   }
 
@@ -650,7 +673,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   dateMonthFormat: Date; // para que no maree. El método asigna el mes
   fechaDisponibleAlquiler: any;
-  setMonth(result: Date) {
+  setMonth(result: Date, flag: string) {
     if (result) {
       var disponible = result.toString().substring(4, 7);
       switch (disponible) {
@@ -668,8 +691,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         case 'Dec': this.fechaDisponibleAlquiler = 'Diciembre'; break;
         default: break;
       }
-      this.homeDto.disponibilidad = this.fechaDisponibleAlquiler;
-      console.log(this.fechaDisponibleAlquiler);
+      if (flag == 'home') {
+        this.homeDto.disponibilidad = this.fechaDisponibleAlquiler;
+        console.log(this.homeDto.disponibilidad);
+      } else if (flag == 'user-pro') {
+        this.home.disponibilidad = this.fechaDisponibleAlquiler;
+        console.log(this.home.disponibilidad);
+      }
     }
   }
 
@@ -1132,7 +1160,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     initFlowbite();
     this.map = L.map('map', { renderer: L.canvas() }).setView(
-      [39.46975, -0.37739],
+      [39.46975, -0.37739],//en producción sin zoom y centrado en Madrid
       16  //25
     ).on('zoomend', () => {
       /*
@@ -1179,19 +1207,17 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   getLocation() {
-    this.map.on('locationfound', (e: { accuracy: number; latlng: LatLng }) => {
-      this.beforeCoords = e.latlng; //Object.assign({}, e.latlng);
-      this.map.setView(this.beforeCoords, 16); // poner el foco en el mapa
-      this.map.fitBounds([[this.beforeCoords.lat, this.beforeCoords.lng]]); // por si acaso..
-    });
-    this.map.on('locationerror', this.notFoundLocation); // si el usuario no activa la geolocalización
     this.map.locate({ setView: true, maxZoom: 16 }); // llamada para que la geolocalización funcione
-  }
-
-  notFoundLocation() {
-    alert(
-      'Si ya ha iniciado sesión, habilite la Geolocalización o espere a que el navegador se posicione. Sino recarge la página o inicie esta ventana en otro navegador'
-    );
+    this.map.on('locationfound', (e: { accuracy: number; latlng: LatLng }) => {
+      console.log('locationfound')
+      this.userLocationCoords = e.latlng; //Object.assign({}, e.latlng);
+      this.map.setView(this.userLocationCoords, 16); // poner el foco en el mapa
+      this.map.fitBounds([[this.userLocationCoords.lat, this.userLocationCoords.lng]]); // por si acaso..
+    });
+    this.map.on('locationerror', () => {
+      console.log('locationerror')
+      this.userLocationCoords = [39.46975, -0.37739];
+    }); // si el usuario no activa la geolocalización
   }
 
   printSelect(e: any) {
@@ -1208,9 +1234,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.images = new Array<HomeImage>();// new Array(30).fill('');
     this.tempEnergy = null;
     this.lg.clearLayers();
-    //this.map.flyTo([this.beforeCoords],25,{ animate:true,duration:1.5 });
-    console.log(this.beforeCoords);
-    this.afterCoords = this.beforeCoords;
+    //this.map.flyTo([this.userLocationCoords],25,{ animate:true,duration:1.5 });
+    console.log(this.userLocationCoords);
+    this.waypointsFrom = this.userLocationCoords;
     /*this.notificationService.notify(
       NotificationType.INFO,
       'Mueve el marcador hasta su propiedad'
@@ -1219,7 +1245,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       'Arrastra el marcador!',
       'Mueve el marcador hasta su propiedad!'
     );
-    this.mp = new L.marker(this.beforeCoords, {
+    this.markerPoint = new L.marker(this.userLocationCoords, {
       draggable: true,
       icon: luxuryRed,
     }).bindPopup(`
@@ -1242,12 +1268,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       opacity: 0,
       className: 'tooltipX',
     });
-    this.lg = new L.LayerGroup([this.mp]);
+    this.lg = new L.LayerGroup([this.markerPoint]);
     this.lg.addTo(this.map);
-    this.mp.on('move', () => (this.afterCoords = this.mp.getLatLng()));
-    this.mp.on('moveend', () => console.log(this.afterCoords));
-    this.mp.on('dragend', () => this.mp.openPopup());
-    this.map.flyTo([this.beforeCoords.lat, this.beforeCoords.lng], 18);
+    this.markerPoint.on('move', () => (this.waypointsFrom = this.markerPoint.getLatLng()));
+    this.markerPoint.on('moveend', () => console.log(this.waypointsFrom));
+    this.markerPoint.on('dragend', () => this.markerPoint.openPopup());
+    this.map.flyTo([this.userLocationCoords.lat, this.userLocationCoords.lng], 18);
   }
 
   conditionTabs() {
@@ -1432,6 +1458,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   selectedFiles?: FileList;
   filesUploadSuccessfully: number = 0;
   fileProgress: number[] = []
+  dropzone: any;
   public config: DropzoneConfigInterface = {
     clickable: true,
     maxFiles: 60,
@@ -1440,20 +1467,37 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     cancelReset: null,
     maxFilesize: 32,
     addRemoveLinks: true,
-
+    autoProcessQueue: true
   };
-  @ViewChild(DropzoneComponent) private dropComponent: DropzoneComponent;
+  @ViewChild(DropzoneComponent) protected dropComponent: DropzoneComponent;
   public onUploadError(args: any): void {
-    console.log('onUploadError:', args);
+    if (args[1] == 'You can not upload any more files.') {
+      this.toastr.error(
+        'Máximo 60 imágenes !',
+        'Límite excedido'
+      );
+      this.dropzone.removeFile(args[0]);
+    } else if (args[1].substring(0, 15) == 'File is too big') {
+      this.toastr.error(
+        'Tamaño máximo 32mb !',
+        'Límite excedido'
+      );
+      this.dropzone.removeFile(args[0]);
+    }
+    //console.log(args);
   }
 
   public onUploadSuccess(args: any): void {
     console.log('onUploadSuccess:', args);
-    this.selectedFiles
+
   }
 
   public onRemove(e: any) {
     console.log(e);
+  }
+
+  public dropzoneInit(e: any) {
+    //console.log(e)
   }
 
   // energy form new home
@@ -1551,7 +1595,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   newHome() {
-    this.lg.remove(this.mp);
+    this.lg.remove(this.markerPoint);
     if (this.adTitle.getValue() == 'Proyecto nuevo') {
       this.homeDto.tipo = 'Proyecto nuevo';
       this.homeDto.condicion = 'Venta';
@@ -1570,8 +1614,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
     this.showLoading = true;
     const formData = new FormData();
-    formData.append('lat', this.afterCoords.lat);
-    formData.append('lng', this.afterCoords.lng);
+    formData.append('lat', this.waypointsFrom.lat);
+    formData.append('lng', this.waypointsFrom.lng);
     formData.append('ciudad', this.homeDto.ciudad);
     formData.append('calle', this.homeDto.calle);
     formData.append('numero', this.homeDto.numero);
@@ -1668,12 +1712,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
     if (this.homeDto.precioFinal) {
       formData.append('precioFinal', this.homeDto.precioFinal);
-    }
-    if ((this.homeDto.precioAlquiler == null) && (this.homeDto.condicion == 'Alquiler y venta')) {
-      this.toastr.info(
-        'Si contempla alquilar y vender introduzca el precio de alquiler',
-        'Campo requerido'
-      );
     }
     //detalles de alquiler
     if (this.homeDto.precioAlquiler != null && (this.homeDto.condicion == 'Alquiler' || this.homeDto.condicion == 'Alquiler y venta' || this.homeDto.condicion == 'Compartir')) {
@@ -1851,8 +1889,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
     this.map.removeLayer(this.lg);
     /*setTimeout(()=>{
+      this.ngOnInit();
       window.location.reload();
-    },5000);*/
+    },1000);*/
   }
 
   checkBox(param): any {

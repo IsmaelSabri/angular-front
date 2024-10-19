@@ -1,7 +1,7 @@
-import { BadgeDestacar, PropertyState, PropertyTo } from './../../class/property-type.enum';
+import { Supermercado } from './../../model/home';
+import { DropdownModule } from 'primeng/dropdown';
 import { ProfileImage } from './../../model/user';
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
-import { UserComponent } from '../user/user.component';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -9,13 +9,12 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthenticationService } from 'src/app/service/authentication.service';
 import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
-import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { NgForm } from '@angular/forms';
 import { User } from 'src/app/model/user';
-import { Home } from 'src/app/model/home';
+import { Home, HomeImage } from 'src/app/model/home';
 import { Chat } from 'src/app/model/chat';
 import * as signalR from '@microsoft/signalr';
 import { cssPathUserPro } from 'src/app/model/performance/css-styles';
@@ -29,24 +28,32 @@ import Swal from 'sweetalert2';
 import { ImageService } from 'src/app/service/image.service';
 import _ from 'lodash';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Bathrooms, HouseType, TipoDeVia, Views } from 'src/app/class/property-type.enum';
-import { nzSize } from 'src/app/class/ant-design.enum';
-import { NzSelectSizeType } from 'ng-zorro-antd/select';
+import { Views } from 'src/app/class/property-type.enum';
 import { initFlowbite } from 'flowbite';
-import { BehaviorSubject } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
 import * as L from 'leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
-import { grayPointerIcon, homeicon } from 'src/app/model/maps/icons';
+import { grayPointerIcon } from 'src/app/model/maps/icons';
 import { Jawg_Sunny, Stadia_OSMBright } from 'src/app/model/maps/functions';
 import { HomeComponent } from 'src/app/home/home.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
+import {
+  homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
+  busIcon, schoolIcon, universityIcon, fancyGreen,
+} from '../../model/maps/icons';
+import 'leaflet-routing-machine';
+import 'leaflet-routing-machine-here';
+import { APIKEY } from 'src/environments/environment.prod';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { matches } from 'lodash';
+import { DropzoneComponent, DropzoneDirective } from 'ngx-dropzone-wrapper';
+import Axios from 'axios-observable';
 
 @Component({
   selector: 'app-user-pro',
   templateUrl: './user-pro.component.html',
-  styleUrl: './user-pro.component.css'
+  styleUrl: './user-pro.component.css',
 })
 export class UserProComponent extends HomeComponent implements OnInit, OnDestroy {
 
@@ -56,7 +63,6 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
   home: Home = new Home();
   routerLinkId: number = 0;
   routerLinkModel: string;
-  map2!: L.Map; // map geocoding search location
 
 
   chats: Chat[] = [];
@@ -85,6 +91,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
     protected chatService: ChatService,
     protected homeService: HomeService,
     protected imageService: ImageService,
+    protected notification: NzNotificationService,
     protected nzMessage: NzMessageService,
     protected modalService: NgbModal,
   ) {
@@ -104,7 +111,8 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
       messageService,
       nzMessage,
       modalService,
-      imageService
+      imageService,
+      notification
     );
     this.hub = new signalR.HubConnectionBuilder().withUrl("https://localhost:4040/chat-hub").build();
 
@@ -193,48 +201,369 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
   preSelectedViews: string[] = []
   yearAntiguedad: Date;
   openSidenav(home: Home) {
-    this.subscriptions.push(this.homeService.getHomesByQuery('model@=*' + home.model + ',' + 'viviendaId@=*' + home.viviendaId + ',').subscribe({
-      next: (res) => {
-        if (res) {
-          this.home = this.homeService.performHome(res[0]);
-          this.visibleSidenav = true;
-          this.preSelectedViews = this.home.vistasDespejadas.split(',');
-          this.yearAntiguedad = new Date(this.home.antiguedad + '-1-1');
-          if (this.home.energyCertAsString) {
-            this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
-          }
-          if (this.imageChangedEventEnergyUpdate) {
-            this.croppedImageEnergyUpdate = null;
-            this.imageChangedEventEnergyUpdate = null;
-            this.tempEnergyUpdate = null;
-            this.tempEnergyTagNameUpdate = null;
-          }
-          setTimeout(() => {
-            if (this.map3 == undefined) {
-              this.map3 = L.map('map_3', {
-                renderer: L.canvas(),
-                invalidateSize: true,
-              }).setView([this.home.lat, this.home.lng], 15);
-              //Stadia_OSMBright().addTo(this.map3);
-              Jawg_Sunny().addTo(this.map3);
-              this.markerHouse = new L.marker([this.home.lat, this.home.lng], {
-                draggable: false,
-                icon: homeicon,
-              });
-              this.markerHouse.addTo(this.map3);
+    if (home) {
+      this.subscriptions.push(this.homeService.getHomesByQuery('model@=*' + home.model + ',' + 'viviendaId@=*' + home.viviendaId + ',').subscribe({
+        next: (res: any[]) => {
+          if (res) {
+            this.home = this.homeService.performHome(res[0]);
+            this.visibleSidenav = true;
+            this.preSelectedViews = this.home.vistasDespejadas.split(',');
+            this.yearAntiguedad = new Date(this.home.antiguedad + '-1-1');
+            if (this.home.energyCertAsString) {
+              this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
             }
-          }, 1000);
+            if (this.imageChangedEventEnergyUpdate) {
+              this.croppedImageEnergyUpdate = null;
+              this.imageChangedEventEnergyUpdate = null;
+              this.tempEnergyUpdate = null;
+              this.tempEnergyTagNameUpdate = null;
+            }
+            if (this.home.aseoEnsuite >= 6) {
+              this.homeDto.aseoEnsuite = '5+';
+            }
+            // pinta el mapa de los servicios
+            setTimeout(() => {
+              if (this.map3 == undefined) {
+                this.map3 = L.map('map_3', {
+                  renderer: L.canvas(),
+                }).setView([this.home.lat, this.home.lng], 15);
+                //Stadia_OSMBright().addTo(this.map3);
+                Jawg_Sunny().addTo(this.map3);
+                this.markerHouse = new L.marker([this.home.lat, this.home.lng], {
+                  draggable: false,
+                  icon: homeicon,
+                });
+                this.markerHouse.addTo(this.map3);
+              }
+            }, 1000);
+            // arrays para los servicios
+            this.colegio = JSON.parse(this.home.colegios);
+            this.universidad = JSON.parse(this.home.universidades);
+            this.mercados = JSON.parse(this.home.supermercados);
+            this.autobus = JSON.parse(this.home.bus);
+            this.aeropuerto = JSON.parse(this.home.aeropuerto);
+            this.beach = JSON.parse(this.home.distanciaAlMar);
+            this.metro = JSON.parse(this.home.metro);
+            // advice checkboxes
+            this.colegio.forEach((item, index) => {
+              if (item.nombre.length > 0) {
+                this.stateTextfields[0][index] = true;
+              }
+            });
+            this.universidad.forEach((item, index) => {
+              if (item.nombre.length > 0) {
+                this.stateTextfields[1][index] = true;
+              }
+            });
+            this.autobus.forEach((item, index) => {
+              if (item.parada.length > 0) {
+                this.stateTextfields[2][index] = true;
+              }
+            })
+            this.mercados.forEach((item, index) => {
+              if (item.nombre.length > 0) {
+                this.stateTextfields[2][index + 3] = true;
+              }
+            })
+            if (this.metro[0].parada.length > 0) {
+              this.stateTextfields[3][0] = true;
+            }
+            if (this.aeropuerto[0].nombre.length > 0) {
+              this.stateTextfields[3][1] = true;
+            }
+            if (this.beach[0].nombre.length > 0) {
+              this.stateTextfields[3][2] = true;
+            }
+            this.waypointsFrom = new L.latLng(this.home.lat, this.home.lng); // había que instanciarlo para la herencia en setRoute()
+            // dropzone
+            if (this.dropComponent) { // a veces no carga a tiempo
+              this.loadImagesEditForm();
+            } else {
+              this.loadImagesEditForm();
+            }
+
+
+          }
+        },
+        error: () => { }
+      }))
+    }
+  }
+
+  dropzoneMessage: any;
+  public onUploadSuccessToEdit(args: any): void {
+    console.log('onUploadSuccess:', args);
+    let index = this.dropzone.options.maxFiles;
+    $(document).ready(function () {
+      $('[class="dz-remove"]').each(function (index, v) {
+        var text = $(v).text();
+        var new_text = text.replace("Remove file", "Borrar");
+        $(v).text(new_text);
+      });
+    });
+  }
+
+  loadImagesEditForm() {
+    setTimeout(() => {
+      this.dropzone = this.dropComponent.directiveRef.dropzone();
+      for (let key in this.home.images) {
+        let value = this.home.images[key];
+        var mockFile = { name: value.imageName, size: Math.floor(Math.random() * 99999) };
+        this.dropzone.emit("addedfile", mockFile);
+        this.dropzone.emit("thumbnail", mockFile, value.imageUrl);
+        this.dropzone.emit("complete", mockFile);
+        this.dropzone.options.maxFiles--;
+        $(".dz-image").children("img").addClass("h-100")
+        $(document).ready(function () {
+          $('[class="dz-remove"]').each(function (i, v) {
+            var text = $(v).text();
+            var new_text = text.replace("Remove file", "Borrar");
+            $(v).text(new_text);
+          });
+        });
+        var labeldz = <HTMLElement>document.getElementsByClassName('dz-remove')[key];
+        labeldz.style.color = 'hsl(217, 71%, 53%)';
+      }
+      this.dropzoneMessage = 'Pulse o arrastre sus imágenes para subirlas ' + this.dropzone.options.maxFiles + ' disponibles';
+    }, 1000);
+  }
+
+  updateHome() {
+    this.showLoading = true;
+    // servicios
+    this.home.colegios = JSON.stringify(this.colegio);
+    this.home.universidades = JSON.stringify(this.universidad);
+    this.home.supermercados = JSON.stringify(this.mercados);
+    this.home.metro = JSON.stringify(this.metro);
+    this.home.bus = JSON.stringify(this.autobus);
+    this.home.aeropuerto = JSON.stringify(this.aeropuerto);
+    this.home.distanciaAlMar = JSON.stringify(this.beach);
+    if (!this.home.bajoOplantabaja) {
+      if (this.home.piso && this.home.plantaMasAlta) {
+        var aux = this.home.piso + "/" + this.home.plantaMasAlta;
+        this.home.piso = aux;
+      }
+    }
+    if (this.homeDto.aseoEnsuite) {
+      if (this.homeDto.aseoEnsuite == '5+') {
+        this.home.aseoEnsuite = 6;
+      } else {
+        this.home.aseoEnsuite = +this.homeDto.aseoEnsuite;
+      }
+    }
+    if (this.yearAntiguedad.toISOString().length > 10) {
+      this.home.antiguedad = +this.yearAntiguedad.toString().substring(11, 15);
+    }
+    var auxViews = JSON.stringify(this.preSelectedViews).split('[').join('').split(']').join('').split('"').join('').split("'").join('');
+    if (auxViews.length != this.home.vistasDespejadas.length) {
+      this.home.vistasDespejadas = JSON.stringify(this.preSelectedViews).split('[').join('').split(']').join('').split('"').join('').split("'").join('');
+    }
+    this.home.model = this.defineModel(this.home.tipo);
+    // imágenes nuevas
+    this.selectedFiles = this.dropComponent.directiveRef.dropzone().files;
+    if (this.selectedFiles) {
+      for (let i = 0; i < this.selectedFiles.length; i++) {
+        if (this.selectedFiles[i]) {
+          const body = new FormData();
+          body.append('image', this.selectedFiles[i]);
+          this.subscriptions.push(Axios.post(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${this.selectedFiles[i].name}`, body, {
+            onUploadProgress: progressEvent => {
+              if (progressEvent.loaded === progressEvent.total) {
+                this.fileStatus.current++
+              }
+              // save the individual file's progress percentage in object
+              this.fileProgress[this.selectedFiles[i].name] = progressEvent.loaded * 100 / progressEvent.total
+              // sum up all file progress percentages to calculate the overall progress
+              let totalPercent = this.fileProgress ? Object.values(this.fileProgress).reduce((sum, num) => sum + num, 0) : 0
+              // divide the total percentage by the number of files
+              this.fileStatus.percentage = Math.round(totalPercent / this.fileStatus.total)
+              //this.value = this.value + Math.floor(Math.random() * 10) + 1;
+              /*var percentComplete = progressEvent.loaded / progressEvent.total
+              this.progress = (percentComplete * 100);
+              console.log(this.progress);*/
+            }
+          }).subscribe({
+            next: (res: any) => {
+              console.log(res);
+              this.images[i] = {
+                imageId: res.data.data.id,
+                imageName: res.data.data.title,
+                imageUrl: res.data.data.url,
+                imageDeleteUrl: res.data.data.delete_url
+              };
+              this.filesUploadSuccessfully = i;
+              console.log('subidas ' + this.filesUploadSuccessfully + ' de ' + this.selectedFiles.length);
+              if ((this.selectedFiles.length - 1) == this.filesUploadSuccessfully) {
+                // se añaden las nuevas al array de las que ya estaban
+                _.map(this.images, (x) => {
+                  this.home.images.push(x);
+                });
+                this.home.imagesAsString = JSON.stringify(this.home.images);
+              }
+            },
+            error: (err: any) => {
+              const msg = 'Error al procesar la imagen: ' + this.selectedFiles[i].name + ' error: ' + err;
+              this.notificationService.notify(NotificationType.ERROR, msg);
+              this.showLoading = false;
+            }
+          }));
         }
-      },
-      error: () => { }
-    }))
+      }
+    }
+    // certificado energético
+    if (this.tempEnergyUpdate != null) {
+      const body = new FormData();
+      body.append('image', this.tempEnergyUpdate);
+      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempEnergyUpdate.name)
+        .subscribe({
+          next: (res: any) => {
+            var energyCert: HomeImage = {
+              imageId: res.data.data.id,
+              imageName: res.data.data.title,
+              imageUrl: res.data.data.url,
+              imageDeleteUrl: res.data.data.delete_url
+            }
+            this.home.energyCertAsString = JSON.stringify(energyCert);
+          },
+          error: (err: any) => {
+            this.notificationService.notify(NotificationType.ERROR, `Certificado energético: algo salio mal. Por favor intentelo pasados unos minutos.` + err);
+            this.showLoading = false;
+          }
+        }));
+    }
+    setTimeout(() => {
+      switch (this.home.model) {
+        case 'Flat':
+          this.subscriptions.push(this.homeService.updateFlat(this.home).subscribe({
+            next: () => {
+              this.showLoading = false;
+              this.notificationService.notify(NotificationType.SUCCESS, `Actualizado`);
+              setTimeout(() => {
+                this.clickButton('goBackSidenav');
+              }, 600);
+              this.ngOnInit();
+            },
+            error: () => {
+              this.notificationService.notify(NotificationType.ERROR, `Error. Vuelva a intentarlo pasados unos minutos.`);
+            }
+
+          }));
+          break;
+        case 'House':
+          this.subscriptions.push(this.homeService.updateHouse(this.home).subscribe({
+            next: () => {
+              this.showLoading = false;
+              this.notificationService.notify(NotificationType.SUCCESS, `Actualizado`);
+              setTimeout(() => {
+                this.clickButton('goBackSidenav');
+              }, 600);
+              this.ngOnInit();
+            },
+            error: () => {
+              this.notificationService.notify(NotificationType.ERROR, `Error. Vuelva a intentarlo pasados unos minutos.`);
+            }
+
+          }));
+          break;
+        case 'Room':
+          this.subscriptions.push(this.homeService.updateRoom(this.home).subscribe({
+            next: () => {
+              this.showLoading = false;
+              this.notificationService.notify(NotificationType.SUCCESS, `Actualizado`);
+              setTimeout(() => {
+                this.clickButton('goBackSidenav');
+              }, 600);
+              this.ngOnInit();
+            },
+            error: () => {
+              this.notificationService.notify(NotificationType.ERROR, `Error. Vuelva a intentarlo pasados unos minutos.`);
+            }
+
+          }));
+          break;
+        case 'NewProject':
+          this.subscriptions.push(this.homeService.updateNewProject(this.home).subscribe({
+            next: () => {
+              this.showLoading = false;
+              this.notificationService.notify(NotificationType.SUCCESS, `Actualizado`);
+              setTimeout(() => {
+                this.clickButton('goBackSidenav');
+              }, 600);
+              this.ngOnInit();
+            },
+            error: () => {
+              this.notificationService.notify(NotificationType.ERROR, `Error. Vuelva a intentarlo pasados unos minutos.`);
+            }
+
+          }));
+          break;
+
+        default:
+          break;
+      }
+    }, 3000);
+  }
+
+  public onRemoveEdit(e: any) {
+    if (this.home.images) {
+      this.home.images.forEach((item, index) => {
+        if (item.imageName == e.name) this.home.images.splice(index, 1);
+      })
+    }
+    this.dropzone.options.maxFiles++;
+  }
+
+  closeSidenav() {
+    this.stateTextfields = Array.from({ length: 4 }, () => new Array(6).fill(false));
+    if (this.dropComponent) {
+      this.dropComponent.directiveRef.reset();
+      $(".dz-wrapper").empty();
+    }
+    this.dropzone.options.maxFiles = 60;
+  }
+
+  restoreMapEdit() {
+    if (this.mapEvents.has('control')) {
+      this.map3.eachLayer(function (layer) {
+        layer.remove();
+      });
+      Jawg_Sunny().addTo(this.map3);
+      this.mapEvents.delete('control');
+      this.markerHouse = new L.marker(this.waypointsFrom, {
+        draggable: false,
+        icon: homeicon,
+      });
+      this.markerHouse.addTo(this.map3);
+    }
+  }
+
+  clearService(flag: string, index: number) {
+    if (flag == 'colegio') {
+      this.colegio[index] = { lat: '', lng: '', nombre: '', ensenyanza: '', institucion: '', web: '', distancia: '', tiempo: '', };
+      this.stateTextfields[0][index] = false;
+    } else if (flag == 'universidad') {
+      this.universidad[index] = { lat: '', lng: '', nombre: '', rama: '', institucion: '', web: '', distancia: '', tiempo: '', };
+      this.stateTextfields[1][index] = false;
+    } else if (flag == 'mercados') {
+      this.mercados[index] = { lat: '', lng: '', nombre: '', distancia: '', tiempo: '' };
+      this.stateTextfields[2][index + 3] = false;
+    } else if (flag == 'autobus') {
+      this.autobus[index] = { lat: '', lng: '', parada: '', lineas: '', distancia: '', tiempo: '' };
+      this.stateTextfields[2][index] = false;
+    } else if (flag == 'metro') {
+      this.metro[index] = { lat: '', lng: '', parada: '', lineas: '', distancia: '', tiempo: '' };
+      this.stateTextfields[3][0] = false;
+    } else if (flag == 'aeropuerto') {
+      this.aeropuerto[index] = { lat: '', lng: '', nombre: '', distancia: '', tiempo: '' };
+      this.stateTextfields[3][1] = false;
+    } else if (flag == 'playa') {
+      this.beach[index] = { lat: '', lng: '', nombre: '', distancia: '', tiempo: '' }
+      this.stateTextfields[3][2] = false;
+    }
   }
 
   closeDrawer() {
     this.visibleSidenav = false;
-  }
-  updateHome() {
-    //console.log('updating')
   }
 
   deleteHome(home: Home) {

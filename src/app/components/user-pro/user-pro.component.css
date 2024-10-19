@@ -885,10 +885,10 @@ body {
   border-color: white;
 }
 
-.fullscreen-nav {
+/*.fullscreen-nav {
   width: 100vw !important;
   height: 100vh !important;
-}
+}*/
 
 ::ng-deep .p-checkbox-box {
   display: none;
@@ -919,23 +919,54 @@ body {
   color: #ffffff !important;
 }
 
-/*#map_3
-  .leaflet-map-pane
-  .leaflet-popup-pane
-  .leaflet-zoom-animated
-  .leaflet-popup-content-wrapper {
-  display: flex;
-  position: relative;*/
-  /*top: 0;
-  left: 0;
-  right: -5px;*/
-  /*background: transparent;
-  border-radius: 10px;*/
-  /*box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.2);*/
-  /*width: 15em;
-  height: 3.3em;
-  z-index: 1000;
-  opacity: 1;
-  transition: 0.3s ease all;
-  transform: translateY(10px);
-}*/
+/*services buttons*/ 
+.btnDistancia {
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btnDistancia:hover {
+  transform: translateY(-3px);
+  /*transform: rotate(-10deg) scale(1.1);*/
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.btnDistancia:active {
+  transform: rotate(0) scale(1);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.btndlt {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  border: none;
+  border-radius: 50px;
+  background-color: #fb6966;
+  color: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btndlt:hover {
+  transform: translateY(-3px);
+  /*transform: rotate(-10deg) scale(1.1);*/
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.btndlt:active {
+  transform: rotate(0) scale(1);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+/*end services button*/
+::ng-deep .leaflet-routing-alternatives-container {
+  display: none;
+}
+
+::ng-deep .ant-notification-notice-message {
+  color:white;
+}
+
+::ng-deep .ant-notification-notice-close {
+  color:white;
+}

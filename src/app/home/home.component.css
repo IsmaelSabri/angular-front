@@ -618,160 +618,12 @@ br {
 
 /* End checkboxes */
 
-/* Expanding cards */
-.accordion-animation-wrapper {
-  display: grid;
-  grid-template-rows: 0fr;
-  overflow: hidden;
-  transition: grid-template-rows var(--transitionLength) var(--transitionTiming);
-  /* Full responsive */
-  overflow-x: scroll;
-  overflow-y: hidden;
-  white-space: nowrap;
-}
-
-.accordion-trigger-input:checked ~ .accordion-animation-wrapper {
-  grid-template-rows: 1fr;
-}
-
-.accordion-animation {
-  min-height: 0;
-}
-
-.accordion-transform-wrapper {
-  transform: translateY(-100%);
-  visibility: hidden;
-  transition: transform var(--transitionLength) var(--transitionTiming),
-    visibility 0s var(--transitionLength) var(--transitionTiming);
-}
-
-.accordion-trigger-input:checked
-  ~ .accordion-animation-wrapper
-  .accordion-transform-wrapper {
-  transform: translateY(0);
-  visibility: visible;
-  transition: transform var(--transitionLength) var(--transitionTiming),
-    visibility 0s linear;
-}
-
-/* Margins inside the container will throw animation height calculations off, better use paddings */
-.accordion-content * {
-  margin: 0;
-}
-
-/* The styles */
-/* Acordeon */
-:root {
-  --transitionLength: 0.4s;
-  --transitionTiming: ease;
-
-  --arrow-bg: #fff;
-  --arrow-icon: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTcuNDEsOC41OEwxMiwxMy4xN0wxNi41OSw4LjU4TDE4LDEwTDEyLDE2TDYsMTBMNy40MSw4LjU4WiIgLz48L3N2Zz4=");
-  --option-bg: #666;
-  --select-bg: rgba(255, 255, 255, 0.2);
-}
-
-.accordion {
-  /*min-width: 940px;default 940px*/
-  width: 100%;
-  margin: 0 auto;
-  background: white;
-}
-
-.accordion-item {
-  border-top: 2px solid #676767;
-  border-bottom: 2px solid #676767;
-  margin-bottom: -2px;
-  overflow: hidden;
-}
-
-.accordion-trigger-input {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
-
-.accordion-trigger {
-  display: block;
-  position: relative;
-  padding: 16px;
-  transition: box-shadow var(--transitionLength) var(--transitionTiming);
-  z-index: 1;
-  cursor: pointer;
-}
-
-.accordion-trigger-input:focus-visible ~ .accordion-trigger {
-  outline: 2px solid;
-  outline-offset: -2px;
-}
-
-.accordion-trigger::after {
-  display: block;
-  position: absolute;
-  right: 16px;
-  top: 18px;
-  content: "";
-  width: 8px;
-  height: 8px;
-  border: 2px solid #676767;
-  border-bottom: transparent;
-  border-left: transparent;
-  transform: rotate(135deg);
-  transition: transform var(--transitionLength) var(--transitionTiming);
-}
-
-.accordion-trigger-input:checked ~ .accordion-trigger::after {
-  transform: rotate(135deg) rotateX(180deg) rotateY(180deg) translateY(4px)
-    translateX(-4px);
-}
-
-.accordion-trigger-input:checked ~ .accordion-trigger {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: box-shadow calc(var(--transitionLength) / 4)
-    var(--transitionTiming);
-}
-
-.accordion-content {
-  padding: 16px;
-  background: #dcdcdc;
-}
-
-/*.accordion-content h2 {
-  padding-bottom: 0.75em;
-}*/
-
-.accordion-content label {
-  padding-bottom: 1.5em;
-}
-
-.accordion-content p:last-of-type {
-  padding-bottom: 0;
-}
-
-/* End expanding cards */
-
 /* Start Modal movility */
 .ctnrmovility > .btnmov {
   margin: 60px;
   padding: 20px 40px;
   font-size: 30px;
   border-radius: 40px;
-}
-
-/*Scrollbar postizo del body del modalmov*/
-::ng-deep {
-  .custom-scrollbars {
-    background-color: rgb(94, 175, 255) !important;
-
-    &:hover,
-    &:active {
-      background-color: dodgerblue !important;
-    }
-  }
 }
 
 .modalmov {
@@ -792,7 +644,7 @@ br {
   z-index: 10000 !important;
 
   .header {
-    padding: 20px;
+    padding: 1em;
     border-bottom: 1px solid #ddd;
     font: 300 24px;
     z-index: 10000 !important;
@@ -803,7 +655,7 @@ br {
   }
 
   .body {
-    padding: 20px;
+    /*padding: 20px;*/
     font: 300 16px;
   }
 }
@@ -825,8 +677,24 @@ br {
   }
 }
 
+.ant-notification-notice-message {
+  color:white;
+}
+
+.ant-notification-notice-close {
+  color:white;
+}
+
+::ng-deep .p-checkbox-box {
+  display: none;
+}
+
+.p-checkbox-box {
+  display: none;
+}
+
 .ctnrmovility.modal-open .modalmov {
-  top: 50px;
+  top: 3em;
 }
 
 .mdb-select {
@@ -852,14 +720,8 @@ br {
   box-shadow: 0 1px 0 0 #3a3a3a;
 }
 
+/*services buttons*/ 
 .btnDistancia {
-  display: inline-block;
-  padding: 4px 8px;
-  font-size: 11px;
-  border: none;
-  border-radius: 50px;
-  background-color: #908d8e;
-  color: #ffffff;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s, box-shadow 0.3s;
 }
@@ -876,13 +738,6 @@ br {
 }
 
 .btndlt {
-  display: inline-block;
-  padding: 4px 8px;
-  font-size: 11px;
-  border: none;
-  border-radius: 50px;
-  background-color: #fb6966;
-  color: white;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s, box-shadow 0.3s;
 }
@@ -899,28 +754,6 @@ br {
 }
 
 /* End Modal movility */
-
-/* Css select v2 */
-.nzSelect {
-  width: 8em;
-}
-
-.nzOption {
-  width: 8em;
-}
-
-.nzSelectR {
-  width: 12em;
-}
-
-.nzOptionR {
-  width: 12em;
-}
-
-/*.nzSelectL {
-  width: 27em;
-  //left: 0.8125em;
-}*/
 
 /*.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
   border-color: #666;
@@ -1354,11 +1187,11 @@ input:checked ~ .checkbox2 {
   }
 }
 
-@media screen and (max-width: 576px) {
+/*@media screen and (max-width: 576px) {
   .accordions {
     display: none;
   }
-}
+}*/
 /*modal empotrado
 *
 *

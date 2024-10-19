@@ -44,6 +44,7 @@ import { ImageService } from 'src/app/service/image.service';
 import { EmailService } from 'src/app/service/email.service';
 import { initFlowbite } from 'flowbite';
 import { nzStatus } from 'src/app/class/ant-design.enum';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-add',
@@ -74,21 +75,10 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   mapAdd!: L.map;
   circle!: L.circle;
   indexGoal: number; // array index
-  nextCoords!: L.LatLng; // temp coordinates to put any service
-  fg = L.featureGroup();
   time: number;
   distance: string;
   // add-delete temp routes
   mapEvents = new Set<string>();
-  // icons
-  bch = beachIcon;
-  airp = airportIcon;
-  mki = marketIcon;
-  swi = subwayIcon;
-  busic = busIcon;
-  sc = schoolIcon;
-  uni = universityIcon;
-  customIcon: any;
 
   // timeline
   inicioVentas: string;
@@ -104,7 +94,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   aeropuerto: Aeropuerto[];
   beach: Beach[];
   PropertyTo: any;
-  differs;
 
   constructor(
     @Inject(DOCUMENT) document: Document,
@@ -125,6 +114,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     nzMessage: NzMessageService,
     modalService: NgbModal,
     imageService: ImageService,
+    protected notification: NzNotificationService,
     protected emailService: EmailService,
   ) {
     super(
@@ -144,6 +134,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       nzMessage,
       modalService,
       imageService,
+      notification
     );
   }
 
@@ -196,62 +187,62 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
           next: (res) => {
             this.home = this.homeService.performHome(res[0]);
             if (this.home.energyCert) {
-          this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
-        }
-        if (this.home.vistasDespejadas) {
-          this.views = this.home.vistasDespejadas.split(',');
-        }
-        if (this.home.tipos) {
-          this.projectFeatures = this.home.tipos.split(',');
-        }
-        if (this.state) {
-          this.user = this.authenticationService.getUserFromLocalCache();
-        }
-        setTimeout(() => {
-          for (let i = 0; i < this.home.images.length; i++) {
-            const src = this.home.images[i].imageUrl + i + '.jpg';
-            const caption = i + 1 + ' / ' + this.home.images.length;
-            const thumb = this.home.images[i].imageUrl + i + '.jpg';
-            const album = {
-              src: src,
-              caption: caption,
-              thumb: thumb,
-            };
-            this._albums.push(album);
-          }
-        }, 1000);
-        this.home.images = JSON.parse(this.home.imagesAsString);
-        var y = document.getElementById('skeleton-section');
-        y.style.display = 'none';
-        x.style.display = 'block';
-        this.setEnergyFeatures(
-          this.home.consumo.substring(0, 1),
-          this.home.emisiones.substring(0, 1)
-        );
-        L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
-        this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
-          [this.home.lat, this.home.lng],
-          17
-        );
-        Stadia_OSMBright().addTo(this.mapAdd);
-        this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
-        this.colegio = JSON.parse(this.home.colegios);
-        this.universidad = JSON.parse(this.home.universidades);
-        this.mercados = JSON.parse(this.home.supermercados);
-        this.autobus = JSON.parse(this.home.bus);
-        this.aeropuerto = JSON.parse(this.home.aeropuerto);
-        this.beach = JSON.parse(this.home.distanciaAlMar);
-        this.metro = JSON.parse(this.home.metro);
-        // to clear circle when print any route
-        this.mapEvents.add('circle');
-        this.loadScripts();
-        this.timelineStatus();
-        this.homeService.getHomes().subscribe((data) => {
-          this.homes = data;
-          for (let i = 0; i < this.homes.length; i++) {
-            this.homes[i].images = JSON.parse(this.homes[i].imagesAsString);
-          }
-        })
+              this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
+            }
+            if (this.home.vistasDespejadas) {
+              this.views = this.home.vistasDespejadas.split(',');
+            }
+            if (this.home.tipos) {
+              this.projectFeatures = this.home.tipos.split(',');
+            }
+            if (this.state) {
+              this.user = this.authenticationService.getUserFromLocalCache();
+            }
+            setTimeout(() => {
+              for (let i = 0; i < this.home.images.length; i++) {
+                const src = this.home.images[i].imageUrl + i + '.jpg';
+                const caption = i + 1 + ' / ' + this.home.images.length;
+                const thumb = this.home.images[i].imageUrl + i + '.jpg';
+                const album = {
+                  src: src,
+                  caption: caption,
+                  thumb: thumb,
+                };
+                this._albums.push(album);
+              }
+            }, 1000);
+            this.home.images = JSON.parse(this.home.imagesAsString);
+            var y = document.getElementById('skeleton-section');
+            y.style.display = 'none';
+            x.style.display = 'block';
+            this.setEnergyFeatures(
+              this.home.consumo.substring(0, 1),
+              this.home.emisiones.substring(0, 1)
+            );
+            L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
+            this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
+              [this.home.lat, this.home.lng],
+              17
+            );
+            Stadia_OSMBright().addTo(this.mapAdd);
+            this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
+            this.colegio = JSON.parse(this.home.colegios);
+            this.universidad = JSON.parse(this.home.universidades);
+            this.mercados = JSON.parse(this.home.supermercados);
+            this.autobus = JSON.parse(this.home.bus);
+            this.aeropuerto = JSON.parse(this.home.aeropuerto);
+            this.beach = JSON.parse(this.home.distanciaAlMar);
+            this.metro = JSON.parse(this.home.metro);
+            // to clear circle when print any route
+            this.mapEvents.add('circle');
+            this.loadScripts();
+            this.timelineStatus();
+            this.homeService.getHomes().subscribe((data) => {
+              this.homes = data;
+              for (let i = 0; i < this.homes.length; i++) {
+                this.homes[i].images = JSON.parse(this.homes[i].imagesAsString);
+              }
+            })
           },
           error: () => {
             this.router.navigateByUrl('/home');
@@ -286,98 +277,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
         this.router.navigateByUrl('/home');
       }
     }));
-    //get the current home through url
-    /*this.subscriptions.push(
-      this.route.fragment.subscribe({
-        next: (model) => {
-          this.dto.model = model;
-          this.route.params.subscribe({
-            next: (params) => {
-              this.dto.id = params['id'];
-            }, error: (errorResponse: HttpErrorResponse) => {
-              this.notificationService.notify(
-                NotificationType.ERROR,
-                errorResponse.error.message + 'Cannot catch home id'
-              );
-            }
-          })
-        },
-        error: (errorResponse: HttpErrorResponse) => {
-          this.notificationService.notify(
-            NotificationType.ERROR,
-            errorResponse.error.message + 'Cannot catch home model'
-          );
-        }
-      }));
-    const homeDto = JSON.stringify(this.dto);
-    this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
-      next: (res) => {
-        this.home = this.homeService.performHome(res);
-        if (this.home.energyCert) {
-          this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
-        }
-        if (this.home.vistasDespejadas) {
-          this.views = this.home.vistasDespejadas.split(',');
-        }
-        if (this.home.tipos) {
-          this.projectFeatures = this.home.tipos.split(',');
-        }
-        if (this.state) {
-          this.user = this.authenticationService.getUserFromLocalCache();
-        }
-        setTimeout(() => {
-          for (let i = 0; i < this.home.images.length; i++) {
-            const src = this.home.images[i].imageUrl + i + '.jpg';
-            const caption = i + 1 + ' / ' + this.home.images.length;
-            const thumb = this.home.images[i].imageUrl + i + '.jpg';
-            const album = {
-              src: src,
-              caption: caption,
-              thumb: thumb,
-            };
-            this._albums.push(album);
-          }
-        }, 1000);
-        this.home.images = JSON.parse(this.home.imagesAsString);
-        var y = document.getElementById('skeleton-section');
-        y.style.display = 'none';
-        x.style.display = 'block';
-        this.setEnergyFeatures(
-          this.home.consumo.substring(0, 1),
-          this.home.emisiones.substring(0, 1)
-        );
-        L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
-        this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
-          [this.home.lat, this.home.lng],
-          17
-        );
-        Stadia_OSMBright().addTo(this.mapAdd);
-        this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
-        this.colegio = JSON.parse(this.home.colegios);
-        this.universidad = JSON.parse(this.home.universidades);
-        this.mercados = JSON.parse(this.home.supermercados);
-        this.autobus = JSON.parse(this.home.bus);
-        this.aeropuerto = JSON.parse(this.home.aeropuerto);
-        this.beach = JSON.parse(this.home.distanciaAlMar);
-        this.metro = JSON.parse(this.home.metro);
-        // to clear circle when print any route
-        this.mapEvents.add('circle');
-        this.loadScripts();
-        this.timelineStatus();
-        this.homeService.getHomes().subscribe((data) => {
-          this.homes = data;
-          for (let i = 0; i < this.homes.length; i++) {
-            this.homes[i].images = JSON.parse(this.homes[i].imagesAsString);
-          }
-        })
-      },
-      error: () => {
-        this.notificationService.notify(
-          NotificationType.ERROR, 'El anuncio ' + this.dto.id + ' ha caducado o ha sido eliminado',
-        );
-        this.router.navigateByUrl('/home');
-      }
-    }));*/
     // marcar el like
     if (this.state) {
       setTimeout(() => {
@@ -538,13 +437,20 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     }
   }
 
+
   setAdRoute(
     latitud: string,
     longitud: string,
     color: string,
     customIcon: any,
     index: number,
+    el: HTMLElement
   ) {
+    el.scrollIntoView({
+      behavior: 'auto',
+      block: 'center',
+      inline: 'center'
+    });
     var lat = +latitud;
     var lng = +longitud;
     this.indexGoal = index;
@@ -628,8 +534,8 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       );*/
       var waypoints = e.waypoints || [];
       var destination = waypoints[waypoints.length - 1];
-      this.nextCoords = destination.latLng;
-      this.mapAdd.fitBounds(L.latLngBounds([this.home.lat, this.home.lng], this.nextCoords));
+      this.waypointsTo = destination.latLng;
+      this.mapAdd.fitBounds(L.latLngBounds([this.home.lat, this.home.lng], this.waypointsTo));
     });
     this.mapEvents.add('control');
     control._container.style.display = "None";

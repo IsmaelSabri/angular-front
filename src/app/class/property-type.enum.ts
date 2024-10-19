@@ -1,3 +1,5 @@
+import { Universidad, Supermercado, Aeropuerto } from './../model/home';
+import { marker } from 'leaflet';
 export enum Model {
   Flat = 'Flat',
   House = 'House',
@@ -39,6 +41,16 @@ export enum PropertyFilterOptions {
 
 export enum PropertyShareType { // condicion
   Compartir = 'Compartir',
+}
+
+export enum NearlyServices {
+  Colegio = 'Colegio',
+  Universidad = 'Universidad',
+  Autobus = 'Autobús',
+  Metro = 'Metro',
+  Supermercado = 'Supermercado',
+  Aeropuerto = 'Aeropuerto',
+  Playa = 'Playa'
 }
 
 export enum HouseType { // tipo
@@ -142,6 +154,7 @@ export enum PropertyState {
   Nuevo = 'Obra nueva',
   Usado = 'Usado',
   A_Reformar = 'A reformar',
+  Okupada = 'Okupada'
 }
 
 export enum BadgeDestacar {

@@ -6,8 +6,6 @@ import {
 } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, ReplaySubject } from 'rxjs';
-import { CustomHttpResponse } from '../model/performance/custom-http-response';
-import { HomeDto } from '../model/dto/home-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -21,22 +19,6 @@ export class HomeService {
     //'Authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`
   });
   constructor(private http: HttpClient) { }
-
-  /*  Reservado para emitir nuevos valores
-  get selectedHome$(): Observable<Home>{ // :Observable<Home>
-    return this.property_;
-  }
-
-  setHome$(property:Home):void{
-    this.property$.next(property);
-  }*/
-
-  /*public uploadImage(file:File): Observable<CustomHttpResponse>{
-    const body = new FormData();
-    body.append('image',);
-    return this.http.post<FormData>(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${this.foto.name}`,file);
-  }*/
-
 
   public gethome(id: string, home: string): Observable<Home> {
     return this.http.post<Home>(`${this.host}/api/home/${id}`, home, {

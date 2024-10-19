@@ -42,224 +42,230 @@
 </div>-->
 
 <mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav class="example-sidenav mt-5" mode="side" [class.mat-elevation-z4]="true" mode="side"
+  <mat-sidenav #sidenav class="example-sidenav " mode="side" [class.mat-elevation-z4]="true" mode="side"
     [ngClass]="'fullscreen-nav'" [fixedInViewport]="true" [fixedTopGap]="0" [fixedBottomGap]="0">
-    <!--col-lg-8 col-md-10 col-sm-12 col-xs-12 d-flex-->
-    <nav class="navbar bg-body-tertiary bg-secondary fixed-top">
-      <div class="container-fluid">
-        <a class="btn btn-success my-auto float-start" (click)="sidenav.toggle();"><ion-icon
-            name="arrow-back-outline"></ion-icon>&nbsp;Volver</a>
-      </div>
-    </nav>
-    <ng-container class=" mb-5" *ngIf="this.tipo.includes(this.home.tipo)">
+    <div class="mt-5 mb-5" *ngIf="this.tipo.includes(this.home.tipo)">
+      <nav class="navbar bg-body-tertiary bg-dark-subtle fixed-top">
+        <div class="container-fluid">
+          <button class="button is-link is-primary my-auto float-start" type="button" id="goBackSidenav"
+            (click)="sidenav.toggle();closeSidenav()">
+            <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+              style="width: 1.5rem; height: 1.5rem; ">
+            </span>
+            <span *ngIf="!showLoading" class="my-auto"><i class="bi bi-arrow-left"></i>&nbsp;Volver</span>
+          </button>
+        </div>
+      </nav>
       <form #updateHomeForm="ngForm" (ngSubmit)="updateHome()" id="updateHomeForm">
-        <p-card header="General">
-          <!--1st row-->
-          <div class="form-group row mt-3">
-            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex flex-column">
-              <label for="tipodevia" class="text-nowrap">Tipo de vía</label>
-              <nz-select panelWidth="fit-content" #tipodevia name="tipodevia" class="viaSelect w-100"
-                nzPlaceHolder="Calle, avenida, plaza..." [nzSize]="sizeM" [(ngModel)]="this.home.tipoDeVia"
-                (nzOpenChange)="rotateArrows($event,'viaSelect')">
-                <nz-option *ngFor="let opt of tipo_de_via" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-              <label for="calle">Nombre</label>
-              <input #calle nz-input placeholder="Nombre de la vía p. ej. Paseo de la Castellana..."
-                [(ngModel)]="this.home.calle" name="calle" id="calle" />
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-              <label for="numero">Numero</label>
-              <input nz-input #numero placeholder="Número" ngModel pattern="\d*" maxlength="6"
-                (keypress)="numberOnly($event)" name="numero" [(ngModel)]="this.home.numero" />
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-              <label for="piso">Piso</label>
-              <nz-input-group>
-                <div nz-row>
-                  <div nz-col nzSpan="10" class="float-start">
-                    <input nz-input #piso placeholder="Piso" ngModel pattern="\d*" maxlength="4"
-                      (keypress)="numberOnly($event)" name="piso" [(ngModel)]="this.home.piso" />
+        <div class="form-group row mt-3 align-items-center">
+          <p-card header="General">
+            <!--1st row-->
+            <div class="row">
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex flex-column">
+                <label for="tipodevia" class="text-nowrap">Tipo de vía</label>
+                <nz-select panelWidth="fit-content" #tipodevia name="tipodevia" class="viaSelect w-100"
+                  nzPlaceHolder="Calle, avenida, plaza..." [nzSize]="sizeM" [(ngModel)]="this.home.tipoDeVia"
+                  (nzOpenChange)="rotateArrows($event,'viaSelect')">
+                  <nz-option *ngFor="let opt of tipo_de_via" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="calle">Nombre</label>
+                <input #calle nz-input placeholder="Nombre de la vía p. ej. Paseo de la Castellana..."
+                  [(ngModel)]="this.home.calle" name="calle" id="calle" />
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="numero">Numero</label>
+                <input nz-input #numero placeholder="Número" ngModel pattern="\d*" maxlength="6"
+                  (keypress)="numberOnly($event)" name="numero" [(ngModel)]="this.home.numero" />
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="piso">Piso</label>
+                <nz-input-group>
+                  <div nz-row>
+                    <div nz-col nzSpan="10" class="float-start">
+                      <input nz-input #piso placeholder="Piso" ngModel pattern="\d*" maxlength="4"
+                        (keypress)="numberOnly($event)" name="piso" [(ngModel)]="this.home.piso" />
+                    </div>
+                    <div nz-col nzSpan="4" class="text-center">
+                      <label class="mt-1">de</label>
+                    </div>
+                    <div nz-col nzSpan="10" class="float-end">
+                      <input nz-input #plantaMasAlta ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
+                        name="plantaMasAlta" [(ngModel)]="this.home.plantaMasAlta" />
+                    </div>
                   </div>
-                  <div nz-col nzSpan="4" class="text-center">
-                    <label class="mt-1">de</label>
-                  </div>
-                  <div nz-col nzSpan="10" class="float-end">
-                    <input nz-input #plantaMasAlta ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
-                      name="plantaMasAlta" [(ngModel)]="this.home.plantaMasAlta" />
-                  </div>
-                </div>
-              </nz-input-group>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-              <label for="bajoOP">Planta baja</label>
-              <ng-container>
-                <div nz-row>
-                  <div nz-col nzSpan="24" class="float-start">
-                    <!--<mat-checkbox (change)="checkBox(this.home.bajoOplantabaja?true:false)" 
+                </nz-input-group>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="bajoOP">Planta baja</label>
+                <div>
+                  <div nz-row>
+                    <div nz-col nzSpan="24" class="float-start">
+                      <!--<mat-checkbox (change)="checkBox(this.home.bajoOplantabaja?true:false)" 
                           checked="{{this.home.bajoOplantabaja}}" [(ngModel)]="this.home.bajoOplantabaja">Es un bajo</mat-checkbox>-->
-                    <p-checkbox [(ngModel)]="this.home.bajoOplantabaja"
-                      (ngModelChange)="checkBox(this.home.bajoOplantabaja?true:false)" [binary]="true"
-                      label="Es un bajo" class="my-auto" />
+                      <p-checkbox [(ngModel)]="this.home.bajoOplantabaja"
+                        (ngModelChange)="checkBox(this.home.bajoOplantabaja?true:false)" [binary]="true"
+                        label="Es un bajo" class="my-auto" />
+                    </div>
                   </div>
                 </div>
-              </ng-container>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-              <label for="cp">CP</label>
-              <input nz-input #cp placeholder="Código postal" ngModel pattern="\d*" maxlength="5"
-                (keypress)="numberOnly($event)" name="cp" [(ngModel)]="this.home.cp" />
-            </div>
-          </div>
-          <!--2nd row-->
-          <div class="form-group row mt-2 align-items-center">
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-auto">
-              <label for="distrito">Distrito</label>
-              <input nz-input #distrito placeholder="Distrito" [(ngModel)]="this.home.distrito" name="distrito" />
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6  align-self-start">
-              <label for="superficie">Superficie</label>
-              <input #superficie nz-input ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)"
-                name="superficie" [(ngModel)]="this.home.superficie" placeholder="M²" />
-            </div>
-            <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 align-self-start">
-              <label for="habitaciones" class=" text-nowrap">Dormitorios</label>
-              <input #habitaciones nz-input ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
-                name="habitaciones" [(ngModel)]="this.home.habitaciones" placeholder="0" />
-            </div>
-            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 align-self-start">
-              <label for="banyos">Aseos</label>
-              <input nz-input #banyos ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)" name="banyos"
-                [(ngModel)]="this.home.aseos" placeholder="0" />
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 align-items-center d-flex flex-column align-items-center">
-              <label for="aseoEnsuiteInput" class="text-nowrap">Aseo ensuite</label>
-              <nz-select #aseoEnsuiteInput name="aseoEnsuiteInput" class="d-block flex-column aseoensuiteSelect w-100"
-                nzPlaceHolder="0" [nzSize]="sizeM" [(ngModel)]="this.home.aseoEnsuite"
-                (nzOpenChange)="rotateArrows($event,'aseoensuiteSelect')">
-                <nz-option *ngFor="let opt of bathRooms" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-2 col-sm-6 col-xs-12 mx-auto">
-              <label for="tipo" class="text-nowrap">Tipo</label>
-              <nz-select #typeInput name="typeInput" class="d-block flex-column typeSelect" nzPlaceHolder="Seleccione"
-                [nzSize]="sizeM" [(ngModel)]="this.home.tipo" (ngModelChange)="formFieldControl()"
-                (nzOpenChange)="rotateArrows($event,'typeSelect')">
-                <nz-option *ngFor="let opt of tipo" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-            </div>
-          </div>
-          <!--3rd row-->
-          <div class="form-group row mt-2 align-items-center">
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex flex-column">
-              <label for="estado" class="text-nowrap">Estado</label>
-              <nz-select #stateInput="ngModel" class="d-block flex-column estadoSelect w-100" name="stateInput"
-                nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM" [(ngModel)]="this.home.estado"
-                (nzOpenChange)="rotateArrows($event,'estadoSelect')">
-                <nz-option *ngFor="let opt of propertyState" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex flex-column">
-              <label for="estado" class="text-nowrap">Condición</label>
-              <nz-select #optionInput0 class="d-block flex-column condicionSelect" name="optionInput0"
-                nzPlaceHolder="Compartir" [nzSize]="sizeM" [(ngModel)]="this.home.condicion"
-                (ngModelChange)="formFieldControl()" (nzOpenChange)="rotateArrows($event,'condicionSelect')">
-                <nz-option *ngFor="let opt of condicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <label for="precioFinal">Precio de venta</label>
-              <input nz-input placeholder="€" [(ngModel)]="this.home.precioFinal" ngModel pattern="\d*" maxlength="8"
-                #precioFinal (keypress)="numberOnly($event)" name="precioFinal" [disabled]="this.saleTab.value" />
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <label for="precioAlquiler">Precio/mes</label>
-              <input nz-input placeholder="€/mes" [(ngModel)]="this.home.precioAlquiler" ngModel pattern="\d*"
-                maxlength="5" #precioAlquiler (keypress)="numberOnly($event)" name="precioAlquiler"
-                [disabled]="this.home.condicion=='Venta'" [disabled]="this.rentTab.value" />
-            </div>
-          </div>
-          <!--4rd row-->
-          <div class="form-group row mt-2 align-items-center">
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <label for="badgeInput" class="text-nowrap">Destacar</label>
-              <nz-select class="d-block destacarSelect w-100" #badgeInput="ngModel" name="badgeInput" nzPlaceHolder=""
-                [nzSize]="sizeM" [(ngModel)]="this.home.destacar"
-                (nzOpenChange)="rotateArrows($event,'destacarSelect')">
-                <nz-option *ngFor="let opt of badge" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <label for="colorDestacar" class="">Color Destacar</label>
-              <div class="text-center">
-                <nz-color-picker nzTrigger="hover" name="colorDestacar" (ngModelChange)="checkBox($event)"
-                  [(ngModel)]="this.home.colorDestacar"></nz-color-picker>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="cp">CP</label>
+                <input nz-input #cp placeholder="Código postal" ngModel pattern="\d*" maxlength="5"
+                  (keypress)="numberOnly($event)" name="cp" [(ngModel)]="this.home.cp" />
               </div>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <label for="yearBuild">Antiguedad</label>
-              <nz-date-picker id="yearBuild" #yearBuild nzMode="year" nzFormat="yyyy" (ngModelChange)="checkBox($event)"
-                class="d-block flex-column" name="yearBuild" [(ngModel)]="this.yearAntiguedad"
-                [nzDisabledDate]="disabledDatePost"></nz-date-picker>
+            <!--2nd row-->
+            <div class=" row mt-2 align-items-center">
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-auto">
+                <label for="distrito">Distrito</label>
+                <input nz-input #distrito placeholder="Distrito" [(ngModel)]="this.home.distrito" name="distrito" />
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6  align-self-start">
+                <label for="superficie">Superficie</label>
+                <input #superficie nz-input ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)"
+                  name="superficie" [(ngModel)]="this.home.superficie" placeholder="M²" />
+              </div>
+              <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 align-self-start">
+                <label for="habitaciones" class=" text-nowrap">Dormitorios</label>
+                <input #habitaciones nz-input ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
+                  name="habitaciones" [(ngModel)]="this.home.habitaciones" placeholder="0" />
+              </div>
+              <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 align-self-start">
+                <label for="banyos">Aseos</label>
+                <input nz-input #banyos ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                  name="banyos" [(ngModel)]="this.home.aseos" placeholder="0" />
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 align-items-center d-flex flex-column align-items-center">
+                <label for="aseoEnsuiteInput" class="text-nowrap">Aseo ensuite</label>
+                <nz-select #aseoEnsuiteInput name="aseoEnsuiteInput" class="d-block flex-column aseoensuiteSelect w-100"
+                  nzPlaceHolder="0" [nzSize]="sizeM" [(ngModel)]="this.homeDto.aseoEnsuite"
+                  (nzOpenChange)="rotateArrows($event,'aseoensuiteSelect')">
+                  <nz-option *ngFor="let opt of bathRooms" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-2 col-sm-6 col-xs-12 mx-auto">
+                <label for="tipoEdit" class="text-nowrap">Tipo</label>
+                <nz-select #tipoEdit name="tipoEdit" class="d-block flex-column typeSelect" nzPlaceHolder="Seleccione"
+                  [nzSize]="sizeM" [(ngModel)]="this.home.tipo" (ngModelChange)="formFieldControl()"
+                  (nzOpenChange)="rotateArrows($event,'typeSelect')">
+                  <nz-option *ngFor="let opt of tipo" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <label for="Orientacion">Orientación</label>
-              <nz-select #Orientacion="ngModel" name="Orientacion" [nzPlaceHolder]="this.home.orientacion"
-                class="d-block flex-column orientacionSelect w-100"
-                (nzOpenChange)="rotateArrows($event,'orientacionSelect')" [nzSize]="sizeM"
-                [(ngModel)]="this.home.orientacion">
-                <nz-option *ngFor="let opt of orientacion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
+            <!--3rd row-->
+            <div class=" row mt-2 align-items-center">
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex flex-column">
+                <label for="stateInputEdit" class="text-nowrap">Estado</label>
+                <nz-select class="d-block flex-column estadoSelect w-100" name="stateInputEdit"
+                  nzPlaceHolder="Seleccione" [nzSize]="sizeM" [(ngModel)]="this.home.estado"
+                  (nzOpenChange)="rotateArrows($event,'estadoSelect')">
+                  <nz-option *ngFor="let opt of propertyState" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex flex-column">
+                <label for="optionInput0" class="text-nowrap">Condición</label>
+                <nz-select #optionInput0 class="d-block flex-column condicionSelect" name="optionInput0"
+                  nzPlaceHolder="Compartir" [nzSize]="sizeM" [(ngModel)]="this.home.condicion"
+                  (ngModelChange)="formFieldControl()" (nzOpenChange)="rotateArrows($event,'condicionSelect')">
+                  <nz-option *ngFor="let opt of condicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="precioFinal">Precio de venta</label>
+                <input nz-input placeholder="€" [(ngModel)]="this.home.precioFinal" ngModel pattern="\d*" maxlength="8"
+                  #precioFinal (keypress)="numberOnly($event)" name="precioFinal" [disabled]="this.saleTab.value" />
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="precioAlquiler">Precio/mes</label>
+                <input nz-input placeholder="€/mes" [(ngModel)]="this.home.precioAlquiler" ngModel pattern="\d*"
+                  maxlength="5" #precioAlquiler (keypress)="numberOnly($event)" name="precioAlquiler"
+                  [disabled]="this.home.condicion=='Venta'" [disabled]="this.rentTab.value" />
+              </div>
             </div>
-          </div>
-          <!--5th row-->
-          <div class="form-group row mt-2 align-items-center">
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <label for="garage">Garage&nbsp;<i nz-tooltip [nzTooltipTrigger]="'click'"
-                  nzTooltipTitle="Si la plaza se vende aparte introduzca el precio adicional"
-                  class="bi bi-info-square"></i></label>
-              <nz-select #garage name="garageInput" nzPlacement="topRight" class="d-block flex-column garageSelect"
-                [nzPlaceHolder]="this.home.garage" [nzDropdownRender]="renderTemplate" [nzSize]="sizeM"
-                (nzOpenChange)="rotateArrows($event,'garageSelect')" [(ngModel)]="this.home.garage">
-                <nz-option *ngFor="let opt of carPlaces" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-              <ng-template #renderTemplate>
-                <p-divider type="dashed"></p-divider>
-                <div class="container d-flex text-nowrap mt-2">
-                  <input class="d-block" id="parkingOptional" nz-input #parkingOptional style="width:84px;"
-                    (keypress)="numberOnly($event)" />
-                  <a class="add-item d-block" (click)="addParkingPrice(parkingOptional)" nzTooltipPlacement="top"
-                    nz-tooltip nzTooltipTitle="Puedes añadir el precio adicional de venta o de alquiler de la plaza">
-                    <ion-icon name="add-outline"></ion-icon>Precio
-                  </a>
+            <!--4rd row-->
+            <div class=" row mt-2 align-items-center">
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="badgeInput" class="text-nowrap">Destacar</label>
+                <nz-select class="d-block destacarSelect w-100" #badgeInput name="badgeInput" nzPlaceHolder=""
+                  [nzSize]="sizeM" [(ngModel)]="this.home.destacar"
+                  (nzOpenChange)="rotateArrows($event,'destacarSelect')">
+                  <nz-option *ngFor="let opt of badge" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="colorDestacar" class="">Color Destacar</label>
+                <div class="text-center">
+                  <nz-color-picker nzTrigger="hover" name="colorDestacar" (ngModelChange)="checkBox($event)"
+                    [(ngModel)]="this.home.colorDestacar"></nz-color-picker>
                 </div>
-              </ng-template>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="yearBuild">Antiguedad</label>
+                <nz-date-picker id="yearBuild" #yearBuild nzMode="year" nzFormat="yyyy"
+                  (ngModelChange)="checkBox($event)" class="d-block flex-column" name="yearBuild"
+                  [(ngModel)]="this.yearAntiguedad" [nzDisabledDate]="disabledDatePost"></nz-date-picker>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="Orientacion">Orientación</label>
+                <nz-select #Orientacion name="Orientacion" [nzPlaceHolder]="this.home.orientacion"
+                  class="d-block flex-column orientacionSelect w-100"
+                  (nzOpenChange)="rotateArrows($event,'orientacionSelect')" [nzSize]="sizeM"
+                  [(ngModel)]="this.home.orientacion">
+                  <nz-option *ngFor="let opt of orientacion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <label for="city" class="d-flex flex-start">Ciudad</label>
-              <button name="city" class="button is-success is-outlined is-small w-100" id="provButton"
-                (click)="locationMap()">{{this.home.ciudad}}</button>
-              <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
-                [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}">
-                <div id="map_2" style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
-                </div>
-                <div class="row my-2 mx-3">
-                  <button name="city" class="button is-dark is-outlined is-small" id="provButton2"
-                    (click)="showCityResult()">Guardar</button>
-                </div>
-              </p-dialog>
-              <input #ciudad nz-input ngModel name="ciudad" class="form-control" [(ngModel)]="this.home.ciudad"
-                style="display:none;" required>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 mx-auto">
-              <label for="viewsInput">Vistas</label>
-              <nz-select #viewsInput name="viewsInput" class="d-block flex-column vistasSelect w-100"
-                (nzOpenChange)="rotateArrows($event,'vistasSelect')" nzPlaceHolder="Seleccione" [nzSize]="sizeM"
-                [(ngModel)]="this.preSelectedViews" nzMode="multiple" nzAllowClear>
-                <nz-option *ngFor="let opt of vistas" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-              <!--<p-floatLabel>
+            <!--5th row-->
+            <div class=" row mt-2 align-items-center">
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="garage">Garage&nbsp;<i nz-tooltip [nzTooltipTrigger]="'click'"
+                    nzTooltipTitle="Si la plaza se vende aparte introduzca el precio adicional"
+                    class="bi bi-info-square"></i></label>
+                <nz-select #garage name="garageInput" nzPlacement="topRight" class="d-block flex-column garageSelect"
+                  [nzPlaceHolder]="this.home.garage" [nzDropdownRender]="renderTemplate" [nzSize]="sizeM"
+                  (nzOpenChange)="rotateArrows($event,'garageSelect')" [(ngModel)]="this.home.garage">
+                  <nz-option *ngFor="let opt of carPlaces" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+                <ng-template #renderTemplate>
+                  <p-divider type="dashed"></p-divider>
+                  <div class="container d-flex text-nowrap mt-2">
+                    <input class="d-block" id="parkingOptional" nz-input #parkingOptional style="width:84px;"
+                      (keypress)="numberOnly($event)" />
+                    <a class="add-item d-block" (click)="addParkingPrice(parkingOptional)" nzTooltipPlacement="top"
+                      nz-tooltip nzTooltipTitle="Puedes añadir el precio adicional de venta o de alquiler de la plaza">
+                      <ion-icon name="add-outline"></ion-icon>Precio
+                    </a>
+                  </div>
+                </ng-template>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="city" class="d-flex flex-start">Ciudad</label>
+                <button name="city" class="button is-success is-outlined is-small w-100" id="provButton"
+                  (click)="locationMap()">{{this.home.ciudad}}</button>
+                <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
+                  [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}">
+                  <div id="map_2"
+                    style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
+                  </div>
+                  <div class="row my-2 mx-3">
+                    <button name="city" class="button is-dark is-outlined is-small" id="provButton2"
+                      (click)="showCityResult()">Guardar</button>
+                  </div>
+                </p-dialog>
+                <input #ciudad nz-input ngModel name="ciudad" class="form-control" [(ngModel)]="this.home.ciudad"
+                  style="display:none;" required>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 mx-auto">
+                <label for="viewsInput">Vistas</label>
+                <nz-select #viewsInput name="viewsInput" class="d-block flex-column vistasSelect w-100"
+                  (nzOpenChange)="rotateArrows($event,'vistasSelect')" nzPlaceHolder="Seleccione" [nzSize]="sizeM"
+                  [(ngModel)]="this.preSelectedViews" nzMode="multiple" nzAllowClear>
+                  <nz-option *ngFor="let opt of vistas" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+                <!--<p-floatLabel>
                     <label for="float-label" class="text-white d-block">Vistas</label>
                     <p-multiSelect [options]="views | keyvalue" optionLabel="value" placeholder="Vistas"
                       [maxSelectedLabels]="11" display="chip" [showClear]="true" [panelStyle]="{'width':'100%'}"
@@ -269,16 +275,17 @@
                       [(ngModel)]="this.preSelectedViews">
                     </p-multiSelect>
                   </p-floatLabel>-->
+              </div>
             </div>
-          </div>
-          <!--6th row-->
-          <div class="form-group row mt-2 align-items-center">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
-              <label for="descripcion" class="required">Descripción</label>
-              <textarea rows="6" class="" required nz-input [(ngModel)]="this.home.descripcion"></textarea>
+            <!--6th row-->
+            <div class=" row mt-2 align-items-center">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
+                <label for="descripcion" class="required">Descripción</label>
+                <textarea rows="6" class="" required nz-input [(ngModel)]="this.home.descripcion"></textarea>
+              </div>
             </div>
-          </div>
-        </p-card>
+          </p-card>
+        </div>
         <!--Energía y climatización-->
         <div class="form-group row mt-3 align-items-center">
           <p-card header="Energía y climatización">
@@ -495,7 +502,7 @@
                 <div class="ml-3">
                   <label class="d-block" for="monthAvailable">Disponibilidad</label>
                   <nz-date-picker id="monthAvailable" #monthAvailable nzMode="month" nzFormat="yyyy/MM"
-                    [(ngModel)]="this.dateMonthFormat" (ngModelChange)="setMonth($event)"
+                    [(ngModel)]="this.dateMonthFormat" (ngModelChange)="setMonth($event,'user-pro')"
                     [nzDisabledDate]="disabledDatePre" name="monthAvailable" class="mt-1"></nz-date-picker>&nbsp;
                   <i nz-tooltip [nzTooltipTrigger]="'click'"
                     nzTooltipTitle="Si la vivienda no está vacía, seleccione el mes para cuando estará disponible"
@@ -575,8 +582,7 @@
               <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
                 <label class="d-block" for="perfil_compartir">Perfil</label>
                 <nz-input-group class="float-start" [nzSuffix]="perfilCompartir" [nzSize]="size">
-                  <input nz-input #perfil_compartir name="perfil_compartir"
-                    [(ngModel)]="this.homeDto.perfilCompartir" />
+                  <input nz-input #perfil_compartir name="perfil_compartir" [(ngModel)]="this.home.perfilCompartir" />
                 </nz-input-group>
                 <ng-template #perfilCompartir>
                   <i nz-tooltip [nzTooltipTrigger]="'click'" nzTooltipTitle="Hombre, mujer, indiferente"
@@ -607,86 +613,400 @@
             </div>
           </p-card>
         </div>
-        <ng-container class="form-group row mt-3 align-items-center">
-          <p-card header="Movilidad">
-            <ng-container class="row">
-              <ul nz-menu nzMode="inline">
-                <li nz-submenu nzTitle="Navigation One" nzIcon="mail">
-                    
-                </li>
-                <li nz-submenu nzTitle="Navigation Two" nzIcon="appstore">
-                  <ul>
-
-                  </ul>
-                </li>
-                <li nz-submenu nzTitle="Navigation Three" nzIcon="setting">
-                  <ul>
-
-                  </ul>
-                </li>
-              </ul>
-              <div style="height: 50vh;">
-                <div id="map_3" #map_3 class="w-100 h-100 d-flex pr-0 mt-2 z-3 form-control">
+        <div class="form-group row mt-3 align-items-center">
+          <p-card header="Movilidad" styleClass="mobility-modal">
+            <div class="container-fluid">
+              <div class="row justify-content-center" style="background-color: #d9d9d9;">
+                <ng-template #extraSchoolBadge>
+                  <p-checkbox [(ngModel)]="this.stateTextfields[0][0]" name="cschool1" inputId="cschool1"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[0][1]" name="cschool2" inputId="cschool2"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[0][2]" name="cschool3" inputId="cschool3"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[0][3]" name="cschool4" inputId="cschool4"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[0][4]" name="cschool5" inputId="cschool5"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[0][5]" name="cschool6" inputId="cschool6"
+                    [binary]="true" [disabled]="true" />
+                </ng-template>
+                <nz-collapse>
+                  <nz-collapse-panel (click)="resizeMap()" nzHeader="Colegios" [nzExtra]="extraSchoolBadge">
+                    <div>
+                      <div class="row" *ngFor="let appHome of colegio; let i =index">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                          <label for="nombrec{{i}}" class="float-start">Nombre</label>
+                          <input nz-input [nzSize]="size" name="nombrec{{i}}"
+                            [attr.disabled]="this.stateTextfields[0][i]?true:null" [(ngModel)]="this.colegio[i].nombre"
+                            placeholder="Nombre" id="f1c{{i}}n">
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                          <label for="ensenyanzac{{i}}" class="float-start">Enseñanza</label>
+                          <nz-select class="w-100 f1c{{i}}e" [nzSize]="size"
+                            (nzOpenChange)="rotateArrows($event,'f1c'+i+'e')" [nzDisabled]="this.stateTextfields[0][i]"
+                            name="ensenyanzac{{i}}" [(ngModel)]="this.colegio[i].ensenyanza">
+                            <nz-option class="w-100" id="f1c{{i}}e" *ngFor="let opt of ensenyanza" [nzValue]=opt
+                              [nzLabel]="opt">{{opt}}</nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                          <label for="instic{{i}}" class="float-start">Institución</label>
+                          <nz-select class="w-100 f1c{{i}}i" [nzSize]="size" name="instic{{i}}"
+                            [nzDisabled]="this.stateTextfields[0][i]" (nzOpenChange)="rotateArrows($event,'f1c'+i+'i')"
+                            [(ngModel)]="this.colegio[i].institucion">
+                            <nz-option class="w-100" *ngFor="let opt of institucion" [nzValue]=opt
+                              [nzLabel]="opt">{{opt}}</nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto d-flex flex-column">
+                          <label for="webc{{i}}" class="float-start">Página web</label>
+                          <input nz-input [nzSize]="size" name="webc{{i}}"
+                            [attr.disabled]="this.stateTextfields[0][i]?true:null" placeholder="www"
+                            [(ngModel)]="this.colegio[i].web" />
+                        </div>
+                        <div
+                          class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center d-flex flex-row">
+                          <button id="colegio{{i}}" type="button" *ngIf="!this.stateTextfields[0][i]?true:null"
+                            class="button is-link is-rounded is-small is-responsive w-100 mt-2 mx-auto btnDistancia"
+                            (click)="setRoute('#808080', this.sc, 'colegio',i,'colegio'+i,'colegio'+i+'ok','btndltColegio'+i,0,i,map_3)">Distancia</button>
+                          <button id="colegio{{i}}ok" type="button" style="background:#1ebea5;"
+                            *ngIf="this.stateTextfields[0][i]?true:null"
+                            class="button is-link is-rounded is-small is-responsive w-100 mt-2 mx-auto  btnDistancia">{{this.colegio[i].distancia}}</button>
+                          <button class="button is-danger is-rounded is-small is-responsive w-100 mt-2 mx-auto btndlt"
+                            id="btndltColegio{{i}}" *ngIf="this.stateTextfields[0][i]?true:null"
+                            (click)="clearService('colegio',i)"><i style="color:white;"
+                              class="fas fa-trash"></i></button>
+                        </div>
+                        <mat-divider class="mt-2"></mat-divider>
+                      </div>
+                    </div>
+                  </nz-collapse-panel>
+                </nz-collapse>
+                <ng-template #extraUniversityBadge>
+                  <p-checkbox [(ngModel)]="this.stateTextfields[1][0]" name="cuniversity1" inputId="cuniversity1"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[1][1]" name="cuniversity2" inputId="cuniversity2"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[1][2]" name="cuniversity3" inputId="cuniversity3"
+                    [binary]="true" [disabled]="true" />
+                </ng-template>
+                <nz-collapse>
+                  <nz-collapse-panel (click)="resizeMap()" nzHeader="Universidades" [nzExtra]="extraUniversityBadge">
+                    <div class="container-fluid">
+                      <div class="row" *ngFor="let appHome of universidad; let i =index">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                          <label for="nombreu{{i}}" class="float-start">Nombre</label>
+                          <input nz-input [nzSize]="size" [attr.disabled]="this.stateTextfields[1][i]?true:null"
+                            [(ngModel)]="this.universidad[i].nombre" placeholder="Nombre" name="nombreu{{i}}" />
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                          <label for="rama{{i}}" class="float-start">Rama de conocimiento</label>
+                          <nz-select class="w-100 f2r{{i}}u" [nzSize]="size" [nzDisabled]="this.stateTextfields[1][i]"
+                            name="rama{{i}}" [(ngModel)]="this.universidad[i].rama"
+                            (nzOpenChange)="rotateArrows($event,'f2r'+i+'u')">
+                            <nz-option class="w-100" *ngFor="let opt of ramas" [nzValue]=opt
+                              [nzLabel]="opt">{{opt}}</nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center">
+                          <label for="instiu{{i}}" class="float-start">Institución</label>
+                          <nz-select class="w-100 f2i{{i}}u" [nzSize]="size" [nzDisabled]="this.stateTextfields[1][i]"
+                            [(ngModel)]="this.universidad[i].institucion" name="instiu{{i}}"
+                            (nzOpenChange)="rotateArrows($event,'f2i'+i+'u')">
+                            <nz-option class="w-100" *ngFor="let opt of institucion" [nzValue]=opt
+                              [nzLabel]="opt">{{opt}}</nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12 mx-auto d-flex flex-column">
+                          <label for="webu{{i}}" class="float-start">Página web</label>
+                          <input nz-input [nzSize]="size" placeholder="www" name="webu{{i}}"
+                            [attr.disabled]="this.stateTextfields[1][i]?true:null"
+                            [(ngModel)]="this.universidad[i].web" />
+                        </div>
+                        <div
+                          class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-xs-12 mx-auto align-items-center d-flex flex-row">
+                          <button id="univ{{i}}" type="button" *ngIf="!this.stateTextfields[1][i]?true:null"
+                            class="button is-link is-rounded is-small is-responsive w-100 mt-2 mx-auto btnDistancia"
+                            (click)="setRoute('#128c7e', this.uni, 'universidad',i,'univ'+i,'univ'+i+'ok','btndltUniv'+i,1,i,map_3)">Distancia</button>
+                          <button id="univ{{i}}ok" type="button" style="background:#1ebea5"
+                            *ngIf="this.stateTextfields[1][i]?true:null"
+                            class="btnDistancia button is-link is-rounded is-small is-responsive w-100 mt-2 mx-auto ">{{this.universidad[i].distancia}}</button>
+                          <button class="button is-danger is-rounded is-small is-responsive w-100 mt-2 mx-auto btndlt"
+                            id="btndltUniv{{i}}" *ngIf="this.stateTextfields[1][i]?true:null"
+                            (click)="clearService('universidad',i)"><i style="color:white;"
+                              class="fas fa-trash"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  </nz-collapse-panel>
+                </nz-collapse>
+                <ng-template #extraBusBadge>
+                  <p-checkbox [(ngModel)]="this.stateTextfields[2][0]" name="cbus1" inputId="cbus1" [binary]="true"
+                    [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[2][1]" name="cbus2" inputId="cbus2" [binary]="true"
+                    [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[2][2]" name="cbus3" inputId="cbus3" [binary]="true"
+                    [disabled]="true" />
+                </ng-template>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 p-0">
+                  <nz-collapse>
+                    <nz-collapse-panel (click)="resizeMap()" nzHeader="Autobuses" [nzExtra]="extraBusBadge">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Parada</th>
+                              <th scope="col">Líneas</th>
+                              <th scope="col">Distancia</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngFor="let appHome of this.autobus; let i =index">
+                            <tr>
+                              <td><input nz-input [nzSize]="size" [attr.disabled]="this.stateTextfields[2][i]?true:null"
+                                  [(ngModel)]="this.autobus[i].parada" placeholder="Parada" name="paradab{{i}}" />
+                              </td>
+                              <td><input nz-input [nzSize]="size" [attr.disabled]="this.stateTextfields[2][i]?true:null"
+                                  [(ngModel)]="this.autobus[i].lineas" placeholder="Líneas" name="lineasb{{i}}" />
+                              </td>
+                              <td>
+                                <div class="align-items-center d-flex flex-row">
+                                  <button id="bus{{i}}" type="button" *ngIf="!this.stateTextfields[2][i]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia"
+                                    (click)="setRoute('#960018', this.busic,'autobus',i,'bus'+i,'bus'+i+'ok','btndltBus'+i,2,i,map_3)">Distancia</button>
+                                  <button id="bus{{i}}ok" type="button" style="background:#1ebea5"
+                                    *ngIf="this.stateTextfields[2][i]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia">{{this.autobus[i].distancia}}</button>
+                                  <button
+                                    class="button is-danger is-rounded is-small is-responsive w-100 mx-auto btndlt"
+                                    id="btndltBus{{i}}" *ngIf="this.stateTextfields[2][i]?true:null"
+                                    (click)="clearService('autobus',i)"><i style="color:white;"
+                                      class="fas fa-trash"></i></button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </nz-collapse-panel>
+                  </nz-collapse>
+                </div>
+                <ng-template #extraSubwayBadge>
+                  <p-checkbox [(ngModel)]="this.stateTextfields[3][0]" name="cmetro" inputId="cmetro" [binary]="true"
+                    [disabled]="true" />
+                </ng-template>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 p-0">
+                  <nz-collapse>
+                    <nz-collapse-panel (click)="resizeMap()" nzHeader="Metro" [nzExtra]="extraSubwayBadge">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Parada</th>
+                              <th scope="col">Líneas</th>
+                              <th scope="col">Distancia</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td><input nz-input [nzSize]="size" [attr.disabled]="this.stateTextfields[3][0]?true:null"
+                                  [(ngModel)]="this.metro[0].parada" placeholder="Parada" name="paradametro" />
+                              </td>
+                              <td><input nz-input [nzSize]="size" [attr.disabled]="this.stateTextfields[3][0]?true:null"
+                                  [(ngModel)]="this.metro[0].lineas" placeholder="Líneas" name="lineasmetro" />
+                              </td>
+                              <td>
+                                <div class="btn-group">
+                                  <button id="metro0" type="button" *ngIf="!this.stateTextfields[3][0]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia"
+                                    (click)="setRoute('#d6a323', this.swi,'metro',0,'metro0','metro0ok','btndltMetro0',3,0,map_3)">Distancia</button>
+                                  <button id="metro0ok" type="button" style="background:#1ebea5"
+                                    *ngIf="this.stateTextfields[3][0]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia">{{this.metro[0].distancia}}</button>
+                                  <button
+                                    class="button is-danger is-rounded is-small is-responsive w-100 mx-auto btndlt"
+                                    id="btndltMetro0" *ngIf="this.stateTextfields[3][0]?true:null"
+                                    (click)="clearService('metro',0)"><i style="color:white;"
+                                      class="fas fa-trash"></i></button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </nz-collapse-panel>
+                  </nz-collapse>
+                </div>
+                <ng-template #extraMarketBadge>
+                  <p-checkbox [(ngModel)]="this.stateTextfields[2][3]" name="cmarket1" inputId="cmarket1"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[2][4]" name="cmarket2" inputId="cmarket2"
+                    [binary]="true" [disabled]="true" />
+                  <p-checkbox [(ngModel)]="this.stateTextfields[2][5]" name="cmarket3" inputId="cmarket3"
+                    [binary]="true" [disabled]="true" />
+                </ng-template>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 p-0">
+                  <nz-collapse>
+                    <nz-collapse-panel (click)="resizeMap()" nzHeader="Supermercados" [nzExtra]="extraMarketBadge">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Nombre</th>
+                              <th scope="col">Distancia</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngFor="let appHome of this.mercados; let i =index">
+                            <tr>
+                              <td><input nz-input [nzSize]="size" name="marketname{{i}}"
+                                  [attr.disabled]="this.stateTextfields[2][i+3]?true:null"
+                                  [(ngModel)]="this.mercados[i].nombre" placeholder="Nombre" />
+                              </td>
+                              <td>
+                                <div class="btn-group">
+                                  <button id="mercado{{i}}" type="button"
+                                    *ngIf="!this.stateTextfields[2][i+3]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia"
+                                    (click)="setRoute('#6f5e53', this.mki,'mercados',i,'mercado'+i,'mercado'+i+'ok','btndltMercado'+i,2,i+3,map_3)">Distancia</button>
+                                  <button id="mercado{{i}}ok" type="button" style="background:#1ebea5"
+                                    *ngIf="this.stateTextfields[2][i+3]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia">{{this.mercados[i].distancia}}</button>
+                                  <button
+                                    class="button is-danger is-rounded is-small is-responsive w-100 mx-auto btndlt"
+                                    id="btndltMercado{{i}}" *ngIf="this.stateTextfields[2][i+3]?true:null"
+                                    (click)="clearService('mercados',i)"><i style="color:white;"
+                                      class="fas fa-trash"></i></button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </nz-collapse-panel>
+                  </nz-collapse>
+                </div>
+                <ng-template #extraAirportBadge>
+                  <p-checkbox [(ngModel)]="this.stateTextfields[3][1]" name="cairport" inputId="cairport"
+                    [binary]="true" [disabled]="true" />
+                </ng-template>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 p-0">
+                  <nz-collapse>
+                    <nz-collapse-panel (click)="resizeMap()" nzHeader="Aeropuerto" [nzExtra]="extraAirportBadge">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Nombre</th>
+                              <th scope="col">Distancia</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td><input nz-input [nzSize]="size" [attr.disabled]="this.stateTextfields[3][1]?true:null"
+                                  [(ngModel)]="this.aeropuerto[0].nombre" placeholder="Nombre" name="airportname" />
+                              </td>
+                              <td>
+                                <div class="btn-group">
+                                  <button id="aero0" type="button" *ngIf="!this.stateTextfields[3][1]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia"
+                                    (click)="setRoute('#3200ff', this.airp,'aeropuerto',0,'aero0','aero0ok','btndltAero0',3,1,map_3)">Distancia</button>
+                                  <button id="aero0ok" type="button" style="background:#1ebea5"
+                                    *ngIf="this.stateTextfields[3][1]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia">{{this.aeropuerto[0].distancia}}</button>
+                                  <button
+                                    class="button is-danger is-rounded is-small is-responsive w-100 mx-auto btndlt"
+                                    id="btndltAero0" *ngIf="this.stateTextfields[3][1]?true:null"
+                                    (click)="clearService('aeropuerto',0)"><i style="color: white;"
+                                      class="fas fa-trash"></i></button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </nz-collapse-panel>
+                  </nz-collapse>
+                </div>
+                <ng-template #extraBeachBadge>
+                  <p-checkbox [(ngModel)]="this.stateTextfields[3][2]" name="cbeach" inputId="cbeach" [binary]="true"
+                    [disabled]="true" />
+                </ng-template>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 p-0">
+                  <nz-collapse>
+                    <nz-collapse-panel (click)="resizeMap()" [nzExtra]="extraBeachBadge" nzHeader="Playa">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Nombre</th>
+                              <th scope="col">Distancia
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td><input nz-input [nzSize]="size" [attr.disabled]="this.stateTextfields[3][2]?true:null"
+                                  [(ngModel)]="this.beach[0].nombre" placeholder="Nombre" name="beachname" />
+                              </td>
+                              <td>
+                                <div class="btn-group">
+                                  <button id="beach0" type="button" *ngIf="!this.stateTextfields[3][2]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia"
+                                    (click)="setRoute('dodgerblue', this.bch,'beach',0,'beach0','beach0ok','btndltBeach0',3,2,map_3)">Distancia</button>
+                                  <button id="beach0ok" type="button" style="background:#1ebea5"
+                                    *ngIf="this.stateTextfields[3][2]?true:null"
+                                    class="button is-link is-rounded is-small is-responsive w-100 mx-auto btnDistancia">{{this.beach[0].distancia}}</button>
+                                  <button
+                                    class="button is-danger is-rounded is-small is-responsive w-100 mx-auto btndlt"
+                                    id="btndltBeach0" *ngIf="this.stateTextfields[3][2]?true:null"
+                                    (click)="clearService('playa',0)"><i style="color: white;"
+                                      class="fas fa-trash"></i></button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </nz-collapse-panel>
+                  </nz-collapse>
                 </div>
               </div>
-            </ng-container>
-          </p-card>
-        </ng-container>
-        <div class="form-group row mt-3 align-items-center">
-          <p-card header="Multimedia">
+            </div>
+            <div style="height: 50vh;">
+              <div id="map_3" #map_3 class="w-100 h-100 d-flex pr-0 mt-2 form-control">
+                <p-toast [showTransformOptions]="'translateY(100%)'" [showTransitionOptions]="'1000ms'"
+                  [hideTransitionOptions]="'1000ms'" [showTransformOptions]="'translateX(100%)'" />
+              </div>
+            </div>
           </p-card>
         </div>
+        <div class="form-group row mt-3 align-items-center mb-5 pb-2">
+          <p-card header="Multimedia">
+            <!-- Fotos -->
+            <dropzone [config]="config" [message]="this.dropzoneMessage" class="border" (error)="onUploadError($event)"
+              (success)="onUploadSuccessToEdit($event)" (removedFile)="onRemoveEdit($event)"
+              (init)="dropzoneInit($event)">
+            </dropzone>
+          </p-card>
+        </div>
+        <footer class="fixed-bottom p-3 bg-dark-subtle">
+          <div class="container-fluid">
+            <button class="button is-link waves-effect waves-light" [disabled]="showLoading"
+              (click)="updateHomeForm.ngSubmit.emit()">
+              <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+                style="width: 1.5rem; height: 1.5rem; ">
+              </span>
+              <span *ngIf="!showLoading">Guardar cambios</span>
+            </button>
+          </div>
+        </footer>
       </form>
-    </ng-container>
+      <ngx-loading [show]="showLoading" [config]="{ backdropBorderRadius: '3px',
+              animationType: ngxLoadingAnimationTypes.rectangleBounce, }"
+        [template]="customLoadingTemplate"></ngx-loading>
+    </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <!-- puntos de colores para cambiar el color
-<div class="color-switcher animated">
-  <h5>Accent Color</h5>
-  <ul class="accent-colors">
-    <li class="accent-primary active" data-color="primary">
-      <i class="material-icons">check</i>
-    </li>
-    <li class="accent-secondary" data-color="secondary">
-      <i class="material-icons">check</i>
-    </li>
-    <li class="accent-success" data-color="success">
-      <i class="material-icons">check</i>
-    </li>
-    <li class="accent-info" data-color="info">
-      <i class="material-icons">check</i>
-    </li>
-    <li class="accent-warning" data-color="warning">
-      <i class="material-icons">check</i>
-    </li>
-    <li class="accent-danger" data-color="danger">
-      <i class="material-icons">check</i>
-    </li>
-  </ul>
-  <div class="actions mb-4">
-    <a class="mb-2 btn btn-sm btn-primary w-100 d-table mx-auto extra-action">
-      <i class="material-icons">cloud</i> Download</a>
-
-  </div>
-  <div class="social-wrapper">
-    <div class="social-actions">
-      <h5 class="my-2"></h5>
-      <div class="inner-wrapper">
-
-      </div>
-    </div>
-
-    <div class="loading-overlay">
-      <div class="spinner"></div>
-    </div>
-  </div>
-  <div class="close">
-    <i class="material-icons">close</i>
-  </div>
-</div>
-<div class="color-switcher-toggle animated pulse infinite">
-  <i class="material-icons">settings</i>
-</div>-->
     <div class="container-fluid">
       <div class="row">
         <!-- Main Sidebar -->
@@ -1334,15 +1654,6 @@
               </div>
             </div>
             <div class="main-content-container container-fluid px-4 tab-pane fade show active" id="tables">
-              <!-- Page Header -->
-              <!--<div class="page-header row no-gutters py-4">
-            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-              <span class="text-uppercase page-subtitle">Overview</span>
-              <h3 class="page-title">Mis propiedades</h3>
-            </div>
-          </div>-->
-              <!-- End Page Header -->
-              <!-- Default Light Table -->
               <div class="row">
                 <div class="col">
                   <div class="card card-small mb-4">
@@ -1350,7 +1661,7 @@
                       <h6 class="m-0">Activas</h6>
                     </div>
                     <div class="card-body p-0  text-center" *ngFor="let appHome of this.user.domains; let i =index">
-                      <ng-container>
+                      <div>
                         <div class="card-list ">
                           <img class="image" *ngIf="appHome.images" (click)="showHome(appHome)"
                             style="aspect-ratio:16/9;" [src]="appHome.images[0].imageUrl" alt="First slide" />
@@ -1387,19 +1698,19 @@
                               <div class="private">
                                 <div class="feature float-end">
                                   <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                    <button pRipple type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                      href="#exampleModal">Destacar</button>
-                                    <button pRipple (click)="sidenav.toggle();updateHome();openSidenav(appHome)"
-                                      type="button" class="btn btn-warning z-0">Editar</button>
+                                    <button pRipple type="button" class="btn btn-info" data-bs-toggle="modal"
+                                      href="#exampleModal"><i class="fa fa-star" aria-hidden="true"></i></button>
+                                    <button pRipple (click)="sidenav.toggle();openSidenav(appHome)" type="button"
+                                      class="btn btn-success"><i class="fa fa-pencil" aria-hidden="true"></i></button>
                                     <button pRipple (click)="deleteHome(appHome)" type="button"
-                                      class="btn btn-danger">Borrar</button>
+                                      class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </ng-container>
+                      </div>
                       <nz-empty *ngIf="!this.user.domains"
                         nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
                         [nzNotFoundContent]="contentTpl" [nzNotFoundFooter]="footerTpl">
@@ -1438,22 +1749,10 @@
               </div>
             </ng-template>
           </p-sidebar>-->
-
-
             </div>
             <div class="main-content-container container-fluid px-4 tab-pane fade" id="profile">
-              <!-- Page Header -->
-              <!--<div class="page-header row no-gutters py-4">
-            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-              <span class="text-uppercase page-subtitle">Overview</span>
-              <h3 class="page-title">User Profile</h3>
-            </div>
-          </div>-->
-              <!-- End Page Header -->
-              <!-- Default Light Table -->
               <div class="row mt-5">
                 <div class="col-lg-4">
-
                   <div class="card card-small mb-4 pt-3">
                     <div class="profile-container">
                       <div class="img-container" *ngIf="this.tempProfile==null">
@@ -1614,13 +1913,6 @@
                                   </button>
                                 </div>
                               </div>
-                              <!--<div class="form-group row">
-                            <div class="form-group col-md-12">
-                              <label for="feDescription">Description</label>
-                              <textarea class="form-control" name="feDescription"
-                                rows="5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio eaque, quidem, commodi soluta qui quae minima obcaecati quod dolorum sint alias, possimus illum assumenda eligendi cumque?</textarea>
-                            </div>
-                          </div>-->
                             </form>
                             <ngx-loading [show]="this.showLoading" [config]="{ backdropBorderRadius: '3px',
                           animationType: ngxLoadingAnimationTypes.rectangleBounce, }"
@@ -1953,7 +2245,7 @@
                       <h6 class="m-0">Favoritos</h6>
                     </div>
                     <div class="card-body p-0  text-center" *ngFor="let appHome of this.userFavourites; let i =index">
-                      <ng-container>
+                      <div>
                         <div class="card-list ">
                           <img class="image" *ngIf="appHome.images" (click)="showHome(appHome)"
                             style="aspect-ratio:16/9;" [src]="appHome.images[0].imageUrl" alt="First slide" />
@@ -1997,7 +2289,7 @@
                             </div>
                           </div>
                         </div>
-                      </ng-container>
+                      </div>
                       <nz-empty *ngIf="!this.user.domains"
                         nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
                         [nzNotFoundContent]="contentTpl" [nzNotFoundFooter]="footerTpl">
@@ -2051,3 +2343,6 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<button id="restoreMap" class="restoreMap" style="display: none;" (click)="restoreMapEdit()"></button>
+<button id="oculto" class="oculto" style="display: none;" (click)="saveService('user-pro')"></button>

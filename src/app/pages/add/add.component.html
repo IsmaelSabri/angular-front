@@ -819,7 +819,7 @@
                                                     <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow"><a href="{{data.web}}">Ir a</a></td>
                                                     <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow">{{ data.distancia}}</td>
                                                     <td *ngIf="this.colegio[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo}}</td>
-                                                    <td *ngIf="this.colegio[i].lat != ''" ><button (click)="setAdRoute(this.colegio[i].lat, this.colegio[i].lng, '#808080', this.sc, i)" pRipple style="height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td><!---->
+                                                    <td *ngIf="this.colegio[i].lat != ''" ><button (click)="setAdRoute(this.colegio[i].lat, this.colegio[i].lng, '#808080', this.sc, i, mapAdd)" pRipple style="height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td><!---->
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -848,7 +848,7 @@
                                                     <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow"><a href="{{data.web}}">Ir a</a></td>
                                                     <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow">{{ data.distancia}}</td>
                                                     <td *ngIf="this.universidad[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo}}</td>
-                                                    <td *ngIf="this.universidad[i].lat != ''" ><button (click)="setAdRoute(this.universidad[i].lat, this.universidad[i].lng, '#128c7e', this.uni, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                    <td *ngIf="this.universidad[i].lat != ''" ><button (click)="setAdRoute(this.universidad[i].lat, this.universidad[i].lng, '#128c7e', this.uni, i, mapAdd)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                   </tr>
                                                 </tbody>
                                               </table>
@@ -870,7 +870,7 @@
                                                         <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                         <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="this.mercados[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="this.mercados[i].lat != ''" ><button (click)="setAdRoute(this.mercados[i].lat, this.mercados[i].lng, '#6f5e53', this.mki, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                        <td *ngIf="this.mercados[i].lat != ''" ><button (click)="setAdRoute(this.mercados[i].lat, this.mercados[i].lng, '#6f5e53', this.mki, i, mapAdd)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -894,7 +894,7 @@
                                                         <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.lineas }}</td>
                                                         <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="this.autobus[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="this.autobus[i].lat != ''" ><button (click)="setAdRoute(this.autobus[i].lat, this.autobus[i].lng, '#960018', this.busic, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
+                                                        <td *ngIf="this.autobus[i].lat != ''" ><button (click)="setAdRoute(this.autobus[i].lat, this.autobus[i].lng, '#960018', this.busic, i, mapAdd)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -918,7 +918,7 @@
                                                         <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.lineas }}</td>
                                                         <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="this.metro[i].lat != ''" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="this.metro[i].lat != ''" ><button (click)="setAdRoute(this.metro[i].lat, this.metro[i].lng, '#d6a323', this.swi, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
+                                                        <td *ngIf="this.metro[i].lat != ''" ><button (click)="setAdRoute(this.metro[i].lat, this.metro[i].lng, '#d6a323', this.swi, i, mapAdd)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="walk-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -940,7 +940,7 @@
                                                         <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                         <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="(this.beach[i].lat != '')" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="(this.beach[i].lat != '')" ><button (click)="setAdRoute(this.beach[i].lat, this.beach[i].lng, 'dodgerblue', this.bch, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                        <td *ngIf="(this.beach[i].lat != '')" ><button (click)="setAdRoute(this.beach[i].lat, this.beach[i].lng, 'dodgerblue', this.bch, i,mapAdd)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -962,7 +962,7 @@
                                                         <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.nombre }}</td>
                                                         <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.distancia }}</td>
                                                         <td *ngIf="(this.aeropuerto[i].lat != '')" class="text-secondary textInRow">{{ data.tiempo }}</td>
-                                                        <td *ngIf="(this.aeropuerto[i].lat != '')" ><button (click)="setAdRoute(this.aeropuerto[i].lat, this.aeropuerto[i].lng, '#3200ff', this.airp, i)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
+                                                        <td *ngIf="(this.aeropuerto[i].lat != '')" ><button (click)="setAdRoute(this.aeropuerto[i].lat, this.aeropuerto[i].lng, '#3200ff', this.airp, i,mapAdd)" pRipple style=" height: 20px;" class="btnDistancia btn btn-secondary"><ion-icon style="font-size: 16px; bottom:2px; position:relative;" name="car-outline"></ion-icon></button></td>
                                                       </tr>
                                                     </tbody>
                                                   </table>
@@ -971,7 +971,7 @@
                                     </nz-tabset>
                                 </div>
                                     <!-- Leaflet map -->
-                                    <div id="mapAdd"></div>
+                                    <div id="mapAdd" #mapAdd></div>
                             </div>
                         </section>
                         <section id="profiles" class="videoAdd ">
@@ -1254,7 +1254,7 @@
                     <div class="actions-content border border-top-0" style="border-radius: 0 0 10px 10px;">
                         <form #contactMessageForm="ngForm" name="form" id="contactMessageForm" (ngSubmit)="contactMessageForm.form.valid && contactMessage()" class="content" style="padding-top: 0px; display: block; flex-direction: column; justify-content: space-between; height: 100%;">
                             <div class="main-contact-form ">
-                                <!--<div style="display: flex; justify-content: space-between;">
+                                <!--<div style="display: flex; justify-content: space-between;"> Para introducir el nombre en plan nombre compuesto
                                     firstname
                                     <div style="flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px);">
                                         <div class="field email-modal-name email-textfield">

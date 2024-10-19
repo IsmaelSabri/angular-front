@@ -18,6 +18,7 @@ import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImageService } from 'src/app/service/image.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -42,6 +43,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     nzMessage: NzMessageService,
     modalSevice: NgbModal,
     imageService: ImageService,
+    notification: NzNotificationService,
   ) {
     super(
       router,
@@ -60,6 +62,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       nzMessage,
       modalSevice,
       imageService,
+      notification
     );
   }
 

@@ -44,9 +44,11 @@ function closeModal() {
   $(".mdl").removeClass("is-active");
 }
 
-function rotateArrows(e, id) {
-  if (e.preventDefault())
-    $("." + id).find(".ant-select-arrow").toggleClass("ant-select-arrow-down");
-  else
-    $("." + id).find(".ant-select-arrow").removeClass("ant-select-arrow-down");
+function closeSmallPopup(){
+  document.querySelector('.leaflet-popup-close-button').click();
+  document.getElementById("restoreMap").click();
+}
+
+function saveService() {
+  document.getElementById("oculto").click();
 }

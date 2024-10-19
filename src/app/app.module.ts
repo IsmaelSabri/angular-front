@@ -150,11 +150,17 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { NgToggleModule } from 'ng-toggle-button';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
+
+
+
 export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
   url: 'https://httpbin.org/post',
-  maxFilesize: 100,
-  acceptedFiles: 'image/*'
+  maxFilesize: 32,
+  acceptedFiles: 'image/*',
+  maxFiles:60
 };
 @NgModule({
   declarations: [
@@ -288,6 +294,8 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ToggleButtonModule,
     NgToggleModule,
     NzMenuModule,
+    NzListModule,
+    NzNotificationModule,
   ],
   exports: [
     // to get component in another modules
