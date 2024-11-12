@@ -44,7 +44,7 @@
 <mat-sidenav-container class="example-container">
   <mat-sidenav #sidenav class="example-sidenav " mode="side" [class.mat-elevation-z4]="true" mode="side"
     [ngClass]="'fullscreen-nav'" [fixedInViewport]="true" [fixedTopGap]="0" [fixedBottomGap]="0">
-    <div class="mt-5 mb-5" *ngIf="this.tipo.includes(this.home.tipo)">
+    <div class="mt-5 mb-5">
       <nav class="navbar bg-body-tertiary bg-dark-subtle fixed-top">
         <div class="container-fluid">
           <button class="button is-link is-primary my-auto float-start" type="button" id="goBackSidenav"
@@ -58,7 +58,7 @@
       </nav>
       <form #updateHomeForm="ngForm" (ngSubmit)="updateHome()" id="updateHomeForm">
         <div class="form-group row mt-3 align-items-center">
-          <p-card header="General">
+          <p-card header="General" *ngIf="this.tipo.includes(this.home.tipo)">
             <!--1st row-->
             <div class="row">
               <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex flex-column">
@@ -92,7 +92,7 @@
                     </div>
                     <div nz-col nzSpan="10" class="float-end">
                       <input nz-input #plantaMasAlta ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
-                        name="plantaMasAlta" [(ngModel)]="this.home.plantaMasAlta" />
+                        name="plantaMasAlta" [(ngModel)]="this.homeDto.plantaMasAlta" />
                     </div>
                   </div>
                 </nz-input-group>
@@ -149,8 +149,7 @@
               <div class="col-xl-3 col-lg-3 col-md-2 col-sm-6 col-xs-12 mx-auto">
                 <label for="tipoEdit" class="text-nowrap">Tipo</label>
                 <nz-select #tipoEdit name="tipoEdit" class="d-block flex-column typeSelect" nzPlaceHolder="Seleccione"
-                  [nzSize]="sizeM" [(ngModel)]="this.home.tipo" (ngModelChange)="formFieldControl()"
-                  (nzOpenChange)="rotateArrows($event,'typeSelect')">
+                  [nzSize]="sizeM" [(ngModel)]="this.home.tipo" (nzOpenChange)="rotateArrows($event,'typeSelect')">
                   <nz-option *ngFor="let opt of tipo" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                 </nz-select>
               </div>
@@ -169,17 +168,26 @@
                 <label for="optionInput0" class="text-nowrap">Condición</label>
                 <nz-select #optionInput0 class="d-block flex-column condicionSelect" name="optionInput0"
                   nzPlaceHolder="Compartir" [nzSize]="sizeM" [(ngModel)]="this.home.condicion"
-                  (ngModelChange)="formFieldControl()" (nzOpenChange)="rotateArrows($event,'condicionSelect')">
+                  (nzOpenChange)="rotateArrows($event,'condicionSelect')">
                   <nz-option *ngFor="let opt of condicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                 </nz-select>
               </div>
               <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <label for="precioFinal">Precio de venta</label>
+                <label for="precioFinal">Precio de venta<span *ngIf="this.home.precioInicial>this.home.precioFinal"
+                    class="price-value text-decoration-line-through old-price ml-1 text-secondary">{{formatNumberWithCommas(this.home.precioInicial)+'€'}}</span><span
+                    class="dimension ml-1"></span><span class="dimension under"
+                    *ngIf="this.home.precioInicial > this.home.precioFinal"
+                    style="color:#7ce800;">-{{this.discount(''+this.home.precioInicial,''+this.home.precioFinal)}}%</span></label>
                 <input nz-input placeholder="€" [(ngModel)]="this.home.precioFinal" ngModel pattern="\d*" maxlength="8"
                   #precioFinal (keypress)="numberOnly($event)" name="precioFinal" [disabled]="this.saleTab.value" />
               </div>
               <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <label for="precioAlquiler">Precio/mes</label>
+                <label for="precioAlquiler">Precio/mes<span
+                    *ngIf="this.home.precioAlquilerInicial > this.home.precioAlquiler"
+                    class="price-value text-decoration-line-through old-price ml-1 text-secondary">{{formatNumberWithCommas(this.home.precioAlquilerInicial)+'€'}}</span><span
+                    class="dimension ml-1"></span><span class="dimension under"
+                    *ngIf="this.home.precioAlquilerInicial > this.home.precioAlquiler"
+                    style="color:#7ce800;">-{{this.discount(''+this.home.precioAlquilerInicial,''+this.home.precioAlquiler)}}%</span></label>
                 <input nz-input placeholder="€/mes" [(ngModel)]="this.home.precioAlquiler" ngModel pattern="\d*"
                   maxlength="5" #precioAlquiler (keypress)="numberOnly($event)" name="precioAlquiler"
                   [disabled]="this.home.condicion=='Venta'" [disabled]="this.rentTab.value" />
@@ -243,15 +251,16 @@
               </div>
               <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <label for="city" class="d-flex flex-start">Ciudad</label>
-                <button name="city" class="button is-success is-outlined is-small w-100" id="provButton"
-                  (click)="locationMap()">{{this.home.ciudad}}</button>
+                <button name="city" class="button is-success is-outlined is-small w-100" id="provButton" type="button"
+                  (click)="locationMap('homes')">{{this.home.ciudad}}</button>
                 <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
-                  [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}">
+                  [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}"
+                  (onHide)="closeDialog()">
                   <div id="map_2"
                     style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
                   </div>
                   <div class="row my-2 mx-3">
-                    <button name="city" class="button is-dark is-outlined is-small" id="provButton2"
+                    <button name="city" class="button is-dark is-outlined is-small" id="provButton2" type="button"
                       (click)="showCityResult()">Guardar</button>
                   </div>
                 </p-dialog>
@@ -282,6 +291,192 @@
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
                 <label for="descripcion" class="required">Descripción</label>
                 <textarea rows="6" class="" required nz-input [(ngModel)]="this.home.descripcion"></textarea>
+              </div>
+            </div>
+          </p-card>
+          <!-- Project template -->
+          <p-card header="General" *ngIf="this.home.tipo=='Proyecto nuevo'">
+            <!--1st row-->
+            <div class="row">
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex flex-column">
+                <label for="tipodeviaP" class="text-nowrap">Tipo de vía</label>
+                <nz-select panelWidth="fit-content" #tipodeviaP name="tipodeviaP" class="viaSelectp w-100"
+                  nzPlaceHolder="Calle, avenida, plaza..." [nzSize]="sizeM" [(ngModel)]="this.home.tipoDeVia"
+                  (nzOpenChange)="rotateArrows($event,'viaSelectP')">
+                  <nz-option *ngFor="let opt of tipo_de_via" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="calleP">Nombre</label>
+                <input #calleP nz-input placeholder="Nombre de la vía p. ej. Paseo de la Castellana..."
+                  [(ngModel)]="this.home.calle" name="calleP" id="calleP" />
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="numeroP">Numero</label>
+                <input nz-input #numeroP placeholder="Número" ngModel pattern="\d*" maxlength="6"
+                  (keypress)="numberOnly($event)" name="numeroP" [(ngModel)]="this.home.numero" />
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="distritoP">Distrito</label>
+                <input nz-input #distritoP placeholder="Distrito" [(ngModel)]="this.home.distrito" name="distritoP" />
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="cityP" class="d-flex flex-start">Ciudad</label>
+                <button name="cityP" class="button is-success is-outlined is-small w-100" id="provButton" type="button"
+                  (click)="locationMap('projects')">{{this.home.ciudad}}</button>
+                <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
+                  [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}"
+                  (onHide)="closeDialog()">
+                  <div id="map_4"
+                    style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
+                  </div>
+                  <div class="row my-2 mx-3">
+                    <button name="cityPR" class="button is-dark is-outlined is-small" id="provButton" type="button"
+                      (click)="showCityResult()">Guardar</button>
+                  </div>
+                </p-dialog>
+                <input #ciudadP nz-input ngModel name="ciudadP" class="form-control" [(ngModel)]="this.home.ciudad"
+                  style="display:none;" required>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="cpP">CP</label>
+                <input nz-input #cpP placeholder="Código postal" ngModel pattern="\d*" maxlength="5"
+                  (keypress)="numberOnly($event)" name="cpP" [(ngModel)]="this.home.cp" />
+              </div>
+            </div>
+            <!--2nd row-->
+            <div class=" row mt-2 align-items-center">
+              <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-xs-12 mb-auto">
+                <label for="totalUnits" class="text-nowrap">Cantidad viviendas</label>
+                <input nz-input #totalUnits placeholder="Total construido" ngModel pattern="\d*" maxlength="5"
+                  (keypress)="numberOnly($event)" name="totalUnits" class="form-control p-1"
+                  [(ngModel)]="this.home.totalViviendasConstruidas" />
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 align-self-start">
+                <label for="roomsP" class="text-nowrap">De {{this.home.habitacionesDesde}} a
+                  {{this.home.habitacionesHasta}}
+                  dormitorios</label>
+                <nz-input-group>
+                  <div nz-row>
+                    <div nz-col nzSpan="10" class="float-start">
+                      <input nz-input #roomsFrom placeholder="" ngModel pattern="\d*" maxlength="4"
+                        (keypress)="numberOnly($event)" name="roomsP" [(ngModel)]="this.home.habitacionesDesde" />
+                    </div>
+                    <div nz-col nzSpan="4" class="text-center">
+                      <label class="mt-1">a</label>
+                    </div>
+                    <div nz-col nzSpan="10" class="float-end">
+                      <input nz-input #roomsTo ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
+                        name="roomsTo" [(ngModel)]="this.home.habitacionesHasta" />
+                    </div>
+                  </div>
+                </nz-input-group>
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 align-self-start">
+                <label for="areasP" class="text-nowrap">Area de {{this.home.superficieDesde}} a
+                  {{this.home.superficieHasta}} m²</label>
+                <nz-input-group>
+                  <div nz-row>
+                    <div nz-col nzSpan="10" class="float-start">
+                      <input nz-input #areasFrom placeholder="" ngModel pattern="\d*" maxlength="4"
+                        (keypress)="numberOnly($event)" name="areasP" [(ngModel)]="this.home.superficieDesde" />
+                    </div>
+                    <div nz-col nzSpan="4" class="text-center">
+                      <label class="mt-1">a</label>
+                    </div>
+                    <div nz-col nzSpan="10" class="float-end">
+                      <input nz-input #areasTo ngModel pattern="\d*" maxlength="4" (keypress)="numberOnly($event)"
+                        name="areasTo" [(ngModel)]="this.home.superficieHasta" />
+                    </div>
+                  </div>
+                </nz-input-group>
+              </div>
+              <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 align-self-start">
+                <label for="alturasP" class="text-nowrap">Alturas</label>
+                <input nz-input #alturasP placeholder="Alturas" class="form-control p-1" ngModel pattern="\d*"
+                  maxlength="6" (keypress)="numberOnly($event)" name="alturas" [(ngModel)]="this.home.alturas" />
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 align-items-start">
+                <label for="pricesFromP" class="text-nowrap">Precio desde</label>
+                <nz-input-group>
+                  <div nz-row>
+                    <div class="float-start w-100">
+                      <input nz-input #pricesFromP placeholder="" ngModel pattern="\d*" maxlength="8"
+                        (keypress)="numberOnly($event)" name="pricesFromP" [(ngModel)]="this.home.precioFinal" />
+                    </div>
+                  </div>
+                </nz-input-group>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12 mx-auto">
+                <label for="tipologiasP" class="text-nowrap">Tipologías</label>
+                <nz-select nzMode="multiple" [nzPlaceHolder]="'Tipos'" nzAllowClear style="width:100%"
+                  name="tipologiasP" [nzSize]="sizeM" (ngModelChange)="printSelect($event)"
+                  [(ngModel)]="this.preSelectedTypes">
+                  <ng-container>
+                    <nz-option *ngFor="let opt of projectFeatures" [nzLabel]="opt" [nzValue]="opt"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </div>
+            </div>
+            <!--3rd row-->
+            <div class=" row mt-2 align-items-center">
+              <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 d-flex flex-column">
+                <label for="estadoObra" class="align-items-center">Estado construcción:</label>
+                <nz-radio-group class="w-100 d-block" [(ngModel)]="this.home.estadoConstruccion" name="estadoObra"
+                  nzButtonStyle="solid">
+                  <label nz-radio-button nzValue=Terminado>Terminado</label>
+                  <label nz-radio-button nzValue=EnCurso>En curso</label>
+                </nz-radio-group>
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12 d-flex flex-column"
+                *ngIf="this.home.estadoConstruccion=='Terminado'">
+                <label for="yearEndP" class="">Año construcción</label>
+                <nz-date-picker id="yearEndP" placeholder="Año" #yearP nzMode="year" nzFormat="yyyy"
+                  class="d-block flex-column form-control" name="yearEndP" [(ngModel)]="this.home.antiguedad"
+                  [nzDisabledDate]="disabledDatePost"></nz-date-picker>
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12"
+                *ngIf="this.home.estadoConstruccion=='EnCurso'">
+                <label for="yearPercentP" class=" text-nowrap">Progreso obra</label>
+                <nz-input-group class="float-start" name="yearPercentP" [nzSuffix]="percetageFinished" [nzSize]="size">
+                  <input nz-input name="totalEnded" id="yearPercentP" #yearPercentP [nzSize]="sizeL"
+                    [(ngModel)]="this.home.porcentajeTerminado" class="form-control w-full mb-1" />
+                </nz-input-group>
+                <ng-template #percetageFinished>
+                  <span><i class="bi bi-percent"></i></span>
+                </ng-template>
+                <!--<p-slider [(ngModel)]="this.home.porcentajeTerminado" [min]="0" [max]="100" class="w-full"/>-->
+              </div>
+              <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                <label for="soldPercentP" class=" text-nowrap">% Vendido</label>
+                <nz-input-group class="float-start" name="soldPercentP" [nzSuffix]="percetageTemplate" [nzSize]="size">
+                  <input nz-input name="totalSold" id="soldPercentP" #soldPercentP [nzSize]="sizeL"
+                    [(ngModel)]="this.home.porcentajeVendido" class="form-control w-full mb-1" />
+                </nz-input-group>
+                <ng-template #percetageTemplate>
+                  <span><i class="bi bi-percent"></i></span>
+                </ng-template>
+                <!--<p-slider [(ngModel)]="this.home.porcentajeVendido" [min]="0" [max]="100" class="w-full" />-->
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 0d-flex flex-column"
+                *ngIf="this.home.estadoConstruccion=='EnCurso'">
+                <label for="endWorksP" class="">Fin de obra</label>
+                <nz-date-picker id="endWorksP" placeholder="Año" #endWorksP nzMode="year" nzFormat="yyyy"
+                  class="d-block flex-column form-control" name="endWorksP" [(ngModel)]="this.yearFindeObra"
+                  [nzDisabledDate]="disabledDatePre"></nz-date-picker>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex flex-column">
+                <label for="nameP">Nombre decorativo</label>
+                <input #nameP nz-input placeholder="Residencial las palmeras..." [(ngModel)]="this.home.nombreProyecto"
+                  name="namep" class="form-control" />
+              </div>
+            </div>
+            <!--6th row-->
+            <div class=" row mt-2 align-items-center">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
+                <label for="descripcionP" class="required">Descripción</label>
+                <textarea rows="6" class="" name="descripcionP" required nz-input
+                  [(ngModel)]="this.home.descripcion"></textarea>
               </div>
             </div>
           </p-card>
@@ -991,7 +1186,8 @@
         </div>
         <footer class="fixed-bottom p-3 bg-dark-subtle">
           <div class="container-fluid">
-            <button class="button is-link waves-effect waves-light" [disabled]="showLoading"
+            <button class="button is-link waves-effect waves-light"
+              [disabled]="showLoading || (!this.home.precioFinal&&!this.home.precioAlquiler)"
               (click)="updateHomeForm.ngSubmit.emit()">
               <span *ngIf="showLoading" class="spinner-border text-light" role="status"
                 style="width: 1.5rem; height: 1.5rem; ">
@@ -1063,7 +1259,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link " data-bs-toggle="tab" href="#tables">
+                <a class="nav-link " data-bs-toggle="tab" href="#tables" id="tables-link">
                   <i class="material-icons">home</i>
                   <span>Anuncios</span>
                 </a>
@@ -1075,7 +1271,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link " data-bs-toggle="tab" href="#ads">
+                <a class="nav-link " data-bs-toggle="tab" href="#ads" id="favourites">
                   <i class="material-icons">favorite</i>
                   <span>Favoritos</span>
                 </a>
@@ -1185,7 +1381,7 @@
           </div>
           <!-- / .main-navbar -->
           <div class="tab-content">
-            <div class="main-content-container container-fluid px-4 tab-pane fade " id="stats">
+            <div class="main-content-container container-fluid px-4 tab-pane fade show active" id="stats">
               <!-- Page Header -->
               <div class="page-header row no-gutters py-4">
                 <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
@@ -1653,7 +1849,7 @@
 
               </div>
             </div>
-            <div class="main-content-container container-fluid px-4 tab-pane fade show active" id="tables">
+            <div class="main-content-container container-fluid px-4 tab-pane fade" id="tables">
               <div class="row">
                 <div class="col">
                   <div class="card card-small mb-4">
@@ -1668,36 +1864,67 @@
                           <div class="content">
                             <div class="texts">
                               <div>{{appHome.tipo}} en {{appHome.calle}} {{appHome.numero}} en {{appHome.condicion}} en
-                                {{appHome.ciudad}}</div>
-                              <div class="price under-market" *ngIf=" appHome.precioInicial != 0">
-                                <span *ngIf=" appHome.precioInicial != 0" class="prefix">En venta</span>
-                                <div *ngIf=" appHome.precioInicial != 0" class="price-container"><span
-                                    class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span><span
-                                    class="dimension"></span></div>
+                                {{appHome.ciudad}}
                               </div>
-                              <div class="price" *ngIf="appHome.precioFinal > 0">
-                                <span class="prefix" *ngIf="appHome.precioInicial == 0">En venta</span>
-                                <div class="price-container">
-                                  <span *ngIf="appHome.precioFinal!= null || appHome.precioFinal != undefined"
-                                    class="price-value">{{formatNumberWithCommas(appHome.precioFinal)}}€</span>
-                                  <div class="diff float-end mt-1" *ngIf="appHome.precioInicial != 0">
-                                    <span class="dimension under "
-                                      style="color:#7ce800;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
+                              <div>
+                                <div class="row">
+                                  <div class="price float-end" *ngIf="appHome.precioFinal > 0">
+                                    <div class="price-container"
+                                      *ngIf="appHome.condicion=='Venta' || appHome.condicion=='Alquiler y venta'">
+                                      <span *ngIf=" appHome.precioInicial > appHome.precioFinal"
+                                        style="font-size: .675em; color: #007aa2;"
+                                        class="price-value text-decoration-line-through old-price mr-2">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span>
+                                      <span *ngIf="appHome.precioFinal"
+                                        class="price-value">{{formatNumberWithCommas(appHome.precioFinal)}}€</span>
+                                      <div class="diff float-end" *ngIf="appHome.precioInicial > appHome.precioFinal">
+                                        <span class="ml-1"
+                                          style="color:#7ce800;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div *ngIf="appHome.precioAlquiler != 0" class="price">
+                                    <div class="price-container"
+                                      *ngIf="appHome.condicion=='Alquiler' || appHome.condicion=='Alquiler y venta' || appHome.condicion=='Compartir'">
+                                      <span *ngIf=" appHome.precioAlquilerInicial > appHome.precioAlquiler"
+                                        style="font-size: .675em; color: #007aa2;"
+                                        class="price-value text-decoration-line-through old-price mr-2">{{formatNumberWithCommas(appHome.precioAlquilerInicial)+'€'}}</span><span
+                                        *ngIf=" appHome.precioAlquiler != 0"
+                                        class="price-value">{{formatNumberWithCommas(appHome.precioAlquiler)}}€</span><span
+                                        class="suffix">/mes</span>
+                                      <div class="diff float-end">
+                                        <span *ngIf="appHome.precioAlquilerInicial>appHome.precioAlquiler"
+                                          style="color:#7ce800;">-{{this.discount(''+appHome.precioAlquilerInicial,''+appHome.precioAlquiler)}}%</span>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                              <div *ngIf="appHome.precioAlquiler != 0" class="price">
-                                <span class="prefix">En alquiler</span>
-                                <div class="price-container"><span *ngIf=" appHome.precioAlquiler != 0"
-                                    class="price-value">{{formatNumberWithCommas(appHome.precioAlquiler)}}€</span><span
-                                    *ngIf="appHome.precioAlquiler!=0" class="suffix">/mes</span><span
-                                    class="dimension"></span></div>
-                              </div>
+
+
                             </div>
                             <div class="featured-box">
                               <div class="private">
                                 <div class="feature float-end">
                                   <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                    <!--<button nz-button nz-dropdown [nzDropdownMenu]="menu" nzType="dashed">
+                                      Actions
+                                      <span nz-icon nzType="down"></span>
+                                    </button>
+                                    <nz-dropdown-menu #menu="nzDropdownMenu">
+                                      <ul nz-menu>
+                                        <li nz-menu-item>
+                                          <a>1st item</a>
+                                        </li>
+                                        <li nz-menu-item>
+                                          <a>2nd item</a>
+                                        </li>
+                                        <li nz-menu-item>
+                                          <a>3rd item</a>
+                                        </li>
+                                      </ul>
+                                    </nz-dropdown-menu>-->
                                     <button pRipple type="button" class="btn btn-info" data-bs-toggle="modal"
                                       href="#exampleModal"><i class="fa fa-star" aria-hidden="true"></i></button>
                                     <button pRipple (click)="sidenav.toggle();openSidenav(appHome)" type="button"
@@ -2252,30 +2479,43 @@
                           <div class="content">
                             <div class="texts">
                               <div>{{appHome.tipo}} en {{appHome.calle}} {{appHome.numero}} en {{appHome.condicion}} en
-                                {{appHome.ciudad}}</div>
-                              <div class="price under-market" *ngIf=" appHome.precioInicial != 0">
-                                <span *ngIf=" appHome.precioInicial != 0" class="prefix">En venta</span>
-                                <div *ngIf=" appHome.precioInicial != 0" class="price-container"><span
-                                    class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span><span
-                                    class="dimension"></span></div>
+                                {{appHome.ciudad}}
                               </div>
-                              <div class="price" *ngIf="appHome.precioFinal > 0">
-                                <span class="prefix" *ngIf="appHome.precioInicial == 0">En venta</span>
-                                <div class="price-container">
-                                  <span *ngIf="appHome.precioFinal!= null || appHome.precioFinal != undefined"
-                                    class="price-value">{{formatNumberWithCommas(appHome.precioFinal)}}€</span>
-                                  <div class="diff float-end mt-1" *ngIf="appHome.precioInicial != 0">
-                                    <span class="dimension under "
-                                      style="color:#7ce800;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
+
+                              <div>
+                                <div class="row">
+                                  <div class="price float-end" *ngIf="appHome.precioFinal > 0">
+                                    <div class="price-container"
+                                      *ngIf="appHome.condicion=='Venta' || appHome.condicion=='Alquiler y venta'">
+                                      <span *ngIf=" appHome.precioInicial > appHome.precioFinal"
+                                        style="font-size: .675em; color: #007aa2;"
+                                        class="price-value text-decoration-line-through old-price mr-2">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span>
+                                      <span *ngIf="appHome.precioFinal"
+                                        class="price-value">{{formatNumberWithCommas(appHome.precioFinal)}}€</span>
+                                      <div class="diff float-end" *ngIf="appHome.precioInicial > appHome.precioFinal">
+                                        <span class="ml-1"
+                                          style="color:#7ce800;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div *ngIf="appHome.precioAlquiler != 0" class="price">
-                                <span class="prefix">En alquiler</span>
-                                <div class="price-container"><span *ngIf=" appHome.precioAlquiler != 0"
-                                    class="price-value">{{formatNumberWithCommas(appHome.precioAlquiler)}}€</span><span
-                                    *ngIf="appHome.precioAlquiler!=0" class="suffix">/mes</span><span
-                                    class="dimension"></span></div>
+                                <div class="row">
+                                  <div *ngIf="appHome.precioAlquiler != 0" class="price">
+                                    <div class="price-container"
+                                      *ngIf="appHome.condicion=='Alquiler' || appHome.condicion=='Alquiler y venta' || appHome.condicion=='Compartir'">
+                                      <span *ngIf=" appHome.precioAlquilerInicial > appHome.precioAlquiler"
+                                        style="font-size: .675em; color: #007aa2;"
+                                        class="price-value text-decoration-line-through old-price mr-2">{{formatNumberWithCommas(appHome.precioAlquilerInicial)+'€'}}</span><span
+                                        *ngIf=" appHome.precioAlquiler != 0"
+                                        class="price-value">{{formatNumberWithCommas(appHome.precioAlquiler)}}€</span><span
+                                        class="suffix">/mes</span>
+                                      <div class="diff float-end">
+                                        <span *ngIf="appHome.precioAlquilerInicial>appHome.precioAlquiler"
+                                          style="color:#7ce800;">-{{this.discount(''+appHome.precioAlquilerInicial,''+appHome.precioAlquiler)}}%</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                             <div class="featured-box">

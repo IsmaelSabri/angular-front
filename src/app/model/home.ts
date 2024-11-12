@@ -1,3 +1,4 @@
+import { LatLng } from 'leaflet';
 export class Home {
   id: string;
   viviendaId: string;
@@ -16,6 +17,7 @@ export class Home {
   precioInicial: number;
   precioFinal: number;
   precioAlquiler: number;
+  precioAlquilerInicial: number;
   duracion: string;
   descripcion: string;
   armariosEmpotrados: boolean = false;
@@ -68,6 +70,13 @@ export class Home {
   estanciaMinima: string = ''; // meses
   likeMeForever: string[] = [];
   likeMeForeverAsString: string;
+  piscinaComp: boolean = false;
+  vistasDespejadas: string;
+  instalacionesDiscapacitados: boolean = false;
+  trastero: boolean = false;
+  panelesSolares: boolean = false;
+  jacuzzi: boolean = false;
+
 
   // House profile
   alarma: boolean = false;
@@ -75,7 +84,6 @@ export class Home {
   videoVigilancia: boolean = false;
   alarmaIncendios: boolean = false;
   extintores: boolean = false;
-  panelesSolares: boolean = false;
   eficienciaEnergetica: boolean = false;
   colegios: string;
   supermercados: string;
@@ -88,19 +96,15 @@ export class Home {
   energyCert = new HomeImage;
   generadorEmergencia: boolean = false;
   aeropuerto: string;
-  vistasDespejadas: string;
-  instalacionesDiscapacitados: boolean = false;
-  trastero: boolean = false;
   golf: boolean = false;
   gym: boolean = false;
-  jacuzzi: boolean = false;
+
 
   // Flat profile
 
   bajoOplantabaja: boolean = false;
   // Gated community ameninites
   jardin: boolean = false;
-  piscinaComp: boolean = false;
   columpios: boolean = false;
   tenis: boolean = false;
   padel: boolean = false;
@@ -251,18 +255,18 @@ export class HomeFilterRequest {
   condicion: string;
   ciudad: string;
   tipo: string[] = [];
-  estado: string;
+  estado: string[] = [];
   habitaciones: string;
   aseos: string;
   aseoEnsuite: string;
-  garage: string;
+  garage: boolean;
   precioVentaMin: number;
   precioVentaMax: number;
   precioAlquilerMin: number;
   precioAlquilerMax: number;
   superficieMin: number;
   superficieMax: number;
-  vistas: string;
+  vistas: string[] = [];
   aireAcondicionado: boolean;
   balcon: boolean;
   calefaccion: boolean;

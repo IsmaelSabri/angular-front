@@ -1621,7 +1621,7 @@ body {
 }
 
 .description-content .prices {
-  margin-top: 20px;
+  /*margin-top: 20px;*/
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -3580,7 +3580,7 @@ body {
   -webkit-box-align: center;
   align-items: center;
   flex-wrap: wrap;
-  font-size: 17px;
+  font-size: 1em;
   font-weight: 600;
   font-family: "Lufga-Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #274c77;
@@ -4236,6 +4236,33 @@ header {
 /*end navbar*/
 /*angular material chips bg*/
 .mat-mdc-standard-chip.mdc-evolution-chip--selected:not(.mdc-evolution-chip--disabled) {
-  background-color: #bbb;
+  background-color: #636363;
+}
+
+.mat-mdc-standard-chip.mdc-evolution-chip--selected.mdc-evolution-chip--disabled {
+  background-color: #636363;
 }
 /*end angular material chips bg rgba(0, 0, 0, .45)*/
+
+/*
+
+    Lightbox
+
+::ng-deep .lb-outerContainer  {
+  max-width: 100% !important;
+  height: auto !important;
+  position:fixed !important;
+  top:5em !important;
+  bottom: 5em !important;
+  left: 5em !important;
+  right: 5em !important;
+}
+
+::ng-deep .lb-container .lb-image  {
+  aspect-ratio: 16/9;
+
+}
+
+::ng-deep .lb-nav {
+  padding: 0 !important;
+}*/

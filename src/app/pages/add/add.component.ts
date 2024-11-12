@@ -183,9 +183,32 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     if (this.homeService.getHomeFromLocalCache()) {
       this.home = this.homeService.getHomeFromLocalCache();
       if (this.home) {
-        this.subscriptions.push(this.homeService.getHomesByQuery('model@=*' + this.home.model + ',' + 'viviendaId@=*' + this.home.viviendaId + ',').subscribe({
+        this.subscriptions.push(
+          this.route.fragment.subscribe({
+            next: (model) => {
+              this.dto.model = model;
+              this.route.params.subscribe({
+                next: (params) => {
+                  this.dto.id = params['id'];
+                }, error: (errorResponse: HttpErrorResponse) => {
+                  this.notificationService.notify(
+                    NotificationType.ERROR,
+                    errorResponse.error.message + 'Cannot catch home id'
+                  );
+                }
+              })
+            },
+            error: (errorResponse: HttpErrorResponse) => {
+              this.notificationService.notify(
+                NotificationType.ERROR,
+                errorResponse.error.message + 'Cannot catch home model'
+              );
+            }
+          }));
+        const homeDto = JSON.stringify(this.dto);
+        this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
           next: (res) => {
-            this.home = this.homeService.performHome(res[0]);
+            this.home = this.homeService.performHome(res);
             if (this.home.energyCert) {
               this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
             }
@@ -245,11 +268,12 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
             })
           },
           error: () => {
+            this.notificationService.notify(
+              NotificationType.ERROR, 'El anuncio ' + this.dto.id + ' ha caducado o ha sido eliminado',
+            );
             this.router.navigateByUrl('/home');
-            NotificationType.ERROR, 'El anuncio ' + 'ha caducado o ha sido eliminado!';
           }
-        })
-        )
+        }))
       }
     } else {
       this.router.navigateByUrl('/home');

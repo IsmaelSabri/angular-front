@@ -1,6 +1,7 @@
 import { Inject, Component, OnInit, OnDestroy, ViewEncapsulation, Renderer2 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { dynamicAdminScripts } from 'src/app/model/performance/js-scripts';
+import _ from 'lodash';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -54,12 +55,17 @@ export class AdminComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.cssPath.length; i++) {
       this.renderer2.removeChild(this.document.head, this.styleUser[i]);
     }
-    this.styleUser = [];
+      this.styleUser = [];
+    /*
+    _.map(dynamicAdminScripts, (script) => {
+      this.renderer2.removeChild(this.document.body, script);
+    })
     for (let i = 0; i < dynamicAdminScripts.length; i++) {
-      //document.getElementsByTagName('body')[0].removeChild(this.node)
-      
-      //this.renderer2.removeChild(this.document.body, this.scripts[i]);
-    }
+      opcion 1
+      document.getElementsByTagName('body')[0].removeChild(this.node)
+      opcion 2
+      this.renderer2.removeChild(this.document.body, this.scripts[i]);
+    }*/
     this.scripts = [];
   }
 

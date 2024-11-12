@@ -952,55 +952,6 @@ input:checked ~ .checkbox2 {
   border-right-color: #3a3b3c;
 }
 
-/*radio  filter container*/
-.radio-filter-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.radio_container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: #cecece;
-  width: 280px;
-  height: 50px;
-  border-radius: 9999px;
-  box-shadow: inset 0.5px 0.5px 2px 0 rgba(0, 0, 0, 0.15);
-}
-
-.radioFilterInput {
-  appearance: none;
-  display: none;
-}
-
-.labelRadio {
-  font-size: 15px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: inherit;
-  width: 80px;
-  height: 40px;
-  text-align: center;
-  border-radius: 9999px;
-  overflow: hidden;
-  transition: linear 0.3s;
-  color: #6e6e6edd;
-  letter-spacing: 0.5px;
-}
-
-.radioFilterInput:checked + label {
-  background-color: #3a3b3c;
-  color: #f1f3f5;
-  font-weight: 900;
-  transition: 0.3s;
-}
-
 /* precio */
 
 .select:not(.is-multiple):not(.is-loading)::after {
@@ -1337,18 +1288,26 @@ will-change:top,opacity;
   box-sizing: border-box;
   border-radius: 0 0 10px 10px;
 }
+
+@media all and (max-width: 599px) {
+  .modal-card {
+    max-height: 100vh;
+  }
+}
+
 .modal-card-body {
   background-color: #ffffff;
 }
 .modal-card-foot {
   background-color: #ffffff;
-  height: 6em;
+  max-height: 5em;
   display: flex;
   border-radius: 0 0 10px 10px;
 }
 
 .modal-card-head {
   background-color: #ffffff;
+  max-height: 4em;
 }
 
 /*privacy checkbox*/

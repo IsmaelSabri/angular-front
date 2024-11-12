@@ -16,6 +16,7 @@ export class HomeDto {
     precioInicial: any;
     precioFinal: any;
     precioAlquiler: any;
+    precioAlquilerInicial: any;
     duracion: any;
     descripcion: any;
     armariosEmpotrados: any = false;

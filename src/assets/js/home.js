@@ -31,17 +31,23 @@ function closeModal() {
   $(".modal").removeClass("is-active");
 }
 // reset checkboxes & check venta by default - filters-form
-function uncheck() {
+function uncheck() { // borrar filtros
   $(":checkbox").prop("checked", false).parent().removeClass("active");
   $(":radio").prop("checked", false).parent().removeClass("active");
   $(".ant-radio-button").removeClass("ant-radio-button-checked");
   $(".ant-radio-button-wrapper").removeClass("ant-radio-button-wrapper-checked");
   $(".ant-segmented-item-label:contains('Venta')").trigger('click');
-
-  //$("#two.saleRadio").prop("checked", true);// pone en venta por default el filtrado
   $(".ant-select-clear").trigger('click'); // tipos de vivienda
   //$('.ant-select').prop('selectedIndex', 0); // select
   //$(".p-icon-wrapper").trigger('click');
+}
+
+function lessUncheck(){ // llama el segmented de los filtros 
+  $(":checkbox").prop("checked", false).parent().removeClass("active");
+  $(":radio").prop("checked", false).parent().removeClass("active");
+  $(".ant-radio-button").removeClass("ant-radio-button-checked");
+  $(".ant-radio-button-wrapper").removeClass("ant-radio-button-wrapper-checked");
+  $(".ant-select-clear").trigger('click'); // tipos de vivienda
 }
 // bulma nav
 $(document).ready(function() {

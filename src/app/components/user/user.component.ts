@@ -64,10 +64,10 @@ export class UserComponent implements OnInit, OnDestroy {
   // dynamic id's carousels
   public idIndex = Array.from(Array(1000).keys());
 
-    // tamaño de los select para las tablas de proximidades
-    size: NzSelectSizeType = 'small';
-    sizeM: NzSelectSizeType = 'default';
-    sizeL: NzSelectSizeType = 'large';
+  // tamaño de los select para las tablas de proximidades
+  size: NzSelectSizeType = 'small';
+  sizeM: NzSelectSizeType = 'default';
+  sizeL: NzSelectSizeType = 'large';
 
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),

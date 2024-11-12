@@ -226,7 +226,10 @@
                     <section id="overview" class="description-section " style="filter: none;">
                         <div class="description-content ">
                             <div>
-                                    <h1 class="headline alone">{{this.home.tipo}} <span *ngIf="this.home.condicion!='Compartir'">en </span><span *ngIf="this.home.condicion=='Compartir'">para </span><span class="text-lowercase">{{this.home.condicion}}</span> en {{this.home.ciudad}}</h1>
+                                    <h1 class="headline alone">{{this.home.tipo}} 
+                                        <span *ngIf="this.home.condicion!='Compartir'">en </span>
+                                        <span *ngIf="this.home.condicion=='Compartir'">para </span>
+                                        <span class="text-lowercase">{{this.home.condicion}}</span> en {{this.home.ciudad}}</h1>
                                     <span *ngIf="this.home.direccionAproximada" class="address-icon icon-deluxe "><ion-icon style="font-size: 1em;" src="assets/svg/place.svg"></ion-icon></span>
                                     <span *ngIf="!this.home.direccionAproximada" class="address-icon icon-deluxe "><ion-icon style="font-size: 1em;" src="assets/svg/no-place.svg"></ion-icon></span>
                                     <h2 nz-tooltip [nzTooltipTrigger]="'hover'" nzTooltipTitle="La dirección se muestra como aproximada por deseo del/la anunciante" *ngIf="!this.home.direccionAproximada"><a>&nbsp;&nbsp;Dirección aproximada</a></h2>
@@ -237,23 +240,51 @@
                                     </div>
                             </div>
                                 <div class="prices">
-                                    <div class="price under-market" *ngIf=" this.home.precioInicial != 0">
-                                        <span *ngIf=" this.home.precioInicial" class="prefix">En venta</span>
-                                        <div *ngIf=" this.home.precioInicial" class="price-container"><span class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(this.home.precioInicial)+'€'}}</span><span class="dimension"></span></div>
-                                    </div>
-                                    <div class="price" *ngIf="this.home.precioFinal > 0">
-                                        <span class="prefix" *ngIf="this.home.precioInicial == 0 && this.home.model!='NewProject'">En venta</span>
-                                        <span class="prefix" *ngIf="this.home.precioInicial == 0 && this.home.model=='NewProject'">Desde</span>
-                                        <div class="price-container"><span *ngIf="this.home.precioFinal" class="price-value">{{formatNumberWithCommas(this.home.precioFinal)}}€</span>
-                                        <span *ngIf="this.home.precioFinal && this.home.model!='NewProject'" class="dimension">{{this.calcPriceM2(''+this.home.precioFinal,''+this.home.superficie)}}€/m²</span>
-                                        <div class="diff float-end mt-1" *ngIf="this.home.precioInicial != 0 && this.home.model!='NewProject'">
-                                                <span class="dimension under " style="color:#8dca3f;">-{{this.discount(''+this.home.precioInicial,''+this.home.precioFinal)}}%</span>
+                                    <!-- Venta -->
+                                    <div class="price" style="padding: .475em .580em;" *ngIf="(this.home.precioFinal && this.home.model!='NewProject') && (this.home.condicion=='Venta' || this.home.condicion=='Alquiler y venta')">
+                                        <!-- Rebajado -->
+                                        <span class="prefix">En venta</span>
+                                        <div class="price under-market" *ngIf=" this.home.precioInicial > this.home.precioFinal" style="padding: .475em .580em;border:none;">
+                                                <div *ngIf=" this.home.precioInicial" class="price-container">
+                                                    <span style="border: none;" class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(this.home.precioInicial)+'€'}}</span><!--<span class="dimension"></span>-->
+                                                </div>
+                                        </div>
+                                        <div class="price-container" >
+                                            <span *ngIf="this.home.precioFinal && (this.home.condicion=='Venta' || this.home.condicion=='Alquiler y venta')" class="price-value">{{formatNumberWithCommas(this.home.precioFinal)}}€</span>
+                                            <!--<span *ngIf="this.home.precioFinal && this.home.model!='NewProject'" class="dimension">{{this.calcPriceM2(''+this.home.precioFinal,''+this.home.superficie)}}€/m²</span>-->
+                                            <div class="diff float-end mt-1" *ngIf="this.home.precioInicial != 0 && this.home.model!='NewProject'">
+                                                    <span *ngIf="this.home.precioInicial>this.home.precioFinal" class="dimension under " style="color:#8dca3f;">-{{this.discount(''+this.home.precioInicial,''+this.home.precioFinal)}}%</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    </div>
-                                    <div *ngIf="this.home.precioAlquiler != 0"  class="price">
+                                    <!-- Alquiler -->
+                                    <div *ngIf="this.home.precioAlquiler > 0 && (this.home.condicion=='Alquiler' || this.home.condicion=='Alquiler y venta' || this.home.condicion=='Compartir' )"  class="price" >
                                         <span class="prefix">En alquiler</span>
-                                        <div class="price-container"><span *ngIf=" this.home.precioAlquiler != 0" class="price-value">{{formatNumberWithCommas(this.home.precioAlquiler)}}€</span><span *ngIf="this.home.precioAlquiler!=0" class="suffix">/mes</span><span class="dimension"></span></div>
+                                        <div class="price under-market " style="padding: .475em .580em; border:none;"*ngIf=" this.home.precioAlquilerInicial > this.home.precioAlquiler">
+                                            <div *ngIf=" this.home.precioAlquilerInicial" class="price-container">
+                                                <span  *ngIf=" this.home.precioInicial > this.home.precioFinal" class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(this.home.precioAlquilerInicial)+'€'}}</span><!--<span class="dimension"></span>-->
+                                            </div>
+                                        </div>
+                                        <div class="price-container">
+                                            <span *ngIf=" this.home.precioAlquiler != 0" class="price-value">{{formatNumberWithCommas(this.home.precioAlquiler)}}€</span>
+                                            <span *ngIf="this.home.precioAlquiler>0" class="suffix mb-1">/mes</span><!--<span class="dimension"></span>-->
+                                        </div>
+                                    </div>
+                                    <!-- Proyectos -->
+                                    <div class="price" style="padding: .475em .580em;" *ngIf="this.home.model=='NewProject'">
+                                        <div class="price under-market" style="padding: .475em .580em; ">
+                                            <span class="prefix" style="border: none;">Desde</span>
+                                                    <div *ngIf=" this.home.precioInicial" class="price-container">
+                                                        <span class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(this.home.precioInicial)+'€'}}</span><!--<span class="dimension"></span>-->
+                                                    </div>
+                                            </div>
+                                            <div class="price-container" >
+                                                <span *ngIf="this.home.precioFinal && (this.home.condicion=='Venta' || this.home.condicion=='Alquiler y venta')" class="price-value">{{formatNumberWithCommas(this.home.precioFinal)}}€</span>
+                                                <!--<span *ngIf="this.home.precioFinal && this.home.model!='NewProject'" class="dimension">{{this.calcPriceM2(''+this.home.precioFinal,''+this.home.superficie)}}€/m²</span>-->
+                                                <div class="diff float-end mt-1" *ngIf="this.home.precioInicial != 0 && this.home.model!='NewProject'">
+                                                        <span *ngIf="this.home.precioInicial>this.home.precioFinal" class="dimension under " style="color:#8dca3f;">-{{this.discount(''+this.home.precioInicial,''+this.home.precioFinal)}}%</span>
+                                                </div>
+                                            </div>
                                     </div>
                                 </div>
                         </div>
@@ -274,11 +305,11 @@
                             <div *ngIf="!this.home.piso && this.home.bajoOplantabaja">
                                 <span class="value">PB</span><span class="label"><ion-icon style="font-size: 24px; position:relative; top:3px;" src="assets/svg/first-floor-white.svg"></ion-icon><br><span class="text">Bajo</span></span>
                             </div>
-                            <div *ngIf="this.home.garage < 4 && this.home.garage !== 0">
+                            <div *ngIf="this.home.garage < 6 && this.home.garage !== 0">
                                 <span class="value">{{this.home.garage}}</span><span class="label"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/garage-white.svg"></ion-icon><br><span class="text">Garage</span></span>
                             </div>
-                            <div *ngIf="this.home.garage == 4">
-                                <span class="value">+3</span><span class="label"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/garage-white.svg"></ion-icon><br><span class="text">Garage</span></span>
+                            <div *ngIf="this.home.garage == 6">
+                                <span class="value">5+</span><span class="label"><ion-icon style="font-size: 24px; position:relative;" src="assets/svg/garage-white.svg"></ion-icon><br><span class="text">Garage</span></span>
                             </div>
                             <div>
                                 <span class="value">{{this.home.superficie}}m²</span><span class="label"><ion-icon style="font-size: 20px; position:relative; top:3px;" src="assets/svg/size-box-white.svg"></ion-icon><br><span class="text">Superficie</span></span>
@@ -405,13 +436,13 @@
                                               </nz-dropdown-menu>
                                         </div>
                                     </div>
-                                    <div *ngIf="this.home.eficienciaEnergetica">
+                                    <div *ngIf="(this.home.emisiones && this.home.consumo)&&(this.home.emisiones.charAt(0) == 'A' && this.home.consumo.charAt(0) == 'A')">
                                         <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 19px; position:relative; top:2px;" src="assets/svg/eco-house2.svg"></ion-icon></span></div>
                                         <div>
                                             <span style="color:#8dca3f">Alta eficiencia energética<!-- --></span><span class="value text-secondary"></span>
                                         </div>
                                     </div>
-                                    <div *ngIf="this.home.garage >= 5">
+                                    <div *ngIf="this.home.garage > 6">
                                         <div class="icon-container"><span class="ml-0 mt-1 "><ion-icon style="font-size: 24px; position:relative; top:2px;" src="assets/svg/parking-price.svg"></ion-icon></span></div>
                                         <div>
                                             <span>Garage opcional:</span><span class="textInRow" style="color:#8dca3f;font-size:1.2em;font-weight:700;align-items: first baseline;">{{this.formatNumberWithCommas(this.home.garage)}}€&nbsp;</span>
@@ -570,7 +601,7 @@
                                     <div class="col d-flex justify-content-start ml-2 p-0"><!-- *ngFor="let opt of this.projectFeatures">-->
                                         <mat-chip-listbox class="mat-mdc-chip-list-stacked mt-2 mb-2" aria-label="Cutest spaces">
                                             @for (opt of projectFeatures; track opt) {
-                                              <mat-chip-option selected>{{opt}}</mat-chip-option>
+                                              <mat-chip-option selected disabled>{{opt}}</mat-chip-option>
                                             }
                                           </mat-chip-listbox>
                                     </div>
@@ -982,7 +1013,7 @@
                             </div>
                         </section>
 
-                        <section id="mortgage-calculator" *ngIf="this.home.condicion=='Venta'">
+                        <section id="mortgage-calculator" *ngIf="this.home.condicion=='Venta' || this.home.condicion=='Alquiler y venta'">
                             <h2>Financiación</h2>
                             <nz-collapse nzAccordion>
                                   <nz-collapse-panel [nzHeader]="'Personalizar'" >
@@ -1145,7 +1176,7 @@
                                         <div class=" teaser-tile mt-2 mx-2 border" >
                                             <span class="favorite favorite-need-login" >
                                               <div class="wrapperDemo">
-                                                <input [checked]="false" (change)="cuoreLikeFeature(home.viviendaId,home)" class="red-heart-checkbox" #redheartcheckboxcard id="{{home.viviendaId}}card" type="checkbox">
+                                                <input [checked]="false" (change)="cuoreLikeFeature(home.viviendaId,home,$event)" class="red-heart-checkbox" #redheartcheckboxcard id="{{home.viviendaId}}card" type="checkbox">
                                                 <label for="{{home.viviendaId}}card"></label>
                                               </div>
                                             </span>

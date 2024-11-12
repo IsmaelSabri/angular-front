@@ -67,10 +67,6 @@ export enum HouseType { // tipo
   Villa = 'Villa',
 }
 
-export enum NewProjectType {
-  proyectoNuevo = 'Proyecto nuevo'
-}
-
 export enum HouseTypeFilters { // tipo
   Piso = 'Piso',
   Apartamento = 'Apartamento',
@@ -82,6 +78,7 @@ export enum HouseTypeFilters { // tipo
   Pareado = 'Pareado',
   Casa_rustica = 'Casa Rústica',
   Villa = 'Villa',
+  proyectoNuevo = 'Proyecto nuevo'
 }
 
 export enum ProjectFeatures { // tipo
@@ -137,7 +134,9 @@ export enum CarPlaces {
   uno = '1',
   dos = '2',
   tres = '3',
-  masTres = '3+'
+  cuatro = '4',
+  cinco = '5',
+  masCinco = '5+'
 }
 
 export enum Views {
@@ -154,7 +153,7 @@ export enum PropertyState {
   Nuevo = 'Obra nueva',
   Usado = 'Usado',
   A_Reformar = 'A reformar',
-  Okupada = 'Okupada'
+  Okupada = 'Ocupada ilegalmente'
 }
 
 export enum BadgeDestacar {
