@@ -226,14 +226,14 @@
                     <section id="overview" class="description-section " style="filter: none;">
                         <div class="description-content ">
                             <div>
-                                    <h1 class="headline alone">{{this.home.tipo}} 
+                                    <h1 class="headline alone text-secondary">{{this.home.tipo}} 
                                         <span *ngIf="this.home.condicion!='Compartir'">en </span>
                                         <span *ngIf="this.home.condicion=='Compartir'">para </span>
-                                        <span class="text-lowercase">{{this.home.condicion}}</span> en {{this.home.ciudad}}</h1>
+                                        <span class="text-lowercase">{{this.home.condicion}}</span>  <nz-divider nzType="vertical"></nz-divider>{{this.home.distrito}} <nz-divider nzType="vertical"></nz-divider> {{this.home.ciudad}}</h1>
                                     <span *ngIf="this.home.direccionAproximada" class="address-icon icon-deluxe "><ion-icon style="font-size: 1em;" src="assets/svg/place.svg"></ion-icon></span>
                                     <span *ngIf="!this.home.direccionAproximada" class="address-icon icon-deluxe "><ion-icon style="font-size: 1em;" src="assets/svg/no-place.svg"></ion-icon></span>
                                     <h2 nz-tooltip [nzTooltipTrigger]="'hover'" nzTooltipTitle="La dirección se muestra como aproximada por deseo del/la anunciante" *ngIf="!this.home.direccionAproximada"><a>&nbsp;&nbsp;Dirección aproximada</a></h2>
-                                    <h2 *ngIf="this.home.direccionAproximada"><a href="http://maps.google.com/maps?q=&layer=c&cbll={{this.home.lat}},{{this.home.lng}}&cbp=11,0,0,0,0" target="_blank"><b>&nbsp;&nbsp;Street View</b></a></h2>
+                                    <h2 *ngIf="this.home.direccionAproximada"><a href="http://maps.google.com/maps?q=&layer=c&cbll={{this.home.lat}},{{this.home.lng}}&cbp=11,0,0,0,0" target="_blank"><b style="letter-spacing: .4px;">&nbsp;&nbsp;Street View</b></a></h2>
                                     <div class="navbar-item mt-4 mx-3 likeFeature">
                                         <input [checked]="false" (change)="cuoreLike(this.home.viviendaId)" class="red-heart-checkbox" #redheartcheckbox id="{{this.home.viviendaId}}" type="checkbox">
                                         <label for="{{this.home.viviendaId}}"></label>
@@ -272,8 +272,8 @@
                                     </div>
                                     <!-- Proyectos -->
                                     <div class="price" style="padding: .475em .580em;" *ngIf="this.home.model=='NewProject'">
-                                        <div class="price under-market" style="padding: .475em .580em; ">
-                                            <span class="prefix" style="border: none;">Desde</span>
+                                        <div class="price under-market" style="padding: .475em .580em; border: none;">
+                                            <span class="prefix">Desde</span>
                                                     <div *ngIf=" this.home.precioInicial" class="price-container">
                                                         <span class="price-value text-decoration-line-through old-price">{{formatNumberWithCommas(this.home.precioInicial)+'€'}}</span><!--<span class="dimension"></span>-->
                                                     </div>
@@ -342,7 +342,7 @@
 
                         <!-- Descripción -->
                         <div class="readmore-open " >
-                            <h2>{{this.home.habitaciones}} Habitaciones en venta <i class="bi bi-grip-vertical" style="color:#d9d9d9;font-size:0.8em;"></i> {{this.home.distrito}} <i class="bi bi-grip-vertical" style="color:#d9d9d9;font-size:0.8em;"></i> {{this.home.ciudad}}</h2>
+                            <h3 class="text-secondary" style="letter-spacing: .4px;">De especial,</h3>
                             <span class="description-box">
                                 <div class="container" id="module">
                                     <div [ngbCollapse]="isCollapsed" class="collapse" id="collapseExample" >
@@ -801,7 +801,7 @@
                                         </div>
                                         <div class="inline-container">
                                             <div>
-                                                <button class="send-button" (click)="showModal('restoreModal')" pRipple>Continuar</button>
+                                                <button class="send-button" (click)="showModal('restoreModal')" >Continuar</button>
                                             </div>
                                             <div class="sc-ylxlbb-6 lnCoUF"></div>
                                         </div>

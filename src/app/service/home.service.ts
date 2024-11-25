@@ -86,6 +86,12 @@ export class HomeService {
     if (home.proImageAsString) {
       home.proImage = JSON.parse(home.proImageAsString);
     }
+    if (home.destacadoAsString) {
+      home.destacado = JSON.parse(home.destacadoAsString);
+    }
+    if (home.underPriceMarketAsString) {
+      home.underPriceMarket = JSON.parse(home.underPriceMarketAsString)
+    }
     if (home.likeMeForeverAsString === null) {
       home.likeMeForever = [];
     } else {

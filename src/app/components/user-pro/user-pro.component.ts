@@ -47,10 +47,10 @@ import { Location } from '@angular/common';
   selector: 'app-user-pro',
   templateUrl: './user-pro.component.html',
   styleUrl: './user-pro.component.css',
+  standalone:false
 })
 export class UserProComponent extends HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  protected styleUser: HTMLLinkElement[] = [];
   userUpdate: User = new User();
   homes: Home[] = [];
   home: Home = new Home();
@@ -109,7 +109,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
   }
 
   startChatConnection() {
-    this.hub = new signalR.HubConnectionBuilder().withUrl("https://localhost:4040/chat-hub").build();
+    this.hub = new signalR.HubConnectionBuilder().withUrl("http://localhost:3030/chat-hub").build();
     this.hub.start().then(() => {
       console.log("Connection is started...");
       this.hub?.invoke("Connect", this.user.id);

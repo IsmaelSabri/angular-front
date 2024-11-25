@@ -148,16 +148,19 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-import { NgToggleModule } from 'ng-toggle-button';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
+import { LeafletMarkerClusterModule } from '@bluehalo/ngx-leaflet-markercluster'
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
   url: 'https://httpbin.org/post',
   maxFilesize: 32,
   acceptedFiles: 'image/*',
-  maxFiles:60
+  maxFiles: 60
 };
 @NgModule({
   declarations: [
@@ -289,10 +292,13 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     MatButtonToggleModule,
     FloatLabelModule,
     ToggleButtonModule,
-    NgToggleModule,
     NzMenuModule,
     NzListModule,
     NzNotificationModule,
+    LeafletMarkerClusterModule,
+    NzPaginationModule,
+    NgxPaginationModule,
+    NgxSkeletonLoaderModule,
   ],
   exports: [
     // to get component in another modules

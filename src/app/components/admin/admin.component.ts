@@ -2,12 +2,13 @@ import { Inject, Component, OnInit, OnDestroy, ViewEncapsulation, Renderer2 } fr
 import { DOCUMENT } from '@angular/common';
 import { dynamicAdminScripts } from 'src/app/model/performance/js-scripts';
 import _ from 'lodash';
+import { cssPathAdminUser } from 'src/app/model/performance/css-styles';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
   encapsulation: ViewEncapsulation.None,
-
+  standalone:false
 })
 export class AdminComponent implements OnInit, OnDestroy {
   protected styleUser: HTMLLinkElement[] = [];
@@ -18,11 +19,6 @@ export class AdminComponent implements OnInit, OnDestroy {
     private renderer2: Renderer2,
   ) { }
 
-  cssPath = ['../../../assets/css/admin-style/style.css',
-    '../../../assets/vendor/jquery-nice-select/css/nice-select.css',
-    '../../../assets/vendor/nouislider/nouislider.min.css'
-  ];
-
   ngOnInit(): void {
     /*for (let i = 0; i < dynamicAdminScripts.length; i++) {
       this.scripts[i] = this.renderer2.createElement('script') as HTMLScriptElement;
@@ -31,11 +27,11 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.renderer2.setProperty(this.scripts[i], 'async', 'false');
       this.renderer2.setProperty(this.scripts[i], 'src', dynamicAdminScripts[i]);
     }*/
-    for (let i = 0; i < this.cssPath.length; i++) {
+    for (let i = 0; i < cssPathAdminUser.length; i++) {
       this.styleUser[i] = this.renderer2.createElement('link') as HTMLLinkElement;
       this.renderer2.appendChild(this.document.head, this.styleUser[i]);
       this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
-      this.renderer2.setProperty(this.styleUser[i], 'href', this.cssPath[i]);
+      this.renderer2.setProperty(this.styleUser[i], 'href', cssPathAdminUser[i]);
     }
     this.loadScripts();
   }
@@ -52,7 +48,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    for (let i = 0; i < this.cssPath.length; i++) {
+    for (let i = 0; i < cssPathAdminUser.length; i++) {
       this.renderer2.removeChild(this.document.head, this.styleUser[i]);
     }
       this.styleUser = [];

@@ -23,6 +23,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css'],
+  standalone:false
 })
 export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
   private style?: HTMLLinkElement;

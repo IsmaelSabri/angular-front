@@ -11,7 +11,8 @@ import { ngxLoadingAnimationTypes } from 'ngx-loading';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
+  standalone:false
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   public showLoading: boolean;

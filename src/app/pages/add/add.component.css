@@ -1583,6 +1583,7 @@ body {
 
 .description-content .headline {
   font-weight: bold;
+  letter-spacing: .4px;
 }
 
 @media all and (max-width: 599px) {
@@ -1861,7 +1862,7 @@ body {
 
 @media all and (max-width: 1209px) {
   .acerca-de-container > * {
-    max-width: 92px;
+    max-width: 5.75em;
   }
 }
 

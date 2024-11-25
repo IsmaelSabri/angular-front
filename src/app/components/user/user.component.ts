@@ -25,7 +25,8 @@ import { TipoDeVia, Bathrooms, HouseType, PropertyState, PropertyTo, Orientacion
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.css']
+  styleUrls: ['./user.component.css'],
+  standalone:false
 })
 export class UserComponent implements OnInit, OnDestroy {
   private titleSubject = new BehaviorSubject<string>('Usuarios');

@@ -1,3 +1,4 @@
+import { Featured } from './../model/home';
 import { FileUploadStatus } from './../model/performance/file-upload.status';
 import {
   PropertyTo, HouseType, Bedrooms, Bathrooms, BadgeDestacar, PropertyState, Enseñanza, Institucion,
@@ -13,6 +14,7 @@ import {
 import { UserService } from './../service/user.service';
 import { Component, ElementRef, Inject, Input, isDevMode, OnDestroy, OnInit, Output, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { marker, LatLng, circleMarker } from 'leaflet';
+import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
 import {
   tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes,
@@ -69,7 +71,10 @@ import {
   ngIsLock,
   ngLockElementByComponentProperty,
 } from 'ng-lock';
-
+import slug from 'slug'
+import format from 'date-fns/format';
+import endOfDay from 'date-fns/endOfDay';
+import { addDays, isAfter, isBefore, parseISO } from 'date-fns';
 
 
 @Component({
@@ -77,6 +82,7 @@ import {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css', 'custom-leaflet.css'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 
 export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
@@ -108,15 +114,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   map3!: L.Map; // map to set nearly services
   map4!: L.Map; // map geocoding search location new project
   lg = new L.LayerGroup(); // para añadir un nuevo marker
-  contained = new L.LayerGroup(); // responde a los eventos de mapa cargando los markers en su area visible
   markerPoint!: L.Marker;
   markerHouse!: L.Marker; // punto de referencia para los servicios
-  markerSchool!: L.Marker;
-  fg = L.featureGroup(); // template for services
-  popup = L.popup();
+  boxedPoints: number[] = [-3.759897952608216, 40.392126294282974, -3.6456573062459112, 40.43721717752451];
   userLocationCoords!: L.LatLng; // app user coordinates at the beggining
   waypointsFrom!: L.LatLng; // coordinates where the user wants to put his house
   waypointsTo!: L.LatLng; // temp coordinates to put any service
+  markerClusterGroup = new L.MarkerClusterGroup();
   public adTitle = new BehaviorSubject<string>('Nueva propiedad');
   public adTitleAction$ = this.adTitle.asObservable();
   home: Home = new Home();
@@ -124,8 +128,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   homeDto: HomeDto = new HomeDto();
   homeFiltersRequest: HomeFilterRequest = new HomeFilterRequest();
   homes: Home[] = [];
-  opt = {};
-  mydate = new Date().getTime();
   // enums para los select
   public badge: string[] = Object.values(BadgeDestacar);
   public bathRooms: string[] = Object.values(Bathrooms);
@@ -155,12 +157,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   public tipo: string[] = Object.values(HouseType);
   public tipoFilters: string[] = Object.values(HouseTypeFilters);
   public vistas: string[] = Object.values(Views);
+  protected styleUser: HTMLLinkElement[] = [];
 
-  value!: number;
   decision: any[] = [
     { name: 'Aprox.', value: false },
     { name: 'Exacta', value: true }
   ];
+  p: number = 1;
   modalFooterNull = null;
   shinePopup: boolean = false; //skeleton
   popupOpenViviendaId: string;
@@ -169,6 +172,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   images = new Array<HomeImage>();// new Array(30).fill('');
   routerLinkId: number = 0;
   routerLinkModel: string;
+  routerLinkQueryParams: string;
   filterRentSalePriceFlag: string = 'Venta';
   mapRentSalePriceFlag: string = 'Venta';
   sidebarVisible: boolean = false;
@@ -221,8 +225,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   stateTextfields = Array.from({ length: 4 }, () => new Array(6).fill(false));
   // add-delete temp routes
   mapEvents = new Set<string>();
-  // save points
-  nearlyMarkers = new Map<string, L.Marker>();
 
   // icons
   bch = beachIcon;
@@ -234,16 +236,32 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   uni = universityIcon;
   customIcon: any;
 
-  resizeStyleListSidenav = { "max-width": `50%`, };
+  resizeStyleListSidenav = { "max-width": `50%` };
 
   // modal new property title 
   public setAdTitle(adTitle: string): void {
     this.adTitle.next(adTitle);
   }
 
+  cardSkeletonOn: boolean = false;
+  private scroll(el: string) {
+    this.cardSkeletonOn = true;
+    setTimeout(() => {
+      this.cardSkeletonOn = false;
+      document.querySelector('#' + el).scrollIntoView({
+        behavior: 'smooth'
+      });
+      if (window.onscrollend !== undefined) {
+        document.getElementById(el).classList.add('border-4');
+        document.getElementById(el).classList.add('border-secondary-subtle');
+      }
+    }, 800);
+  }
+
+  /* */
   public restoreMap() {
     this.lg.clearLayers();
-    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',&sorts=');
     if (this.mapEvents.has('control')) {
       this.map3.eachLayer(function (layer) {
         layer.remove();
@@ -484,6 +502,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     } else {
       ''
     }
+  }
+
+  slugUrl(home: Home) {
+    console.log(slug())
   }
 
   defineModel(houseType: string): string {
@@ -813,9 +835,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   public loadMarkers(url: string) {
     this.ngOnDestroy();
-    this.getLocation();
     $(".leaflet-marker-icon").remove();
     this.map.closePopup();
+    if (this.map.hasLayer(this.markerClusterGroup)) {
+      this.map.removeLayer(this.markerClusterGroup);
+    }
+    this.markerClusterGroup = new L.markerClusterGroup({ removeOutsideVisibleBounds: true });
     this.loadNewProjects()
     //tileLayerSelect().addTo(map);
     //tileLayerWMSSelect().addTo(map);
@@ -829,45 +854,50 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.homeService.getHomesByQuery(url).subscribe((data) => {
         data.map((Home) => {
-          var coords = new L.latLng(Home.lat, Home.lng);
-          if (this.map.getBounds().contains(coords)) {
-            Home = this.homeService.performHome(Home);
-            marker(
-              [Number(Home.lat), Number(Home.lng)],
-              {
-                icon: new L.DivIcon({
-                  className: 'custom-div-icon',
-                  html: `<div class="property-pill streamlined-marker-container streamlined-marker-position pill-color-forsale with-icon ${Home.viviendaId}"
+          Home = this.homeService.performHome(Home);
+          marker(
+            [Home.lat, Home.lng],
+            {
+              icon: new L.DivIcon({
+                className: 'custom-div-icon',
+                html: `<div class="property-pill streamlined-marker-container streamlined-marker-position pill-color-forsale with-icon ${Home.viviendaId}"
                             role="link"
                             tabindex="-1"
                             data-test="property-marker">
-
+                            
                             <div class="icon-text" style="display: inline-block; overflow: hidden;">${this.drawMarker(Home)}€</div>
                         </div>`,
-                  iconSize: [30, 42],
-                  iconAnchor: [15, 42],
-                }),
-              },
-              { draggable: true, locateControl: true, bounceOnAdd: true }
-            ).on('add', () => {
-              if (Home.destacado.featured) {
-                setTimeout(() => {
-                  $('<div class="pill-floating-label">destacado</div>').appendTo("." + Home.viviendaId);
-                }, 1000);
+                iconSize: [30, 42],
+                iconAnchor: [15, 42],
+              }),
+            },
+            { draggable: true, locateControl: true, bounceOnAdd: true }
+          ).on('add', () => {
+            if (Home.destacado && isBefore(new Date(), Home.destacado.featuredTo)) {
+              $('<div class="pill-floating-label">destacado</div>').appendTo("." + Home.viviendaId);
+            }
+            if ((Home.precioInicial > Home.precioFinal) && Home.underPriceMarketAsString) {
+              if ((Home.underPriceMarket.lessPrice) && (isBefore(new Date(), Home.underPriceMarket.lessPriceTo))) {
+                $('<div class="icon-wrapper p-0"><svg data-testid="icon-arrow-down" viewBox="0 0 24 24" style="display:inline-block;width:1em;height:1em;font-size:1.4em;color:inherit;fill:currentColor" aria-hidden="true" focusable="false" class="reduced ml-1"><path d="M17.293 12.293a1 1 0 0 1 1.414 1.414l-1.414-1.414ZM12 19l.707.707a1 1 0 0 1-1.414 0L12 19Zm-6.707-5.293a1 1 0 1 1 1.414-1.414l-1.414 1.414ZM11 5a1 1 0 1 1 2 0h-2Zm7.707 8.707-6 6-1.414-1.414 6-6 1.414 1.414Zm-7.414 6-6-6 1.414-1.414 6 6-1.414 1.414ZM11 19V5h2v14h-2Z"></path></svg></div>').appendTo("." + Home.viviendaId);
               }
-              if (Home.precioInicial > Home.precioFinal) { // bajada de precio ?
-
+            }
+            if ((Home.precioAlquilerInicial > Home.precioAlquiler) && Home.underPriceMarketAsString) {
+              if ((Home.underPriceMarket.lessPrice) && (isBefore(new Date(), Home.underPriceMarket.lessPriceTo))) {
+                $('<div class="icon-wrapper p-0"><svg data-testid="icon-arrow-down" viewBox="0 0 24 24" style="display:inline-block;width:1em;height:1em;font-size:1.4em;color:inherit;fill:currentColor" aria-hidden="true" focusable="false" class="reduced ml-1"><path d="M17.293 12.293a1 1 0 0 1 1.414 1.414l-1.414-1.414ZM12 19l.707.707a1 1 0 0 1-1.414 0L12 19Zm-6.707-5.293a1 1 0 1 1 1.414-1.414l-1.414 1.414ZM11 5a1 1 0 1 1 2 0h-2Zm7.707 8.707-6 6-1.414-1.414 6-6 1.414 1.414Zm-7.414 6-6-6 1.414-1.414 6 6-1.414 1.414ZM11 19V5h2v14h-2Z"></path></svg></div>').appendTo("." + Home.viviendaId);
               }
-              if (Home.precioAlquilerInicial > Home.precioAlquiler) {
-
-              }
-            })
-              .bindPopup(
-                `
+            }
+            const date = new Date(Home.fechaCreacion)
+            date.setDate(date.getDate() + 3);
+            if (isBefore(new Date(), date)) {
+              $('<div class="newer-box flags-wrapper"><div class="blue flag-item "><span class="" style="bottom:-.330em;position:relative;margin-left:.2em;margin-right:.1em;margin-top:.150em;font-weight:700;font-size:1em;">Nuevo</span></div></div>').appendTo("." + Home.viviendaId);
+            }
+          })
+            .bindPopup(
+              `
               <div class="reale1 row">
                 <div class="reale2" col-sm-6>
                    <div class="reale3" >
-                      <div class="reale5">
+                      <div class="reale5 d-none carousel-leaflet">
                         <div id="carouselExample" class="carousel slide " data-bs-interval="false">
                           <div class="carousel-inner popup-marker">
                           </div>
@@ -882,8 +912,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                         </div>
                         <div class="brandingcontainer" id="brandingcontainer" style="display:none;"></div>
                       </div> <!-- reale5 -->
-                      <div class="col-sm-6 realeTextContainer">
-                      <p class="p_1">${Home.tipo}</p>
+                      <div class="reale5 popup-image-skeleton-on">
+                        <div class="w-100 h-100 skeleton-popup-image"></div>
+                      </div> <!-- skeleton loader reale5 -->
+                      <div class="col-sm-6 realeTextContainer d-none popup-data">
+                        <p class="p_1">${Home.tipo}</p>
                          <div class="realeTextContainer_2">
                           <input onclick="cuoreLike()" class="red-heart-checkbox" id="cuore${Home.viviendaId}" type="checkbox">
                           <label for="cuore${Home.viviendaId}" class="float-end mr-3 mt-4 py-2"></label>
@@ -901,6 +934,17 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
                             </div>
                          </div> <!-- realeTextContainer2 -->
                       </div> <!-- realeTextContainer -->
+                      <div class="col-sm-6 realeTextContainer data-skeleton-on">
+                        <div class="skeleton-popup-image mt-3" style="width:85%;height:23px;border-radius:.5em"></div>
+                        <div class="skeleton-popup-image" style="width:85%;height:1em;border-radius:.5em"></div>
+                        <div class="skeleton-popup-image" style="width:85%;height:1em;border-radius:.5em"></div>
+                        <div class="d-flex flex-row mb-2">
+                          <div class="skeleton-popup-image mb-3 pl-0" style="width:15%;height:23px;border-radius:.5em"></div>
+                          <div class="skeleton-popup-image mb-3 mx-auto" style="width:15%;height:23px;border-radius:.5em"></div>
+                          <div class="skeleton-popup-image mb-3 mx-auto" style="width:15%;height:23px;border-radius:.5em"></div>
+                          <div class="skeleton-popup-image mb-3 mr-5" style="width:15%;height:23px;border-radius:.5em"></div>
+                        </div>
+                      </div>
                    </div> <!-- reale3 -->
                    
                 </div> <!-- reale2 -->
@@ -908,58 +952,66 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
              </div> <!-- reale1 -->
              
               `,
-                {
-                  maxWidth: 382,
-                  maxHeight: 152,
-                  /*removable: true,
-                  editable: true,*/
-                  /*direction: 'top',*/
-                  permanent: false,
-                  /*sticky: false,*/
-                  offset: [6, -99],
-                  opacity: 0,
-                  className: 'popupX',
-                }
-              )
-              .on('click', () => {
-                this.homeService.addHomeToLocalCache(Home),
-                  this.dynamicCarousel(Home.images),
-                  this.setPopupBranding(Home)
-              })
-              .on('popupopen', () => {
-                this.routerLinkId = +Home.id;
-                this.routerLinkModel = Home.model;
-                this.popupOpenViviendaId = Home.viviendaId;
-                this.anyPopupOpen = true;
-                this.disableMapEvents = true;
-                setTimeout(() => {
-                  if (this.state) {
-                    for (let i = 0; i < Home.likeMeForever.length; i++) {
-                      if (Home.likeMeForever[i] == this.user.userId) {
-                        var auxId = 'cuore' + this.popupOpenViviendaId;
-                        const doc = document.getElementById(auxId) as HTMLInputElement;
-                        doc.checked = true;
-                        const doc2 = document.getElementById(Home.viviendaId) as HTMLInputElement;
-                        doc2.checked = true;
-                      }
-                    }
-                  }
-                }, 250);
-                this.subscriptions.push(this.homeService.getHomesByQuery('model@=*' + Home.model + ',' + 'viviendaId@=*' + Home.viviendaId + ',').subscribe({
-                  next: (res) => {
-                    this.selectedHome = this.homeService.performHome(res[0]);
-                    this.drawPopup(this.selectedHome);
-                  },
-                  error: () => { }
-                })
-                )
-              }).on('popupclose', () => {
-                this.anyPopupOpen = false;
-                this.disableMapEvents = false;
+              {
+                maxWidth: 382,
+                maxHeight: 152,
+                /*removable: true,
+                editable: true,*/
+                /*direction: 'top',*/
+                permanent: false,
+                /*sticky: false,*/
+                offset: [6, -99],
+                opacity: 0,
+                className: 'popupX',
               }
-              ).addTo(this.map)
-          }
+            )
+            .on('click', () => {
+              this.homeService.addHomeToLocalCache(Home),
+                this.dynamicCarousel(Home.images),
+                this.setPopupBranding(Home)
+            })
+            .on('popupopen', () => {
+              this.routerLinkId = +Home.id;
+              this.routerLinkModel = Home.model;
+              var slugFest = Home.tipo + '+' + Home.calle + '+' + Home.distrito + '+' + Home.ciudad;
+              this.routerLinkQueryParams = slug(slugFest, '+');
+              this.popupOpenViviendaId = Home.viviendaId;
+              this.anyPopupOpen = true;
+              this.disableMapEvents = true;
+              this.scroll('teaserTile' + Home.viviendaId);
+              setTimeout(() => {// skeleton carousel
+                var imgs = document.getElementsByClassName('carousel-leaflet')[0];
+                imgs.classList.remove('d-none');
+                imgs.classList.add('d-block');
+                var skeletonImgs = document.getElementsByClassName('popup-image-skeleton-on')[0]
+                skeletonImgs.classList.add('d-none');
+                // skeleton data
+                var data = document.getElementsByClassName('popup-data')[0];
+                data.classList.remove('d-none');
+                data.classList.add('d-block');
+                var skeletonData = document.getElementsByClassName('data-skeleton-on')[0]
+                skeletonData.classList.add('d-none');
+                this.setCardLike()
+              }, 400);
+              this.subscriptions.push(this.homeService.getHomesByQuery('model@=*' + Home.model + ',' + 'viviendaId@=*' + Home.viviendaId + ',').subscribe({
+                next: (res) => {
+                  this.selectedHome = this.homeService.performHome(res[0]);
+                  this.drawPopup(this.selectedHome);
+                },
+                error: () => { }
+              })
+              )
+            }).on('popupclose', () => {
+              this.anyPopupOpen = false;
+              this.disableMapEvents = false;
+              $('.border-4').removeClass('border-4');
+              $('.border-secondary-subtle').removeClass('border-secondary-subtle');
+            }
+            ).addTo(this.markerClusterGroup.on('clusterclick', (a) => {
+
+            }));
         })
+        this.markerClusterGroup.addTo(this.map);
         this.homes = [...data];
         if (this.authenticationService.isUserLoggedIn()) {
           this.setCardLike();
@@ -1191,6 +1243,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.homeService.addHomeToLocalCache(home);
       this.routerLinkId = +home.id;
       this.routerLinkModel = home.model;
+      var slugFest = home.tipo + '-' + home.calle + '-' + home.distrito + '-' + home.ciudad;
+      this.routerLinkQueryParams = slug(slugFest, '-');
       if (flag == 'home') {
         setTimeout(() => {
           $('#linkPopup').trigger('click');
@@ -1205,10 +1259,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
 
   call: number = 0;
   @ngLock()
-  applyZoomEvent(e: MouseEvent) {
-    var boxedPoints = this.map.getBounds().toBBoxString().split(',');
-    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + boxedPoints[0] + ',lat>=' + boxedPoints[1] + ',lng<=' + boxedPoints[2] + ',lat<=' + boxedPoints[3] + ',');
-    console.log(boxedPoints)
+  fireMapEvents(e: MouseEvent) {
+    this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
+    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',');
     if (this.call < 1) {
       setTimeout(() => {
         this.clickButton('leafletEvent');
@@ -1216,39 +1269,36 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
     this.call++;
     setTimeout(() => {
-      ngUnlock(this.applyZoomEvent);
+      ngUnlock(this.fireMapEvents);
     }, 800);
   }
-
-  /*onCheck() {
-    console.log('onClick lock state:', ngIsLock(this.applyZoomEvent));
-  }
-
-  onUnlock() {
-    ngUnlock(this.applyZoomEvent);
-  }*/
 
   /************************************************************/
   ngOnInit(): void {
     initFlowbite();
     this.map = L.map('map', { renderer: L.canvas(), wheelPxPerZoomLevel: 200 }).setView(
-      [39.46975, -0.37739],//si no hay ubicación del usuario, en producción sin zoom y centrado en Madrid 
-      16  //25
+      [39.46975, -0.37739],
+      16  // 25
     ).on('zoomend', () => {
       if (!this.disableMapEvents) {
         this.clickButton('leafletEvent');
+        //console.log(this.map.getZoom())
       }
+      this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
     }).on('moveend', () => {
       if (!this.disableMapEvents) {
         this.clickButton('leafletEvent');
       }
-    })
-    this.user = this.authenticationService.getUserFromLocalCache();
-    //this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag); // by default load for sale 
+      this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
+    });
+    if (this.state) {
+      this.user = this.authenticationService.getUserFromLocalCache();
+    }
+    this.getLocation();
     this.loadScripts();
     this.clearMap('full-clear');
     this.primengConfig.ripple = true;
-    if (this.authenticationService.isUserLoggedIn()) {
+    if (this.state) {
       this.setCardLike();
     }
     setTimeout(() => { ngUnlock(this.cuoreLikeFeature); }, 2000);
@@ -1259,7 +1309,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       if (this.state) {
         if (this.homes) {
-          this.homes.forEach(hm => { // O(n) 
+          this.homes.forEach(hm => {
             if (hm.likeMeForever) {
               hm.likeMeForever.forEach(lk => {
                 if (lk == this.user.userId) {
@@ -1279,15 +1329,25 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.map.locate({ setView: true, maxZoom: 16 }); // llamada para que la geolocalización funcione
       this.map.on('locationfound', (e: { accuracy: number; latlng: LatLng }) => {
         this.userLocationCoords = e.latlng; //Object.assign({}, e.latlng);
-        this.map.setView(this.userLocationCoords, 16); // poner el foco en el mapa
+        this.map.setView(this.userLocationCoords, 16); // pon el foco en el mapa
         this.map.fitBounds([[this.userLocationCoords.lat, this.userLocationCoords.lng]]); // por si acaso..
+        this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
+        if (this.boxedPoints) {
+          this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',');
+        }
       });
       this.map.on('locationerror', () => {
-        this.userLocationCoords = [39.46975, -0.37739];
+        this.userLocationCoords = [40.4165000, -3.7025600];
+        this.map.setView(this.userLocationCoords, 10); // pon el foco en el mapa
+        this.map.fitBounds([[this.userLocationCoords.lat, this.userLocationCoords.lng]]);
+        this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
+        if (this.boxedPoints) {
+          this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',');
+        }
       }); // si el usuario no activa la geolocalización
     }
   }
-
+  // only 4debug
   printSelect(e: any) {
     /*if (this.homeDto.vistasDespejadas) {
       for (let index = 0; index < e.length; index++) {
@@ -1295,6 +1355,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       }
     }*/
     console.log('string: ' + e)
+  }
+  // only 4debug
+  printDate() {
+    console.log(format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS"))
+    var onBuy = new Date();
+    var onAfter = addDays(onBuy, 10);
+    console.log(onAfter)
+    console.log(isBefore(new Date(), onAfter))
   }
 
   disableMapEvents: boolean = false;
@@ -1315,7 +1383,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       'Arrastra el marcador!',
       'Mueve el marcador hasta su propiedad!'
     );
-    this.markerPoint = new L.marker(this.userLocationCoords, {
+    this.markerPoint = new L.marker(this.map.getCenter(), {
       draggable: true,
       icon: luxuryRed,
     }).bindPopup(`
@@ -1343,7 +1411,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.markerPoint.on('move', () => (this.waypointsFrom = this.markerPoint.getLatLng()));
     this.markerPoint.on('moveend', () => console.log(this.waypointsFrom));
     this.markerPoint.on('dragend', () => this.markerPoint.openPopup());
-    this.map.flyTo([this.userLocationCoords.lat, this.userLocationCoords.lng], 18);
+    this.map.flyTo(this.map.getCenter(), 18);
   }
 
   conditionTabs() {
@@ -2235,6 +2303,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     if (urlFilterRequest.includes('vistasDespejadas@=*,')) {
       urlFilterRequest = urlFilterRequest.split('vistasDespejadas@=*,').join('');
     }
+    urlFilterRequest = urlFilterRequest.split(',&sorts=').join(',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',&sorts=')
     console.log(urlFilterRequest);
     this.loadMarkers(urlFilterRequest);
   }
@@ -2260,7 +2329,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
     this.wordCount = 0;
     this.homeFiltersRequest.keywords = '';
-    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+    if (this.boxedPoints) {
+      this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',&sorts=');
+    } else {
+      this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+    }
   }
 
   wordCount: number;
@@ -2282,6 +2355,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   loadScripts() {
     const dynamicScripts = [
       '../../assets/js/home.js',
+      '../../assets/js/leaflet.markercluster-src.js',
+      '../../assets/js/leaflet.markercluster.js'
     ];
     for (let i = 0; i < dynamicScripts.length; i++) {
       const node = document.createElement('script');

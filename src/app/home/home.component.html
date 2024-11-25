@@ -179,8 +179,8 @@
     </li>
     <li class="nav-item pr-3">
       <mat-select panelWidth="fit-content" #optionInput="ngModel" [(ngModel)]="this.mapRentSalePriceFlag"
-        panelClass="example-panel"
-        (selectionChange)="loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);fixSegmentedOption(this.mapRentSalePriceFlag)">
+        panelClass="example-panel" (selectionChange)="loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',&sorts=');
+;fixSegmentedOption(this.mapRentSalePriceFlag)">
         <mat-option *ngFor="let opt of condicionHeader" [value]="opt">
           {{opt}}
         </mat-option>
@@ -1938,168 +1938,204 @@
 
 <!-- Leaflet map -->
 <mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav class="example-sidenav" mode="side" [ngStyle]="this.resizeStyleListSidenav">
-    <div class="container-fluid mt-2 mb-2">
-      <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 g-4">
-        <!--Ad Card-->
-        <div class="col d-flex flex-row" *ngFor="let appHome of homes; let i =index">
-          <!--col-lg-8 col-md-10 col-sm-12 col-xs-12 d-flex-->
-          <div class=" teaser-tile mt-2 mx-2 border" *ngFor="let appHomeP of newProjects; let j =index">
-            <span class="favorite favorite-need-login" data-id="1935922" data-type="estate">
-              <div class="wrapperDemo" #wrapperDemo>
-                <input [checked]="false" (change)="cuoreLikeFeature(appHome.viviendaId, appHome, $event)"
-                  class="red-heart-checkbox" #redheartcheckbox id="{{appHome.viviendaId}}" type="checkbox">
-                <label for="{{appHome.viviendaId}}"></label>
-              </div>
-            </span>
-            <div class="flex-grow-1 ">
-              <div class="with-img" style="position: relative;">
-                <div id="carouselExample{{this.idIndex[i]}}" class="carousel slide" data-bs-interval="false">
-                  <div class="carousel-inner">
-                    <div class="carousel-item " *ngFor="let data of appHome.images; let j=index"
-                      [ngClass]="(j === 0) ? 'active' : ''">
-                      <img style="aspect-ratio:16/9;" src={{data.imageUrl}} alt="First slide">
+  <mat-sidenav #sidenav class="example-sidenav overflow-hidden" mode="side" [ngStyle]="this.resizeStyleListSidenav">
+    <div class="container-fluid mt-2 mb-5 pb-2">
+      <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 p-0" style="width: 49vw;">
+        <!--row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 p-0-->
+        <div class="col p-0"
+          *ngFor="let appHome of homes | paginate: { itemsPerPage: 40, currentPage: p }; let i =index">
+          <div *ngFor="let appHomeP of newProjects; let j =index" class="w-100">
+            <div class=" teaser-tile mt-2 border " id="teaserTile{{appHome.viviendaId}}">
+              <span class="favorite favorite-need-login" data-id="1935922" data-type="estate"
+                *ngIf="this.cardSkeletonOn==false">
+                <div class="wrapperDemo" #wrapperDemo>
+                  <input [checked]="false" (change)="cuoreLikeFeature(appHome.viviendaId, appHome, $event)"
+                    class="red-heart-checkbox" #redheartcheckbox id="{{appHome.viviendaId}}" type="checkbox">
+                  <label for="{{appHome.viviendaId}}"></label>
+                </div>
+              </span>
+              <div class="flex-grow-1 px-0 "> <!-- Es el sidenav -->
+                <div class="with-img" style="position: relative;" *ngIf="this.cardSkeletonOn==false">
+                  <div id="carouselExample{{this.idIndex[i]}}" class="carousel slide" data-bs-interval="false">
+                    <div class="carousel-inner">
+                      <div class="carousel-item " *ngFor="let data of appHome.images; let j=index"
+                        [ngClass]="(j === 0) ? 'active' : ''">
+                        <img style="aspect-ratio:16/9;" src={{data.imageUrl}} alt="First slide">
+                      </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button"
+                      [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button"
+                      [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="with-img" style="position: relative;" *ngIf="this.cardSkeletonOn==true">
+                  <ngx-skeleton-loader
+                    [theme]="{height: '9.9em', background: '#e2e8f0', width: '100%', display:'flex'}" />
+                </div>
+                <div class="container"
+                  *ngIf="(appHome.proColor!=null || appHome.proColor!=undefined) && this.cardSkeletonOn==true">
+                  <ngx-skeleton-loader
+                    [theme]="{height: '1.2em', background: '#e2e8f0', width: '20%', display: 'flex', margin: '.7em', float: 'right'}" />
+                </div>
+                <div class="desc" *ngIf="this.cardSkeletonOn==true">
+                  <ngx-skeleton-loader
+                    [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
+                  <ngx-skeleton-loader
+                    [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
+                  <ngx-skeleton-loader
+                    [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
+                  <ngx-skeleton-loader
+                    [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
+                </div>
+                <div class="branding-actions"
+                  *ngIf="(appHome.proColor!=null || appHome.proColor!=undefined) && this.cardSkeletonOn==true">
+
+                </div>
+                <div class="txt" *ngIf="this.cardSkeletonOn==true">
+
+                </div>
+                <div class="price" *ngIf="this.cardSkeletonOn==true" style="max-height: 3em;">
+                  <ngx-skeleton-loader
+                    [theme]="{height: '1em', background: '#e2e8f0', width: '6em', display: 'flex', margin: '.1em'}" />
+                </div>
+                <!--Card branding-->
+                <div class="branding-actions"
+                  *ngIf='(appHome.proColor!=null || appHome.proColor!=undefined) && this.cardSkeletonOn==false'
+                  [style.background-color]="appHome.proColor" style="height:2.1em;">
+                  <!--User brand color-->
+                  <div class="d-flex flex-grow-1 justify-content-end">
+                    <picture *ngIf='appHome.proImage!=null || appHome.proImage!=undefined'>
+                      <img class="branding-image-card" src={{appHome.proImage.imageUrl}} alt="">
+                    </picture>
+                  </div>
+                </div>
+                <!-- Home models-->
+                <div class="desc" *ngIf="this.tipo.includes(appHome.tipo) && this.cardSkeletonOn==false">
+                  <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
+                      class="text-secondary">{{appHome.tipo}}</span> </div>
+                  <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}}
+                    <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}
+                  </div>
+                  <div class="units mx-2">
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
+                      <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
+                      <span style="font-size: 0.8em;">{{appHome.habitaciones}}</span>
+                    </div>
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
+                      <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
+                        name="expand-outline"></ion-icon>
+                      <span style="font-size: 0.8em;">{{appHome.superficie}}m²</span>
+                    </div>
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="bath">
+                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
+                        src="assets/svg/card-toilet.svg"></ion-icon>
+                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.aseos}}</span>
+                    </div>
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
+                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
+                        src="assets/svg/card-facing.svg"></ion-icon>
+                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.orientacion}}</span>
+                    </div>
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="card-spaces"
+                      *ngIf="appHome.garage">
+                      <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
+                        name="car-sport-outline"></ion-icon>
+                      <span *ngIf="appHome.garage<=5"
+                        style="font-size: 0.8em; margin-left: 2px;">{{appHome.garage}}</span>
+                      <span *ngIf="appHome.garage==6" style="font-size: 0.8em; margin-left: 2px;">+5 </span>
+                      <span *ngIf="appHome.garage>6"
+                        style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">+{{this.formatNumberWithCommas(appHome.garage)}}€</span>
+                    </div>
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="year">
+                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
+                        name="hammer-outline"></ion-icon>
+                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.antiguedad}}</span>
                     </div>
                   </div>
-                  <button class="carousel-control-prev" type="button"
-                    [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                  </button>
-                  <button class="carousel-control-next" type="button"
-                    [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                  </button>
                 </div>
-              </div>
-              <!--Card branding-->
-              <div class="branding-actions" *ngIf='appHome.proColor!=null || appHome.proColor!=undefined'
-                [style.background-color]="appHome.proColor" style="height:2.1em;">
-                <!--User brand color-->
-                <div class="d-flex flex-grow-1 justify-content-end">
-                  <picture *ngIf='appHome.proImage!=null || appHome.proImage!=undefined'>
-                    <img class="branding-image-card" src={{appHome.proImage.imageUrl}} alt="">
-                  </picture>
-                </div>
-              </div>
-              <!-- Home models-->
-              <div class="desc" *ngIf="this.tipo.includes(appHome.tipo)">
-                <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
-                    class="text-secondary">{{appHome.tipo}}</span> </div>
-                <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}}
-                  <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}
-                </div>
-                <div class="units mx-2">
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
-                    <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
-                    <span style="font-size: 0.8em;">{{appHome.habitaciones}}</span>
+                <!-- New project models -->
+                <div class="desc"
+                  *ngIf="appHomeP.tipo=='Proyecto nuevo' && (appHomeP.viviendaId==appHome.viviendaId && this.cardSkeletonOn==false)">
+                  <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
+                      class="text-secondary">{{appHome.tipo}}</span> </div>
+                  <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}}
+                    <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}
                   </div>
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
-                    <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
-                      name="expand-outline"></ion-icon>
-                    <span style="font-size: 0.8em;">{{appHome.superficie}}m²</span>
-                  </div>
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="bath">
-                    <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
-                      src="assets/svg/card-toilet.svg"></ion-icon>
-                    <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.aseos}}</span>
-                  </div>
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
-                    <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
-                      src="assets/svg/card-facing.svg"></ion-icon>
-                    <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.orientacion}}</span>
-                  </div>
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="card-spaces"
-                    *ngIf="appHome.garage">
-                    <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
-                      name="car-sport-outline"></ion-icon>
-                    <span *ngIf="appHome.garage<=5"
-                      style="font-size: 0.8em; margin-left: 2px;">{{appHome.garage}}</span>
-                    <span *ngIf="appHome.garage==6" style="font-size: 0.8em; margin-left: 2px;">+5 </span>
-                    <span *ngIf="appHome.garage>6"
-                      style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">+{{this.formatNumberWithCommas(appHome.garage)}}€</span>
-                  </div>
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="year">
-                    <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
-                      name="hammer-outline"></ion-icon>
-                    <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.antiguedad}}</span>
+                  <div class="units mx-2">
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
+                      <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
+                      <span
+                        style="font-size: 0.8em;">{{appHomeP.habitacionesDesde+'-'+appHomeP.habitacionesHasta}}</span>
+                    </div>
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
+                      <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
+                        name="expand-outline"></ion-icon>
+                      <span style="font-size: 0.8em;">{{appHomeP.superficieDesde+'-'+appHomeP.superficieHasta}}m²</span>
+                    </div>
+                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="itemsP">
+                      <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
+                        src="assets/svg/project-card-units.svg"></ion-icon>
+                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHomeP.totalViviendasConstruidas}}</span>
+                    </div>
+                    <!--En curso-->
+                    <div class="unit-item mx-1 my-auto"
+                      *ngIf="(appHomeP.estadoConstruccion=='EnCurso' && appHomeP.finDeObra)" data-toggle="tooltip"
+                      data-placement="top" title="waitingP">
+                      <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"
+                        name="key-outline"></ion-icon>
+                      <span style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">{{appHomeP.finDeObra}}</span>
+                    </div>
+                    <!--Terminado-->
+                    <div class="unit-item mx-1 my-auto" *ngIf="(appHomeP.estadoConstruccion=='Terminado')"
+                      data-toggle="tooltip" data-placement="top" title="finishedP">
+                      <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"
+                        name="key-outline"></ion-icon>
+                      <span style="font-size: 0.8em; margin-left: 2px; color:dodgerblue;">Disponible</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- New project models -->
-              <div class="desc" *ngIf="appHomeP.tipo=='Proyecto nuevo' && (appHomeP.viviendaId==appHome.viviendaId)">
-                <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
-                    class="text-secondary">{{appHome.tipo}}</span> </div>
-                <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}}
-                  <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}
+                <div class="txt h-100p b-none pt-0" *ngIf="this.cardSkeletonOn==false">
+                  <div class="clamp-3" (click)="runAdCard(appHome,'homeList')">{{appHome.descripcion}}</div>
                 </div>
-                <div class="units mx-2">
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
-                    <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
-                    <span style="font-size: 0.8em;">{{appHomeP.habitacionesDesde+'-'+appHomeP.habitacionesHasta}}</span>
+                <div class="price"
+                  *ngIf="(appHome.condicion=='Venta' && appHome.precioFinal>0) && this.cardSkeletonOn==false">
+                  <div class="price-item">
+                    <!--NewProject tag-->
+                    <span class="text-uppercase" style="font-size:.7em;letter-spacing: .5px;"
+                      *ngIf="appHome.tipo=='Proyecto nuevo'&&appHome.condicion=='Venta'">desde</span>
+                    {{formatNumberWithCommas(appHome.precioFinal)+'€'}}
+                    <span *ngIf="appHome.precioInicial>appHome.precioFinal"
+                      class="price-value text-decoration-line-through old-price textFont ml-1"
+                      style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span>
+                    <span class="ml-1 textFont" *ngIf="appHome.precioInicial>appHome.precioFinal"
+                      style="color:#8dca3f; font-size: .675em;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
                   </div>
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
-                    <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
-                      name="expand-outline"></ion-icon>
-                    <span style="font-size: 0.8em;">{{appHomeP.superficieDesde+'-'+appHomeP.superficieHasta}}m²</span>
-                  </div>
-                  <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="itemsP">
-                    <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
-                      src="assets/svg/project-card-units.svg"></ion-icon>
-                    <span style="font-size: 0.8em; margin-left: 2px;">{{appHomeP.totalViviendasConstruidas}}</span>
-                  </div>
-                  <!--En curso-->
-                  <div class="unit-item mx-1 my-auto"
-                    *ngIf="(appHomeP.estadoConstruccion=='EnCurso' && appHomeP.finDeObra)" data-toggle="tooltip"
-                    data-placement="top" title="waitingP">
-                    <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"
-                      name="key-outline"></ion-icon>
-                    <span style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">{{appHomeP.finDeObra}}</span>
-                  </div>
-                  <!--Terminado-->
-                  <div class="unit-item mx-1 my-auto" *ngIf="(appHomeP.estadoConstruccion=='Terminado')"
-                    data-toggle="tooltip" data-placement="top" title="finishedP">
-                    <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"
-                      name="key-outline"></ion-icon>
-                    <span style="font-size: 0.8em; margin-left: 2px; color:dodgerblue;">Disponible</span>
-                  </div>
+
                 </div>
-              </div>
-              <div class="txt h-100p b-none pt-0">
-                <div class="clamp-3" (click)="runAdCard(appHome,'homeList')">{{appHome.descripcion}}</div>
-              </div>
-              <div class="price" *ngIf="(appHome.condicion=='Venta') && appHome.precioFinal>0">
-                <div class="price-item">
-                  <!--NewProject tag-->
-                  <span class="text-uppercase" style="font-size:.7em;letter-spacing: .5px;"
-                    *ngIf="appHome.tipo=='Proyecto nuevo'&&appHome.condicion=='Venta'">desde</span>
-                  {{formatNumberWithCommas(appHome.precioFinal)+'€'}}
-                  <span *ngIf="appHome.precioInicial>appHome.precioFinal"
+
+                <div class="price"
+                  *ngIf="(appHome.condicion=='Alquiler' || appHome.condicion=='Compartir') && (appHome.precioAlquiler!=0 && this.cardSkeletonOn==false)">
+                  {{formatNumberWithCommas(appHome.precioAlquiler)+'€'}}
+                  <span *ngIf="appHome.precioAlquilerInicial>appHome.precioAlquiler"
                     class="price-value text-decoration-line-through old-price textFont ml-1"
-                    style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span>
-                  <span class="ml-1 textFont" *ngIf="appHome.precioInicial>appHome.precioFinal"
-                    style="color:#8dca3f; font-size: .675em;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
+                    style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(appHome.precioAlquilerInicial)+'€'}}</span>
+                  <span class="ml-1 textFont" *ngIf="appHome.precioAlquilerInicial>appHome.precioAlquiler"
+                    style="color:#8dca3f; font-size: .675em;">-{{this.discount(''+appHome.precioAlquilerInicial,''+appHome.precioAlquiler)}}%</span><!--&& this.home.model!='NewProject'-->
                 </div>
-
-              </div>
-
-              <div class="price"
-                *ngIf="(appHome.condicion=='Alquiler'  || appHome.condicion=='Compartir') && appHome.precioAlquiler!=0">
-                {{formatNumberWithCommas(appHome.precioAlquiler)+'€'}}
-                <span *ngIf="appHome.precioAlquilerInicial>appHome.precioAlquiler"
-                  class="price-value text-decoration-line-through old-price textFont ml-1"
-                  style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(appHome.precioAlquilerInicial)+'€'}}</span>
-                <span class="ml-1 textFont" *ngIf="appHome.precioAlquilerInicial>appHome.precioAlquiler"
-                  style="color:#8dca3f; font-size: .675em;">-{{this.discount(''+appHome.precioAlquilerInicial,''+appHome.precioAlquiler)}}%</span><!--&& this.home.model!='NewProject'-->
-              </div>
-              <!-- Alquiler y venta -->
-              <div class="price" *ngIf="appHome.condicion=='Alquiler y venta'">
-                {{formatNumberWithCommas(appHome.precioFinal)+'€'}}
-                <nz-divider nzType="vertical" style="background:#007aa2;"></nz-divider>
-                {{formatNumberWithCommas(appHome.precioAlquiler)+'€'}}
-              </div>
-              <!--<div class="social-actions">
+                <!-- Alquiler y venta -->
+                <div class="price" *ngIf="appHome.condicion=='Alquiler y venta' && this.cardSkeletonOn==false">
+                  {{formatNumberWithCommas(appHome.precioFinal)+'€'}}
+                  <nz-divider nzType="vertical" style="background:#007aa2;"></nz-divider>
+                  {{formatNumberWithCommas(appHome.precioAlquiler)+'€'}}
+                </div>
+                <!--<div class="social-actions">
                     <div class="like-item">
                       <ion-icon name="heart-outline"></ion-icon>
                           <div class="social-counter" data-counter="1">1</div>
@@ -2116,8 +2152,8 @@
                         </div>
                     </div>
                 </div>-->
-            </div>
-            <!--<div class="txt color-black b-none pt-4">
+              </div>
+              <!--<div class="txt color-black b-none pt-4">
                 <div class="contacts listing-contacts-block">
                     <div class="buttons">
                         <a href="" class="btn btn-sm w-100p btn-outline-primary">
@@ -2132,9 +2168,12 @@
                   </div>
                 </div>
             </div>-->
+            </div>
           </div>
         </div>
       </div>
+      <pagination-controls *ngIf="this.homes.length>40" class="my-pagination mt-3 d-flex align-items-center"
+        (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -2149,6 +2188,7 @@
     <div class="modal__items bg-dark">
       <div class="modal__item">
         <h3 class="modal__item-title">ほにゃらら</h3>
+        <button class="btn btn-primary" (click)="printDate()">Print</button>
         <p class="modal__item-content">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos iusto quibusdam sit ea laborum repellat
           obcaecati consequatur, expedita debitis fugiat quam beatae doloribus voluptatibus error saepe in accusamus
@@ -2566,7 +2606,7 @@
   <div class="container text-center">
     <div class="row align-items-center pb-3" *ngIf="!this.hideValues4share">
       <div class="col-md-4">
-        <button type="reset" class="button is-rounded is-light"
+        <button type="reset" class="button is-rounded is-light" name="resetFilters"
           (click)="filterSearchForm.resetForm();clearMap('full-clear')" onclick="uncheck()">Borrar filtros</button>
       </div>
       <div class="col-md-4">
@@ -2641,11 +2681,11 @@ nzTitle="Basic Drawer"
 <button id="oculto" class="oculto d-none" (click)="saveService('home')"></button>
 <!-- Abre el anuncio en una ventana nueva -->
 <a id="linkPopup" class="linkPopup d-none" [routerLink]="['/add',this.routerLinkId]" fragment={{this.routerLinkModel}}
-  target="_blank"></a>
+  [queryParams]="{propiedad:this.routerLinkQueryParams}" target="_blank"></a>
 <!-- Cuando el usuario cancela borra el marker y carga las propiedades en venta (carga por defecto) -->
 <button id="restoreMap" class="restoreMap d-none" (click)="restoreMap()"></button>
 <!-- Heart like! -->
 <button id="likePopup" class="likePopup d-none"
   (click)="cuoreLikeFeature('popup',this.homeService.getHomeFromLocalCache(),$event)"></button>
 <!-- Gestión de eventos mapa leaflet -->
-<button id="leafletEvent" class="leafletEvent d-none" (click)="applyZoomEvent($event)"></button>
+<button id="leafletEvent" class="leafletEvent d-none" (click)="fireMapEvents($event)"></button>

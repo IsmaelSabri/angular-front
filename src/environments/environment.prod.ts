@@ -2,7 +2,7 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'https://localhost:4040',
+  apiUrl: 'http://localhost:3030',
 };
 
 export const APIKEY = {

@@ -17,6 +17,7 @@ import { ngxLoadingAnimationTypes } from 'ngx-loading';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
+  standalone:false
 })
 export class LoginComponent implements OnInit, OnDestroy {
   public showLoading: boolean;

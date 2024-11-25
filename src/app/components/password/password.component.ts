@@ -19,6 +19,7 @@ import { ImageService } from 'src/app/service/image.service';
   selector: 'app-password',
   templateUrl: './password.component.html',
   styleUrls: ['./password.component.css'],
+  standalone:false
 })
 export class PasswordComponent extends UserComponent implements OnInit, OnDestroy {
 

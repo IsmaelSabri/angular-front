@@ -34,7 +34,9 @@ export class HomeDto {
     comentario: any;
     destacar: any;
     colorDestacar: any = '#3a3b3c';
-    destacado: any = false;
+    destacado: any;
+    underPriceMarket: any;
+    underPriceMarketAsString: any;
 
     model: any;
     imagesAsString: any;

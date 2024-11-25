@@ -1,4 +1,3 @@
-import { LatLng } from 'leaflet';
 export class Home {
   id: string;
   viviendaId: string;
@@ -35,7 +34,11 @@ export class Home {
   comentario: string;
   destacar: string;
   colorDestacar: any = '#3a3b3c';
-  destacado: Featured;
+  // servicios usuario minoritario
+  destacado = new Featured();
+  destacadoAsString: string;
+  underPriceMarket = new UnderPriceMarket();
+  underPriceMarketAsString: string;
   model: string;
   imagesAsString: string;
   images = new Array<HomeImage>();
@@ -175,9 +178,16 @@ export class Home {
 
 export class Featured {
   featured: boolean = false;
-  featuredFrom: Date;
-  featuredTo: Date;
+  featuredFrom=new Date('2020-10-10');
+  featuredTo=new Date('2020-10-10');
   featuredTimes: number = 0;
+}
+
+export class UnderPriceMarket {
+  lessPrice: boolean = false;
+  lessPriceFrom=new Date('2020-10-10');
+  lessPriceTo=new Date('2020-10-10');
+  lessPriceTimes: number = 0;
 }
 
 export interface Colegio {

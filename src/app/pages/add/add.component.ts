@@ -50,6 +50,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   selector: 'app-add',
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.css'],
+  standalone:false
 })
 
 export class AddComponent extends HomeComponent implements OnInit, OnDestroy, AfterViewInit {
