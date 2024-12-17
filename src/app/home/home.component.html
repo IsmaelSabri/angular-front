@@ -1,70 +1,34 @@
 <!--Main navbar-->
-<header>
-  <nav class="navbar is-white is-transparent has-centered-logo-alt" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand is-hidden-desktop">
-      <a class="navbar-item" routerLink="/_es">
-        <!--<img src="assets/images..." class="img-fluid w-50" alt="">-->
-        <svg width="640" height="160" viewBox="0 0 640 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd"
-            d="M170 132.571V27.5908C170 25.5451 170.915 23.93 172.746 22.7456C174.576 21.5612 176.729 20.969 179.206 20.969H210.377C232.019 20.969 242.84 30.4441 242.84 49.3943C242.84 62.5303 238.264 71.0902 229.112 75.074C234.603 77.2275 238.748 80.2692 241.548 84.1992C244.347 88.1292 245.747 93.8627 245.747 101.4V104.791C245.747 116.743 242.84 125.437 237.026 130.875C231.211 136.312 223.351 139.031 213.445 139.031H179.206C176.514 139.031 174.307 138.385 172.584 137.093C170.861 135.801 170 134.293 170 132.571ZM190.834 120.619H209.085C219.529 120.619 224.751 114.751 224.751 103.015V100.431C224.751 94.401 223.432 90.0404 220.794 87.3486C218.156 84.6568 214.253 83.3109 209.085 83.3109H190.834V120.619ZM190.834 66.8371H208.923C213.122 66.8371 216.326 65.5989 218.533 63.1225C220.74 60.646 221.844 57.2544 221.844 52.9475C221.844 48.7483 220.686 45.4374 218.371 43.0148C216.057 40.5922 212.853 39.3809 208.762 39.3809H190.834V66.8371ZM260.283 103.015V27.4293C260.283 25.2759 261.306 23.6608 263.351 22.5841C265.397 21.5074 267.873 20.969 270.781 20.969C273.688 20.969 276.164 21.5074 278.21 22.5841C280.256 23.6608 281.279 25.2759 281.279 27.4293V103.015C281.279 115.397 287.2 121.588 299.044 121.588C310.888 121.588 316.81 115.397 316.81 103.015V27.4293C316.81 25.2759 317.833 23.6608 319.879 22.5841C321.925 21.5074 324.401 20.969 327.308 20.969C330.215 20.969 332.692 21.5074 334.738 22.5841C336.783 23.6608 337.806 25.2759 337.806 27.4293V103.015C337.806 115.72 334.28 125.061 327.227 131.036C320.175 137.012 310.781 140 299.044 140C287.308 140 277.914 137.039 270.861 131.117C263.809 125.195 260.283 115.828 260.283 103.015ZM356.703 132.409V27.4293C356.703 25.2759 357.725 23.6608 359.771 22.5841C361.817 21.5074 364.293 20.969 367.201 20.969C370.108 20.969 372.584 21.5074 374.63 22.5841C376.676 23.6608 377.699 25.2759 377.699 27.4293V120.619H417.106C419.044 120.619 420.579 121.534 421.709 123.365C422.84 125.195 423.405 127.349 423.405 129.825C423.405 132.301 422.84 134.455 421.709 136.285C420.579 138.116 419.044 139.031 417.106 139.031H365.908C363.432 139.031 361.279 138.439 359.448 137.254C357.618 136.07 356.703 134.455 356.703 132.409ZM434.872 132.409V31.467C434.872 27.9138 435.868 25.2759 437.86 23.5532C439.852 21.8304 442.355 20.969 445.37 20.969C449.354 20.969 452.423 21.6689 454.576 23.0686C456.729 24.4684 459.098 27.4832 461.682 32.1131L481.548 68.2907L501.413 32.1131C503.997 27.4832 506.393 24.4684 508.6 23.0686C510.808 21.6689 513.903 20.969 517.887 20.969C520.902 20.969 523.405 21.8304 525.397 23.5532C527.389 25.2759 528.385 27.9138 528.385 31.467V132.409C528.385 134.455 527.335 136.07 525.236 137.254C523.136 138.439 520.686 139.031 517.887 139.031C514.98 139.031 512.503 138.439 510.458 137.254C508.412 136.07 507.389 134.455 507.389 132.409V62.961L488.493 96.5545C486.985 99.354 484.616 100.754 481.386 100.754C478.264 100.754 475.949 99.354 474.441 96.5545L455.868 61.6689V132.409C455.868 134.455 454.818 136.07 452.719 137.254C450.619 138.439 448.17 139.031 445.37 139.031C442.463 139.031 439.987 138.439 437.941 137.254C435.895 136.07 434.872 134.455 434.872 132.409ZM539.529 130.31C539.529 130.094 539.637 129.556 539.852 128.694L571.023 27.1063C571.669 24.8452 573.257 23.0956 575.787 21.8573C578.318 20.6191 581.198 20 584.428 20C587.658 20 590.565 20.6191 593.149 21.8573C595.734 23.0956 597.349 24.8452 597.995 27.1063L629.166 128.694C629.381 129.556 629.489 130.094 629.489 130.31C629.489 132.678 628.035 134.724 625.128 136.447C622.221 138.17 619.26 139.031 616.245 139.031C612.261 139.031 609.892 137.631 609.139 134.832L603.001 113.351H566.016L559.879 134.832C559.125 137.631 556.756 139.031 552.773 139.031C549.65 139.031 546.662 138.197 543.809 136.528C540.956 134.859 539.529 132.786 539.529 130.31ZM570.377 96.8775H598.479L584.428 47.2948L570.377 96.8775Z"
-            fill="black" class="bd-svg-black" />
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 110L10 40L50 0L100 50L70 80L110 120L50 160L0 110Z"
-            fill="#00D1B2" />
-        </svg>
+<header class="header">
+  <nav class="nav container">
+    <div class="nav__data ">
+      <a href="#" class="nav__logo">
+        <img src="assets/images/logo.png" class="logo w-100" alt="" style="max-height: 1.6em; max-width: 12.8em;"
+          routerLink="/_es">
       </a>
-      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-        data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-    <div id="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-        <a class="nav-link"><button class="navbar-toggler menuHM shadow-none" data-bs-toggle="collapse"
-            data-bs-target=".collapse" aria-controls="navbarToggleExternalContent" aria-expanded="false"
-            aria-label="Toggle navigation"
-            onclick="this.classList.toggle('opened');this.setAttribute('aria-expanded', this.classList.contains('opened'))"
-            aria-label="Main Menu">
-            <svg width="40" height="40" viewBox="0 -25 100 100">
-              <path class="line line1"
-                d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058" />
-              <path class="line line2" d="M 20,50 H 80" />
-              <path class="line line3"
-                d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942" />
-            </svg>
-          </button>
-        </a>
-
-
+      <div class="nav__toggle" id="nav-toggle">
+        <i class="ri-menu-line nav__toggle-menu"></i>
+        <i class="ri-close-line nav__toggle-close"></i>
       </div>
-      <div class="navbar-brand is-hidden-touch">
-        <a class="navbar-item align-items-center" routerLink="/_es">
-          <!--<img src="assets/images... class="img-fluid w-50 mx-auto" alt="">-->
-          <svg width="640" height="160" viewBox="0 0 640 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M170 132.571V27.5908C170 25.5451 170.915 23.93 172.746 22.7456C174.576 21.5612 176.729 20.969 179.206 20.969H210.377C232.019 20.969 242.84 30.4441 242.84 49.3943C242.84 62.5303 238.264 71.0902 229.112 75.074C234.603 77.2275 238.748 80.2692 241.548 84.1992C244.347 88.1292 245.747 93.8627 245.747 101.4V104.791C245.747 116.743 242.84 125.437 237.026 130.875C231.211 136.312 223.351 139.031 213.445 139.031H179.206C176.514 139.031 174.307 138.385 172.584 137.093C170.861 135.801 170 134.293 170 132.571ZM190.834 120.619H209.085C219.529 120.619 224.751 114.751 224.751 103.015V100.431C224.751 94.401 223.432 90.0404 220.794 87.3486C218.156 84.6568 214.253 83.3109 209.085 83.3109H190.834V120.619ZM190.834 66.8371H208.923C213.122 66.8371 216.326 65.5989 218.533 63.1225C220.74 60.646 221.844 57.2544 221.844 52.9475C221.844 48.7483 220.686 45.4374 218.371 43.0148C216.057 40.5922 212.853 39.3809 208.762 39.3809H190.834V66.8371ZM260.283 103.015V27.4293C260.283 25.2759 261.306 23.6608 263.351 22.5841C265.397 21.5074 267.873 20.969 270.781 20.969C273.688 20.969 276.164 21.5074 278.21 22.5841C280.256 23.6608 281.279 25.2759 281.279 27.4293V103.015C281.279 115.397 287.2 121.588 299.044 121.588C310.888 121.588 316.81 115.397 316.81 103.015V27.4293C316.81 25.2759 317.833 23.6608 319.879 22.5841C321.925 21.5074 324.401 20.969 327.308 20.969C330.215 20.969 332.692 21.5074 334.738 22.5841C336.783 23.6608 337.806 25.2759 337.806 27.4293V103.015C337.806 115.72 334.28 125.061 327.227 131.036C320.175 137.012 310.781 140 299.044 140C287.308 140 277.914 137.039 270.861 131.117C263.809 125.195 260.283 115.828 260.283 103.015ZM356.703 132.409V27.4293C356.703 25.2759 357.725 23.6608 359.771 22.5841C361.817 21.5074 364.293 20.969 367.201 20.969C370.108 20.969 372.584 21.5074 374.63 22.5841C376.676 23.6608 377.699 25.2759 377.699 27.4293V120.619H417.106C419.044 120.619 420.579 121.534 421.709 123.365C422.84 125.195 423.405 127.349 423.405 129.825C423.405 132.301 422.84 134.455 421.709 136.285C420.579 138.116 419.044 139.031 417.106 139.031H365.908C363.432 139.031 361.279 138.439 359.448 137.254C357.618 136.07 356.703 134.455 356.703 132.409ZM434.872 132.409V31.467C434.872 27.9138 435.868 25.2759 437.86 23.5532C439.852 21.8304 442.355 20.969 445.37 20.969C449.354 20.969 452.423 21.6689 454.576 23.0686C456.729 24.4684 459.098 27.4832 461.682 32.1131L481.548 68.2907L501.413 32.1131C503.997 27.4832 506.393 24.4684 508.6 23.0686C510.808 21.6689 513.903 20.969 517.887 20.969C520.902 20.969 523.405 21.8304 525.397 23.5532C527.389 25.2759 528.385 27.9138 528.385 31.467V132.409C528.385 134.455 527.335 136.07 525.236 137.254C523.136 138.439 520.686 139.031 517.887 139.031C514.98 139.031 512.503 138.439 510.458 137.254C508.412 136.07 507.389 134.455 507.389 132.409V62.961L488.493 96.5545C486.985 99.354 484.616 100.754 481.386 100.754C478.264 100.754 475.949 99.354 474.441 96.5545L455.868 61.6689V132.409C455.868 134.455 454.818 136.07 452.719 137.254C450.619 138.439 448.17 139.031 445.37 139.031C442.463 139.031 439.987 138.439 437.941 137.254C435.895 136.07 434.872 134.455 434.872 132.409ZM539.529 130.31C539.529 130.094 539.637 129.556 539.852 128.694L571.023 27.1063C571.669 24.8452 573.257 23.0956 575.787 21.8573C578.318 20.6191 581.198 20 584.428 20C587.658 20 590.565 20.6191 593.149 21.8573C595.734 23.0956 597.349 24.8452 597.995 27.1063L629.166 128.694C629.381 129.556 629.489 130.094 629.489 130.31C629.489 132.678 628.035 134.724 625.128 136.447C622.221 138.17 619.26 139.031 616.245 139.031C612.261 139.031 609.892 137.631 609.139 134.832L603.001 113.351H566.016L559.879 134.832C559.125 137.631 556.756 139.031 552.773 139.031C549.65 139.031 546.662 138.197 543.809 136.528C540.956 134.859 539.529 132.786 539.529 130.31ZM570.377 96.8775H598.479L584.428 47.2948L570.377 96.8775Z"
-              fill="black" class="bd-svg-black" />
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 110L10 40L50 0L100 50L70 80L110 120L50 160L0 110Z"
-              fill="#00D1B2" />
-          </svg>
+      <div *ngIf="this.loginButtonsSmallSize && !this.state" style="position: fixed; top:.5em; right:.5em;"
+        class="d-flex flex-row">
+        <a class="button is-dark is-small" style="background-color: #3a3b3c;" pRipple routerLink="/register"
+          *ngIf='!this.state'>
+          <strong>Unirse</strong>
         </a>
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-          data-target="navbarBasicExample">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
+        <a class="button is-light is-small ml-2" style="color: #3a3b3c;" pRipple routerLink="/login"
+          *ngIf='!this.state'>
+          Entrar
         </a>
       </div>
-      <div class="navbar-end col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <div *ngIf="this.loginButtonsSmallSize && this.state" style="position:fixed;  right: .5em;" class="">
         <a class="navbar-item" nz-dropdown [nzDropdownMenu]="menu" id="navbarDropdown" role="button"
           aria-expanded="false" aria-haspopup="true" *ngIf='this.state'>
-          <img height="55" width="55" class="rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;" alt="avatar2"
+          <img height="42" width="42" class="rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;" alt="avatar2"
             [attr.src]="this.getProfileImage()" />
         </a>
         <nz-dropdown-menu #menu="nzDropdownMenu" nzPlacement="bottomRight">
           <ul nz-menu nzSelectable>
-            <li nz-menu-item class="bg-light"><a style="font-weight: bold;" class="text-secondary">Colecciones</a></li>
             <li nz-menu-item><a *ngIf='this.state' routerLink="/user/management">
                 <ion-icon name="person-outline" style="position: relative; top: 2px;"></ion-icon> {{user?.username}}
               </a></li>
@@ -74,40 +38,37 @@
                 <p-badge styleClass="mr-2" [value]="2" severity="info"></p-badge>
                 Notificaciones</a></li>
 
-            <li nz-menu-item><a (click)="myFavourites()"><ion-icon style="position: relative; top: 2px; font-size:16px;"
-                  name="heart-half-outline"></ion-icon> Guardadas</a></li>
+            <li nz-menu-item><a (click)="myFavourites()"><ion-icon
+                  style="position: relative; top: 2px; font-size:16px; color:dodgerblue;" name="heart"></ion-icon>
+                Guardadas</a></li>
             <li nz-menu-item><a routerLink="/user-pro"><ion-icon style="position: relative; top: 2px; font-size:16px;"
                   name="speedometer-outline"></ion-icon> Pro-area</a></li>
             <li nz-menu-item><a routerLink="/admin"><ion-icon style="position: relative; top: 2px; font-size:16px;"
                   name="person-circle-outline"></ion-icon> Admin-area</a></li>
-            <li nz-menu-item><a [routerLink]=""><ion-icon name="heart-dislike-outline"
-                  style="position: relative; top: 2px; font-size:16px;"></ion-icon> Ocultas</a></li>
-            <li nz-menu-item><a [routerLink]=""><span nz-icon nzType="audit" nzTheme="outline"
-                  style="position: relative; bottom: 3px;"></span> Vistas</a></li>
 
-            <li nz-submenu nzTitle="Publicar">
+            <li nz-submenu [nzTitle]="'Publicar'">
               <ul>
                 <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
                     (click)="createLocationMarker();setAdTitle('Nueva propiedad')"><i
-                      class="bi bi-house-add"></i>&nbsp;Vivienda</a></li>
+                      class="bi bi-house mr-2"></i>&nbsp;Vivienda</a></li>
                 <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Proyecto nuevo')"><i
-                      class="bi bi-building"></i>&nbsp;Proyecto</a></li>
+                    (click)="createLocationMarker();setAdTitle('Proyecto nuevo')"><i class="bi bi-houses mr-2"></i>
+                    &nbsp;Proyecto</a></li>
                 <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
                     (click)="createLocationMarker();setAdTitle('Oficina')"><i
-                      class="bi bi-buildings"></i>&nbsp;Oficina</a></li>
+                      class="bi bi-person-workspace mr-2"></i>&nbsp;Oficina</a></li>
                 <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Local')"><i
-                      class="bi bi-building-fill-add"></i>&nbsp;Local</a></li>
+                    (click)="createLocationMarker();setAdTitle('Local')"><i class="bi bi-shop mr-2"></i>&nbsp;Local</a>
+                </li>
                 <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
                     (click)="createLocationMarker();setAdTitle('Parcela')"><i
-                      class="bi bi-building-fill-add"></i>&nbsp;Terreno</a></li>
+                      class="bi bi-fullscreen mr-2"></i>&nbsp;Terreno</a></li>
                 <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
                     (click)="createLocationMarker();setAdTitle('Garage')"><i
-                      class="bi bi-building-fill-add"></i>&nbsp;Garage</a></li>
+                      class="bi bi-p-square mr-2"></i>&nbsp;Garage</a></li>
                 <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
                     (click)="createLocationMarker();setAdTitle('Trastero')"><i
-                      class="bi bi-building-fill-add"></i>&nbsp;Trastero</a></li>
+                      class="bi bi-door-closed mr-2"></i>&nbsp;Trastero</a></li>
                 <!--<li nz-menu-item><a [routerLink]="" *ngIf='this.state' (click)="createLocationMarker();setAdTitle('Alojamiento vacacional')"><i class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>-->
               </ul>
             </li>
@@ -116,103 +77,245 @@
                   style="position: relative; top: 2px; font-size:16px;"></ion-icon>&nbsp;Salir</a></li>
           </ul>
         </nz-dropdown-menu>
+      </div>
+    </div>
+    <!--=============== NAV MENU ===============-->
+    <div class="nav__menu" id="nav-menu">
+      <ul class="nav__list my-auto">
+        <!--=============== DROPDOWN 1 ===============-->
+        <li class="dropdown__item">
+          <div class="nav__link dropdown__button" (click)="printDate()">
+            Menu <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+          <div class="dropdown__container">
+            <div class="dropdown__content">
+              <div class="dropdown__group">
+                <div class="dropdown__icon">
+                  <i class="ri-home-line"></i>
+                </div>
+                <span class="dropdown__title">Lo que estás buscando</span>
+                <ul class="dropdown__list">
+                  <li>
+                    <a class="dropdown__link" (click)="printDate()">Comprar</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Vender</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Vendido</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Compartir</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown__group">
+                <div class="dropdown__icon">
+                  <i class="ri-heart-3-line"></i>
+                </div>
 
-        <div class="navbar-item ">
-          <div class="buttons">
-            <a class="button is-dark" routerLink="/register" *ngIf='!this.state'>
+                <span class="dropdown__title">2025</span>
+
+                <ul class="dropdown__list">
+                  <li>
+                    <a href="#" class="dropdown__link">Guias</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Servicios</a>
+                  </li>
+                  <li>
+                    <a (click)="showPricingDrawer()" class="dropdown__link">Noticias</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Comercial</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Vivir en España</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Ayuda</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown__group">
+                <div class="dropdown__icon">
+                  <i class="ri-book-mark-line"></i>
+                </div>
+
+                <span class="dropdown__title">Careers</span>
+
+                <ul class="dropdown__list">
+                  <li>
+                    <a href="#" class="dropdown__link">Web development</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Applications development</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">UI/UX design</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Informatic security</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown__group">
+                <div class="dropdown__icon">
+                  <i class="ri-file-paper-2-line"></i>
+                </div>
+                <span class="dropdown__title">Certifications</span>
+                <ul class="dropdown__list">
+                  <li>
+                    <a href="#" class="dropdown__link">Course certificates</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">Free certifications</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </li>
+        <!--=============== DROPDOWN 3 ===============-->
+        <!--<li class="dropdown__item">
+          <div class="nav__link dropdown__button">
+            Company <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+          </div>
+          <div class="dropdown__container">
+            <div class="dropdown__content">
+              <div class="dropdown__group">
+                <div class="dropdown__icon">
+                  <i class="ri-global-line"></i>
+                </div>
+
+                <span class="dropdown__title">Sobre nosotros</span>
+                <ul class="dropdown__list">
+                  <li>
+                    <a href="#" class="dropdown__link">Nuestra misión</a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">
+                      <span>Política de privacidad</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">
+                      <span>Política de cookies</span>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="d-flex flex-row">
+                      <a href="#" class="dropdown__link">
+                        <span>Contacto</span>
+                      </a>
+                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-facebook"></i></a>
+                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-instagram"></i></a>
+                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-twitter-x"></i></a>
+                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-pinterest"></i></a>
+                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-envelope"></i></a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown__group">
+                <div class="dropdown__icon">
+                  <i class="ri-shield-line"></i>
+                </div>
+                <span class="dropdown__title">Talento</span>
+                <ul class="dropdown__list">
+                  <li>
+                    <a href="#" class="dropdown__link">
+                      <span>Ofertas disponibles</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </li>-->
+        <li>
+          <a class="nav__link" (click)="this.sidebarVisible = true;clickButton('nav-toggle')"> Filtros
+            <i class="ri-equalizer-line ml-2"></i>
+          </a>
+        </li>
+        <li>
+          <a class="nav__link" id="listado-button" (click)="sidenav.toggle();clickButton('nav-toggle')"> Listado
+            <i class="ri-list-ordered-2 ml-2"></i>
+          </a>
+        </li>
+        <li *ngIf="!this.state && !this.loginButtonsSmallSize">
+          <div class="buttons bulma-box mx-auto">
+            <a class="button is-dark" style="background-color: #3a3b3c;" pRipple routerLink="/register"
+              *ngIf='!this.state'>
               <strong>Unirse</strong>
             </a>
-            <a class="button is-light" routerLink="/login" *ngIf='!this.state'>
+            <a class="button is-light" style="color: #3a3b3c;" pRipple routerLink="/login" *ngIf='!this.state'>
               Entrar
             </a>
           </div>
-        </div>
-      </div>
+        </li>
+        <li *ngIf="this.state && !this.loginButtonsSmallSize" class="dropdown__item" nz-dropdown
+          [nzDropdownMenu]="menu1" id="navbarDropdown"><!--quitar show-dropdown-->
+          <a class="nav__link dropdown__button" aria-expanded="false" aria-haspopup="true">
+            <img height="55" width="55" class="rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;"
+              alt="avatar2" [attr.src]="this.getProfileImage()" />
+          </a>
+          <nz-dropdown-menu #menu1="nzDropdownMenu" nzPlacement="bottomRight">
+            <ul nz-menu nzSelectable>
+              <li nz-menu-item><a *ngIf='this.state' routerLink="/user/management">
+                  <ion-icon name="person-outline" style="position: relative; top: 2px;"></ion-icon> {{user?.username}}
+                </a></li>
+
+              <li nz-menu-item><a [routerLink]="" *ngIf='this.state'><ion-icon name="notifications-outline"
+                    style="position: relative; top: 2px; font-size:16px;"></ion-icon>
+                  <p-badge styleClass="mr-2" [value]="2" severity="info"></p-badge>
+                  Notificaciones</a></li>
+
+              <li nz-menu-item><a (click)="myFavourites()"><ion-icon
+                    style="position: relative; top: 2px; font-size:16px; color: dodgerblue;" name="heart"></ion-icon>
+                  Guardadas</a></li>
+              <li nz-menu-item><a routerLink="/user-pro"><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                    name="speedometer-outline"></ion-icon> Pro-area</a></li>
+              <li nz-menu-item><a routerLink="/admin"><ion-icon style="position: relative; top: 2px; font-size:16px;"
+                    name="person-circle-outline"></ion-icon> Admin-area</a></li>
+
+              <li nz-submenu [nzTitle]="'Publicar'">
+                <ul>
+                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Nueva propiedad')"><i
+                        class="bi bi-house mr-2"></i>&nbsp;Vivienda</a></li>
+                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Proyecto nuevo')"><i class="bi bi-houses mr-2"></i>
+                      &nbsp;Proyecto</a></li>
+                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Oficina')"><i
+                        class="bi bi-person-workspace mr-2"></i>&nbsp;Oficina</a></li>
+                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Local')"><i
+                        class="bi bi-shop mr-2"></i>&nbsp;Local</a></li>
+                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Parcela')"><i
+                        class="bi bi-fullscreen mr-2"></i>&nbsp;Terreno</a></li>
+                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Garage')"><i
+                        class="bi bi-p-square mr-2"></i>&nbsp;Garage</a></li>
+                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Trastero')"><i
+                        class="bi bi-door-closed mr-2"></i>&nbsp;Trastero</a></li>
+                  <!--<li nz-menu-item><a [routerLink]="" *ngIf='this.state' (click)="createLocationMarker();setAdTitle('Alojamiento vacacional')"><i class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>-->
+                </ul>
+              </li>
+              <li nz-menu-item><a *ngIf='this.state' (click)="onLogOut()" routerLink="/home">
+                  <ion-icon name="log-out-outline"
+                    style="position: relative; top: 2px; font-size:16px;"></ion-icon>&nbsp;Salir</a></li>
+            </ul>
+          </nz-dropdown-menu>
+        </li>
+      </ul>
     </div>
   </nav>
 </header>
-
-<!--collapse navbar-->
-<div class="collapse" id="navbarToggleExternalContent" style="border-bottom: 1px solid rgb(206, 203, 203);">
-  <div class="container-fluid">
-    <nav style="display: block;">
-      <ul class="nav-links nav ">
-        <li class="nav-item active pr-3 mx-auto">
-          <a routerLink="/home" class="nav-link text-secondary"><strong>Comprar</strong></a>
-        <li class="nav-item pr-3">
-          <a class="nav-link text-secondary"><strong>Vender</strong></a>
-        </li>
-        <li class="nav-item pr-3 mx-auto">
-          <a class="nav-link text-secondary disabled" routerLink="/_es"><strong>Vendido</strong></a>
-        </li>
-        <li class="nav-item pr-3 mx-auto">
-          <a routerLink="/vlog" class="nav-link text-secondary"><strong>Compartir</strong></a>
-        </li>
-        <li class="nav-item pr-3 mx-auto">
-          <a class="nav-link text-secondary" (click)="showBsModal()"><strong>Ayuda</strong></a>
-        </li>
-        <li class="nav-item pr-3 mx-auto">
-          <a [routerLink]="" class="nav-link text-secondary"><strong>Buscar agentes</strong>
-          </a>
-        </li>
-        <li class="nav-item pr-3 mx-auto">
-          <a routerLink="/vlog" class="nav-link text-secondary"><strong>Noticias</strong>
-          </a>
-        </li>
-        <li class="nav-item pr-3 mx-auto">
-          <a class="nav-link text-secondary" routerLink=""><strong>Comercial</strong></a>
-        </li>
-        <li class="nav-item pr-3 mx-auto">
-          <a class="nav-link text-secondary" routerLink=""><strong>Vivir en España</strong></a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</div>
-
-<!-- Map area -->
-<div class="container">
-  <ul class="nav nav-fill" id="secondnav">
-    <li class="nav-item active pr-3 contact__form-privacy">
-      <a class="nav-link nav-border ">
-        <ion-icon name="search-outline" style="top:2px;"></ion-icon> Map area </a>
-    </li>
-    <li class="nav-item pr-3">
-      <mat-select panelWidth="fit-content" #optionInput="ngModel" [(ngModel)]="this.mapRentSalePriceFlag"
-        panelClass="example-panel" (selectionChange)="loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',&sorts=');
-;fixSegmentedOption(this.mapRentSalePriceFlag)">
-        <mat-option *ngFor="let opt of condicionHeader" [value]="opt">
-          {{opt}}
-        </mat-option>
-      </mat-select>
-    </li>
-    <li class="nav-item pr-3">
-      <a class="nav-link nav-border" onclick="runModal()"> Tipo de propiedad </a><!---->
-    </li>
-    <li class="nav-item pr-3">
-      <!--<mat-select #optionInput="ngModel" multiple panelWidth="fit-content" [(ngModel)]="this.homeDto.condicion" panelClass="example-panel" required>
-        <mat-option  >
-          <nz-tabset>
-            <nz-tab nzTitle="Tab 1">Content of Tab Pane 1</nz-tab>
-            <nz-tab nzTitle="Tab 2">Content of Tab Pane 2</nz-tab>
-            <nz-tab nzTitle="Tab 3">Content of Tab Pane 3</nz-tab>
-          </nz-tabset>
-        </mat-option>
-      </mat-select>-->
-      <a class="nav-link nav-border " routerLink="" (click)="sidenav.toggle()"><ion-icon
-          style="position: relative; top: 2px;" name="swap-horizontal-outline"></ion-icon> Listado </a>
-    </li>
-    <li class="nav-item pr-3">
-      <a class="nav-link nav-border" (click)="this.sidebarVisible = true"><ion-icon name="options-outline"
-          style="position: relative; top: 2px;"></ion-icon> Filtros </a>
-    </li>
-    <!--<li class="nav-item pr-3">
-      <a class="nav-link nav-border" (click)="setAdTitle('Proyecto nuevo')" onclick="runModal()"><ion-icon style="position: relative; top: 2px;"
-          name="list-outline"></ion-icon> ProyectoForm </a>
-    </li>-->
-  </ul>
-</div>
-
+<!--<ng-progress ngProgressHttp></ng-progress>-->
 <div *ngIf="this.state" class="container-fluid">
   <div class="modal" id="newHomeModal">
     <div class="modal-background"></div>
@@ -359,17 +462,9 @@
                     <nz-option *ngFor="let opt of propertyState" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
                 </div>
-                <!-- Resto de tipologías -->
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column" *ngIf="this.shareTab.value==false">
-                  <label class="required d-block" for="optionInput">Alquiler - Venta ...</label>
-                  <nz-select #optionInput0 class="d-block flex-column condicionSelect" name="optionInput0"
-                    nzPlaceHolder="Compartir" [nzSize]="sizeM" [(ngModel)]="this.homeDto.condicion"
-                    (ngModelChange)="conditionTabs()" (nzOpenChange)="rotateArrows($event,'condicionSelect')">
-                    <nz-option *ngFor="let opt of condicion2" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-                  </nz-select>
-                </div>
                 <!--Condición-->
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column" *ngIf="this.shareTab.value==true">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column"
+                  *ngIf="this.shareTab.value==true || this.shareTab.value==false">
                   <label class="required d-block" for="optionInput">Alquiler - Venta ...</label>
                   <nz-select #optionInput class="d-block flex-column condicionSelect" name="optionInput"
                     nzPlaceHolder="Alquiler - venta" [nzSize]="sizeM" [(ngModel)]="this.homeDto.condicion"
@@ -1851,7 +1946,7 @@
               </div>
             </nz-tab>
             <!-- Multimedia -->
-            <nz-tab nzTitle=Multimedia nz-col nzSpan="8" (nzClick)="whatTab('Multimedia');showPricingDrawer()">
+            <nz-tab nzTitle=Multimedia nz-col nzSpan="8" (nzClick)="whatTab('Multimedia')">
               <!-- Fotos -->
               <dropzone [config]="config" [message]="'Pulse o arrastre sus imágenes para subirlas'" required
                 (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (removedFile)="onRemove($event)">
@@ -1878,6 +1973,65 @@
                     </div>
                   </div>
                 </ng-container>
+              </div>
+            </nz-tab>
+            <!-- Publicar -->
+            <nz-tab nzTitle=Publicar nz-col nzSpan="8" (nzClick)="whatTab('Publicar')">
+              <!--<h6 class="" style="color:#999;letter-spacing: .5px; font-weight: 700;">Servicios</h6>-->
+              <div class="form-group">
+                <!--Destacar anuncio -->
+                <div class="card">
+                  <div class="card-header">
+                    <h6 class="my-auto font-semibold">Destacar anuncio&nbsp;</h6>
+                  </div>
+                  <div class="card-body">
+                    <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon>
+                      Primeras posiciones en el listado de tu zona</p>
+                    <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> El
+                      anuncio destaca en el listado y en el mapa</p>
+                  </div>
+                  <div class="card-footer">
+                    <mat-button-toggle
+                      (change)="this.homeDto.destacado.featured= $event.source.checked;showFledgedServices($event,'featured')"
+                      [checked]="this.homeDto.destacado.featured"
+                      [value]="this.homeDto.destacado.featured">{{this.homeDto.destacado.featured ?
+                      'Guardado':'Guardar'}}</mat-button-toggle>
+                    <div class="price-tag float-end ml-auto">
+                      <span class="amount">4,95</span>
+                      <span class="symbol">€</span>
+                      <span class="after">/1 semana</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mt-4">
+                <!-- Ocultar ubicación -->
+                <div class="card">
+                  <div class="card-header">
+                    <h6 class="my-auto font-semibold">Ocultar ubicación&nbsp;</h6>
+                  </div>
+                  <div class="card-body">
+                    <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> No se
+                      mostrarán la calle y el número del anuncio</p>
+                    <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> No se podrá
+                      acceder a la streetview</p>
+                    <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> Un
+                      solo pago para toda la vida del anuncio</p>
+                    <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> Puedes
+                      modificar esta opción tantas veces como quieras desde tu área de cliente</p>
+                  </div>
+                  <div class="card-footer">
+                    <mat-button-toggle
+                      (change)="this.homeDto.direccionAproximada= $event.source.checked;showFledgedServices($event,'location')"
+                      [checked]="this.homeDto.direccionAproximada"
+                      [value]="this.homeDto.direccionAproximada">{{this.homeDto.direccionAproximada ?
+                      'Guardado':'Guardar'}}</mat-button-toggle>
+                    <div class="price-tag float-end ml-auto">
+                      <span class="amount">6,95</span>
+                      <span class="symbol">€</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <ng-container>
@@ -1939,12 +2093,12 @@
 <!-- Leaflet map -->
 <mat-sidenav-container class="example-container">
   <mat-sidenav #sidenav class="example-sidenav overflow-hidden" mode="side" [ngStyle]="this.resizeStyleListSidenav">
-    <div class="container-fluid mt-2 mb-5 pb-2">
-      <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 p-0" style="width: 49vw;">
+    <div class="container-fluid mt-2 mb-5 pb-2 ">
+      <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 p-0 sidebox-cards" style="width: 49vw;">
         <!--row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 p-0-->
         <div class="col p-0"
-          *ngFor="let appHome of homes | paginate: { itemsPerPage: 40, currentPage: p }; let i =index">
-          <div *ngFor="let appHomeP of newProjects; let j =index" class="w-100">
+          *ngFor="let appHome of (homes | orderBy: 'destacado.featured':true) | paginate: { itemsPerPage: 40, currentPage: page }; let i =index">
+          <div *ngFor="let appHomeP of (newProjects | orderBy: 'destacado.featured':true); let j =index" class="w-100">
             <div class=" teaser-tile mt-2 border " id="teaserTile{{appHome.viviendaId}}">
               <span class="favorite favorite-need-login" data-id="1935922" data-type="estate"
                 *ngIf="this.cardSkeletonOn==false">
@@ -2057,6 +2211,12 @@
                       <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
                         name="hammer-outline"></ion-icon>
                       <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.antiguedad}}</span>
+                    </div>
+                    <div class="unit-item mx-1" *ngIf="appHome.beach[0].distancia" data-toggle="tooltip"
+                      data-placement="top" title="beach-card-distance">
+                      <ion-icon style="font-size: 0.750em; position:relative; color:#98a3b2; top:-1px;"
+                        src="assets/svg/sea.svg"></ion-icon>
+                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.beach[0].distancia}}</span>
                     </div>
                   </div>
                 </div>
@@ -2173,7 +2333,7 @@
         </div>
       </div>
       <pagination-controls *ngIf="this.homes.length>40" class="my-pagination mt-3 d-flex align-items-center"
-        (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+        (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -2188,7 +2348,8 @@
     <div class="modal__items bg-dark">
       <div class="modal__item">
         <h3 class="modal__item-title">ほにゃらら</h3>
-        <button class="btn btn-primary" (click)="printDate()">Print</button>
+        <button class="btn btn-primary" (click)="printDate()">start</button>
+        <button class="btn btn-primary">complete</button>
         <p class="modal__item-content">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos iusto quibusdam sit ea laborum repellat
           obcaecati consequatur, expedita debitis fugiat quam beatae doloribus voluptatibus error saepe in accusamus
@@ -2237,6 +2398,7 @@
 </div>
 
 <!-- Filters form -->
+
 <p-sidebar [(visible)]="sidebarVisible" position="right">
   <div class="text-center">
     <!--<h3 class="pull-center text-secondary">Filtros</h3>-->
@@ -2621,61 +2783,60 @@
 </p-sidebar>
 
 <nz-modal nzCentered [(nzVisible)]="joinUsModal" (nzOnCancel)="handleCancel('joinUsModal')"
-  (nzOnOk)="handleOk('likeHome')" [nzOkLoading]="isOkLoading" [(nzFooter)]="modalFooterNull">
-  <div *nzModalContent style="display: block;" class="restricted-message" id="restricted-message">
-    <div class="body">
-      <div class="advertisement mx-auto">
-        <!--<div class="image">
-                  <img src="" alt="Para disfrutar del chat en tiempo real cree un cuenta"/>
-                  <div class="text"><h4>Entrar o registrarse</h4></div>
-              </div>-->
-        <div class="padded">
-          <div class="heading">Crear cuenta</div>
-          <p>Acceda o registrese para guardar búsquedas y favoritos</p>
-          <button tabindex="0" class="login only-one-button " routerLink="/login"><span
-              class="readmore-button-label">ENTRAR</span></button>
-          <button tabindex="0" class="register only-one-button " routerLink="/register"><span
-              class="readmore-button-label">REGISTRARSE</span></button>
-          <p class="privacy">
-            Al continuar acepta nuestra política de privacidad <a (click)="showModal('privatePolicy')"> Política de
-              privacidad</a>.
-          </p>
+  (nzOnOk)="handleOk('likeHome')" [nzOkLoading]="isOkLoading" [(nzFooter)]="modalFooterNull" [nzStyle]="{ padding: '0px' }">
+  <ng-container *nzModalContent>
+    <div class="restricted-message" id="restricted-message">
+      <div class="body">
+        <div class="advertisement">
+          <!--<div class="image">
+                    <img src="" alt="Para disfrutar del chat en tiempo real cree un cuenta"/>
+                    <div class="text"><h4>Entrar o registrarse</h4></div>
+                </div>-->
+          <div class="padded ">
+            <div class="heading">Crear cuenta</div>
+            <p>Acceda o registrese para guardar búsquedas y favoritos</p>
+            <button tabindex="0" class="login only-one-button " routerLink="/login"><span
+                class="readmore-button-label">ENTRAR</span></button>
+            <button tabindex="0" class="register only-one-button " routerLink="/register"><span
+                class="readmore-button-label">REGISTRARSE</span></button>
+            <p class="privacy">
+              Al continuar acepta nuestra política de privacidad <a (click)="showModal('privatePolicy')"> Política de
+                privacidad</a>.
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </nz-modal>
 
-<!--Pricing drawer
-<nz-drawer
-[nzClosable]="true"
-[nzVisible]="visiblePricingDrawer"
-nzPlacement="right"
-nzTitle="Basic Drawer"
-(nzOnClose)="closePricingDrawer()">
-<ng-container *nzDrawerContent>
-  
+<nz-drawer [nzClosable]="true" [nzVisible]="visiblePricingDrawer" nzPlacement="right" nzTitle="Basic Drawer"
+  (nzOnClose)="closePricingDrawer()">
+  <ng-container *nzDrawerContent>
 
-  <div class="card">
-    <div class="card-header">
-      <h6 class="my-auto font-semibold">Destacar anuncio&nbsp;</h6>
+
+    <div class="card">
+      <div class="card-header">
+        <h6 class="my-auto font-semibold">Destacar anuncio&nbsp;</h6>
+      </div>
+      <div class="card-body">
+        <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-1"></ion-icon> Primeras
+          posiciones en el listado de tu zona</p>
+        <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-1"></ion-icon> El anuncio destaca
+          en el listado y en el mapa</p>
+
+      </div>
+      <div class="card-footer">
+        <mat-button-toggle>Guardar</mat-button-toggle>
+        <div class="price-tag float-end ml-auto">
+          <span class="amount">4,95</span>
+          <span class="symbol">€</span>
+          <span class="after">/1 semana</span>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
-      <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-1"></ion-icon> Primeras posiciones en el listado de tu zona</p>
-      <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-1"></ion-icon> El anuncio destaca en el listado y en el mapa</p>
-      
-    </div>
-    <div class="card-footer">
-      <mat-button-toggle>Guardar</mat-button-toggle>
-      <div class="price-tag float-end ml-auto">
-        <span class="amount">4,95</span>
-        <span class="symbol">€</span>
-        <span class="after">/1 semana</span>
-     </div>
-    </div>
-  </div>
-</ng-container>
-</nz-drawer>-->
+  </ng-container>
+</nz-drawer>
 
 <!--Ghost buttons-->
 <button id="oculto" class="oculto d-none" (click)="saveService('home')"></button>

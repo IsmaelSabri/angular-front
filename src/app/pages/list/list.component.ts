@@ -19,6 +19,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImageService } from 'src/app/service/image.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { BreakpointObserver } from '@angular/cdk/layout';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -45,6 +46,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     modalSevice: NgbModal,
     imageService: ImageService,
     notification: NzNotificationService,
+    protected breakpointObserver: BreakpointObserver
   ) {
     super(
       router,
@@ -63,7 +65,8 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       nzMessage,
       modalSevice,
       imageService,
-      notification
+      notification,
+      breakpointObserver
     );
   }
 

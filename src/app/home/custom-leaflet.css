@@ -1087,3 +1087,30 @@
 
   /*position: absolute;*/
 }
+
+.listing-status {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  padding: 10px 10px;
+}
+
+.listing-status-item {
+  background-color: #3a3b3c;
+  font-weight: 700;
+  line-height: 20px;
+  margin-bottom: 0px;
+  color: #fcfcfc;
+  font-size: 75%;
+  -webkit-letter-spacing: 0.1em;
+  -moz-letter-spacing: 0.1em;
+  -ms-letter-spacing: 0.1em;
+  -webkit-letter-spacing: 0.1em;
+  -moz-letter-spacing: 0.1em;
+  -ms-letter-spacing: 0.1em;
+  letter-spacing: 0.1em;
+  padding: 0px .5em;
+  text-transform: uppercase;
+
+  border-radius: 1em;
+}

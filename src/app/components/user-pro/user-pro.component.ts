@@ -1,3 +1,4 @@
+import { Visitas } from './../../model/home';
 import { ProfileImage } from './../../model/user';
 import { AfterViewInit, Component, ElementRef, Inject, Input, OnDestroy, OnInit, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
@@ -17,7 +18,7 @@ import * as signalR from '@microsoft/signalr';
 import { cssPathUserPro } from 'src/app/model/performance/css-styles';
 import { dynamicUserProScripts } from 'src/app/model/performance/js-scripts';
 import { ChatService } from 'src/app/service/chat.service';
-import { formatDistance } from "date-fns";
+import { format, formatDistance } from "date-fns";
 import { es } from "date-fns/locale";
 import { ngxLoadingAnimationTypes } from 'ngx-loading';
 import { HomeService } from 'src/app/service/home.service';
@@ -26,14 +27,13 @@ import { ImageService } from 'src/app/service/image.service';
 import _ from 'lodash';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Views } from 'src/app/class/property-type.enum';
-import { initFlowbite } from 'flowbite';
 import { MatSidenav } from '@angular/material/sidenav';
 import * as L from 'leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { grayPointerIcon } from 'src/app/model/maps/icons';
 import { Jawg_Sunny, Stadia_OSMBright } from 'src/app/model/maps/functions';
 import { HomeComponent } from 'src/app/home/home.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
 import { homeicon } from '../../model/maps/icons';
 import 'leaflet-routing-machine';
@@ -42,12 +42,17 @@ import { APIKEY } from 'src/environments/environment.prod';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import Axios from 'axios-observable';
 import GestureHandling from 'leaflet-gesture-handling';
-import { Location } from '@angular/common';
+import { Chart } from 'angular-highcharts';
+import { SeriesOptionsType } from 'highcharts';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { ChartService } from 'src/app/service/chart.service';
+import { initFlowbite, initModals } from 'flowbite';
+
 @Component({
   selector: 'app-user-pro',
   templateUrl: './user-pro.component.html',
   styleUrl: './user-pro.component.css',
-  standalone:false
+  standalone: false
 })
 export class UserProComponent extends HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -86,6 +91,9 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
     protected notification: NzNotificationService,
     protected nzMessage: NzMessageService,
     protected modalService: NgbModal,
+    protected breakpointObserver: BreakpointObserver,
+    protected chartService: ChartService,
+    configDropdown: NgbDropdownConfig
   ) {
     super(
       router,
@@ -104,8 +112,10 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
       nzMessage,
       modalService,
       imageService,
-      notification
+      notification,
+      breakpointObserver
     );
+    configDropdown.autoClose = true;
   }
 
   startChatConnection() {
@@ -114,11 +124,11 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
       console.log("Connection is started...");
       this.hub?.invoke("Connect", this.user.id);
       this.hub?.on("Users", (res: User) => {
-        //console.log(res);
+        console.log(res);
         this.users.find(p => p.id == res.id)!.status = res.status;
       });
       this.hub?.on("Messages", (res: Chat) => {
-        //console.log(res);
+        console.log(res);
         if (this.selectedUserId == res.userId) {
           this.chats.push(res);
         }
@@ -305,6 +315,11 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
   loadImagesEditForm() {
     setTimeout(() => {
       this.dropzone = this.dropComponent.directiveRef.dropzone();
+      if (this.user.isPro) {
+        this.dropzone.options.maxFiles = 90;
+      } else {
+        this.dropzone.options.maxFiles = 60;
+      }
       for (let key in this.home.images) {
         let value = this.home.images[key];
         var mockFile = { name: value.imageName, size: Math.floor(Math.random() * 99999) };
@@ -398,21 +413,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
           const body = new FormData();
           body.append('image', this.selectedFiles[i]);
           this.subscriptions.push(Axios.post(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${this.selectedFiles[i].name}`, body, {
-            onUploadProgress: progressEvent => {
-              if (progressEvent.loaded === progressEvent.total) {
-                this.fileStatus.current++
-              }
-              // save the individual file's progress percentage in object
-              this.fileProgress[this.selectedFiles[i].name] = progressEvent.loaded * 100 / progressEvent.total
-              // sum up all file progress percentages to calculate the overall progress
-              let totalPercent = this.fileProgress ? Object.values(this.fileProgress).reduce((sum, num) => sum + num, 0) : 0
-              // divide the total percentage by the number of files
-              this.fileStatus.percentage = Math.round(totalPercent / this.fileStatus.total)
-              //this.value = this.value + Math.floor(Math.random() * 10) + 1;
-              /*var percentComplete = progressEvent.loaded / progressEvent.total
-              this.progress = (percentComplete * 100);
-              console.log(this.progress);*/
-            }
+            //onUploadProgress: progressEvent => {}
           }).subscribe({
             next: (res: any) => {
               console.log(res);
@@ -425,7 +426,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
               this.filesUploadSuccessfully = i;
               console.log('subidas ' + this.filesUploadSuccessfully + ' de ' + this.selectedFiles.length);
               if ((this.selectedFiles.length - 1) == this.filesUploadSuccessfully) {
-                // se añaden las nuevas al array de las que ya estaban
+                // se añade el array modificado con las imágenes manipuladas
                 _.map(this.images, (x) => {
                   this.home.images.push(x);
                 });
@@ -462,6 +463,8 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
           }
         }));
     }
+    // fecha de modificación
+    this.home.fechaUltimaModificacion = new Date().toISOString();
     setTimeout(() => {
       switch (this.home.model) {
         case 'Flat':
@@ -670,7 +673,8 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
       $('.action_menu').toggle();
     });
     initFlowbite();
-    //this.startChatConnection();
+    initModals();
+    this.startChatConnection();
     // apaño temporal para probar el chat. Luego se añaden onclick en el anuncio
     // y se borran desde la interfaz
     this.subscriptions.push(this.userService.getUsers().subscribe({
@@ -697,6 +701,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
     this.getOwnHomes()
     this.getFavourites();
     this.setCardLike()
+    this.createChartLine()
   }
 
   public getOwnHomes() {
@@ -942,10 +947,76 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
     }
   }
 
+  private createChartLine(): void {
+    let date = new Date();
+    var data: any[] = [];
+    setTimeout(() => {
+      if (this.user.domains) {
+        _.map(this.user.domains, (value, index) => {
+          for (let i = 0; i < 15; i++) {
+            _.map(value.visitas, visita => {
+              var currentMonth = date.getMonth();
+              date.setDate(new Date().getDate() - i);
+              var stringDate = format(date, "yyyy-MM-dd");
+              if (stringDate == visita.date) {// si las fechas no coinciden es que no hay visitas: count=0
+                data.push([`${date.getDate()}/${date.getMonth() + 1}`, visita.count]);
+              }
+              if (currentMonth > date.getMonth()) {
+                date.setMonth(currentMonth)
+              }
+            })
+            data.push([`${date.getDate()}/${date.getMonth() + 1}`, 0]);
+          }
+          this.chartService.drawChart('chart-line' + index, 'line', value.calle + ' ' + value.numero, data, 'Visitas');
+          data = []
+        })
+      }
+    }, 1000);
+  }
+
+  selectedHomeLikes: number = 0;
+  selectedHomeViews: number = 0;
+  public customChartLine(selectedHome: Home): void {
+    selectedHome = this.homeService.performHome(selectedHome);
+    let date = new Date();
+    var data: any[] = [];
+    setTimeout(() => {
+      for (let i = 0; i < 7; i++) {
+        _.map(selectedHome.visitas, visita => {
+          var currentMonth = date.getMonth();
+          date.setDate(new Date().getDate() - i);
+          var stringDate = format(date, "yyyy-MM-dd");
+          if (stringDate == visita.date) {// si las fechas no coinciden es que no hay visitas: count=0
+            data.push([`${date.getDate()}/${date.getMonth() + 1}`, visita.count]);
+          }
+          if (currentMonth > date.getMonth()) {
+            date.setMonth(currentMonth)
+          }
+
+        })
+        data.push([`${date.getDate()}/${date.getMonth() + 1}`, 0]);
+
+      }
+      this.chartService.drawChart('custom-chart-line', 'line', selectedHome.calle + ' ' + selectedHome.numero, data, 'Visitas');
+      this.selectedHomeViews=_.sumBy(selectedHome.visitas, 'count');
+
+    }, 500);
+    /*_.map(selectedHome.visitas, (value,index) => {
+
+      _.add(value.count, this.selectedHomeViews);
+      console.log(this.selectedHomeViews)
+    });*/
+    /*for (let index = 0; index < selectedHome.visitas.length; index++) {
+      if (selectedHome[index].visitas) {
+        this.selectedHomeViews += selectedHome[index].visitas.count;
+      }
+    }*/
+    this.selectedHomeLikes = (selectedHome.likeMeForever.length) - 1;
+  }
+
   checkBox(param): any {
     //console.log(param)
-    //setTimeout(() => { console.log(this.home.aireAcondicionado) }, 1000);
-
+    //setTimeout(() => { console.log(this.home.aireAcondicionado) }, 1000)
   }
 
   ngOnDestroy(): void {

@@ -51,6 +51,7 @@ export const luxuryRed = new Icon({
   iconAnchor: [12, 41],
   popupAnchor: [0, -30],
   shadowSize: [41, 41],
+  className: 'beacon'
 });
 
 export const priceIcon= L.divIcon({

@@ -1,3 +1,5 @@
+import { Featured } from "../home";
+
 export class HomeDto {
     id: any;
     viviendaId: any;
@@ -30,11 +32,10 @@ export class HomeDto {
     nombreCreador: any;
     fechaCreacion: any;
     fechaUltimaModificacion: any;
-    numeroVisitas: any;
     comentario: any;
     destacar: any;
     colorDestacar: any = '#3a3b3c';
-    destacado: any;
+    destacado=new Featured();
     underPriceMarket: any;
     underPriceMarketAsString: any;
 
@@ -58,7 +59,6 @@ export class HomeDto {
     plantaMasAlta: any;
     politicaPrivacidad: any = false;
     contadorLikes: any;
-    contadorVisitas: any;
     idCreador: any;
     cabinaHidromasaje: any = false;
     ascensor: any = false;
@@ -70,6 +70,7 @@ export class HomeDto {
     disponibilidad: any;
     estanciaMinima: any;
     likeMe4everAsString: any;
+    visitasAsString:any;
 
     // House profile
     alarma: any = false;

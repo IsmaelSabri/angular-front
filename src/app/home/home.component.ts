@@ -12,7 +12,7 @@ import {
   NearlyServices,
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
-import { Component, ElementRef, Inject, Input, isDevMode, OnDestroy, OnInit, Output, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, Input, isDevMode, OnDestroy, OnInit, Output, QueryList, Renderer2, Signal, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { marker, LatLng, circleMarker } from 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
@@ -57,7 +57,6 @@ import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 import { ImageService } from '../service/image.service';
 import { HomeDto } from '../model/dto/home-dto';
 import _ from 'lodash';
-import { initFlowbite } from 'flowbite';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import GestureHandling from 'leaflet-gesture-handling';
 import {
@@ -72,10 +71,10 @@ import {
   ngLockElementByComponentProperty,
 } from 'ng-lock';
 import slug from 'slug'
-import format from 'date-fns/format';
-import endOfDay from 'date-fns/endOfDay';
-import { addDays, isAfter, isBefore, parseISO } from 'date-fns';
-
+import { addDays, isAfter, isBefore, parseISO, format, endOfDay } from 'date-fns';
+import { cssPathHome } from '../model/performance/css-styles';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-home',
@@ -85,7 +84,7 @@ import { addDays, isAfter, isBefore, parseISO } from 'date-fns';
   standalone: false
 })
 
-export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
+export class HomeComponent extends UserComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     router: Router,
     authenticationService: AuthenticationService,
@@ -103,13 +102,36 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     protected nzMessage: NzMessageService,
     protected modalSevice: NgbModal,
     protected imageService: ImageService,
-    protected notification: NzNotificationService
+    protected notification: NzNotificationService,
+    protected breakpointObserver: BreakpointObserver
   ) {
     super(router, authenticationService, userService, notificationService, route, toastr, document,
       renderer2, primengConfig, messageService, imageService);
   }
 
-  map!: L.map; // map allocates homes
+  loginButtonsSmallSize: boolean = false;
+  ngAfterViewInit(): void {
+    this.breakpointObserver
+      .observe(['(min-width: 1117px)'])
+      .subscribe((state: BreakpointState) => {
+        if (state.matches) {
+          //console.log('Viewport width is 1117px or greater!');
+          this.loginButtonsSmallSize = false;
+        } else {
+          this.loginButtonsSmallSize = true;
+          //console.log('Viewport width is less than 1117px!');
+        }
+      });
+    if (this.state) {
+      if (this.user.isPro) {
+        this.config.maxFiles = 90;
+      } else {
+        this.config.maxFiles = 60;
+      }
+    }
+  }
+
+  map!: L.Map; // map allocates homes
   map2!: L.Map; // map geocoding search location
   map3!: L.Map; // map to set nearly services
   map4!: L.Map; // map geocoding search location new project
@@ -141,7 +163,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   public condicionHeader: string[] = Object.values(PropertyTypeSelectHeader);
   public ensenyanza: string[] = Object.values(Enseñanza);
   public institucion: string[] = Object.values(Institucion);
-  public model: string[] = Object.values(Model);
+  //public model: string[] = Object.values(Model);
   public nearlyServices: string[] = Object.values(NearlyServices);
   public orientacion: string[] = Object.values(Orientacion);
   public precioMinimoAlquiler: string[] = Object.values(PrecioMinimoAlquiler);
@@ -163,7 +185,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     { name: 'Aprox.', value: false },
     { name: 'Exacta', value: true }
   ];
-  p: number = 1;
+  page: number = 1;
   modalFooterNull = null;
   shinePopup: boolean = false; //skeleton
   popupOpenViviendaId: string;
@@ -243,13 +265,22 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     this.adTitle.next(adTitle);
   }
 
+  public hideNavDropdown(aim: string) {
+    this.clickButton('nav-toggle'); // para móviles
+    $('.show-dropdown').removeClass()
+    $('#' + aim).css('height', '0px');
+    setTimeout(() => {
+      $('#' + aim).removeAttr('style')
+    }, 900);
+  }
+
   cardSkeletonOn: boolean = false;
   private scroll(el: string) {
     this.cardSkeletonOn = true;
     setTimeout(() => {
       this.cardSkeletonOn = false;
       document.querySelector('#' + el).scrollIntoView({
-        behavior: 'smooth'
+        behavior: 'smooth', block: "center"
       });
       if (window.onscrollend !== undefined) {
         document.getElementById(el).classList.add('border-4');
@@ -973,8 +1004,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
             .on('popupopen', () => {
               this.routerLinkId = +Home.id;
               this.routerLinkModel = Home.model;
-              var slugFest = Home.tipo + '+' + Home.calle + '+' + Home.distrito + '+' + Home.ciudad;
-              this.routerLinkQueryParams = slug(slugFest, '+');
+              var slugFest = Home.tipo + '-' + Home.calle + '-' + Home.distrito + '-' + Home.ciudad;
+              this.routerLinkQueryParams = slug(slugFest, '-');
               this.popupOpenViviendaId = Home.viviendaId;
               this.anyPopupOpen = true;
               this.disableMapEvents = true;
@@ -1224,7 +1255,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       $('<div class="d-flex flex-start">&nbsp;&nbsp;&nbsp;<ion-icon style="font-size:1em; position:relative;" src="assets/svg/sea.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + playa[0].distancia + '</span></div>&nbsp;').appendTo('.p_features');
     }
 
-
+    if (h.destacar) {
+      $(' <div class="listing-status"><div class="listing-status-item" id="' + h.viviendaId + 'nota-simple' + '">' + h.destacar + '</div></div>').appendTo('.carousel-leaflet');
+      if (h.colorDestacar) {
+        $('#' + h.viviendaId + 'nota-simple').css("background-color", h.colorDestacar);
+      }
+    }
 
 
 
@@ -1296,6 +1332,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
     this.getLocation();
     this.loadScripts();
+    for (let i = 0; i < cssPathHome.length; i++) {
+      this.styleUser[i] = this.renderer2.createElement('link') as HTMLLinkElement;
+      this.renderer2.appendChild(this.document.head, this.styleUser[i]);
+      this.renderer2.setProperty(this.styleUser[i], 'rel', 'stylesheet');
+      this.renderer2.setProperty(this.styleUser[i], 'href', cssPathHome[i]);
+    }
+    this.map.zoomControl.setPosition('bottomleft');
     this.clearMap('full-clear');
     this.primengConfig.ripple = true;
     if (this.state) {
@@ -1337,7 +1380,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
         }
       });
       this.map.on('locationerror', () => {
-        this.userLocationCoords = [40.4165000, -3.7025600];
+        this.userLocationCoords = new L.latLng(40.4165000, -3.7025600);
         this.map.setView(this.userLocationCoords, 10); // pon el foco en el mapa
         this.map.fitBounds([[this.userLocationCoords.lat, this.userLocationCoords.lng]]);
         this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
@@ -1356,18 +1399,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }*/
     console.log('string: ' + e)
   }
-  // only 4debug
-  printDate() {
-    console.log(format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS"))
-    var onBuy = new Date();
-    var onAfter = addDays(onBuy, 10);
-    console.log(onAfter)
-    console.log(isBefore(new Date(), onAfter))
-  }
 
   disableMapEvents: boolean = false;
   createLocationMarker() {
     this.disableMapEvents = true;
+    this.map.closePopup();
     this.home = new Home();
     this.images = new Array<HomeImage>();// new Array(30).fill('');
     this.tempEnergy = null;
@@ -1415,7 +1451,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   conditionTabs() {
-    if (this.homeDto.tipo == 'Habitación') {
+    if (this.homeDto.tipo == 'Habitación' || this.homeDto.condicion == 'Compartir') {
       this.shareTab.next(false);
       this.saleTab.next(true);
       this.rentTab.next(false);
@@ -1457,6 +1493,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.rentTab.next(false);
       this.homeDto.precioFinal = null;
     }
+    if (this.homeDto.tipo != 'Habitación') {
+      if (this.homeDto.condicion == 'Alquiler') {
+        this.saleTab.next(true);
+        this.homeDto.precioFinal = null;
+      } else if (this.homeDto.condicion == 'Venta' || this.homeDto.condicion == 'Alquiler y venta') {
+        this.saleTab.next(false);
+      }
+    }
   }
 
   getShareTab(): boolean {
@@ -1477,15 +1521,21 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.whatTab('Compartir');
       console.log(this.tabIndex);
     } else if ((this.homeDto.condicion == null || this.homeDto.condicion == undefined) && this.tabIndex == 3) {
-      this.whatTab('Movilidad');
-      console.log(this.tabIndex);
+      if (this.adTitle.getValue() == 'Proyecto nuevo') {
+        this.whatTab('Publicar');
+      } else {
+        this.whatTab('Movilidad');
+      }
     } else if ((this.homeDto.condicion == null || this.homeDto.condicion == undefined) && this.tabIndex == 4) {
       this.whatTab('Multimedia');
-      this.showPricingDrawer();
+    } else if ((this.homeDto.condicion == null || this.homeDto.condicion == undefined) && this.tabIndex == 5) {
+      this.whatTab('Publicar');
     } else if ((this.homeDto.condicion == 'Alquiler' || this.homeDto.condicion == 'Alquiler y venta') && this.tabIndex === 1) {
       this.whatTab('Alquiler');
     } else if ((this.homeDto.condicion == 'Alquiler' || this.homeDto.condicion == 'Alquiler y venta') && this.tabIndex === 2) {
       this.whatTab('Movilidad');
+    } else if ((this.homeDto.condicion == 'Alquiler' || this.homeDto.condicion == 'Alquiler y venta') && this.tabIndex === 4) {
+      this.whatTab('Multimedia');
     } else if (this.homeDto.condicion != 'Compartir' && this.tabIndex === 2) {
       this.whatTab('Compartir');
     } else if (this.homeDto.condicion === 'Compartir' && this.tabIndex === 3) {
@@ -1500,9 +1550,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.whatTab('Compartir');
     } else if (this.homeDto.condicion === 'Compartir' && this.tabIndex === 3) {
       this.whatTab('Movilidad');
-    } else {
+    } else if (this.homeDto.condicion === 'Compartir' && this.tabIndex === 4) {
       this.whatTab('Multimedia');
-      this.showPricingDrawer();
+    } else {
+      this.whatTab('Publicar');
     }
   }
   decreaseTab() {
@@ -1514,10 +1565,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       } else {
         this.tabIndex--;
       }
-      if (this.tabIndex == 5) {
-        var x = document.getElementById('prevTab');
-        x.style.display = 'none';
+      if (this.tabIndex == 5 && this.adTitle.getValue() == 'Proyecto nuevo') {
+        this.tabIndex = 3;
+        console.log(this.tabIndex)
       }
+      var x = document.getElementById('nextTab');
+      x.style.display = 'block';
     }
     if (this.tabIndex == 4) {
       var x = document.getElementById('nextTab');
@@ -1565,12 +1618,25 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       var x = document.getElementById('prevTab');
       x.style.display = 'block';
     } else if (flag == 'Multimedia') {
-      this.tabIndex = 5;
+      if (this.adTitle.getValue() == 'Proyecto nuevo') {
+        this.tabIndex = 3;
+        var x = document.getElementById('nextTab');
+        x.style.display = 'block';
+        var x = document.getElementById('prevTab');
+        x.style.display = 'block';
+      } else {
+        this.tabIndex = 5;
+        var x = document.getElementById('nextTab');
+        x.style.display = 'block';
+        var x = document.getElementById('prevTab');
+        x.style.display = 'block';
+      }
+    } else if (flag == 'Publicar') {
+      this.tabIndex = 6;
       var x = document.getElementById('nextTab');
       x.style.display = 'none';
       var x = document.getElementById('prevTab');
       x.style.display = 'block';
-      this.showPricingDrawer();
     }
   }
 
@@ -1599,7 +1665,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   dropzone: any;
   public config: DropzoneConfigInterface = {
     clickable: true,
-    maxFiles: 60,
     autoReset: null,
     errorReset: null,
     cancelReset: null,
@@ -1731,13 +1796,6 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  configProgress = {
-    onUploadProgress: function (progressEvent) {
-      this.progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-      console.log(this.progress);
-    }
-  }
-
   newHome() {
     this.lg.remove(this.markerPoint);
     if (this.adTitle.getValue() == 'Proyecto nuevo') {
@@ -1816,7 +1874,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     formData.append('cabinaHidromasaje', this.homeDto.cabinaHidromasaje);
     formData.append('direccionAproximada', this.homeDto.direccionAproximada);
     formData.append('politicaPrivacidad', this.homeDto.politicaPrivacidad);
-    formData.append('destacado', this.homeDto.destacado);
+    //formData.append('destacado', this.homeDto.destacado); ahora es de pago
     //rutas
     formData.append('colegios', JSON.stringify(this.colegio));
     formData.append('universidades', JSON.stringify(this.universidad));
@@ -1956,27 +2014,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
     }
     // fotos
     this.selectedFiles = this.dropComponent.directiveRef.dropzone().files;
+    this.fileStatus.total = this.selectedFiles.length;
     if (this.selectedFiles) {
       for (let i = 0; i < this.selectedFiles.length; i++) {
         if (this.selectedFiles[i]) {
           const body = new FormData();
           body.append('image', this.selectedFiles[i]);
           this.subscriptions.push(Axios.post(`https://api.imgbb.com/1/upload?&key=${APIKEY.imgbb}&name=${this.selectedFiles[i].name}`, body, {
-            onUploadProgress: progressEvent => {
-              if (progressEvent.loaded === progressEvent.total) {
-                this.fileStatus.current++
-              }
-              // save the individual file's progress percentage in object
-              this.fileProgress[this.selectedFiles[i].name] = progressEvent.loaded * 100 / progressEvent.total
-              // sum up all file progress percentages to calculate the overall progress
-              let totalPercent = this.fileProgress ? Object.values(this.fileProgress).reduce((sum, num) => sum + num, 0) : 0
-              // divide the total percentage by the number of files
-              this.fileStatus.percentage = Math.round(totalPercent / this.fileStatus.total)
-              //this.value = this.value + Math.floor(Math.random() * 10) + 1;
-              /*var percentComplete = progressEvent.loaded / progressEvent.total
-              this.progress = (percentComplete * 100);
-              console.log(this.progress);*/
-            }
+            // onUploadProgress: progressEvent => { }
           }).subscribe({
             next: (res: any) => {
               console.log(res);
@@ -2037,6 +2082,30 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
       this.ngOnInit();
       window.location.reload();
     },1000);*/
+  }
+
+  showFledgedServices(e: any, flag: string) {
+    this.notificationService.notify(NotificationType.INFO, flag + ' ' + this.homeDto.direccionAproximada);
+  }
+
+  // only 4debug
+  printDate() {
+    var onBuy = new Date();
+    console.log(onBuy.toISOString())
+    console.log(onBuy.toLocaleString())
+    console.log(onBuy.toUTCString())
+    console.log(onBuy.getDay())
+    console.log(onBuy.getDate())
+    console.log(onBuy.getUTCDate())
+    console.log(format(new Date(), "yyyy-MM-dd"))
+    var date = new Date("yyyy-MM-dd")
+    console.log(date)
+    //console.log(this.user.config.maxFiles)
+    /*console.log(format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS"))
+    var onBuy = new Date();
+    var onAfter = addDays(onBuy, 10);
+    console.log(onAfter)
+    console.log(isBefore(new Date(), onAfter))*/
   }
 
   checkBox(param): any {
@@ -2372,6 +2441,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    /*for (let i = 0; i < cssPathHome.length; i++) {
+      this.renderer2.removeChild(this.document.head, this.styleUser[i]);
+    }*/
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

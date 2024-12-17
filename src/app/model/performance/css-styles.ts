@@ -45,3 +45,6 @@ export const cssPathAdminUser = [
   '../../../assets/vendor/nouislider/nouislider.min.css'
 ]
 
+export const cssPathHome =[
+   '../../../assets/css/home-style/nav/scss/styles.scss',
+]

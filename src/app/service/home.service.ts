@@ -4,7 +4,7 @@ import {
   HttpClient,
   HttpHeaders,
 } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.prod';
 import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
@@ -92,10 +92,16 @@ export class HomeService {
     if (home.underPriceMarketAsString) {
       home.underPriceMarket = JSON.parse(home.underPriceMarketAsString)
     }
+    if (home.visitasAsString) {
+      home.visitas=JSON.parse(home.visitasAsString);
+    }
     if (home.likeMeForeverAsString === null) {
       home.likeMeForever = [];
     } else {
       home.likeMeForever = home.likeMeForeverAsString.split(',');
+    }
+    if (home.distanciaAlMar) {
+      home.beach=JSON.parse(home.distanciaAlMar);
     }
     return home;
   }

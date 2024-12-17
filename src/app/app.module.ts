@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { HTTP_INTERCEPTORS, provideHttpClient, HttpClientModule, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -108,7 +108,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
-import { ButtonDirective } from '@coreui/angular';
+
 import { CarouselModule } from 'primeng/carousel';
 import { NzBackTopModule } from 'ng-zorro-antd/back-top';
 import { InputTextModule } from 'primeng/inputtext';
@@ -155,6 +155,19 @@ import { LeafletMarkerClusterModule } from '@bluehalo/ngx-leaflet-markercluster'
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { NgProgressHttp, progressInterceptor, provideNgProgressHttp } from 'ngx-progressbar/http';
+import { NgProgressbar } from 'ngx-progressbar';
+import { ChartModule as ChartModuleHighCharts } from 'angular-highcharts';
+import { LayoutModule } from '@angular/cdk/layout';
+import { OrderModule } from 'ngx-order-pipe';
+import { MatDialogModule } from '@angular/material/dialog';
+import {
+  ButtonCloseDirective, ButtonDirective, ModalBodyComponent,
+  ModalComponent, ModalFooterComponent, ModalHeaderComponent,
+  ModalTitleDirective, ThemeDirective
+} from '@coreui/angular';
+import { ChartService } from './service/chart.service';
+
 export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
   url: 'https://httpbin.org/post',
@@ -176,6 +189,8 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     UserProComponent,
   ],
   imports: [
+    NgProgressbar,
+    NgProgressHttp,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
@@ -259,7 +274,6 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     NzButtonModule,
     NzSegmentedModule,
     DropzoneModule,
-    ButtonDirective,
     CarouselModule,
     NzBackTopModule,
     InputTextModule,
@@ -268,7 +282,6 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     NzMessageModule,
     NzEmptyModule,
     DropdownModule,
-    HttpClientModule,
     NzDescriptionsModule,
     ChartModule,
     BaseChartDirective,
@@ -299,6 +312,18 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     NzPaginationModule,
     NgxPaginationModule,
     NgxSkeletonLoaderModule,
+    ChartModuleHighCharts,
+    LayoutModule,
+    OrderModule,
+    MatDialogModule,
+    ButtonCloseDirective,
+    ButtonDirective,
+    ModalBodyComponent,
+    ModalComponent,
+    ModalFooterComponent,
+    ModalHeaderComponent,
+    ModalTitleDirective,
+    ThemeDirective
   ],
   exports: [
     // to get component in another modules
@@ -320,7 +345,9 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ImageService,
     BsModalService,
     MessageService,
-    provideHttpClient(),
+    ChartService,
+    provideHttpClient(withInterceptors([progressInterceptor])),
+    provideNgProgressHttp({ silentApis: ['filters'] }),
     provideCharts(withDefaultRegisterables()),
     provideCharts({ registerables: [BarController, Legend, Colors] }),
     { provide: NZ_I18N, useValue: es_ES },

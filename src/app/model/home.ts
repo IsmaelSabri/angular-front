@@ -27,10 +27,10 @@ export class Home {
   garage: number;
   estado: string; // nuevo, usado, a-reformar
   distanciaAlMar: string;
+  beach= new Array<Beach>();
   nombreCreador: string; // username
   fechaCreacion: string;
   fechaUltimaModificacion: string;
-  numeroVisitas: string;
   comentario: string;
   destacar: string;
   colorDestacar: any = '#3a3b3c';
@@ -59,7 +59,6 @@ export class Home {
   plantaMasAlta: string;
   politicaPrivacidad: boolean = false;
   contadorLikes: number;
-  contadorVisitas: number;
   idCreador: string;
   cabinaHidromasaje: boolean = false;
   ascensor: boolean = false;
@@ -79,7 +78,8 @@ export class Home {
   trastero: boolean = false;
   panelesSolares: boolean = false;
   jacuzzi: boolean = false;
-
+  visitas = new Array<Visitas>();
+  visitasAsString: string;
 
   // House profile
   alarma: boolean = false;
@@ -178,16 +178,22 @@ export class Home {
 
 export class Featured {
   featured: boolean = false;
-  featuredFrom=new Date('2020-10-10');
-  featuredTo=new Date('2020-10-10');
+  featuredFrom = new Date('2020-10-10');
+  featuredTo = new Date('2020-10-10');
   featuredTimes: number = 0;
 }
 
 export class UnderPriceMarket {
   lessPrice: boolean = false;
-  lessPriceFrom=new Date('2020-10-10');
-  lessPriceTo=new Date('2020-10-10');
+  lessPriceFrom = new Date('2020-10-10');
+  lessPriceTo = new Date('2020-10-10');
   lessPriceTimes: number = 0;
+}
+
+export class Visitas {
+  count: number;
+  date: string;
+  userId: string = '';
 }
 
 export interface Colegio {

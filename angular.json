@@ -98,10 +98,7 @@
               "buildTarget": "front-api-rest:build:production"
             },
             "development": {
-              "buildTarget": "front-api-rest:build:development",
-              "ssl": true,
-              "sslKey": "localhost.key",
-              "sslCert": "localhost.crt"
+              "buildTarget": "front-api-rest:build:development"
             }
           },
           "defaultConfiguration": "production"

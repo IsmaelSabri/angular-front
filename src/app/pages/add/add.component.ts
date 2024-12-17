@@ -5,7 +5,7 @@ import { NotificationService } from '../../service/notification.service';
 import { AuthenticationService } from '../../service/authentication.service';
 import { UserService } from '../../service/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio } from '../../model/home';
+import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio, Visitas } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { ContactUser } from 'src/app/model/contact-user';
 import { Lightbox } from 'ngx-lightbox';
@@ -45,12 +45,15 @@ import { EmailService } from 'src/app/service/email.service';
 import { initFlowbite } from 'flowbite';
 import { nzStatus } from 'src/app/class/ant-design.enum';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import _ from 'lodash';
+import { addDays, isAfter, isBefore, parseISO, format, endOfDay } from 'date-fns';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.css'],
-  standalone:false
+  standalone: false
 })
 
 export class AddComponent extends HomeComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -117,6 +120,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     imageService: ImageService,
     protected notification: NzNotificationService,
     protected emailService: EmailService,
+    protected breakpointObserver: BreakpointObserver
   ) {
     super(
       router,
@@ -135,7 +139,8 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       nzMessage,
       modalService,
       imageService,
-      notification
+      notification,
+      breakpointObserver
     );
   }
 
@@ -152,7 +157,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   @ViewChild('customLoadingTemplate') customLoadingTemplate: TemplateRef<any>;
   protected ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
 
-  @ViewChild('phone') inputElement;
+  @ViewChild('phone', { static: false }) inputElement: ElementRef<HTMLInputElement> = {} as ElementRef;;
   ngAfterViewInit(): void {
     // tel flags
     if (this.inputElement) {
@@ -178,107 +183,17 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
   ngOnInit(): void {
     initFlowbite();
     this.primengConfig.ripple = true;
-    var x = document.getElementById('photos-section');
-    x.style.display = 'none'
+    //$('html').css('overflow', 'hidden');
     // 1-localstorage 2-model
     if (this.homeService.getHomeFromLocalCache()) {
       this.home = this.homeService.getHomeFromLocalCache();
-      if (this.home) {
-        this.subscriptions.push(
-          this.route.fragment.subscribe({
-            next: (model) => {
-              this.dto.model = model;
-              this.route.params.subscribe({
-                next: (params) => {
-                  this.dto.id = params['id'];
-                }, error: (errorResponse: HttpErrorResponse) => {
-                  this.notificationService.notify(
-                    NotificationType.ERROR,
-                    errorResponse.error.message + 'Cannot catch home id'
-                  );
-                }
-              })
-            },
-            error: (errorResponse: HttpErrorResponse) => {
-              this.notificationService.notify(
-                NotificationType.ERROR,
-                errorResponse.error.message + 'Cannot catch home model'
-              );
-            }
-          }));
-        const homeDto = JSON.stringify(this.dto);
-        this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
-          next: (res) => {
-            this.home = this.homeService.performHome(res);
-            if (this.home.energyCert) {
-              this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
-            }
-            if (this.home.vistasDespejadas) {
-              this.views = this.home.vistasDespejadas.split(',');
-            }
-            if (this.home.tipos) {
-              this.projectFeatures = this.home.tipos.split(',');
-            }
-            if (this.state) {
-              this.user = this.authenticationService.getUserFromLocalCache();
-            }
-            setTimeout(() => {
-              for (let i = 0; i < this.home.images.length; i++) {
-                const src = this.home.images[i].imageUrl + i + '.jpg';
-                const caption = i + 1 + ' / ' + this.home.images.length;
-                const thumb = this.home.images[i].imageUrl + i + '.jpg';
-                const album = {
-                  src: src,
-                  caption: caption,
-                  thumb: thumb,
-                };
-                this._albums.push(album);
-              }
-            }, 1000);
-            this.home.images = JSON.parse(this.home.imagesAsString);
-            var y = document.getElementById('skeleton-section');
-            y.style.display = 'none';
-            x.style.display = 'block';
-            this.setEnergyFeatures(
-              this.home.consumo.substring(0, 1),
-              this.home.emisiones.substring(0, 1)
-            );
-            L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
-            this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
-              [this.home.lat, this.home.lng],
-              17
-            );
-            Stadia_OSMBright().addTo(this.mapAdd);
-            this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
-            this.colegio = JSON.parse(this.home.colegios);
-            this.universidad = JSON.parse(this.home.universidades);
-            this.mercados = JSON.parse(this.home.supermercados);
-            this.autobus = JSON.parse(this.home.bus);
-            this.aeropuerto = JSON.parse(this.home.aeropuerto);
-            this.beach = JSON.parse(this.home.distanciaAlMar);
-            this.metro = JSON.parse(this.home.metro);
-            // to clear circle when print any route
-            this.mapEvents.add('circle');
-            this.loadScripts();
-            this.timelineStatus();
-            this.homeService.getHomes().subscribe((data) => {
-              this.homes = data;
-              for (let i = 0; i < this.homes.length; i++) {
-                this.homes[i].images = JSON.parse(this.homes[i].imagesAsString);
-              }
-            })
-          },
-          error: () => {
-            this.notificationService.notify(
-              NotificationType.ERROR, 'El anuncio ' + this.dto.id + ' ha caducado o ha sido eliminado',
-            );
-            this.router.navigateByUrl('/home');
-          }
-        }))
-      }
+      this.getHomeFromUrl();
+    } else if (!this.homeService.getHomeFromLocalCache()) {
+      this.getHomeFromUrl();
     } else {
       this.router.navigateByUrl('/home');
       NotificationType.ERROR, 'El anuncio ' + 'ha caducado o ha sido eliminado!';
+      console.log('1')
     }
     if (this.home.colorDestacar) {
       this.imageBadgeColor = this.sanitizer.bypassSecurityTrustStyle(this.home.colorDestacar);
@@ -299,10 +214,11 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
         this.notificationService.notify(
           NotificationType.ERROR, 'El anuncio ' + this.dto.id + 'ha caducado o ha sido eliminado!',
         );
+        console.log('2')
         this.router.navigateByUrl('/home');
       }
     }));
-    // marcar el like
+    // do u like?
     if (this.state) {
       setTimeout(() => {
         if (this.home.likeMeForever.includes(this.user.userId)) {
@@ -313,6 +229,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       }, 1000);
     }
     //if(Object.keys(this.home).length){
+    // draw donut
     this.doughnutChartData = {
       labels: ['Precio de venta', 'Impuestos y gastos', 'Entrada', 'Financiado'],
       datasets: [
@@ -323,6 +240,146 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
         },
       ],
     };
+    // guarda la visita
+    setTimeout(() => {
+      var today = format(new Date(), "yyyy-MM-dd")
+      if (this.home.visitasAsString) { // no es la primera visita del anuncio
+        _.map(this.home.visitas, v => {
+          if (v.date == today) { // no es la primera visita del día 
+            v.count++;
+            if (this.state) { // usuario logueado
+              if (!v.userId.includes(this.user.userId)) {
+                v.userId = this.user.userId + ',' + v.userId;
+              }
+            } else { // usuario anónimo
+              if (!v.userId.includes('unknown')) {
+                v.userId = 'unknown,' + v.userId;
+              }
+            }
+            //this.home.visitas.push(visita);
+          } else { // primera visita del día
+            var visita = new Visitas();
+            visita.count = 1;
+            visita.date = today;
+            if (this.state) {
+              visita.userId = this.user.userId;
+            } else {
+              visita.userId = 'unknown';
+            }
+            this.home.visitas.push(visita);
+          }
+        })
+      } else { // primera visita del anuncio
+        this.home.visitas = []
+        var visita = new Visitas();
+        visita.count = 1;
+        visita.date = today;
+        if (this.state) {
+          visita.userId = this.user.userId;
+        } else {
+          visita.userId = 'unknown';
+        }
+        this.home.visitas.push(visita);
+      }
+      this.home.visitasAsString = JSON.stringify(this.home.visitas).split(',null').join('');
+      this.subscriptions.push(this.homeService.updateHome(this.home).subscribe({
+        next: () => {
+        },
+        error: () => {
+        }
+      }));
+    }, 1000);
+
+
+  }
+
+  getHomeFromUrl() {
+    if (this.route.snapshot.paramMap.get('id') && this.route.snapshot.fragment) {
+      this.dto.id = this.route.snapshot.paramMap.get('id');
+      this.dto.model = this.route.snapshot.fragment;
+    }
+    var homeDto = JSON.stringify(this.dto);
+    this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
+      next: (res) => {
+        this.home = this.homeService.performHome(res);
+        if (this.home.energyCert) {
+          this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
+        }
+        if (this.home.vistasDespejadas) {
+          this.views = this.home.vistasDespejadas.split(',');
+        }
+        if (this.home.tipos) {
+          this.projectFeatures = this.home.tipos.split(',');
+        }
+        if (this.state) {
+          this.user = this.authenticationService.getUserFromLocalCache();
+        }
+        // stardard: 60, pro: 90
+        var customIndex;
+        if (this.propertyOwner) {
+          if (!this.propertyOwner.isPro) {
+            if (this.home.images.length > 60) {
+              customIndex = 60;
+            } else {
+              customIndex = this.home.images.length;
+            }
+          } else {
+            customIndex = this.home.images.length;
+          }
+        }
+        setTimeout(() => {
+          this.home.images = JSON.parse(this.home.imagesAsString);
+          var y = document.getElementById('skeleton-section');
+          y.style.display = 'none';
+          for (let i = 0; i < customIndex; i++) {
+            const src = this.home.images[i].imageUrl + i + '.jpg';
+            const caption = i + 1 + ' / ' + customIndex;
+            const thumb = this.home.images[i].imageUrl + i + '.jpg';
+            const album = {
+              src: src,
+              caption: caption,
+              thumb: thumb,
+            };
+            this._albums.push(album);
+          }
+        }, 1300);
+        this.setEnergyFeatures(
+          this.home.consumo.substring(0, 1),
+          this.home.emisiones.substring(0, 1)
+        );
+        L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
+        this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
+          [this.home.lat, this.home.lng],
+          17
+        );
+        Stadia_OSMBright().addTo(this.mapAdd);
+        this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
+        this.colegio = JSON.parse(this.home.colegios);
+        this.universidad = JSON.parse(this.home.universidades);
+        this.mercados = JSON.parse(this.home.supermercados);
+        this.autobus = JSON.parse(this.home.bus);
+        this.aeropuerto = JSON.parse(this.home.aeropuerto);
+        this.beach = JSON.parse(this.home.distanciaAlMar);
+        this.metro = JSON.parse(this.home.metro);
+        // to clear circle when print any route
+        this.mapEvents.add('circle');
+        this.loadScripts();
+        this.timelineStatus();
+        this.homeService.getHomes().subscribe((data) => {
+          this.homes = data;
+          for (let i = 0; i < this.homes.length; i++) {
+            this.homes[i].images = JSON.parse(this.homes[i].imagesAsString);
+          }
+        })
+      },
+      error: () => {
+        this.notificationService.notify(
+          NotificationType.ERROR, 'El anuncio ' + this.dto.id + ' ha caducado o ha sido eliminado',
+        );
+        console.log('3')
+        this.router.navigateByUrl('/home');
+      }
+    }))
   }
 
   cuoreLike(id: string) {

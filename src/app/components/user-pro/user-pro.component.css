@@ -372,14 +372,14 @@ body {
   float: right;
 }
 
-.clearfix:after {
+/*.clearfix:after {
   visibility: hidden;
   display: block;
   font-size: 0;
   content: " ";
   clear: both;
   height: 0;
-}
+}*/
 
 @media only screen and (max-width: 767px) {
   .chat-app .people-list {
@@ -971,3 +971,7 @@ body {
 ::ng-deep .ant-notification-notice-close {
   color:white;
 }
+/*.ng-progress-bar {
+  --ng-progress-color: #76ba1b;
+}*/
+
