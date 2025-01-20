@@ -27,7 +27,7 @@ export class Home {
   garage: number;
   estado: string; // nuevo, usado, a-reformar
   distanciaAlMar: string;
-  beach= new Array<Beach>();
+  beach = new Array<Beach>();
   nombreCreador: string; // username
   fechaCreacion: string;
   fechaUltimaModificacion: string;
@@ -58,7 +58,6 @@ export class Home {
   calefaccion: boolean = false;
   plantaMasAlta: string;
   politicaPrivacidad: boolean = false;
-  contadorLikes: number;
   idCreador: string;
   cabinaHidromasaje: boolean = false;
   ascensor: boolean = false;
@@ -79,7 +78,7 @@ export class Home {
   panelesSolares: boolean = false;
   jacuzzi: boolean = false;
   visitas = new Array<Visitas>();
-  visitasAsString: string;
+  prototipo: string; // prototipo:vivienda||oficina||garage||trastero||......
 
   // House profile
   alarma: boolean = false;
@@ -174,6 +173,49 @@ export class Home {
   valoracionesUsuarios: string;
   valoraciones: number;
   starRatingAverage: number;
+
+  // Oficina profile
+  aparcamientos: boolean = false;
+  climatizacion: string;
+  disposicion: string; // a pie de calle, entresuelo, piso, centro comercial, sótano... 
+  distribucion: string; // diáfana, tabicada, mamparas, tabicada, tabiques móviles...
+  controlDeAccesoPersonal: boolean = false;
+  controlDeAccesoVehiculos: boolean = false;
+  falsoTecho: boolean = false;
+  sueloTecnico: boolean = false;
+  uso: boolean = false;
+  /*  para el form desde la herencia:
+  *   -aireAcondicionado
+  *   -amueblado
+  *   -recepción24_7
+  *   -ascensor
+  */
+
+  // Edificio profile
+  edificioExclusivoOficinas: boolean = false;
+
+  //  Negocio Home
+  nave: boolean = false;
+  local: boolean = false;
+  actividadComercial: string;
+  haceEsquina: boolean = false;
+  salidaDeHumos: boolean = false;
+  traspaso: boolean = false;
+  conAlmacen: boolean = false;
+  conOficina: boolean = false;
+  lucesSalidaEmergencia: boolean = false;
+  escaparates: number;
+
+  //  Suelo profile
+  urbano: boolean = false;
+  urbanizable: boolean = false;
+  noUrbanizable: boolean = false;
+
+  //  Garage profile
+  plazaParaCoche: boolean = false;
+  plazaParaMoto: boolean = false;
+
+  //  trastero va implícito en la superficie
 }
 
 export class Featured {
@@ -268,6 +310,7 @@ export class HomeImage {
 }
 
 export class HomeFilterRequest {
+  // vivienda
   condicion: string;
   ciudad: string;
   tipo: string[] = [];
@@ -289,11 +332,41 @@ export class HomeFilterRequest {
   cabinaHidromasaje: boolean;
   amueblado: boolean;
   ascensor: boolean;
-  inmuebleAccesible: boolean;
+  inmuebleAccesible: boolean; // para filtrar, intalacionesDiscapacitados en Home
   panelesSolares: boolean;
   jacuzzi: boolean;
   piscinaPrivada: boolean;
   piscinaComp: boolean;
   trastero: boolean;
   keywords: string = '';
+
+  // Oficina
+  // amueblado: boolean; está en herencia
+  // aireAcondicionado: hace referencia a -climatización-
+  aparcamientos: boolean;
+  controlDeAccesoPersonal: boolean;
+  controlDeAccesoVehiculos: boolean;
+  videoVigilancia: boolean; // esta en herencia pero sale de -House-
+  recepcion24_7: boolean;
+  edificioExclusivoOficina: boolean;
+
+  // Negocio HomeFilterRequest
+  nave: boolean;
+  local: boolean;
+  haceEsquina: boolean;
+  salidaDeHumos: boolean;
+  traspaso: boolean;
+
+  // Suelo
+  urbano: boolean;
+  urbanizable: boolean;
+  noUrbanizable: boolean;
+
+  // Garage
+  plazaParaCoche: boolean;
+  plazaParaMoto: boolean;
+
+  // Trastero
+
+  // Edificio
 }

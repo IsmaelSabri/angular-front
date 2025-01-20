@@ -35,7 +35,7 @@ export class HomeDto {
     comentario: any;
     destacar: any;
     colorDestacar: any = '#3a3b3c';
-    destacado=new Featured();
+    destacado = new Featured();
     underPriceMarket: any;
     underPriceMarketAsString: any;
 
@@ -58,7 +58,6 @@ export class HomeDto {
     calefaccion: any = false;
     plantaMasAlta: any;
     politicaPrivacidad: any = false;
-    contadorLikes: any;
     idCreador: any;
     cabinaHidromasaje: any = false;
     ascensor: any = false;
@@ -70,7 +69,6 @@ export class HomeDto {
     disponibilidad: any;
     estanciaMinima: any;
     likeMe4everAsString: any;
-    visitasAsString:any;
 
     // House profile
     alarma: any = false;
@@ -167,6 +165,51 @@ export class HomeDto {
     valoracionesUsuarios: any;
     valoraciones: any;
     starRatingAverage: any;
+
+    prototipo: any; // model:'other'; prototipo:oficina||garage||trastero||......
+
+    // Oficina profile
+    aparcamientos: any = false;
+    climatizacion: string;
+    disposicion: string;  // a pie de calle, entresuelo, piso, centro comercial, sótano... 
+    distribucion: string;  // diáfana, tabicada, mamparas, tabicada, tabiques móviles...
+    controlDeAccesoPersonal: any = false;
+    controlDeAccesoVehiculos: any = false;
+    falsoTecho: any = false;
+    sueloTecnico: any = false;
+    uso: any = false;
+    /*  para el form desde la herencia:
+    *   -aireAcondicionado
+    *   -amueblado -> con mobiliario
+    *   -recepción24_7 -> seguridad 24/7
+    *   -ascensor
+    */
+
+    // Edificio profile
+    edificioExclusivoOficinas: any = false;
+
+    //  Negocio Home
+    nave: any = false;
+    local: any = false;
+    actividadComercial: string;
+    haceEsquina: any = false;
+    salidaDeHumos: any = false;
+    traspaso: any = false;
+    conAlmacen: any = false;
+    conOficina: any = false;
+    lucesSalidaEmergencia: any = false;
+    escaparates: any;
+
+    //  Suelo profile
+    urbano: any = false;
+    urbanizable: any = false;
+    noUrbanizable: any = false;
+
+    //  Garage profile
+    plazaParaCoche: any = false;
+    plazaParaMoto: any = false;
+
+    //  trastero va implícito en la superficie
 }
 
 export class SingleDtoHomeRequest {

@@ -1,16 +1,20 @@
-import { Universidad, Supermercado, Aeropuerto } from './../model/home';
-import { marker } from 'leaflet';
+// Model valga la redundancia
 export enum Model {
   Flat = 'Flat',
   House = 'House',
   Room = 'Room',
   NewProject = 'NewProject',
-  Office = 'Office',
-  Local = 'Local',
-  Ground = 'Ground',
-  Garage = 'Garage',
-  JunkRoom = 'JunkRoom',
+  Other = 'Other',
   HolidayRent = 'HolidayRent'
+}
+// Prototipo para distinguir los modelos Other tirando de herencia
+export enum OtherValues {
+  Vivienda = 'Vivienda',
+  Oficina = 'Oficina',
+  Negocio = 'Negocio',
+  Suelo = 'Suelo',
+  Garage = 'Garage',
+  Trastero = 'Trastero'
 }
 
 export enum PropertyTo { // condicion
@@ -18,7 +22,6 @@ export enum PropertyTo { // condicion
   Alquiler = 'Alquiler',
   Venta = 'Venta',
   Compartir = 'Compartir',
-  //compartir = 'Compartir',
   //intercambio_vacacional = 'Intercambio vacacional',
   //nuevoProyectoObra = 'Nuevo proyecto obra nueva',
   //alquilerDias = 'Alquiler por días',
@@ -92,7 +95,7 @@ export enum ProjectFeatures { // tipo
   Pareados = 'Pareados',
   Casas_rusticas = 'Casas Rústicas',
   Villas = 'Urb. de Villas',
-  Locales = 'Locales',
+  Locales_y_naves = 'Locales y naves',
   Oficinas = 'Oficinas',
   Garages = 'Garages',
   Trasteros = 'Trasteros'
@@ -446,6 +449,43 @@ export enum PrecioMaximoVenta {
   diezmillones = '10,000,000€',
 }
 
+export enum PrecioMaximoVentaEdificio {
+  cien = '10,000€',
+  veintemil = '20,000€',
+  treintamil = '30,000€',
+  cuarentamil = '40,000€',
+  cincuentamil = '50,000€',
+  sesentamil = '60,000€',
+  setentamil = '70,000€',
+  ochentamil = '80,000€',
+  noventamil = '90,000€',
+  cienmil = '100,000€',
+  cientoveintemil = '120,000€',
+  cientocincuentamil = '150,000€',
+  cientoochentamil = '180,000€',
+  doscientosmil = '200,000€',
+  doscientosveintemil = '220,000€',
+  doscientoscincuentamil = '250,000€',
+  doscientosochentamil = '280,000€',
+  trescientosmil = '300,000€',
+  trescientoscincuentamil = '350,000€',
+  trescientosochentamil = '380,000€',
+  cuatrocientosmil = '400,000€',
+  cuantrocientoscincuentamil = '450,000€',
+  quinientosmil = '500,000€',
+  quinientoscincuentamil = '550,000€',
+  seiscientosmil = '600,000€',
+  seiscientoscincuentamil = '650,000€',
+  setecientosmil = '700,000€',
+  ochocientosmil = '800,000€',
+  novecientosmil = '900,000€',
+  unmillon = '1,000,000€',
+  cincomillones = '5,000,000€',
+  diezmillones = '10,000,000€',
+  veintemillones = '20,000,000€',
+  cincuentamillones = '50,000,000€'
+}
+
 export enum Superficie {
   cualquiera = 'Cualquiera',
   cincuentaM = '50m²',
@@ -465,4 +505,29 @@ export enum Superficie {
   novencientos = '900m²',
   unkM = '1,000m²',
   doskM = '2,000m²',
+}
+
+export enum Disposicion {
+  aPieDecalle = 'A pie de calle',
+  entresuelo = 'Entresuelo',
+  piso = 'Piso',
+  centroComercial = 'Centro comercial',
+  sotano = 'Sótano',
+  otro = 'Otro'
+}
+
+export enum Climatizacion{
+  difusores='Difusores',
+  rejillas='Rejillas',
+  difusoresYrejillas='Difusores y rejillas',
+  split='Split',
+  preinstalacion='Preinstalación',
+  ninguna='Ninguna'
+}
+
+export enum DistribucionOficina {
+  diafana = 'Diáfana',
+  tabicada = 'Tabicada',
+  mamparas = 'Mamparas',
+  tabiquesMoviles = 'Tabiques móviles'
 }

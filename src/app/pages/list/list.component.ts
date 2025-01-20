@@ -14,12 +14,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NzAlign, NzJustify } from 'ng-zorro-antd/flex';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImageService } from 'src/app/service/image.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { PrimeNG } from 'primeng/config';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -40,7 +41,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
     modalServiceBs: BsModalService,
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
-    primengConfig: PrimeNGConfig,
+    primeng: PrimeNG,
     messageService: MessageService,
     nzMessage: NzMessageService,
     modalSevice: NgbModal,
@@ -60,7 +61,7 @@ export class ListComponent extends HomeComponent implements OnInit, OnDestroy {
       modalServiceBs,
       document,
       renderer2,
-      primengConfig,
+      primeng,
       messageService,
       nzMessage,
       modalSevice,

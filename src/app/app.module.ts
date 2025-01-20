@@ -108,7 +108,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
-
 import { CarouselModule } from 'primeng/carousel';
 import { NzBackTopModule } from 'ng-zorro-antd/back-top';
 import { InputTextModule } from 'primeng/inputtext';
@@ -167,6 +166,13 @@ import {
   ModalTitleDirective, ThemeDirective
 } from '@coreui/angular';
 import { ChartService } from './service/chart.service';
+import { ApplicationConfig } from '@angular/core';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
+import { DrawerModule } from 'primeng/drawer';
+import { MatTabsModule } from '@angular/material/tabs';
+import { PricingCardComponent } from './common/pricing-card/pricing-card.component';
 
 export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -187,6 +193,7 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     PasswordComponent,
     AdminComponent,
     UserProComponent,
+    PricingCardComponent,
   ],
   imports: [
     NgProgressbar,
@@ -323,7 +330,9 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ModalFooterComponent,
     ModalHeaderComponent,
     ModalTitleDirective,
-    ThemeDirective
+    ThemeDirective,
+    DrawerModule,
+    MatTabsModule,
   ],
   exports: [
     // to get component in another modules
@@ -331,6 +340,7 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     AddComponent,
     ListComponent,
     AdminComponent,
+    PricingCardComponent,
   ],
   providers: [
     NotificationService,
@@ -374,7 +384,16 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
           console.error(err);
         }
       } as SocialAuthServiceConfig,
-    }
+    },
+    provideAnimationsAsync(),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+        options: {
+          darkModeSelector: '.my-app-dark'
+        }
+      }
+    }),
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

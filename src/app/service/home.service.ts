@@ -63,6 +63,11 @@ export class HomeService {
   public updateHolidayRent(home: Home): Observable<Home> {
     return this.http.put<Home>(`${this.host}/api/home/holiday-rent`, home);
   }
+
+  public updateOther(home: Home): Observable<Home> {
+    return this.http.put<Home>(`${this.host}/api/home/other`, home);
+  }
+
   // local storage
   public getHomeFromLocalCache(): Home {
     if (localStorage.getItem('currentBuilding')) {
@@ -92,16 +97,16 @@ export class HomeService {
     if (home.underPriceMarketAsString) {
       home.underPriceMarket = JSON.parse(home.underPriceMarketAsString)
     }
-    if (home.visitasAsString) {
+    /*if (home.visitasAsString) {
       home.visitas=JSON.parse(home.visitasAsString);
-    }
+    }*/
     if (home.likeMeForeverAsString === null) {
       home.likeMeForever = [];
     } else {
       home.likeMeForever = home.likeMeForeverAsString.split(',');
     }
     if (home.distanciaAlMar) {
-      home.beach=JSON.parse(home.distanciaAlMar);
+      home.beach = JSON.parse(home.distanciaAlMar);
     }
     return home;
   }

@@ -5,7 +5,6 @@
 // user-pro
 export const dynamicUserProScripts = [
   'https://buttons.github.io/buttons.js',
-  //'https://cdn.quilljs.com/1.3.6/quill.js',
   'https://code.jquery.com/jquery-3.7.1.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js',
   '../../../assets/js/bootstrap.min.js',
@@ -15,8 +14,6 @@ export const dynamicUserProScripts = [
   '../../../assets/js/user-pro-dashboard/extras.1.1.0.min.js',
   '../../../assets/js/user-pro-dashboard/shards-dashboards.1.1.0.js',
   '../../../assets/js/user-pro-dashboard/shards-dashboards.1.1.0.min.js',
-  '../../../assets/js/user-pro-dashboard/app/app-blog-overview.1.1.0.js',
-  '../../../assets/js/user-pro-dashboard/app/app-blog-overview.1.1.0.min.js',
   '../../../assets/js/user-pro-dashboard/app/app-components-overview.1.1.0.js',
   '../../../assets/js/user-pro-dashboard/app/app-components-overview.1.1.0.min.js',
   '../../../assets/js/user-pro-dashboard/app/user-pro.js',

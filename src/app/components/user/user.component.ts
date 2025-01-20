@@ -1,6 +1,5 @@
-import { BrandImage } from './../../model/user';
-import { Component, OnInit, OnDestroy, ViewChild, Inject, Renderer2, ElementRef } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy, Inject, Renderer2 } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user.service';
 import { NotificationService } from '../../service/notification.service';
@@ -15,12 +14,12 @@ import { FileUploadStatus } from '../../model/performance/file-upload.status';
 import { Rol } from '../../class/role.enum';
 import { ToastrService } from 'ngx-toastr';
 import { DOCUMENT } from '@angular/common';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { ImageService } from 'src/app/service/image.service';
 import { SingleDtoHomeRequest } from 'src/app/model/dto/home-dto';
 import { NzSelectSizeType } from 'ng-zorro-antd/select';
 import { differenceInCalendarDays } from 'date-fns';
-import { TipoDeVia, Bathrooms, HouseType, PropertyState, PropertyTo, Orientacion, BadgeDestacar, CarPlaces, ConsumoEnergetico, EmisionesCO2 } from 'src/app/class/property-type.enum';
+import { PrimeNG } from 'primeng/config';
 
 @Component({
   selector: 'app-user',
@@ -85,7 +84,7 @@ export class UserComponent implements OnInit, OnDestroy {
   constructor(protected router: Router, protected authenticationService: AuthenticationService,
     protected userService: UserService, protected notificationService: NotificationService,
     protected route: ActivatedRoute, protected toastr: ToastrService, @Inject(DOCUMENT) protected document: Document,
-    protected renderer2: Renderer2, protected primengConfig: PrimeNGConfig, protected messageService: MessageService,
+    protected renderer2: Renderer2, protected primeng: PrimeNG, protected messageService: MessageService,
     protected imageService: ImageService
   ) { }
 

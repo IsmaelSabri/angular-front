@@ -4,7 +4,7 @@ import { tileLayer } from 'leaflet';
 import { APIKEY } from 'src/environments/environment.prod';
 import * as L from 'leaflet';
 
-export const tileLayerSelect = (
+export const tileLayerSelect: L.tileLayer = (
   layer: string = tileLayers.baseLayers.thunderForest.map.outdoors,
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -15,7 +15,7 @@ export const tileLayerSelect = (
   return tileLayer(layer, options);
 };
 
-export const tileLayerWMSSelect = (
+export const tileLayerWMSSelect: L.tileLayer = (
   service: string = tileLayersWMS.mundialis.baseUrl,
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -29,7 +29,7 @@ export const tileLayerWMSSelect = (
   return tileLayer.wms(service, options);
 };
 
-export const tileLayerWMSSelectIGN = (
+export const tileLayerWMSSelectIGN: L.tileLayer = (
   service: string = 'https://www.ign.es/wms-inspire/ign-base?',
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -43,7 +43,7 @@ export const tileLayerWMSSelectIGN = (
   return tileLayer.wms(service, options);
 };
 
-export const tileLayerCP = (
+export const tileLayerCP: L.tileLayer = (
   service: string = 'https://www.cartociudad.es/wms-inspire/direcciones-ccpp?',
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -57,7 +57,37 @@ export const tileLayerCP = (
   return tileLayer.wms(service, options);
 };
 
-export const tileLayerTransportes = (
+export const tileLayerGoogleStreets: L.tileLayer = (
+  service: string = 'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+  options: IPropertiesOptions = {
+    minZoom: 0,
+    maxZoom: 20,
+    layers: 'google-streets',
+    format: 'image/png',
+    transparent: true,
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    attribution: tileLayers.baseLayers.default.atribution,
+  }
+) => {
+  return tileLayer.wms(service, options);
+};
+
+export const cartocdnDarkAll: L.tileLayer = (
+  service: string = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  options: IPropertiesOptions = {
+    minZoom: 0,
+    maxZoom: 20,
+    layers: 'google-streets',
+    format: 'image/png',
+    transparent: true,
+    subdomains: ['a', 'b', 'c', 'd'],
+    attribution: tileLayers.baseLayers.default.atribution,
+  }
+) => {
+  return tileLayer.wms(service, options);
+};
+
+export const tileLayerTransportes: L.tileLayer = (
   service: string = 'https://servicios.idee.es/wms-inspire/transportes',
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -71,7 +101,7 @@ export const tileLayerTransportes = (
   return tileLayer.wms(service, options);
 };
 
-export const tileLayerHere = (
+export const tileLayerHere: L.tileLayer = (
   service: string = `https://1.base.maps.ls.hereapi.com/maptile/2.1/maptile/newest/normal.day/11/525/761/256/png8?apiKey=${APIKEY.hereToken}`,
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -85,7 +115,7 @@ export const tileLayerHere = (
   return tileLayer.wms(service, options);
 };
 
-export const Stadia_OSMBright = (
+export const Stadia_OSMBright: L.tileLayer = (
   service: string = 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png',
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -97,7 +127,7 @@ export const Stadia_OSMBright = (
   return tileLayer.wms(service, options);
 };
 
-export const OpenStreetMap_Mapnik = (
+export const OpenStreetMap_Mapnik: L.tileLayer = (
   service: string = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -109,7 +139,7 @@ export const OpenStreetMap_Mapnik = (
   return tileLayer.wms(service, options);
 };
 
-export const CartoDB_Voyager = (
+export const CartoDB_Voyager: L.tileLayer = (
   service: string = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -121,7 +151,7 @@ export const CartoDB_Voyager = (
   return tileLayer.wms(service, options);
 };
 
-export const Thunderforest_OpenCycleMap = (
+export const Thunderforest_OpenCycleMap: L.tileLayer = (
   service: string = `https://tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey=${APIKEY.thunderForestToken}`,
   options: IPropertiesOptions = {
     minZoom: 0,
@@ -134,7 +164,7 @@ export const Thunderforest_OpenCycleMap = (
   return tileLayer.wms(service, options);
 };
 
-export const Jawg_Sunny = (
+export const Jawg_Sunny: L.tileLayer = (
   service: string = `https://{s}.tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token=${APIKEY.jawgToken}`,
   options: IPropertiesOptions = {
     minZoom: 0,

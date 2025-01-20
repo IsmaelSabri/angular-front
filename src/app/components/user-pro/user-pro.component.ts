@@ -10,7 +10,7 @@ import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotificationType } from 'src/app/class/notification-type.enum';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { User } from 'src/app/model/user';
 import { Home, HomeImage } from 'src/app/model/home';
 import { Chat } from 'src/app/model/chat';
@@ -47,6 +47,7 @@ import { SeriesOptionsType } from 'highcharts';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ChartService } from 'src/app/service/chart.service';
 import { initFlowbite, initModals } from 'flowbite';
+import { PrimeNG } from 'primeng/config';
 
 @Component({
   selector: 'app-user-pro',
@@ -83,7 +84,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
     protected modalServiceBs: BsModalService,
     @Inject(DOCUMENT) protected document: Document,
     protected sanitizer: DomSanitizer,
-    primengConfig: PrimeNGConfig,
+    protected primeng: PrimeNG,
     messageService: MessageService,
     protected chatService: ChatService,
     protected homeService: HomeService,
@@ -107,7 +108,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
       modalServiceBs,
       document,
       renderer2,
-      primengConfig,
+      primeng,
       messageService,
       nzMessage,
       modalService,
@@ -531,6 +532,22 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
 
           }));
           break;
+        case 'Other':
+          this.subscriptions.push(this.homeService.updateOther(this.home).subscribe({
+            next: () => {
+              this.showLoading = false;
+              this.notificationService.notify(NotificationType.SUCCESS, `Actualizado`);
+              setTimeout(() => {
+                this.clickButton('goBackSidenav');
+              }, 600);
+              this.ngOnInit();
+            },
+            error: () => {
+              this.notificationService.notify(NotificationType.ERROR, `Error. Vuelva a intentarlo pasados unos minutos.`);
+            }
+
+          }));
+          break;
 
         default:
           break;
@@ -673,7 +690,6 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
       $('.action_menu').toggle();
     });
     initFlowbite();
-    initModals();
     this.startChatConnection();
     // apaño temporal para probar el chat. Luego se añaden onclick en el anuncio
     // y se borran desde la interfaz
@@ -687,7 +703,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
         this.notificationService.notify(NotificationType.ERROR, `No se ha podido enviar el mensaje. Intentelo pasados unos minutos.` + err);
       }
     }));
-    this.primengConfig.ripple = true;
+    this.primeng.ripple.set(true);
     this.loadScripts();
     this.user = this.authenticationService.getUserFromLocalCache();
     this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.user.color);
@@ -887,15 +903,19 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
   // update city form
   showCityResult() {
     if (this.home.ciudad == null) {
-      alert('Introduzca la provincia!');
+      Swal.fire({
+        text: "Introduzca la ciudad!",
+        confirmButtonText: "Voy",
+        confirmButtonColor: "#3D3D3D",
+      });
     } else {
       this.home.ciudad = this.home.ciudad.split(' ')[0].replace(',', '');
-      this.closeDialog();
+      this.closeDialog('map');
     }
   }
 
-  locationMap(houseType: string) {
-    this.showDialog();
+  /*locationMap(houseType: string) {
+    this.showDialog('map');
     if (houseType == 'homes') {
       if (this.map2 == null || this.map2 == undefined) {
         const search = GeoSearchControl({
@@ -945,7 +965,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
         }, 300)
       }
     }
-  }
+  }*/
 
   private createChartLine(): void {
     let date = new Date();
@@ -998,7 +1018,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
 
       }
       this.chartService.drawChart('custom-chart-line', 'line', selectedHome.calle + ' ' + selectedHome.numero, data, 'Visitas');
-      this.selectedHomeViews=_.sumBy(selectedHome.visitas, 'count');
+      this.selectedHomeViews = _.sumBy(selectedHome.visitas, 'count');
 
     }, 500);
     /*_.map(selectedHome.visitas, (value,index) => {

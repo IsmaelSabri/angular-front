@@ -1,0 +1,101 @@
+<div class="form-group">
+    <!--Destacar anuncio -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="my-auto font-semibold text-muted" style="letter-spacing: .4px;">Destacar anuncio&nbsp;</h6>
+        </div>
+        <div class="card-body">
+            <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon>
+                Primeras posiciones en el listado de tu zona</p>
+            <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> El
+                anuncio destaca en el listado y en el mapa</p>
+        </div>
+        <div class="card-footer">
+            <mat-button-toggle (change)="this.remarcado= $event.source.checked;showFledgedServices($event,'destacado')"
+                [checked]="this.remarcado" [value]="this.remarcado">{{this.remarcado ?
+                'Guardado':'Guardar'}}</mat-button-toggle>
+            <div class="price-tag float-end ml-auto">
+                <span class="amount">4,95</span>
+                <span class="symbol">€</span>
+                <span class="after">/1 semana</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group mt-4">
+    <!-- Ocultar ubicación -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="my-auto font-semibold text-muted" style="letter-spacing: .4px;">Ocultar ubicación&nbsp;</h6>
+        </div>
+        <div class="card-body">
+            <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> No se
+                mostrarán la calle y el número del anuncio</p>
+            <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> No se podrá
+                acceder a la streetview</p>
+            <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> Un
+                solo pago para toda la vida del anuncio</p>
+            <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> Puedes
+                modificar esta opción tantas veces como quieras desde tu área de cliente</p>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column d-flex my-2 mx-auto">
+                    <label for="location" class="float-start">Ubicación&nbsp;
+                        <i nz-tooltip [nzTooltipTrigger]="'click'" nzTooltipTitle="Desea exponer la ubicación? Si selecciona Aprox. no mostraremos
+                    la calle ni el número" class="bi bi-info-square"></i></label>
+                    <nz-radio-group [(ngModel)]="this.ubicacionMapa" nzButtonStyle="solid" nzDisabled="true">
+                        <label nz-radio-button nzValue=true>Exacta</label>
+                        <label nz-radio-button nzValue=false>Aprox.</label>
+                    </nz-radio-group>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <mat-button-toggle
+                (change)="this.ubicacionMapa= $event.source.checked;showFledgedServices($event,'location')"
+                [checked]="this.ubicacionMapa" [value]="this.ubicacionMapa">{{this.ubicacionMapa ?
+                'Guardado':'Guardar'}}</mat-button-toggle>
+            <div class="price-tag float-end ml-auto">
+                <span class="amount">6,95</span>
+                <span class="symbol">€</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group mt-4">
+    <!-- Destacar aspecto -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="my-auto font-semibold text-muted" style="letter-spacing: .4px;">Destacar aspecto&nbsp;</h6>
+        </div>
+        <div class="card-body">
+            <div class="align-items-center mb-2">
+                <span class="badge rounded-pill text-bg-primary text-uppercase mr-1">precio negociable</span>
+                <span class="badge rounded-pill text-bg-secondary text-uppercase mx-1">precio rebajado</span>
+                <span class="badge rounded-pill text-bg-success text-uppercase mx-1">listo para su bienvenida</span>
+                <span class="badge rounded-pill text-bg-danger text-uppercase mx-1">urge vender</span>
+                <span class="badge rounded-pill text-bg-warning text-uppercase mx-1">oportunidad</span>
+                <span class="badge rounded-pill text-bg-info text-uppercase mx-1">exclusiva</span>
+                <span class="badge rounded-pill text-bg-light text-uppercase border mx-1">reformada</span>
+                <span class="badge rounded-pill text-bg-dark text-uppercase">lujo</span>
+            </div>
+            <p class="card-text"><ion-icon name="eye-outline" class="mt-3"></ion-icon> Señala un aspecto de hasta 25 caracteres.</p>
+            <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> La nota se mostrará
+                en el listado, el mapa y el anuncio.</p>
+            <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> Personaliza el color
+                de la letra y del fondo de la nota.</p>
+            <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> Puedes
+                cambiar el texto tantas veces como quieras desde tu área de cliente</p>
+
+        </div>
+        <div class="card-footer">
+            <mat-button-toggle
+                (change)="this.ubicacionMapa= $event.source.checked;showFledgedServices($event,'location')"
+                [checked]="this.ubicacionMapa" [value]="this.ubicacionMapa">{{this.ubicacionMapa ?
+                'Guardado':'Guardar'}}</mat-button-toggle>
+            <div class="price-tag float-end ml-auto">
+                <span class="amount">4,95</span>
+                <span class="symbol">€</span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -9,6 +9,7 @@ function runPopup() {
 function closeSmallPopup() {
   document.querySelector('.leaflet-popup-close-button').click();
   document.getElementById("restoreMap").click();
+  //location.reload();
 }
 function cuoreLike() {
   document.getElementById("likePopup").click();
@@ -24,7 +25,8 @@ function cuoreLike() {
   $('.static-modal').toggleClass('is-active');
 });*/
 function runModal() {
-  $(".modal").toggleClass("is-active");
+  //$(".modal").toggleClass("is-active");
+  document.getElementById("openModalNew").click();
 }
 
 function closeModal() {
@@ -49,25 +51,6 @@ function lessUncheck() { // llama el segmented de los filtros
   $(".ant-radio-button-wrapper").removeClass("ant-radio-button-wrapper-checked");
   $(".ant-select-clear").trigger('click'); // tipos de vivienda
 }
-// bulma nav
-$(document).ready(function () {
-  $(".navbar-burger").click(function () {
-    $(".navbar-burger, .navbar-menu", $(this).closest('.navbar')).toggleClass("is-active");
-  });
-});
-// select
-//jquery modal
-$(".contact__form-privacy a").click(function (e) {
-  e.preventDefault();
-  $("body").toggleClass("is-fixed");
-  $(".modal__gray-back").fadeIn(300);
-  return false;
-});
-
-$(".modal__close-btn").click(function (e) {
-  $("body").toggleClass("is-fixed");
-  $(".modal__gray-back").fadeOut(300);
-});
 
 //sidebar to list
 $(document).ready(function () {

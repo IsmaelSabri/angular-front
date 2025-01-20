@@ -74,6 +74,16 @@
   </div>
 </div>
 
+<!-- Introducir ciudad modal -->
+<p-dialog header="&nbsp;Datos de mapas ©2025 Google" [modal]="true" [(visible)]="this.mainModal"
+  [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" (onHide)="closeDialog('map')">
+  <div id="map_2" style="width: 100%; height: 25em;">
+  </div>
+  <ng-template #footer>
+    <button name="cityOfficeMap" pButton pRipple severity="success" class="my-auto mr-3" id="provButton2" type="button"
+      (click)="showCityResultHome()">Guardar</button>
+  </ng-template>
+</p-dialog>
 <!-- / .main-navbar tables-->
 
 <!-- End Default Dark Table -->
@@ -305,18 +315,8 @@
               <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <label for="city" class="d-flex flex-start">Ciudad</label>
                 <button name="city" class="button is-success is-outlined is-small w-100" id="provButton" type="button"
-                  (click)="locationMap('homes')">{{this.home.ciudad}}</button>
-                <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
-                  [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}"
-                  (onHide)="closeDialog()">
-                  <div id="map_2"
-                    style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
-                  </div>
-                  <div class="row my-2 mx-3">
-                    <button name="city" class="button is-dark is-outlined is-small" id="provButton2" type="button"
-                      (click)="showCityResult()">Guardar</button>
-                  </div>
-                </p-dialog>
+                  (click)="locationMap('map_2')">{{this.home.ciudad}}</button>
+
                 <input #ciudad nz-input ngModel name="ciudad" class="form-control" [(ngModel)]="this.home.ciudad"
                   style="display:none;" required>
               </div>
@@ -376,18 +376,7 @@
               <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
                 <label for="cityP" class="d-flex flex-start">Ciudad</label>
                 <button name="cityP" class="button is-success is-outlined is-small w-100" id="provButton" type="button"
-                  (click)="locationMap('projects')">{{this.home.ciudad}}</button>
-                <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
-                  [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}"
-                  (onHide)="closeDialog()">
-                  <div id="map_4"
-                    style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
-                  </div>
-                  <div class="row my-2 mx-3">
-                    <button name="cityPR" class="button is-dark is-outlined is-small" id="provButton" type="button"
-                      (click)="showCityResult()">Guardar</button>
-                  </div>
-                </p-dialog>
+                  (click)="locationMap('map_2')">{{this.home.ciudad}}</button>
                 <input #ciudadP nz-input ngModel name="ciudadP" class="form-control" [(ngModel)]="this.home.ciudad"
                   style="display:none;" required>
               </div>
@@ -2332,5 +2321,7 @@
 <button id="oculto" class="oculto" style="display: none;" (click)="saveService('user-pro')"></button>
 <a id="linkPopup" class="linkPopup" style="display: none;" [routerLink]="['/add',this.routerLinkId]"
   fragment={{this.routerLinkModel}} target="_blank"></a>
-<!-- La herencia dispara los eventos del mapa y el clickButton aquí devuelve null -->
+<!-- La herencia dispara los eventos del mapa y este hace de sumidero para el clickButton() -->
 <button id="leafletEvent" class="leafletEvent d-none"></button>
+<!-- Gestiona el ngLock() para tunear el searchControl del mapa para editar -->
+<button id="tunedGeosearch" class="tunedGeosearch d-none" (click)="makeBeautifulGeosearch($event)"></button>

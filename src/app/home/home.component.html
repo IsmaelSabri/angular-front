@@ -1,8 +1,52 @@
+<!--Modal para introducir la ciudad-->
+<p-dialog header="&nbsp;Datos de mapas ©2025 Google" [modal]="true" [(visible)]="this.mainModal"
+  [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" (onHide)="closeDialog('map')"
+  [draggable]="true">
+  <div id="map_2" style="width: 100%; height: 25em; ">
+  </div>
+  <ng-template #footer>
+    <button name="cityOfficeMap" pButton pRipple severity="success" class="my-auto mr-3" id="provButton2" type="button"
+      (click)="showCityResultHome()">Guardar</button>
+  </ng-template>
+</p-dialog>
+<!--Plantillas para el video de youtube-->
+<ng-template #youtubePrefix><ion-icon name="logo-youtube" style="font-size: 16px; color:red;"></ion-icon>
+</ng-template>
+<ng-template #youtubeSuffix>
+  <i nz-tooltip [nzTooltipTrigger]="'click'"
+    nzTooltipTitle="Copia y pega el enlace de youtube que aparece arriba en la barra de navegación"
+    class="bi bi-info-square"></i>
+</ng-template>
+<!-- Plantilla para introducir texto en los badges -->
+<ng-template #badgeTextTemplate>
+  <p-divider type="dashed"></p-divider>
+  <div class="container d-flex text-nowrap mt-2">
+    <input class="d-block w-100" id="textOptional" maxlength="25" nz-input #textOptional />
+    <a class="add-item d-block mt-1 mx-auto text-muted" (click)="addText(textOptional)" nzTooltipPlacement="top"
+      nz-tooltip nzTooltipTitle="Puedes añadir un texto adicional">
+      <i class="bi bi-plus"></i><span>Texto</span>
+    </a>
+  </div>
+</ng-template>
+<!-- Plantilla para introducir números en los badges -->
+<ng-template #renderTemplate>
+  <p-divider type="dashed"></p-divider>
+  <div class="container d-flex text-nowrap mt-2">
+    <input class="d-block w-100" id="parkingOptional" nz-input #parkingOptional (keypress)="numberOnly($event)" />
+    <a class="add-item d-block mx-auto mt-1 text-muted" (click)="addParkingPrice(parkingOptional)"
+      nzTooltipPlacement="top" nz-tooltip
+      nzTooltipTitle="Puedes añadir el precio adicional de venta o de alquiler de la plaza">
+      <i class="bi bi-plus"></i><span>Precio</span>
+    </a>
+  </div>
+</ng-template>
+
+
 <!--Main navbar-->
 <header class="header">
   <nav class="nav container">
     <div class="nav__data ">
-      <a href="#" class="nav__logo">
+      <a class="nav__logo">
         <img src="assets/images/logo.png" class="logo w-100" alt="" style="max-height: 1.6em; max-width: 12.8em;"
           routerLink="/_es">
       </a>
@@ -10,6 +54,7 @@
         <i class="ri-menu-line nav__toggle-menu"></i>
         <i class="ri-close-line nav__toggle-close"></i>
       </div>
+      <!-- Botones de login y nz-dropdown para resoluciones xs y s -->
       <div *ngIf="this.loginButtonsSmallSize && !this.state" style="position: fixed; top:.5em; right:.5em;"
         class="d-flex flex-row">
         <a class="button is-dark is-small" style="background-color: #3a3b3c;" pRipple routerLink="/register"
@@ -33,7 +78,7 @@
                 <ion-icon name="person-outline" style="position: relative; top: 2px;"></ion-icon> {{user?.username}}
               </a></li>
 
-            <li nz-menu-item><a [routerLink]="" *ngIf='this.state'><ion-icon name="notifications-outline"
+            <li nz-menu-item><a *ngIf='this.state'><ion-icon name="notifications-outline"
                   style="position: relative; top: 2px; font-size:16px;"></ion-icon>
                 <p-badge styleClass="mr-2" [value]="2" severity="info"></p-badge>
                 Notificaciones</a></li>
@@ -48,28 +93,32 @@
 
             <li nz-submenu [nzTitle]="'Publicar'">
               <ul>
-                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Nueva propiedad')"><i
+                <li nz-menu-item><a *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Nueva propiedad');this.homeDto.prototipo='Vivienda'"><i
                       class="bi bi-house mr-2"></i>&nbsp;Vivienda</a></li>
-                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Proyecto nuevo')"><i class="bi bi-houses mr-2"></i>
+                <li nz-menu-item><a *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Proyecto nuevo');this.homeDto.prototipo='Vivienda'"><i
+                      class="bi bi-houses mr-2"></i>
                     &nbsp;Proyecto</a></li>
-                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Oficina')"><i
+                <li nz-menu-item><a *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Oficina');this.homeDto.prototipo='Oficina';this.homeDto.tipo='Oficina'"><i
                       class="bi bi-person-workspace mr-2"></i>&nbsp;Oficina</a></li>
-                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Local')"><i class="bi bi-shop mr-2"></i>&nbsp;Local</a>
-                </li>
-                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Parcela')"><i
+                <li nz-menu-item><a *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Edificio');this.homeDto.prototipo='Edificio';this.homeDto.tipo='Edificio'"><i
+                      class="bi bi-building mr-2"></i>&nbsp;Edificio</a></li>
+                <li nz-menu-item><a *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Negocio');this.homeDto.prototipo='Negocio';this.homeDto.tipo='Negocio'"><i
+                      class="bi bi-shop mr-2"></i>&nbsp;Local o nave</a></li>
+                <li nz-menu-item><a *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Parcela');this.homeDto.prototipo='Suelo';this.homeDto.tipo='Suelo'"><i
                       class="bi bi-fullscreen mr-2"></i>&nbsp;Terreno</a></li>
-                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Garage')"><i
+                <li nz-menu-item><a *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Garage');this.homeDto.prototipo='Garage';this.homeDto.tipo='Garage'"><i
                       class="bi bi-p-square mr-2"></i>&nbsp;Garage</a></li>
-                <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                    (click)="createLocationMarker();setAdTitle('Trastero')"><i
+                <li nz-menu-item><a *ngIf='this.state'
+                    (click)="createLocationMarker();setAdTitle('Trastero');this.homeDto.prototipo='Trastero';this.homeDto.tipo='Trastero'"><i
                       class="bi bi-door-closed mr-2"></i>&nbsp;Trastero</a></li>
-                <!--<li nz-menu-item><a [routerLink]="" *ngIf='this.state' (click)="createLocationMarker();setAdTitle('Alojamiento vacacional')"><i class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>-->
+                <!--<li nz-menu-item><a *ngIf='this.state' (click)="createLocationMarker();setAdTitle('Alojamiento vacacional')"><i class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>-->
               </ul>
             </li>
             <li nz-menu-item><a *ngIf='this.state' (click)="onLogOut()" routerLink="/home">
@@ -99,13 +148,13 @@
                     <a class="dropdown__link" (click)="printDate()">Comprar</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Vender</a>
+                    <a class="dropdown__link">Vender</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Vendido</a>
+                    <a class="dropdown__link">Vendido</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Compartir</a>
+                    <a class="dropdown__link">Compartir</a>
                   </li>
                 </ul>
               </div>
@@ -118,22 +167,22 @@
 
                 <ul class="dropdown__list">
                   <li>
-                    <a href="#" class="dropdown__link">Guias</a>
+                    <a class="dropdown__link">Guias</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Servicios</a>
+                    <a class="dropdown__link">Servicios</a>
                   </li>
                   <li>
                     <a (click)="showPricingDrawer()" class="dropdown__link">Noticias</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Comercial</a>
+                    <a class="dropdown__link">Comercial</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Vivir en España</a>
+                    <a class="dropdown__link">Vivir en España</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Ayuda</a>
+                    <a class="dropdown__link">Ayuda</a>
                   </li>
                 </ul>
               </div>
@@ -146,16 +195,16 @@
 
                 <ul class="dropdown__list">
                   <li>
-                    <a href="#" class="dropdown__link">Web development</a>
+                    <a class="dropdown__link">Web development</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Applications development</a>
+                    <a class="dropdown__link">Applications development</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">UI/UX design</a>
+                    <a class="dropdown__link">UI/UX design</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Informatic security</a>
+                    <a class="dropdown__link">Informatic security</a>
                   </li>
                 </ul>
               </div>
@@ -166,10 +215,10 @@
                 <span class="dropdown__title">Certifications</span>
                 <ul class="dropdown__list">
                   <li>
-                    <a href="#" class="dropdown__link">Course certificates</a>
+                    <a class="dropdown__link">Course certificates</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">Free certifications</a>
+                    <a class="dropdown__link">Free certifications</a>
                   </li>
                 </ul>
               </div>
@@ -177,9 +226,47 @@
           </div>
         </li>
         <!--=============== DROPDOWN 3 ===============-->
-        <!--<li class="dropdown__item">
+        <li>
+          <a *ngIf="this.searchOption!='Negocio'" class="nav__link" nzTrigger="click"
+            (click)="clickButton('nav-toggle')" nz-dropdown [nzDropdownMenu]="typeMenu"> {{this.searchOption}}
+            <i class="ri-arrow-down-s-fill ml-2"></i>
+          </a>
+          <a *ngIf="this.searchOption=='Negocio'" class="nav__link" nzTrigger="click"
+            (click)="clickButton('nav-toggle')" nz-dropdown [nzDropdownMenu]="typeMenu"> Local o nave
+            <i class="ri-arrow-down-s-fill ml-2"></i>
+          </a>
+          <nz-dropdown-menu #typeMenu="nzDropdownMenu">
+            <ul nz-menu nzSelectable>
+              <li nz-menu-item
+                (click)="this.searchOption='Vivienda';this.homeDto.prototipo='Vivienda';filterSearchForm.resetForm();clearMap('full-clear');"
+                onclick="uncheck()"><i class="bi bi-house mr-2"></i>Viviendas</li>
+              <li nz-menu-item
+                (click)="this.searchOption='Oficina';this.homeDto.prototipo='Oficina';filterSearchForm.resetForm();clearMap('full-clear');filter('Oficina','prototipo')"
+                onclick="uncheck()"><i class="bi bi-person-workspace mr-2"></i>Oficinas</li>
+              <li nz-menu-item
+                (click)="this.searchOption='Edificio';this.homeDto.prototipo='Edificio';filterSearchForm.resetForm();clearMap('full-clear');filter('Edificio','prototipo')"
+                onclick="uncheck()"><i class="bi bi-building mr-2"></i>Edificios</li>
+              <li nz-menu-item
+                (click)="this.searchOption='Negocio';this.homeDto.prototipo='Negocio';filterSearchForm.resetForm();clearMap('full-clear');filter('Negocio','prototipo')"
+                onclick="uncheck()"><i class="bi bi-shop mr-2"></i>Locales y naves</li>
+              <li nz-menu-item
+                (click)="this.searchOption='Suelo';this.homeDto.prototipo='Suelo';filterSearchForm.resetForm();clearMap('full-clear');filter('Suelo','prototipo')"
+                onclick="uncheck()"><i class="bi bi-fullscreen mr-2"></i>Terrenos</li>
+              <li nz-menu-item
+                (click)="this.searchOption='Garage';this.homeDto.prototipo='Garage';filterSearchForm.resetForm();clearMap('full-clear');filter('Garage','prototipo')"
+                onclick="uncheck()"><i class="bi bi-p-square mr-2"></i>Garages</li>
+              <li nz-menu-item
+                (click)="this.searchOption='Trastero';this.homeDto.prototipo='Trastero';filterSearchForm.resetForm();clearMap('full-clear');filter('Trastero','prototipo')"
+                onclick="uncheck()"><i class="bi bi-door-closed mr-2"></i>Trasteros</li>
+              <li nz-menu-item nzDisabled
+                (click)="this.searchOption='Vacacional';this.homeDto.prototipo='Vacacional';filterSearchForm.resetForm();clearMap('full-clear');filter('Vacacional','prototipo')"
+                onclick="uncheck()"><i class="bi bi-sun mr-2"></i>Alquiler vacacional</li>
+            </ul>
+          </nz-dropdown-menu>
+        </li>
+        <li class="dropdown__item">
           <div class="nav__link dropdown__button">
-            Company <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+            BOTON <i class="ri-arrow-down-s-line dropdown__arrow"></i>
           </div>
           <div class="dropdown__container">
             <div class="dropdown__content">
@@ -191,28 +278,28 @@
                 <span class="dropdown__title">Sobre nosotros</span>
                 <ul class="dropdown__list">
                   <li>
-                    <a href="#" class="dropdown__link">Nuestra misión</a>
+                    <a (click)="showDialog('new-other-modal')" class="dropdown__link">Nuestra misión</a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">
+                    <a class="dropdown__link">
                       <span>Política de privacidad</span>
                     </a>
                   </li>
                   <li>
-                    <a href="#" class="dropdown__link">
+                    <a class="dropdown__link">
                       <span>Política de cookies</span>
                     </a>
                   </li>
                   <li>
                     <div class="d-flex flex-row">
-                      <a href="#" class="dropdown__link">
+                      <a class="dropdown__link">
                         <span>Contacto</span>
                       </a>
-                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-facebook"></i></a>
-                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-instagram"></i></a>
-                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-twitter-x"></i></a>
-                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-pinterest"></i></a>
-                      <a class="dropdown__link ml-2" href="#"><i class="bi bi-envelope"></i></a>
+                      <a class="dropdown__link ml-2"><i class="bi bi-facebook"></i></a>
+                      <a class="dropdown__link ml-2"><i class="bi bi-instagram"></i></a>
+                      <a class="dropdown__link ml-2"><i class="bi bi-twitter-x"></i></a>
+                      <a class="dropdown__link ml-2"><i class="bi bi-pinterest"></i></a>
+                      <a class="dropdown__link ml-2"><i class="bi bi-envelope"></i></a>
                     </div>
                   </li>
                 </ul>
@@ -224,7 +311,7 @@
                 <span class="dropdown__title">Talento</span>
                 <ul class="dropdown__list">
                   <li>
-                    <a href="#" class="dropdown__link">
+                    <a class="dropdown__link">
                       <span>Ofertas disponibles</span>
                     </a>
                   </li>
@@ -232,7 +319,7 @@
               </div>
             </div>
           </div>
-        </li>-->
+        </li>
         <li>
           <a class="nav__link" (click)="this.sidebarVisible = true;clickButton('nav-toggle')"> Filtros
             <i class="ri-equalizer-line ml-2"></i>
@@ -260,13 +347,13 @@
             <img height="55" width="55" class="rounded-circle img-fluid" style="border: 1px #b4b4b4 solid;"
               alt="avatar2" [attr.src]="this.getProfileImage()" />
           </a>
-          <nz-dropdown-menu #menu1="nzDropdownMenu" nzPlacement="bottomRight">
+          <nz-dropdown-menu #menu1="nzDropdownMenu" nzPlacement="bottomLeft">
             <ul nz-menu nzSelectable>
               <li nz-menu-item><a *ngIf='this.state' routerLink="/user/management">
                   <ion-icon name="person-outline" style="position: relative; top: 2px;"></ion-icon> {{user?.username}}
                 </a></li>
 
-              <li nz-menu-item><a [routerLink]="" *ngIf='this.state'><ion-icon name="notifications-outline"
+              <li nz-menu-item><a *ngIf='this.state'><ion-icon name="notifications-outline"
                     style="position: relative; top: 2px; font-size:16px;"></ion-icon>
                   <p-badge styleClass="mr-2" [value]="2" severity="info"></p-badge>
                   Notificaciones</a></li>
@@ -281,28 +368,32 @@
 
               <li nz-submenu [nzTitle]="'Publicar'">
                 <ul>
-                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                      (click)="createLocationMarker();setAdTitle('Nueva propiedad')"><i
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Nueva propiedad');this.homeDto.prototipo='Vivienda'"><i
                         class="bi bi-house mr-2"></i>&nbsp;Vivienda</a></li>
-                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                      (click)="createLocationMarker();setAdTitle('Proyecto nuevo')"><i class="bi bi-houses mr-2"></i>
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Proyecto nuevo');this.homeDto.prototipo='Vivienda'"><i
+                        class="bi bi-houses mr-2"></i>
                       &nbsp;Proyecto</a></li>
-                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                      (click)="createLocationMarker();setAdTitle('Oficina')"><i
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Oficina');this.homeDto.prototipo='Oficina';this.homeDto.tipo='Oficina'"><i
                         class="bi bi-person-workspace mr-2"></i>&nbsp;Oficina</a></li>
-                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                      (click)="createLocationMarker();setAdTitle('Local')"><i
-                        class="bi bi-shop mr-2"></i>&nbsp;Local</a></li>
-                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                      (click)="createLocationMarker();setAdTitle('Parcela')"><i
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Edificio');this.homeDto.prototipo='Edificio';this.homeDto.tipo='Edificio'"><i
+                        class="bi bi-building mr-2"></i>&nbsp;Edificio</a></li>
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Negocio');this.homeDto.prototipo='Negocio';this.homeDto.tipo='Negocio'"><i
+                        class="bi bi-shop mr-2"></i>&nbsp;Local o nave</a></li>
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Parcela');this.homeDto.prototipo='Suelo';this.homeDto.tipo='Suelo'"><i
                         class="bi bi-fullscreen mr-2"></i>&nbsp;Terreno</a></li>
-                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                      (click)="createLocationMarker();setAdTitle('Garage')"><i
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Garage');this.homeDto.prototipo='Garage';this.homeDto.tipo='Garage'"><i
                         class="bi bi-p-square mr-2"></i>&nbsp;Garage</a></li>
-                  <li nz-menu-item><a [routerLink]="" *ngIf='this.state'
-                      (click)="createLocationMarker();setAdTitle('Trastero')"><i
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Trastero');this.homeDto.prototipo='Trastero';this.homeDto.tipo='Trastero'"><i
                         class="bi bi-door-closed mr-2"></i>&nbsp;Trastero</a></li>
-                  <!--<li nz-menu-item><a [routerLink]="" *ngIf='this.state' (click)="createLocationMarker();setAdTitle('Alojamiento vacacional')"><i class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>-->
+                  <!--<li nz-menu-item><a *ngIf='this.state' (click)="createLocationMarker();setAdTitle('Alojamiento vacacional')"><i class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>-->
                 </ul>
               </li>
               <li nz-menu-item><a *ngIf='this.state' (click)="onLogOut()" routerLink="/home">
@@ -316,14 +407,443 @@
   </nav>
 </header>
 <!--<ng-progress ngProgressHttp></ng-progress>-->
+
+<!---->
+<p-dialog [modal]="true" [(visible)]="newOtherModal" *ngIf="adTitleAction$ | async as title" [header]="title"
+  [breakpoints]="{ '2199px': '42vw','1335px':'50vw','1199px':'52vw','991px':'60vw','767px':'72vw' ,'575px': '100vw' }"
+  (onHide)="closeDialog('new-other-modal')" class="p-0">
+  <!-- Modal body -->
+  <div class="modal-card-body p-0">
+    <!--<ng-scrollbar trackClass="vertical">-->
+    <mat-tab-group class="p-0 w-100">
+      <form #newOtherForm="ngForm" (ngSubmit)="newHome()" id="newOtherForm" class="p-0">
+        <!-- Tabs para oficina -->
+        <mat-tab label="General" class="p-0"> <!--*ngIf="this.adTitle.getValue()=='Oficina'"-->
+          <!-- Tipo de vía, nombre y número -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="tipodeviaOffice" class="required text-nowrap">Tipo de vía</label>
+              <nz-select panelWidth="fit-content" style=" display:block; flex-direction: column;" #tipodeviaOffice
+                name="tipodeviaOffice" class="form-control viaSelectOffice" nzPlaceHolder="Calle, avenida, plaza..."
+                [nzSize]="sizeM" [(ngModel)]="this.homeDto.tipoDeVia" required
+                (nzOpenChange)="rotateArrows($event,'viaSelectOffice')">
+                <nz-option *ngFor="let opt of tipo_de_via" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <label for="calleOffice" class="required">Nombre</label>
+              <input #calleOffice nz-input placeholder="Nombre de la vía p. ej. Paseo de la Castellana..."
+                [(ngModel)]="this.homeDto.calle" name="calleOffice" class="form-control" required />
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <label for="numeroOffice" class="required text-nowrap">Numero</label>
+              <input nz-input #numeroOffice placeholder="Número" class="form-control p-1" ngModel pattern="\d*"
+                maxlength="6" (keypress)="numberOnly($event)" name="numeroOffice" [(ngModel)]="this.homeDto.numero"
+                required />
+            </div>
+          </div>
+          <!-- Código postal, distrito, superficie y baños -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="cpOffice" class="required">CP</label>
+              <input nz-input #cpOffice placeholder="Código postal" ngModel pattern="\d*" maxlength="5"
+                (keypress)="numberOnly($event)" name="cpOffice" class="form-control p-1" [(ngModel)]="this.homeDto.cp"
+                required />
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="distritoOffice" class="required">Distrito</label>
+              <input nz-input #distritoOffice placeholder="Distrito" [(ngModel)]="this.homeDto.distrito"
+                name="distritoOffice" class="form-control" required />
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 align-self-start">
+              <label for="superficieOffice" class="required">Superficie</label>
+              <input #superficieOffice nz-input ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)"
+                name="superficieOffice" class="form-control" [(ngModel)]="this.homeDto.superficie" required
+                placeholder="M²" />
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 align-self-start">
+              <label for="banyosOffice" class="required text-nowrap">Aseos</label>
+              <input nz-input #banyosOffice ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                name="banyosOffice" class="form-control" [(ngModel)]="this.homeDto.aseos" required placeholder="0" />
+            </div>
+          </div>
+          <!-- Disposición, piso y ciudad -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="disposicionOffice" class="text-nowrap">Disposición</label>
+              <nz-select panelWidth="fit-content" style=" display:block; flex-direction: column;" #disposicionOffice
+                name="disposicionOffice" class="form-control disposicionOffice" nzPlaceHolder="Ubicación"
+                [nzSize]="sizeM" [(ngModel)]="this.homeDto.disposicion" required
+                (nzOpenChange)="rotateArrows($event,'disposicionOffice')">
+                <nz-option *ngFor="let opt of disposicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12" *ngIf="this.homeDto.disposicion=='Piso'">
+              <label for="pisoOffice">Piso</label>
+              <nz-input-group>
+                <div nz-row>
+                  <div nz-col nzSpan="10" class="float-start">
+                    <input nz-input #pisoOffice placeholder="Piso" ngModel pattern="\d*" maxlength="4"
+                      (keypress)="numberOnly($event)" name="pisoOffice" [(ngModel)]="this.homeDto.piso" />
+                  </div>
+                  <div nz-col nzSpan="4" class="text-center">
+                    <label class="mt-1">de</label>
+                  </div>
+                  <div nz-col nzSpan="10" class="float-end">
+                    <input nz-input #plantaMasAltaOffice ngModel pattern="\d*" maxlength="4"
+                      (keypress)="numberOnly($event)" name="plantaMasAltaOffice"
+                      [(ngModel)]="this.homeDto.plantaMasAlta" />
+                  </div>
+                </div>
+              </nz-input-group>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column d-flex">
+              <div class="row px-3 d-flex flex-column">
+                <label for="cityOffice" class="required d-flex pl-0">Ciudad</label>
+                <button name="cityOffice" class="button is-danger is-outlined is-small provButton" type="button"
+                  (click)="locationMap('map_2')">Ciudad</button>
+                <input #ciudadOffice nz-input ngModel name="ciudadoOffice" class="form-control"
+                  [(ngModel)]="this.homeDto.ciudad" style="display:none;" required>
+              </div>
+            </div>
+          </div>
+          <!-- Alquiler/Venta, precio de venta, precio/mes -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
+              <label class="required d-block" for="optionInputOffice">Alquiler - Venta ...</label>
+              <nz-select #optionInputOffice class="d-block flex-column optionInputOffice" name="optionInputOffice"
+                nzPlaceHolder="Alquiler - venta" [nzSize]="sizeM" [(ngModel)]="this.homeDto.condicion"
+                (nzOpenChange)="rotateArrows($event,'optionInputOffice')" (ngModelChange)="clearPricesRentOrSale()">
+                <nz-option *ngFor="let opt of condicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="precioFinalOffice">Precio de venta</label>
+              <nz-input-group>
+                <input nz-input placeholder="€" [(ngModel)]="this.homeDto.precioFinal" ngModel pattern="\d*"
+                  maxlength="8" #precioFinalOffice (keypress)="numberOnly($event)" name="precioFinalOffice"
+                  class="form-control" [disabled]="this.homeDto.condicion=='Alquiler'" />
+              </nz-input-group>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="precioAlquilerOffice">Precio/mes</label>
+              <nz-input-group>
+                <input nz-input placeholder="€/mes" [(ngModel)]="this.homeDto.precioAlquiler" ngModel pattern="\d*"
+                  maxlength="5" #precioAlquilerOffice (keypress)="numberOnly($event)" class="form-control"
+                  name="precioAlquilerOffice" [disabled]="this.homeDto.condicion=='Venta'" />
+              </nz-input-group>
+            </div>
+          </div>
+          <!-- Orientación, destacar, color destacar -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column d-flex">
+              <label for="OrientacionOffice" class="required">Orientación</label>
+              <nz-select #OrientacionOffice="ngModel" name="OrientacionOffice" nzPlaceHolder="" panelWidth="fit-content"
+                class="d-block flex-column form-control orientacionSelectOffice"
+                (nzOpenChange)="rotateArrows($event,'orientacionSelectOffice')" required [nzSize]="sizeM"
+                [(ngModel)]="this.homeDto.orientacion">
+                <nz-option *ngFor="let opt of orientacion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
+              <label class="d-block" for="badgeOffice">Destacar</label>
+              <nz-select class="d-block destacarSelectOffice" #badgeOffice="ngModel" name="badgeOffice" nzPlaceHolder=""
+                [nzSize]="sizeM" [nzDropdownRender]="badgeTextTemplate" [(ngModel)]="this.homeDto.destacar"
+                panelWidth="fit-content" (nzOpenChange)="rotateArrows($event,'destacarSelectOffice')">
+                <nz-option *ngFor="let opt of badge" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 d-flex flex-column">
+              <label for="colorDestacarOffice" class="">Color Destacar</label>
+              <div class="text-center">
+                <nz-color-picker class="form-control" nzTrigger="hover" name="colorDestacarOffice"
+                  [nzDefaultValue]="'#3a3b3c'" (nzOnChange)="checkBox($event)" #colorDestacarOffice
+                  [(ngModel)]="this.homeDto.colorDestacar"></nz-color-picker>
+              </div>
+            </div>
+          </div>
+          <!-- Estado, Distribución, antiguedad -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label class="required d-block" for="stateInputOffice">Estado</label>
+              <nz-select #stateInputOffice="ngModel" class="d-block flex-column form-control estadoSelectOffice"
+                name="stateInputOffice" nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM"
+                [(ngModel)]="this.homeDto.estado" required (nzOpenChange)="rotateArrows($event,'estadoSelectOffice')">
+                <nz-option *ngFor="let opt of propertyState" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label class="required d-block" for="layoutOffice">Distribución</label>
+              <nz-select #layoutOffice="ngModel" class="d-block flex-column form-control layoutOffice"
+                name="layoutOffice" nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM"
+                [(ngModel)]="this.homeDto.distribucion" required (nzOpenChange)="rotateArrows($event,'layoutOffice')">
+                <nz-option *ngFor="let opt of distribucionOficina" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column d-flex">
+              <label for="yearBuildOffice" class="required">Antiguedad</label>
+              <nz-date-picker id="yearBuildOffice" placeholder="Año" #yearBuildOffice nzMode="year" nzFormat="yyyy"
+                class="d-block flex-column form-control" name="yearBuildOffice" [(ngModel)]="this.homeDto.antiguedad"
+                required [nzDisabledDate]="disabledDatePost"></nz-date-picker>
+            </div>
+          </div>
+          <!-- Descripción -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
+              <label for="descripcionOffice" class="required">Descripción</label>
+              <textarea rows="4" name="descripcionOffice" class="form-control mb-3" required nz-input
+                [(ngModel)]="this.homeDto.descripcion"></textarea>
+            </div>
+          </div>
+        </mat-tab>
+        <!-- Acabados -->
+        <mat-tab label="Acabados">
+          <div class=" container-fluid form-group ">
+            <!-- Seguridad -->
+            <div class="row row-cols-2 mt-3">
+              <div class="col">
+                <label class="filterLabel mx-3" style="text-overflow: ellipsis;white-space: nowrap;">Seguridad</label>
+              </div>
+              <div class="col"></div>
+            </div>
+            <div class="row mt-3 mx-3">
+              <div class="col-12 ">
+                <mat-button-toggle (change)="this.homeDto.recepcion24_7= $event.source.checked"
+                  name="security24_7office" [checked]="this.homeDto.recepcion24_7" [value]="this.homeDto.recepcion24_7"
+                  class="mx-1 my-1 ">
+                  Seguridad 24/7
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.videoVigilancia= $event.source.checked"
+                  name="videoVigilanciaOffice" [checked]="this.homeDto.videoVigilancia"
+                  [value]="this.homeDto.videoVigilancia" class="mx-1 my-1 ">
+                  Video vigilancia
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.alarmaIncendios= $event.source.checked"
+                  name="alarmaIncendiosOffice" [checked]="this.homeDto.alarmaIncendios"
+                  [value]="this.homeDto.alarmaIncendios" class="mx-1 my-1 ">
+                  Alarma de incendios
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.extintores= $event.source.checked" name="extintoresOffice"
+                  [checked]="this.homeDto.extintores" [value]="this.homeDto.extintores" class="mx-1 my-1 ">
+                  Rociadores de incendio
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.instalacionesDiscapacitados= $event.source.checked"
+                  name="instalacionesDiscapacitadosOffice" [checked]="this.homeDto.instalacionesDiscapacitados"
+                  [value]="this.homeDto.instalacionesDiscapacitados" class="mx-1 my-1 ">
+                  Oficina accesible
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.generadorEmergencia= $event.source.checked"
+                  name="generadorEmergenciaOffice" [checked]="this.homeDto.generadorEmergencia"
+                  [value]="this.homeDto.generadorEmergencia" class="mx-1 my-1 ">
+                  Generador de emergencia
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.controlDeAccesoPersonal= $event.source.checked"
+                  name="controlDeAccesoPersonalOffice" [checked]="this.homeDto.controlDeAccesoPersonal"
+                  [value]="this.homeDto.controlDeAccesoPersonal" class="mx-1 my-1 ">
+                  Control de acceso personal
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.controlDeAccesoVehiculos= $event.source.checked"
+                  name="controlDeAccesoVehiculosOffice" [checked]="this.homeDto.controlDeAccesoVehiculos"
+                  [value]="this.homeDto.controlDeAccesoVehiculos" class="mx-1 my-1 ">
+                  Control de acceso vehículos
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.lucesSalidaEmergencia= $event.source.checked"
+                  name="lucesSalidaEmergenciaOffice" [checked]="this.homeDto.lucesSalidaEmergencia"
+                  [value]="this.homeDto.lucesSalidaEmergencia" class="mx-1 my-1 ">
+                  Alumbrado de emergencia
+                </mat-button-toggle>
+              </div>
+            </div>
+            <!-- Edificio -->
+            <div class="row row-cols-2 mt-3">
+              <div class="col">
+                <label class="filterLabel mx-3" style="text-overflow: ellipsis;white-space: nowrap;">Edificio</label>
+              </div>
+              <div class="col"></div>
+            </div>
+            <div class="row mt-3 mx-3">
+              <div class="col-12 ">
+                <mat-button-toggle (change)="this.homeDto.aparcamientos= $event.source.checked"
+                  name="aparcamientosOffice" [checked]="this.homeDto.aparcamientos" [value]="this.homeDto.aparcamientos"
+                  class="mx-1 my-1 ">
+                  Aparcamientos
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.falsoTecho= $event.source.checked" name="falsoTechoOffice"
+                  [checked]="this.homeDto.falsoTecho" [value]="this.homeDto.falsoTecho" class="mx-1 my-1 ">
+                  Falso techo
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.sueloTecnico= $event.source.checked" name="sueloTecnicoOffice"
+                  [checked]="this.homeDto.sueloTecnico" [value]="this.homeDto.sueloTecnico" class="mx-1 my-1 ">
+                  Suelo técnico
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.amueblado= $event.source.checked" name="amuebladoOffice"
+                  [checked]="this.homeDto.amueblado" [value]="this.homeDto.amueblado" class="mx-1 my-1 ">
+                  Con mobiliario
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.ascensor= $event.source.checked" name="ascensorOffice"
+                  [checked]="this.homeDto.ascensor" [value]="this.homeDto.ascensor" class="mx-1 my-1 ">
+                  Ascensor
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.dobleAcristalamiento= $event.source.checked"
+                  name="dobleAcristalamientoOffice" [checked]="this.homeDto.dobleAcristalamiento"
+                  [value]="this.homeDto.dobleAcristalamiento" class="mx-1 my-1 ">
+                  Doble acristalamiento
+                </mat-button-toggle>
+                <mat-button-toggle-group name="usoOficina" aria-label="uso" [(ngModel)]="this.homeDto.uso"
+                  class="mx-1 my-1">
+                  <mat-button-toggle value="Uso exclusivo oficina">Uso exclusivo oficina</mat-button-toggle>
+                  <mat-button-toggle value="Uso mixto oficina">Uso mixto oficina</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+            </div>
+            <!-- Energía y climatización -->
+            <div class="row row-cols-2 mt-4">
+              <div class="col">
+                <label class="filterLabel mx-3" style="text-overflow: ellipsis;white-space: nowrap;">Energía y
+                  climatización</label>
+              </div>
+              <div class="col"></div>
+            </div>
+            <div class="row mt-3 mx-3 form-group">
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label for="climaOffice">Climatización</label>
+                <nz-select class="w-100" [nzPlaceHolder]="'Climatización'" name="climaOffice" [nzSize]="sizeM"
+                  (ngModelChange)="printSelect($event)" [(ngModel)]="this.homeDto.climatizacion">
+                  <ng-container>
+                    <nz-option *ngFor="let opt of climatizacion" [nzLabel]="opt" [nzValue]="opt"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </div>
+              <!--certificado-->
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="row">
+                  <image-cropper name="cropperOffice" #cropperOffice [imageChangedEvent]="imageChangedEventEnergyOffice"
+                    [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
+                    (imageCropped)="imageCropped($event,'energyOffice')"
+                    (imageLoaded)="imageLoaded($event,'energyOffice')" (cropperReady)="cropperReady()"
+                    (loadImageFailed)="loadImageFailed()">
+                  </image-cropper>
+                </div>
+                <div class="row">
+                  <div class="col-10">
+                    <div class="file is-small is-light is-boxed">
+                      <label class="file-label">
+                        <input class="file-input" type="file" name="resume"
+                          (change)="fileChangeEvent($event,'energyOffice')" accept="image/*" />
+                        <span class="file-cta">
+                          <span class="badge primary-badge text-nowrap">{{this.tempEnergyTagNameOffice}}</span>
+                          <span class="file-icon" style="color:#999;">
+                            <i class="fas fa-cloud-upload-alt color-secondary"></i>
+                          </span>
+                          <span class="file-label text-secondary">Certificado energético</span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <button *ngIf="this.tempEnergyTagNameOffice" class="my-auto btn-close"
+                      (click)="clearEnergySelection('energyOffice')"></button>
+                  </div>
+                </div>
+              </div>
+              <!--Emisiones y consumo-->
+              <div class="row mt-3 mb-3 align-items-center form-group">
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 text-center">
+                  <nz-select class="nzSelectL w-100 emisionesSelectOffice" nzPlaceHolder="Emisiones" [nzSize]="sizeM"
+                    name="emisionesOffice" [(ngModel)]="this.homeDto.emisiones"
+                    (nzOpenChange)="rotateArrows($event,'emisionesSelectOffice')">
+                    <nz-option *ngFor="let opt of calificacion_emisiones" [nzValue]=opt
+                      [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
+                  <nz-select class="nzSelectL w-100 consumoSelectOffice mt-3" nzPlaceHolder="Consumo" [nzSize]="sizeM"
+                    [(ngModel)]="this.homeDto.consumo" (nzOpenChange)="rotateArrows($event,'consumoSelectOffice')"
+                    name="consumoOffice">
+                    <nz-option *ngFor="let opt of calificacion_consumo" [nzValue]=opt
+                      [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 ">
+                  <img class="energyImage float-start mb-2" src="assets/svg/eco/Escala_Certificacion.png"
+                    style="width: 50px; height: 58px;" alt="">
+                </div>
+              </div>
+            </div>
+          </div><!--container fluid-->
+        </mat-tab>
+        <mat-tab label="Multimedia">
+          <div class="container-fluid">
+            <!-- Fotos -->
+            <dropzone [config]="config" [message]="'Pulse o arrastre sus imágenes para subirlas'" required class="mt-3"
+              (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (removedFile)="onRemove($event)">
+            </dropzone>
+            <!-- Video para youtube -->
+            <div class="form-group">
+              <ng-container>
+                <div class="row mb-3">
+                  <div class="col-12 ">
+                    <label for="videoOffice">Video</label>
+                    <nz-input-group [nzPrefix]="youtubePrefix" [nzSuffix]="youtubeSuffix">
+                      <input style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
+      width:100%" nz-input #videoOffice [(ngModel)]="this.homeDto.video" name="videoOffice"
+                        placeholder="https://www.youtube.com/watch?v=HHP5MKgK0o8" />
+                    </nz-input-group>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Publicar">
+          <div class="container-fluid mt-3">
+            <!--Pricing cards-->
+            <app-pricing-card 
+              [(remarcado)]="this.homeDto.destacado.featured" 
+              [(ubicacionMapa)]="this.homeDto.direccionAproximada">
+            </app-pricing-card>
+            <div class="form-group my-4">
+              <ng-container>
+                <div class="row mt-3">
+                  <div class="form__privacy ">
+                    <input class="chkprivacy form-control" [(ngModel)]="this.homeDto.politicaPrivacidad"
+                      id="chkprivacyOffice" name="chkprivacyOffice"
+                      (change)="checkBox(this.homeDto.politicaPrivacidad?true:false)" type="checkbox" required>
+                    <label class="labelprivacy" for="chkprivacyOffice">Acepto los <a style="color:#7ce800;"
+                        class="aprivacy" (click)="showModal('privatePolicy')">términos de privacidad</a> de
+                      myhouse.</label>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div><!-- container-fluid -->
+        </mat-tab>
+      </form>
+    </mat-tab-group>
+    <!--</ng-scrollbar>-->
+  </div>
+  <ng-template #footer>
+    <div class="d-flex ">
+      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newOtherForm.valid||showLoading"
+        severity="contrast" (click)="newOtherForm.ngSubmit.emit()">
+        <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+          style="width: 1.5rem; height: 1.5rem; ">
+        </span>
+        <span pButtonLabel style="font-weight: 600; letter-spacing: .4px;" *ngIf="!showLoading">Crear</span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+<!-- End primeng modal -->
+
+<!--Bulma modal-->
 <div *ngIf="this.state" class="container-fluid">
   <div class="modal" id="newHomeModal">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head border-bottom">
-        <p class="modal-card-title text-center text-secondary mt-3" *ngIf="adTitleAction$ | async as title">{{ title
-          }}</p>
-        <button class="btn-close" onclick="closeModal()" aria-label="close"></button>
+        <p class="modal-card-title text-center text-secondary mt-n1" *ngIf="adTitleAction$ | async as title">{{ title
+          }}</p> <!-- Llamo para vaciar el dropzone -->
+        <button class="btn-close" onclick="closeModal()" (click)="closeDialog('new-other-modal')"
+          aria-label="close"></button>
       </header>
       <section class="modal-card-body pt-1">
         <!-- New property tabs content -->
@@ -505,30 +1025,24 @@
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column">
                   <label class="d-block" for="badge">Destacar</label>
                   <nz-select class="d-block destacarSelect" #badgeInput="ngModel" name="badgeInput" nzPlaceHolder=""
-                    [nzSize]="sizeM" [(ngModel)]="this.homeDto.destacar" panelWidth="fit-content"
-                    (nzOpenChange)="rotateArrows($event,'destacarSelect')">
+                    [nzSize]="sizeM" [nzDropdownRender]="badgeTextTemplate" [(ngModel)]="this.homeDto.destacar"
+                    panelWidth="fit-content" (nzOpenChange)="rotateArrows($event,'destacarSelect')">
                     <nz-option *ngFor="let opt of badge" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
                 </div>
               </div>
-              <!--Vistas, ubicacionExacta-->
+              <!--Vistas, ubicacionExacta, antiguedad-->
               <div class="form-group row mt-3">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column">
                   <label for="colorDestacar" class="">Color Destacar</label>
                   <div class="text-center">
                     <nz-color-picker class="form-control" nzTrigger="hover" name="colorDestacar"
-                      [nzDefaultValue]="'#3a3b3c'" (ngModelChange)="checkBox($event)"
+                      [nzDefaultValue]="'#3a3b3c'" (nzOnChange)="checkBox($event)"
                       [(ngModel)]="this.homeDto.colorDestacar"></nz-color-picker>
                   </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center flex-column d-flex">
-                  <label for="location" class="float-start">Ubicación&nbsp;
-                    <i nz-tooltip [nzTooltipTrigger]="'click'" nzTooltipTitle="Desea exponer la ubicación? Si selecciona Aprox. no mostraremos
-                        la calle ni el número" class="bi bi-info-square"></i></label>
-                  <nz-radio-group [(ngModel)]="this.homeDto.direccionAproximada" nzButtonStyle="solid" required>
-                    <label nz-radio-button nzValue=true>Exacta</label>
-                    <label nz-radio-button nzValue=false>Aprox.</label>
-                  </nz-radio-group>
+
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column d-flex">
                   <label for="yearBuild" class="required">Antiguedad</label>
@@ -557,35 +1071,12 @@
                     (nzOpenChange)="rotateArrows($event,'garageSelect')" [(ngModel)]="this.homeDto.garage">
                     <nz-option *ngFor="let opt of carPlaces" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
                   </nz-select>
-                  <ng-template #renderTemplate>
-                    <p-divider type="dashed"></p-divider>
-                    <div class="container d-flex text-nowrap mt-2">
-                      <input class="d-block" id="parkingOptional" nz-input #parkingOptional style="width:84px;"
-                        (keypress)="numberOnly($event)" />
-                      <a class="add-item d-block" (click)="addParkingPrice(parkingOptional)" nzTooltipPlacement="top"
-                        nz-tooltip
-                        nzTooltipTitle="Puedes añadir el precio adicional de venta o de alquiler de la plaza">
-                        <ion-icon name="add-outline"></ion-icon>Precio
-                      </a>
-                    </div>
-                  </ng-template>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column d-flex">
                   <div class="row px-3 d-flex flex-column">
-                    <label for="city" class="required d-flex flex-start ">Ciudad</label>
-                    <button name="city" class="button is-danger is-outlined is-small" id="provButton" type="button"
-                      (click)="locationMap('homes')">Ciudad</button>
-                    <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
-                      [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}"
-                      (onHide)="closeDialog()">
-                      <div id="map_2"
-                        style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
-                      </div>
-                      <div class="row my-2 mx-3">
-                        <button name="city" class="button is-dark is-outlined is-small" id="provButton2" type="button"
-                          (click)="showCityResultHome()">Guardar</button>
-                      </div>
-                    </p-dialog>
+                    <label for="city" class="required d-flex pl-0">Ciudad</label>
+                    <button name="city" class="button is-danger is-outlined is-small provButton" type="button"
+                      (click)="locationMap('map_2')">Ciudad</button>
                     <input #ciudad nz-input ngModel name="ciudad" class="form-control" [(ngModel)]="this.homeDto.ciudad"
                       style="display:none;" required>
                   </div>
@@ -594,7 +1085,7 @@
               <div class="form-group row mt-3">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
                   <label for="descripcion" class="required">Descripción</label>
-                  <textarea rows="4" class="form-control mb-3" required nz-input
+                  <textarea rows="4" name="descripcion" class="form-control mb-3" required nz-input
                     [(ngModel)]="this.homeDto.descripcion"></textarea>
                 </div>
               </div>
@@ -641,19 +1132,9 @@
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                   <div class="row px-3 d-flex flex-column">
-                    <label for="city" class="required d-flex flex-start ">Ciudad</label>
-                    <button name="city" class="button is-danger is-outlined is-small" id="provButton"
-                      (click)="locationMap('projects')">Ciudad</button>
-                    <p-dialog header="&nbsp;Datos de mapas ©2024 Google" [modal]="true" [(visible)]="this.mainModal"
-                      [style]="{width: '50vw'}" (onHide)="closeDialog()">
-                      <div id="map_4"
-                        style="width: 100%; height: 290px; border-radius:5px; margin-top: 7px; display: none;">
-                      </div>
-                      <div class="row my-2 mx-3">
-                        <button name="city" class="button is-dark is-outlined is-small" id="provButton2"
-                          (click)="showCityResultHome()">Guardar</button>
-                      </div>
-                    </p-dialog>
+                    <label for="city" class="required d-flex pl-0">Ciudad</label>
+                    <button name="city" class="button is-danger is-outlined is-small is-fullwidth provButton"
+                      type="button" (click)="locationMap('map_2')">Ciudad</button>
                     <input #ciudad nz-input ngModel name="ciudad" class="form-control" [(ngModel)]="this.homeDto.ciudad"
                       style="display:none;" required />
                   </div>
@@ -730,7 +1211,7 @@
               <div class="form-group row mt-2">
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                   <label for="tipologiasP">Tipologías</label>
-                  <nz-select nzMode="multiple" [nzPlaceHolder]="'Tipos'" nzAllowClear style="width:100%" name="tipos"
+                  <nz-select nzMode="multiple" class="w-100" [nzPlaceHolder]="'Tipos'" nzAllowClear name="tipos"
                     [nzSize]="sizeM" (ngModelChange)="printSelect($event)" [(ngModel)]="this.homeDto.tipos">
                     <ng-container>
                       <nz-option *ngFor="let opt of projectFeatures" [nzLabel]="opt" [nzValue]="opt"></nz-option>
@@ -817,76 +1298,77 @@
                 <div class="row mt-3 mx-3">
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.aireAcondicionado"
+                      <input type="checkbox" name="aaHome" [(ngModel)]="this.homeDto.aireAcondicionado"
                         (change)="checkBox(this.homeDto.aireAcondicionado?true:false)"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/ice.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Aire acondicionado</span>
+                      <span class="c-material-che__label" for="aaHome">Aire acondicionado</span>
                     </label>
-                    <br>
+                    <br> <!--entre mt-2 y mt-3-->
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.calefaccion"
+                      <input type="checkbox" name="calefaccionHome" [(ngModel)]="this.homeDto.calefaccion"
                         class="c-material-che__hidden form-check-input" value="2" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/heating4.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Calefacción</span>
+                      <span class="c-material-che__label" for="calefaccionHome">Calefacción</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.gasNatural"
+                      <input type="checkbox" name="gasNaturalHome" [(ngModel)]="this.homeDto.gasNatural"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/flame.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Gas natural</span>
+                      <span class="c-material-che__label" for="gasNaturalHome">Gas natural</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.aerotermia"
+                      <input type="checkbox" name="aerotermiaHome" [(ngModel)]="this.homeDto.aerotermia"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/aerotermia2.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Aerotermia</span>
+                      <span class="c-material-che__label" for="aerotermiaHome">Aerotermia</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.dobleAcristalamiento"
+                      <input type="checkbox" name="dobleAcristalamientoHome"
+                        [(ngModel)]="this.homeDto.dobleAcristalamiento"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/double-wind.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Doble acristalamiento</span>
+                      <span class="c-material-che__label" for="dobleAcristalamientoHome">Doble acristalamiento</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.panelesSolares"
+                      <input type="checkbox" name="panelesSolaresHome" [(ngModel)]="this.homeDto.panelesSolares"
                         class="c-material-che__hidden form-check-input" value="1" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/solar-small.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Paneles solares</span>
+                      <span class="c-material-che__label" for="panelesSolaresHome">Paneles solares</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.ventilacionCruzada"
+                      <input type="checkbox" name="ventilacionCruzadaHome" [(ngModel)]="this.homeDto.ventilacionCruzada"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/house-wind2.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Ventilación cruzada</span>
+                      <span class="c-material-che__label" for="ventilacionCruzadaHome">Ventilación cruzada</span>
                     </label>
                     <br>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <div class="row">
-                      <image-cropper [imageChangedEvent]="imageChangedEventEnergy" [maintainAspectRatio]="false"
-                        [aspectRatio]="16 / 9" format="png" (imageCropped)="imageCropped($event,'energy')"
-                        (imageLoaded)="imageLoaded($event,'energy')" (cropperReady)="cropperReady()"
-                        (loadImageFailed)="loadImageFailed()">
+                      <image-cropper name="cropperHome" #cropperHome [imageChangedEvent]="imageChangedEventEnergy"
+                        [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
+                        (imageCropped)="imageCropped($event,'energy')" (imageLoaded)="imageLoaded($event,'energy')"
+                        (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
                       </image-cropper>
                     </div>
                     <div class="row">
@@ -917,7 +1399,7 @@
                 <div class="row p-2 align-items-center form-group" style="border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 text-center">
                     <nz-select class="nzSelectL w-100 emisionesSelect" nzPlaceHolder="Emisiones" [nzSize]="size"
-                      name="emisiones" [(ngModel)]="this.homeDto.emisiones"
+                      name="emisionesHome" [(ngModel)]="this.homeDto.emisiones"
                       (nzOpenChange)="rotateArrows($event,'emisionesSelect')">
                       <nz-option *ngFor="let opt of calificacion_emisiones" [nzValue]=opt
                         [nzLabel]="opt">{{opt}}</nz-option>
@@ -925,99 +1407,98 @@
                     <br>
                     <nz-select class="nzSelectL w-100 consumoSelect" nzPlaceHolder="Consumo" [nzSize]="size"
                       [(ngModel)]="this.homeDto.consumo" (nzOpenChange)="rotateArrows($event,'consumoSelect')"
-                      name="consumo">
+                      name="consumoHome">
                       <nz-option *ngFor="let opt of calificacion_consumo" [nzValue]=opt
                         [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
                   </div>
                   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 ">
-                    <img class="energyImage float-start" src="assets/svg/eco/Escala_Certificacion.png"
+                    <img class="energyImage float-start mb-2" src="assets/svg/eco/Escala_Certificacion.png"
                       style="width: 50px; height: 58px;" alt="">
                   </div>
 
-                  <br class="br-sizeL">
                 </div>
                 <!-- Comunidad -->
                 <div class="row row-cols-2 mt-3">
                   <div class="col">
-                    <label for="comunidad" class="filterLabel mx-3">Comunidad</label>
+                    <label for="comunidadHome" class="filterLabel mx-3">Comunidad</label>
                   </div>
                   <div class="col"></div>
                 </div>
                 <div class="row mx-3 mt-3" style="border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.videoPortero"
+                      <input type="checkbox" name="videoPorteroHome" [(ngModel)]="this.homeDto.videoPortero"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-intercom.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Videoportero</span>
+                      <span class="c-material-che__label" for="videoPorteroHome">Videoportero</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.piscinaComp"
+                      <input type="checkbox" name="piscinaCompHome" [(ngModel)]="this.homeDto.piscinaComp"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/pool-form.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Piscina</span>
+                      <span class="c-material-che__label" for="piscinaCompHome">Piscina</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.tenis"
+                      <input type="checkbox" name="tenisHome" [(ngModel)]="this.homeDto.tenis"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.1em; position:relative;"
                         src="assets/svg/tennis-ball.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Tenis</span>
+                      <span class="c-material-che__label" for="tenisHome">Tenis</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.padel"
+                      <input type="checkbox" name="padelHome" [(ngModel)]="this.homeDto.padel"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/padel-racket-form.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Padel</span>
+                      <span class="c-material-che__label" for="padelHome">Padel</span>
                     </label>
                     <br>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.sauna"
+                      <input type="checkbox" name="saunaHome" [(ngModel)]="this.homeDto.sauna"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-sauna.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Sauna</span>
+                      <span class="c-material-che__label" for="saunaHome">Sauna</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.zonaDeOcio"
+                      <input type="checkbox" name="zonaDeOcioHome" [(ngModel)]="this.homeDto.zonaDeOcio"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/talking-area.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Zona de ocio</span>
+                      <span class="c-material-che__label" for="zonaDeOcioHome">Zona de ocio</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.jardin"
+                      <input type="checkbox" name="jardinHome" [(ngModel)]="this.homeDto.jardin"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-tree.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Zonas verdes</span>
+                      <span class="c-material-che__label" for="jardinHome">Zonas verdes</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.columpios"
+                      <input type="checkbox" name="columpiosHome" [(ngModel)]="this.homeDto.columpios"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/child-playground.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Zona infantil</span>
+                      <span class="c-material-che__label" for="columpiosHome">Zona infantil</span>
                     </label>
                   </div>
                   <br class="br-sizeL">
@@ -1026,66 +1507,69 @@
                 <!-- Seguridad -->
                 <div class="row row-cols-2 mt-3">
                   <div class="col">
-                    <label for="comunidad" class="mx-3 filterLabel">Seguridad</label>
+                    <label for="seguridadHome" class="mx-3 filterLabel">Seguridad</label>
                   </div>
                   <div class="col"></div>
                 </div>
                 <div class="row mt-3 mx-3" style="border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.recepcion24_7"
+                      <input type="checkbox" name="recepcion24_7Home" [(ngModel)]="this.homeDto.recepcion24_7"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-reception.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Recepción 24/7</span>
+                      <span class="c-material-che__label" for="recepcion24_7Home">Recepción 24/7</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.videoVigilancia"
+                      <input type="checkbox" name="videoVigilanciaHome" [(ngModel)]="this.homeDto.videoVigilancia"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-video-security.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Video vigilancia</span>
+                      <span class="c-material-che__label" for="videoVigilanciaHome">Video vigilancia</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.alarmaIncendios"
+                      <input type="checkbox" name="alarmaIncendiosHome" [(ngModel)]="this.homeDto.alarmaIncendios"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-alarm.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Alarma de incendios</span>
+                      <span class="c-material-che__label" for="alarmaIncendiosHome">Alarma de incendios</span>
                     </label>
                     <br>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.extintores"
+                      <input type="checkbox" name="extintoresHome" [(ngModel)]="this.homeDto.extintores"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-sprinkler.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Rociadores de incendio</span>
+                      <span class="c-material-che__label" for="extintoresHome">Rociadores de incendio</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.generadorEmergencia"
+                      <input type="checkbox" name="generadorEmergenciaHome"
+                        [(ngModel)]="this.homeDto.generadorEmergencia"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-lightning.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Generador de emergencia</span>
+                      <span class="c-material-che__label" for="generadorEmergenciaHome">Generador de emergencia</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.instalacionesDiscapacitados"
+                      <input type="checkbox" name="instalacionesDiscapacitadosHome"
+                        [(ngModel)]="this.homeDto.instalacionesDiscapacitados"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/wheelchair3.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Vivienda accesible</span>
+                      <span class="c-material-che__label" for="instalacionesDiscapacitadosHome">Vivienda
+                        accesible</span>
                     </label>
                   </div>
                   <br class="br-sizeL">
@@ -1094,124 +1578,123 @@
                 <!-- Extras -->
                 <div class="row row-cols-2 mt-3">
                   <div class="col">
-                    <label for="comunidad" class="mx-3 filterLabel">Extras</label>
+                    <label for="extrasHome" class="mx-3 filterLabel">Extras</label>
                   </div>
                   <div class="col"></div>
                 </div>
                 <div class="row mt-3 mx-3" style="border-bottom: 1px solid rgb(206, 203, 203);">
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.ascensor"
+                      <input type="checkbox" name="ascensorHome" [(ngModel)]="this.homeDto.ascensor"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/elevator-form.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Ascensor</span>
+                      <span class="c-material-che__label" for="ascensorHome">Ascensor</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.terraza"
+                      <input type="checkbox" name="terrazaHome" [(ngModel)]="this.homeDto.terraza"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/beach-chair.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Terraza</span>
+                      <span class="c-material-che__label" for="terrazaHome">Terraza</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.balcon"
+                      <input type="checkbox" name="balconHome" [(ngModel)]="this.homeDto.balcon"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/balcony3.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Balcón</span>
+                      <span class="c-material-che__label" for="balconHome">Balcón</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.parquet"
+                      <input type="checkbox" name="parquetHome" [(ngModel)]="this.homeDto.parquet"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-floorboards.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Parquet</span>
+                      <span class="c-material-che__label" for="parquetHome">Parquet</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.cabinaHidromasaje"
+                      <input type="checkbox" name="cabinaHidromasajeHome" [(ngModel)]="this.homeDto.cabinaHidromasaje"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-shower3.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Cabina de hidromasaje</span>
+                      <span class="c-material-che__label" for="cabinaHidromasajeHome">Cabina de hidromasaje</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.jacuzzi"
+                      <input type="checkbox" name="jacuzziHome" [(ngModel)]="this.homeDto.jacuzzi"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-jacuzzi.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Jacuzzi</span>
+                      <span class="c-material-che__label" for="jacuzziHome">Jacuzzi</span>
                     </label>
                     <br>
                   </div>
-                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mb-3">
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.piscinaPrivada"
+                      <input type="checkbox" name="piscinaPrivadaHome" [(ngModel)]="this.homeDto.piscinaPrivada"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-ppool.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Piscina en propiedad</span>
+                      <span class="c-material-che__label" for="piscinaPrivadaHome">Piscina en propiedad</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.gym"
+                      <input type="checkbox" name="gymHome" [(ngModel)]="this.homeDto.gym"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/gym-form.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Gimnasio</span>
+                      <span class="c-material-che__label" for="gymHome">Gimnasio</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.golf"
+                      <input type="checkbox" name="golfHome" [(ngModel)]="this.homeDto.golf"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-golf.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Golf a pocos km</span>
+                      <span class="c-material-che__label" for="golfHome">Golf a pocos km</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.armariosEmpotrados"
+                      <input type="checkbox" name="armariosEmpotradosHome" [(ngModel)]="this.homeDto.armariosEmpotrados"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-wardrobe2.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Armarios empotrados</span>
+                      <span class="c-material-che__label" for="armariosEmpotradosHome">Armarios empotrados</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.amueblado"
+                      <input type="checkbox" name="amuebladoHome" [(ngModel)]="this.homeDto.amueblado"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-furniture.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Amueblado completo</span>
+                      <span class="c-material-che__label" for="amuebladoHome">Amueblado completo</span>
                     </label>
                     <br>
                     <label class="c-material-che">
-                      <input type="checkbox" [(ngModel)]="this.homeDto.trastero"
+                      <input type="checkbox" name="trasteroHome" [(ngModel)]="this.homeDto.trastero"
                         class="c-material-che__hidden form-check-input" />
                       <span class="c-material-che__el"></span>
                       <ion-icon style="font-size: 1.2em; position:relative;"
                         src="assets/svg/form-locker.svg"></ion-icon>&nbsp;&nbsp;
-                      <span class="c-material-che__label">Trastero</span>
+                      <span class="c-material-che__label" for="trasteroHome">Trastero</span>
                     </label>
                     <br>
                   </div>
-                  <br class="br-sizeL">
                 </div>
               </div>
             </nz-tab>
@@ -1962,14 +2445,6 @@
                       width:100%" nz-input #video [(ngModel)]="this.homeDto.video" name="video"
                           placeholder="https://www.youtube.com/watch?v=HHP5MKgK0o8" />
                       </nz-input-group>
-                      <ng-template #youtubePrefix><ion-icon name="logo-youtube"
-                          style="font-size: 16px; color:red;"></ion-icon>
-                      </ng-template>
-                      <ng-template #youtubeSuffix>
-                        <i nz-tooltip [nzTooltipTrigger]="'click'"
-                          nzTooltipTitle="Copia y pega el enlace de youtube que aparece arriba en la barra de navegación"
-                          class="bi bi-info-square"></i>
-                      </ng-template>
                     </div>
                   </div>
                 </ng-container>
@@ -1977,62 +2452,11 @@
             </nz-tab>
             <!-- Publicar -->
             <nz-tab nzTitle=Publicar nz-col nzSpan="8" (nzClick)="whatTab('Publicar')">
-              <!--<h6 class="" style="color:#999;letter-spacing: .5px; font-weight: 700;">Servicios</h6>-->
-              <div class="form-group">
-                <!--Destacar anuncio -->
-                <div class="card">
-                  <div class="card-header">
-                    <h6 class="my-auto font-semibold">Destacar anuncio&nbsp;</h6>
-                  </div>
-                  <div class="card-body">
-                    <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon>
-                      Primeras posiciones en el listado de tu zona</p>
-                    <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> El
-                      anuncio destaca en el listado y en el mapa</p>
-                  </div>
-                  <div class="card-footer">
-                    <mat-button-toggle
-                      (change)="this.homeDto.destacado.featured= $event.source.checked;showFledgedServices($event,'featured')"
-                      [checked]="this.homeDto.destacado.featured"
-                      [value]="this.homeDto.destacado.featured">{{this.homeDto.destacado.featured ?
-                      'Guardado':'Guardar'}}</mat-button-toggle>
-                    <div class="price-tag float-end ml-auto">
-                      <span class="amount">4,95</span>
-                      <span class="symbol">€</span>
-                      <span class="after">/1 semana</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group mt-4">
-                <!-- Ocultar ubicación -->
-                <div class="card">
-                  <div class="card-header">
-                    <h6 class="my-auto font-semibold">Ocultar ubicación&nbsp;</h6>
-                  </div>
-                  <div class="card-body">
-                    <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> No se
-                      mostrarán la calle y el número del anuncio</p>
-                    <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> No se podrá
-                      acceder a la streetview</p>
-                    <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> Un
-                      solo pago para toda la vida del anuncio</p>
-                    <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> Puedes
-                      modificar esta opción tantas veces como quieras desde tu área de cliente</p>
-                  </div>
-                  <div class="card-footer">
-                    <mat-button-toggle
-                      (change)="this.homeDto.direccionAproximada= $event.source.checked;showFledgedServices($event,'location')"
-                      [checked]="this.homeDto.direccionAproximada"
-                      [value]="this.homeDto.direccionAproximada">{{this.homeDto.direccionAproximada ?
-                      'Guardado':'Guardar'}}</mat-button-toggle>
-                    <div class="price-tag float-end ml-auto">
-                      <span class="amount">6,95</span>
-                      <span class="symbol">€</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <!-- Pricing cards -->
+            <app-pricing-card 
+              [(remarcado)]="this.homeDto.destacado.featured" 
+              [(ubicacionMapa)]="this.homeDto.direccionAproximada">
+            </app-pricing-card>
               <div class="form-group">
                 <ng-container>
                   <div class="row mt-3">
@@ -2341,97 +2765,423 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-<!-- Modal aux -->
-<div class="modal__gray-back">
-  <div class="modal__inner">
-    <h2 class="modal__title">Nuevo proyecto</h2>
-    <div class="modal__items bg-dark">
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <button class="btn btn-primary" (click)="printDate()">start</button>
-        <button class="btn btn-primary">complete</button>
-        <p class="modal__item-content">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos iusto quibusdam sit ea laborum repellat
-          obcaecati consequatur, expedita debitis fugiat quam beatae doloribus voluptatibus error saepe in accusamus
-          optio harum.
-        </p>
-      </div>
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error voluptatum minima architecto quaerat
-          voluptatibus similique nihil, obcaecati, neque accusantium, maiores assumenda nam perferendis magnam
-          repellendus amet veniam recusandae illo est?
-        </p>
-      </div>
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus iure, voluptates quae perspiciatis ad
-          voluptas quasi mollitia laudantium ipsum corrupti sequi architecto debitis nesciunt voluptatem at corporis
-          autem velit labore.
-        </p>
-      </div>
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut minus amet cumque impedit recusandae maiores
-          iste, inventore consequatur sapiente reprehenderit, cum debitis, accusantium voluptas temporibus non repellat
-          deleniti facere aliquam?
-        </p>
-      </div>
-      <div class="modal__item">
-        <h3 class="modal__item-title">ほにゃらら</h3>
-        <p class="modal__item-content">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus, veniam veritatis facere tempora amet
-          obcaecati rerum totam perspiciatis distinctio minus. Incidunt quos animi et maiores rerum quae quibusdam
-          dolorum corrupti!
-        </p>
-      </div>
-    </div>
-    <div class="modal__close-btn-wrap">
-      <button class="modal__close-btn hover__light">Cerrar</button>
-      <button type="button" class="button is-rounded" onclick="uncheck()">Borrar
-        filtros</button>
-    </div>
-  </div>
-</div>
 
 <!-- Filters form -->
 
-<p-sidebar [(visible)]="sidebarVisible" position="right">
+<p-drawer [(visible)]="sidebarVisible" position="right" header="Filtros">
   <div class="text-center">
     <!--<h3 class="pull-center text-secondary">Filtros</h3>-->
     <form class="form-inline my-2 my-lg-0 justify-content-center" #filterSearchForm="ngForm" method="post"
       (ngSubmit)="applyCaptureNameFilter()"><!--filterSearchForm.value-->
-      <div class="container text-center">
+      <div class="container text-center p-0 mt-3">
         <div class="row align-items-center">
           <div class=".col-md-3 .offset-md-3">
             <nz-segmented [nzBlock]="true" [nzOptions]="this.condicionFiltros" onclick="lessUncheck()"
-              (nzValueChange)="filter($event,'condicion');clearMap($event)" [ngModel]=segmentedIndex></nz-segmented>
+              (ngModelChange)="filter($event,'condicion');clearMap($event)" [ngModel]=segmentedIndex></nz-segmented>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class=".col-12 mx-auto"><!--col-sm-5 col-md-6-->
+            <!--Común ciudad-->
+            <label class="filterLabel d-block" for="CiudadFilter">Ciudad</label>
+            <div class=" form-group w-100" style="background-color: white;">
+              <nz-select id="CiudadFilter" class="cityFiltersSelect w-100" [(ngModel)]="this.homeFiltersRequest.ciudad"
+                [nzSize]="sizeM" [nzAllowClear]="true" (nzOpenChange)="rotateArrows($event,'cityFiltersSelect')"
+                (ngModelChange)="filter($event,'ciudad')">
+                <nz-option *ngFor="let opt of provincias" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
           </div>
         </div>
       </div>
+      <!-- Común precio alquiler -->
       <div class="container text-center" *ngIf="!this.hideValues4share">
         <div class="container mt-3">
           <div class="row">
-            <div class=".col-12 mx-auto"><!--col-sm-5 col-md-6-->
-              <!--Ciudad-->
-              <label class="filterLabel d-block" for="CiudadFilter">Ciudad</label>
-              <div class=" form-group" style="width:100%; background-color: white;">
-                <nz-select id="CiudadFilter" class="cityFiltersSelect" style="width:100%"
-                  [(ngModel)]="this.homeFiltersRequest.ciudad" [nzSize]="sizeM" [nzAllowClear]="true"
-                  (nzOpenChange)="rotateArrows($event,'cityFiltersSelect')" (ngModelChange)="filter($event,'ciudad')">
-                  <nz-option *ngFor="let opt of provincias" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-                </nz-select>
+            <div class="col-12 px-0"><!--col-sm-5 col-md-6-->
+              <div class="row g-2 ml-1"
+                *ngIf="this.filterRentSalePriceFlag=='Alquiler' || this.filterRentSalePriceFlag=='Compartir'">
+                <label class="filterLabel mt-1" for="priceContainer">Precio</label>
+                <div class="col-6">
+                  <label class="filterLabel d-block" for="minPriceFilter">Mín</label>
+                  <div class="form-group">
+                    <nz-select id="minPriceFilter" class="minPriceFilter w-100"
+                      [(ngModel)]="this.homeFiltersRequest.precioAlquilerMin" [nzSize]="sizeM"
+                      (nzOpenChange)="rotateArrows($event,'minPriceFilter')" [nzAllowClear]="true"
+                      (ngModelChange)="filter($event,'precioAlquilerMin')">
+                      <nz-option *ngFor="let opt of precioMinimoAlquiler" [nzValue]=opt
+                        [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <label class="filterLabel d-block" for="maxPriceFilter">Max</label>
+                  <div class="form-group">
+                    <nz-select id="maxPriceFilter" class="maxPriceFilter w-100"
+                      [(ngModel)]="this.homeFiltersRequest.precioAlquilerMax" [nzSize]="sizeM"
+                      (nzOpenChange)="rotateArrows($event,'maxPriceFilter')" [nzAllowClear]="true"
+                      (ngModelChange)="filter($event,'precioAlquilerMax')">
+                      <nz-option *ngFor="let opt of precioMaximoAlquiler" [nzValue]=opt
+                        [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                  </div>
+                  <br>
+                </div>
+              </div>
+              <!-- Común precio venta min -->
+              <div class="row g-2 mx-auto p-0" *ngIf="this.filterRentSalePriceFlag=='Venta'">
+                <label class="filterLabel mt-1" for="priceContainer">Precio</label>
+                <div class="col-6">
+                  <label class="filterLabel d-block" for="minPriceFilter">Mín</label>
+                  <div class="form-group">
+                    <nz-select id="minPriceFilter" class="minPriceFilter w-100"
+                      [(ngModel)]="this.homeFiltersRequest.precioVentaMin" [nzSize]="sizeM"
+                      (nzOpenChange)="rotateArrows($event,'minPriceFilter')" [nzAllowClear]="true"
+                      (ngModelChange)="filter($event,'precioVentaMin')">
+                      <nz-option *ngFor="let opt of precioMinimoVenta" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                  </div>
+                </div>
+                <!-- Común precio venta max -->
+                <div class="col-6">
+                  <label class="filterLabel d-block" for="maxPriceFilter">Max</label>
+                  <div class="form-group">
+                    <nz-select id="maxPriceFilter" class="maxPriceFilter w-100" *ngIf="this.searchOption!='Edificio'"
+                      [(ngModel)]="this.homeFiltersRequest.precioVentaMax" [nzSize]="sizeM"
+                      (nzOpenChange)="rotateArrows($event,'maxPriceFilter')" [nzAllowClear]="true"
+                      (ngModelChange)="filter($event,'precioVentaMax')">
+                      <nz-option *ngFor="let opt of precioMaximoVenta" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                    <!-- Edificio precio venta max -->
+                    <nz-select id="maxPriceFilter" class="maxPriceFilter w-100" *ngIf="this.searchOption=='Edificio'"
+                      [(ngModel)]="this.homeFiltersRequest.precioVentaMax" [nzSize]="sizeM"
+                      (nzOpenChange)="rotateArrows($event,'maxPriceFilter')" [nzAllowClear]="true"
+                      (ngModelChange)="filter($event,'precioVentaMax')">
+                      <nz-option *ngFor="let opt of precioMaximoVentaEdificio" [nzValue]=opt
+                        [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                  </div>
+                  <br>
+                </div>
+              </div>
+              <!-- Común superficie -->
+              <div class="row g-2 mx-auto p-0" [hidden]="this.searchOption=='Garage' || this.searchOption=='Trastero'">
+                <label class="filterLabel" for="priceContainer">Superficie</label>
+                <div class="col-6">
+                  <label class="filterLabel d-block" for="minAreaFilter">Mín</label>
+                  <div class="form-group">
+                    <nz-select id="minAreaFilter" class="minAreaFilter w-100"
+                      [(ngModel)]="this.homeFiltersRequest.superficieMin" [nzSize]="sizeM"
+                      (nzOpenChange)="rotateArrows($event,'minAreaFilter')" [nzAllowClear]="true"
+                      (ngModelChange)="filter($event,'superficieMin')">
+                      <nz-option *ngFor="let opt of superficie" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <label class="filterLabel d-block" for="maxAreaFilter">Max</label>
+                  <div class="form-group">
+                    <nz-select id="maxAreaFilter" class="maxAreaFilter w-100"
+                      [(ngModel)]="this.homeFiltersRequest.superficieMax" [nzSize]="sizeM"
+                      (nzOpenChange)="rotateArrows($event,'maxAreaFilter')" [nzAllowClear]="true"
+                      (ngModelChange)="filter($event,'superficieMax')">
+                      <nz-option *ngFor="let opt of superficie" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                  </div>
+                  <br>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Garage -->
+      <div class="container text-center" *ngIf="!this.hideValues4share && this.searchOption=='Garage'">
+        <div class="container mt-3">
+          <div class="row mt-2 mb-3">
+            <label class="filterLabel text-secondary mt-n2 d-block" for="amenitiesFilter">Tipo de aparcamiento</label>
+            <!-- Urbano, urbanizable y rústico -->
+            <div class="row mt-3 mx-auto">
+
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/car-parking2.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooGarageParaCoche"
+                  style="text-overflow: ellipsis; white-space:nowrap">Plaza para coche</label>
+                <input id="fooGarageParaCoche"
+                  (change)="filter(this.homeFiltersRequest.plazaParaCoche?true:false,'plazaParaCoche')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.plazaParaCoche" type="checkbox">
+                <label class="switch" for="fooGarageParaCoche"></label>
+              </div>
+
+              <!---->
+              <div class="col input-chkbox-amenities mt-2">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/moto-parking.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooGarageParaMoto"
+                  style="text-overflow: ellipsis; white-space:nowrap">Plaza para moto</label>
+                <input id="fooGarageParaMoto"
+                  (change)="filter(this.homeFiltersRequest.plazaParaMoto?true:false,'plazaParaMoto')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.plazaParaMoto" type="checkbox">
+                <label class="switch" for="fooGarageParaMoto"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suelo -->
+      <div class="container text-center" *ngIf="!this.hideValues4share && this.searchOption=='Suelo'">
+        <div class="container mt-3">
+          <div class="row mt-2 mb-3">
+            <label class="filterLabel text-secondary mt-n2 d-block" for="amenitiesFilter">Tipo</label>
+            <!-- Urbano, urbanizable y rústico -->
+            <div class="row row-cols-2 mt-3 mx-auto">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/urbano.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooSueloUrbano"
+                  style="text-overflow: ellipsis; white-space:nowrap">Urbano</label>
+                <input id="fooSueloUrbano" (change)="filter(this.homeFiltersRequest.urbano?true:false,'urbano')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.urbano" type="checkbox">
+                <label class="switch" for="fooSueloUrbano"></label>
+              </div>
+              <!---->
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/urbanizable.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooSueloUrbanizable"
+                  style="text-overflow: ellipsis; white-space:nowrap">Urbanizable</label>
+                <input id="fooSueloUrbanizable"
+                  (change)="filter(this.homeFiltersRequest.urbanizable?true:false,'urbanizable')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.urbanizable" type="checkbox">
+                <label class="switch" for="fooSueloUrbanizable"></label>
+              </div>
+            </div>
+            <!---->
+            <div class="row row-cols-2 mt-3 mx-auto">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/rustico.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooSueloNoUrbanizable"
+                  style="text-overflow: ellipsis; white-space:nowrap">Rústico</label>
+                <input id="fooSueloNoUrbanizable"
+                  (change)="filter(this.homeFiltersRequest.noUrbanizable?true:false,'noUrbanizable')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.noUrbanizable" type="checkbox">
+                <label class="switch" for="fooSueloNoUrbanizable"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Negocio -->
+      <div class="container text-center" *ngIf="!this.hideValues4share && this.searchOption=='Negocio'">
+        <div class="container mt-3">
+          <div class="row mt-2 mb-3">
+            <label class="filterLabel text-secondary mt-n2 d-block" for="amenitiesFilter">Comodidades</label>
+            <!-- Climatización y traspaso -->
+            <div class="row row-cols-2 mt-3 mx-auto">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; "
+                  src="assets/svg/conditioner-machine2.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooNegocioAA"
+                  style="text-overflow: ellipsis; white-space:nowrap">Climatizado</label>
+                <input id="fooNegocioAA"
+                  (change)="filter(this.homeFiltersRequest.aireAcondicionado?true:false,'aireAcondicionado')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.aireAcondicionado" type="checkbox">
+                <label class="switch" for="fooNegocioAA"></label>
+              </div>
+              <!---->
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/traspaso.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooNegocioTraspaso"
+                  style="text-overflow: ellipsis; white-space:nowrap">Traspaso</label>
+                <input id="fooNegocioTraspaso" (change)="filter(this.homeFiltersRequest.traspaso?true:false,'traspaso')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.traspaso" type="checkbox">
+                <label class="switch" for="fooNegocioTraspaso"></label>
+              </div>
+            </div>
+            <!-- Local o nave -->
+            <div class="row row-cols-2 mt-3 mx-auto">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/local.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooNegocioLocal"
+                  style="text-overflow: ellipsis; white-space:nowrap">Local</label>
+                <input id="fooNegocioLocal" (change)="filter(this.homeFiltersRequest.local?true:false,'local')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.local" type="checkbox">
+                <label class="switch" for="fooNegocioLocal"></label>
+              </div>
+              <!---->
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/nave.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooNegocioNave"
+                  style="text-overflow: ellipsis; white-space:nowrap">Nave</label>
+                <input id="fooNegocioNave" (change)="filter(this.homeFiltersRequest.nave?true:false,'nave')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.nave" type="checkbox">
+                <label class="switch" for="fooNegocioNave"></label>
+              </div>
+            </div>
+            <!-- Salida de humos y hace esquina-->
+            <div class="row row-cols-2 mt-3 mx-auto">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/extractor.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooNegocioHumos"
+                  style="text-overflow: ellipsis; white-space:nowrap">Salida de humos</label>
+                <input id="fooNegocioHumos"
+                  (change)="filter(this.homeFiltersRequest.salidaDeHumos?true:false,'salidaDeHumos')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.salidaDeHumos" type="checkbox">
+                <label class="switch" for="fooNegocioHumos"></label>
+              </div>
+              <!---->
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/corner.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooNegocioEsquina"
+                  style="text-overflow: ellipsis; white-space:nowrap">Hace esquina</label>
+                <input id="fooNegocioEsquina"
+                  (change)="filter(this.homeFiltersRequest.haceEsquina?true:false,'haceEsquina')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.haceEsquina" type="checkbox">
+                <label class="switch" for="fooNegocioEsquina"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Oficina -->
+      <div class="container text-center" *ngIf="!this.hideValues4share && this.searchOption=='Oficina'">
+        <div class="container mt-3">
+          <!--Comodidades oficina-->
+          <div class="row mt-2 mb-3">
+            <label class="filterLabel text-muted mt-n2 d-block" for="amenitiesFilter">Comodidades</label>
+            <!-- Climatización y parking -->
+            <div class="row row-cols-2 mt-3">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; "
+                  src="assets/svg/conditioner-machine2.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooOffice"
+                  style="text-overflow: ellipsis; white-space:nowrap">Climatizado</label>
+                <input id="fooOffice"
+                  (change)="filter(this.homeFiltersRequest.aireAcondicionado?true:false,'aireAcondicionado')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.aireAcondicionado" type="checkbox">
+                <label class="switch" for="fooOffice"></label>
+              </div>
+              <div class="col input-chkbox-amenities form-group">
+                <ion-icon style="font-size: 1.875em; position:relative; "
+                  src="assets/svg/parking-office.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="foo4Office"
+                  style="text-overflow: ellipsis; white-space:nowrap">Parking</label>
+                <input id="foo4Office"
+                  (change)="filter(this.homeFiltersRequest.aparcamientos?true:false,'aparcamientos')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.aparcamientos" type="checkbox">
+                <label class="switch" for="foo4Office"></label>
+              </div>
+            </div>
+            <!-- CCTV y seguridad 24/4 -->
+            <div class="row row-cols-2 mt-3">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/cctv2.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooOfficeCctv"
+                  style="text-overflow: ellipsis; white-space:nowrap">CCTV</label>
+                <input id="fooOfficeCctv"
+                  (change)="filter(this.homeFiltersRequest.videoVigilancia?true:false,'videoVigilancia')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.videoVigilancia" type="checkbox">
+                <label class="switch" for="fooOfficeCctv"></label>
+              </div>
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/24reception.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooOffice24reception"
+                  style="text-overflow: ellipsis; white-space:nowrap">Seguridad 24/7</label>
+                <input id="fooOffice24reception"
+                  (change)="filter(this.homeFiltersRequest.recepcion24_7?true:false,'recepcion24_7')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.recepcion24_7" type="checkbox">
+                <label class="switch" for="fooOffice24reception"></label>
+              </div>
+            </div>
+            <!-- Con Mobiliario y accesible -->
+            <div class="row row-cols-2 mt-3">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/office-desk.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooOfficeDesks"
+                  style="text-overflow: ellipsis; white-space:nowrap">Con mobiliario</label>
+                <input id="fooOfficeDesks" (change)="filter(this.homeFiltersRequest.amueblado?true:false,'amueblado')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.amueblado" type="checkbox">
+                <label class="switch" for="fooOfficeDesks"></label>
+              </div>
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.6em; position:relative; " src="assets/svg/wheelchair3.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooOfficeAccesible"
+                  style="text-overflow: ellipsis; white-space:nowrap">Accesible</label>
+                <input id="fooOfficeAccesible"
+                  (change)="filter(this.homeFiltersRequest.inmuebleAccesible?true:false,'instalacionesDiscapacitados')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  type="checkbox" [(ngModel)]="this.homeFiltersRequest.inmuebleAccesible">
+                <label class="switch" for="fooOfficeAccesible"></label>
+              </div>
+            </div>
+
+            <!-- Control de acceso para personas y vehículos -->
+            <div class="row mt-3">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/turnstiles.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooOfficeTurnstiles"
+                  style="text-overflow: ellipsis; white-space:nowrap">Control de acceso personal</label>
+                <input id="fooOfficeTurnstiles"
+                  (change)="filter(this.homeFiltersRequest.controlDeAccesoPersonal?true:false,'controlDeAccesoPersonal')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.controlDeAccesoPersonal" type="checkbox">
+                <label class="switch" for="fooOfficeTurnstiles"></label>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/parking-lot2.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooOfficeParking"
+                  style="text-overflow: ellipsis; white-space:nowrap">Control de acceso vehículos</label>
+                <input id="fooOfficeParking"
+                  (change)="filter(this.homeFiltersRequest.controlDeAccesoVehiculos?true:false,'controlDeAccesoVehiculos')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.controlDeAccesoVehiculos" type="checkbox">
+                <label class="switch" for="fooOfficeParking"></label>
+              </div>
+            </div>
+            <!-- Edificio exlusivo oficinas -->
+            <div class="row mt-3">
+              <div class="col input-chkbox-amenities">
+                <ion-icon style="font-size: 1.875em; position:relative; " src="assets/svg/coworking.svg"></ion-icon>
+                <label class="filterLabel text-secondary" for="fooOfficeOnly"
+                  style="text-overflow: ellipsis; white-space:nowrap">Edificio exclusivo oficinas</label>
+                <input id="fooOfficeOnly"
+                  (change)="filter(this.homeFiltersRequest.edificioExclusivoOficina?true:false,'edificioExclusivoOficina')"
+                  style=" clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"
+                  [(ngModel)]="this.homeFiltersRequest.edificioExclusivoOficina" type="checkbox">
+                <label class="switch" for="fooOfficeOnly"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vivienda -->
+      <div class="container text-center" *ngIf="!this.hideValues4share && this.searchOption=='Vivienda'">
+        <div class="container mt-3">
           <div class="row mt-2">
             <div class=".col-12 mx-auto">
               <!--Tipo-->
               <label class="filterLabel d-block" for="TipoFilter">Tipo de inmueble</label>
-              <nz-select nzMode="multiple" [nzPlaceHolder]="this.labelMultiselect" nzAllowClear style="width:100%"
+              <nz-select nzMode="multiple" [nzPlaceHolder]="this.labelMultiselect" nzAllowClear class="w-100"
                 [nzSize]="sizeM" (ngModelChange)="filter($event,'tipo')" [(ngModel)]="this.homeFiltersRequest.tipo"
                 name="tipoFilter">
                 <ng-container *ngIf="this.filterRentSalePriceFlag!='Compartir'">
@@ -2525,92 +3275,8 @@
               <label nz-radio-button nzValue=5>+5</label>
             </nz-radio-group>
           </div>
-          <!--Precio de alquiler-->
+          <!-- Vistas -->
           <div class="row mx-auto p-0">
-            <div class="row g-2 ml-1"
-              *ngIf="this.filterRentSalePriceFlag=='Alquiler' || this.filterRentSalePriceFlag=='Compartir'">
-              <label class="filterLabel mt-1" for="priceContainer">Precio</label>
-              <div class="col-6">
-                <label class="filterLabel d-block" for="minPriceFilter">Mín</label>
-                <div class="form-group">
-                  <nz-select id="minPriceFilter" class="minPriceFilter" style="width:100%"
-                    [(ngModel)]="this.homeFiltersRequest.precioAlquilerMin" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'minPriceFilter')" [nzAllowClear]="true"
-                    (ngModelChange)="filter($event,'precioAlquilerMin')">
-                    <nz-option *ngFor="let opt of precioMinimoAlquiler" [nzValue]=opt
-                      [nzLabel]="opt">{{opt}}</nz-option>
-                  </nz-select>
-                </div>
-              </div>
-              <div class="col-6">
-                <label class="filterLabel d-block" for="maxPriceFilter">Max</label>
-                <div class="form-group">
-                  <nz-select id="maxPriceFilter" class="maxPriceFilter" style="width:100%"
-                    [(ngModel)]="this.homeFiltersRequest.precioAlquilerMax" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'maxPriceFilter')" [nzAllowClear]="true"
-                    (ngModelChange)="filter($event,'precioAlquilerMax')">
-                    <nz-option *ngFor="let opt of precioMaximoAlquiler" [nzValue]=opt
-                      [nzLabel]="opt">{{opt}}</nz-option>
-                  </nz-select>
-                </div>
-                <br>
-              </div>
-            </div>
-            <!--Precio de venta  -->
-            <div class="row g-2 mx-auto p-0" *ngIf="this.filterRentSalePriceFlag=='Venta'">
-              <label class="filterLabel mt-1" for="priceContainer">Precio</label>
-              <div class="col-6">
-                <label class="filterLabel d-block" for="minPriceFilter">Mín</label>
-                <div class="form-group">
-                  <nz-select id="minPriceFilter" class="minPriceFilter" style="width:100%; "
-                    [(ngModel)]="this.homeFiltersRequest.precioVentaMin" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'minPriceFilter')" [nzAllowClear]="true"
-                    (ngModelChange)="filter($event,'precioVentaMin')">
-                    <nz-option *ngFor="let opt of precioMinimoVenta" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-                  </nz-select>
-                </div>
-              </div>
-              <div class="col-6">
-                <label class="filterLabel d-block" for="maxPriceFilter">Max</label>
-                <div class="form-group">
-                  <nz-select id="maxPriceFilter" class="maxPriceFilter" style="width:100%"
-                    [(ngModel)]="this.homeFiltersRequest.precioVentaMax" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'maxPriceFilter')" [nzAllowClear]="true"
-                    (ngModelChange)="filter($event,'precioVentaMax')">
-                    <nz-option *ngFor="let opt of precioMaximoVenta" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-                  </nz-select>
-                </div>
-                <br>
-              </div>
-            </div>
-            <!--Superficie-->
-            <div class="row g-2 mx-auto p-0">
-              <label class="filterLabel" for="priceContainer">Superficie</label>
-              <div class="col-6">
-                <label class="filterLabel d-block" for="minAreaFilter">Mín</label>
-                <div class="form-group">
-                  <nz-select id="minAreaFilter" class="minAreaFilter" style="width:100%"
-                    [(ngModel)]="this.homeFiltersRequest.superficieMin" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'minAreaFilter')" [nzAllowClear]="true"
-                    (ngModelChange)="filter($event,'superficieMin')">
-                    <nz-option *ngFor="let opt of superficie" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-                  </nz-select>
-                </div>
-              </div>
-              <div class="col-6">
-                <label class="filterLabel d-block" for="maxAreaFilter">Max</label>
-                <div class="form-group">
-                  <nz-select id="maxAreaFilter" class="maxAreaFilter" style="width:100%"
-                    [(ngModel)]="this.homeFiltersRequest.superficieMax" [nzSize]="sizeM"
-                    (nzOpenChange)="rotateArrows($event,'maxAreaFilter')" [nzAllowClear]="true"
-                    (ngModelChange)="filter($event,'superficieMax')">
-                    <nz-option *ngFor="let opt of superficie" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-                  </nz-select>
-                </div>
-                <br>
-              </div>
-            </div>
-            <!--Vistas-->
             <div class="row mt-2 mb-2 form-group align-items-center w-100 mx-auto px-0">
               <label class="filterLabel d-block w-100" for="viewsFilter">Vistas</label>
               <nz-select nzMode="multiple" nzAllowClear [nzSize]="sizeM"
@@ -2621,7 +3287,7 @@
                 </ng-container>
               </nz-select>
             </div>
-            <!--Comodidades-->
+            <!--Comodidades vivienda-->
             <div class=" mt-3 mb-3">
               <div class="">
                 <label class="filterLabel text-muted mt-n2 d-block" for="amenitiesFilter">Comodidades</label>
@@ -2765,25 +3431,17 @@
       </div>
     </form>
   </div>
-  <div class="container text-center">
-    <div class="row align-items-center pb-3" *ngIf="!this.hideValues4share">
-      <div class="col-md-4">
-        <button type="reset" class="button is-rounded is-light" name="resetFilters"
-          (click)="filterSearchForm.resetForm();clearMap('full-clear')" onclick="uncheck()">Borrar filtros</button>
-      </div>
-      <div class="col-md-4">
-
-      </div>
-      <div class="col-md-4">
-        <!--<button type="submit" pRipple class="button is-rounded is-light">Buscar
-        </button>(click)="modalRef.hide()"-->
-      </div>
+  <ng-template #footer>
+    <div class="flex items-center">
+      <button type="reset" class="button is-rounded is-light" name="resetFilters"
+        (click)="filterSearchForm.resetForm();clearMap('full-clear');" onclick="uncheck()">Borrar filtros</button>
     </div>
-  </div>
-</p-sidebar>
+  </ng-template>
+</p-drawer>
 
 <nz-modal nzCentered [(nzVisible)]="joinUsModal" (nzOnCancel)="handleCancel('joinUsModal')"
-  (nzOnOk)="handleOk('likeHome')" [nzOkLoading]="isOkLoading" [(nzFooter)]="modalFooterNull" [nzStyle]="{ padding: '0px' }">
+  (nzOnOk)="handleOk('likeHome')" [nzOkLoading]="isOkLoading" [(nzFooter)]="modalFooterNull"
+  [nzStyle]="{ padding: '0px' }">
   <ng-container *nzModalContent>
     <div class="restricted-message" id="restricted-message">
       <div class="body">
@@ -2793,8 +3451,8 @@
                     <div class="text"><h4>Entrar o registrarse</h4></div>
                 </div>-->
           <div class="padded ">
-            <div class="heading">Crear cuenta</div>
-            <p>Acceda o registrese para guardar búsquedas y favoritos</p>
+            <div class="heading mt-1">Crear cuenta</div>
+            <p class="mb-3">Acceda o registrese para guardar búsquedas y favoritos</p>
             <button tabindex="0" class="login only-one-button " routerLink="/login"><span
                 class="readmore-button-label">ENTRAR</span></button>
             <button tabindex="0" class="register only-one-button " routerLink="/register"><span
@@ -2840,6 +3498,7 @@
 
 <!--Ghost buttons-->
 <button id="oculto" class="oculto d-none" (click)="saveService('home')"></button>
+<button id="openModalNew" class="openModalNew d-none" (click)="openModalNewProperty()"></button>
 <!-- Abre el anuncio en una ventana nueva -->
 <a id="linkPopup" class="linkPopup d-none" [routerLink]="['/add',this.routerLinkId]" fragment={{this.routerLinkModel}}
   [queryParams]="{propiedad:this.routerLinkQueryParams}" target="_blank"></a>
@@ -2848,5 +3507,6 @@
 <!-- Heart like! -->
 <button id="likePopup" class="likePopup d-none"
   (click)="cuoreLikeFeature('popup',this.homeService.getHomeFromLocalCache(),$event)"></button>
-<!-- Gestión de eventos mapa leaflet -->
+<!-- Gestión de eventos mapa leaflet (ngLock)-->
 <button id="leafletEvent" class="leafletEvent d-none" (click)="fireMapEvents($event)"></button>
+<button id="tunedGeosearch" class="tunedGeosearch d-none" (click)="makeBeautifulGeosearch($event)"></button>

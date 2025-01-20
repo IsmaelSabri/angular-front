@@ -11,9 +11,10 @@ import { CustomHttpResponse } from 'src/app/model/performance/custom-http-respon
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { ImageService } from 'src/app/service/image.service';
+import { PrimeNG } from 'primeng/config';
 
 @Component({
   selector: 'app-password',
@@ -37,7 +38,7 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
     route: ActivatedRoute,
     toastr: ToastrService,
     private formBuilder: FormBuilder,
-    primengConfig: PrimeNGConfig,
+    primeng: PrimeNG,
     messageService: MessageService,
     imageService: ImageService
   ) {
@@ -50,7 +51,7 @@ export class PasswordComponent extends UserComponent implements OnInit, OnDestro
       toastr,
       document,
       renderer2,
-      primengConfig,
+      primeng,
       messageService,
       imageService
     );

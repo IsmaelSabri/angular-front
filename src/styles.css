@@ -5,13 +5,12 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "remixicon/fonts/remixicon.css";
-@import "primeng/resources/primeng.min.css";
 /*@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';*/
 /*@import "@coreui/coreui/scss/coreui.scss"; // está por cdn ahora*/
 /*tailwind*/
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 /* Gelion */
 @font-face {

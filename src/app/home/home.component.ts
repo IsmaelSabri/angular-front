@@ -1,5 +1,3 @@
-import { Featured } from './../model/home';
-import { FileUploadStatus } from './../model/performance/file-upload.status';
 import {
   PropertyTo, HouseType, Bedrooms, Bathrooms, BadgeDestacar, PropertyState, Enseñanza, Institucion,
   RamasConocimiento, EmisionesCO2, ConsumoEnergetico, TipoDeVia, Orientacion, Provincias, PrecioMinimoAlquiler,
@@ -10,6 +8,11 @@ import {
   Model,
   ProjectFeatures,
   NearlyServices,
+  OtherValues,
+  PrecioMaximoVentaEdificio,
+  Disposicion,
+  Climatizacion,
+  DistribucionOficina,
 } from './../class/property-type.enum';
 import { UserService } from './../service/user.service';
 import { AfterViewInit, Component, ElementRef, Inject, Input, isDevMode, OnDestroy, OnInit, Output, QueryList, Renderer2, Signal, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
@@ -18,7 +21,8 @@ import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
 import {
   tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes,
-  Stadia_OSMBright, OpenStreetMap_Mapnik, CartoDB_Voyager, Thunderforest_OpenCycleMap, Jawg_Sunny
+  Stadia_OSMBright, OpenStreetMap_Mapnik, CartoDB_Voyager, Thunderforest_OpenCycleMap, Jawg_Sunny, tileLayerGoogleStreets,
+  cartocdnDarkAll
 } from '../model/maps/functions';
 import {
   grayIcon, greenIcon, grayPointerIcon, homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
@@ -47,7 +51,6 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import wordsCounter from 'word-counting'
 import { MatSidenav } from '@angular/material/sidenav';
 import { DOCUMENT } from '@angular/common';
-import { PrimeNGConfig } from 'primeng/api';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { DropzoneComponent, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { ngxLoadingAnimationTypes } from 'ngx-loading';
@@ -75,6 +78,10 @@ import { addDays, isAfter, isBefore, parseISO, format, endOfDay } from 'date-fns
 import { cssPathHome } from '../model/performance/css-styles';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { initFlowbite } from 'flowbite';
+import { PrimeNG } from 'primeng/config';
+import Swal from 'sweetalert2';
+
+
 
 @Component({
   selector: 'app-home',
@@ -97,7 +104,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     protected modalServiceBs: BsModalService,
     @Inject(DOCUMENT) document: Document,
     renderer2: Renderer2,
-    primengConfig: PrimeNGConfig,
+    protected primeng: PrimeNG,
     messageService: MessageService,
     protected nzMessage: NzMessageService,
     protected modalSevice: NgbModal,
@@ -106,7 +113,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     protected breakpointObserver: BreakpointObserver
   ) {
     super(router, authenticationService, userService, notificationService, route, toastr, document,
-      renderer2, primengConfig, messageService, imageService);
+      renderer2, primeng, messageService, imageService);
   }
 
   loginButtonsSmallSize: boolean = false;
@@ -157,19 +164,24 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
   public calificacion_emisiones: string[] = Object.values(EmisionesCO2);
   public calificacion_consumo: string[] = Object.values(ConsumoEnergetico);
   public carPlaces: string[] = Object.values(CarPlaces);
+  public climatizacion: string[] = Object.values(Climatizacion);
   public condicion: string[] = Object.values(PropertyTo);
   public condicion2: string[] = Object.values(PropertyShareType);
   public condicionFiltros: string[] = Object.values(PropertyFilterOptions);
   public condicionHeader: string[] = Object.values(PropertyTypeSelectHeader);
+  public disposicion: string[] = Object.values(Disposicion);
+  public distribucionOficina: string[] = Object.values(DistribucionOficina);
   public ensenyanza: string[] = Object.values(Enseñanza);
   public institucion: string[] = Object.values(Institucion);
   //public model: string[] = Object.values(Model);
   public nearlyServices: string[] = Object.values(NearlyServices);
   public orientacion: string[] = Object.values(Orientacion);
+  public otherValues: string[] = Object.values(OtherValues);
   public precioMinimoAlquiler: string[] = Object.values(PrecioMinimoAlquiler);
   public precioMinimoVenta: string[] = Object.values(PrecioMinimoVenta);
   public precioMaximoAlquiler: string[] = Object.values(PrecioMaximoAlquiler);
   public precioMaximoVenta: string[] = Object.values(PrecioMaximoVenta);
+  public precioMaximoVentaEdificio: string[] = Object.values(PrecioMaximoVentaEdificio);
   public projectFeatures: string[] = Object.values(ProjectFeatures);
   public propertyState: string[] = Object.values(PropertyState);
   public provincias: string[] = Object.values(Provincias);
@@ -197,6 +209,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
   routerLinkQueryParams: string;
   filterRentSalePriceFlag: string = 'Venta';
   mapRentSalePriceFlag: string = 'Venta';
+  segmentedIndex: string = 'Venta';
+  searchOption: string = 'Vivienda';
   sidebarVisible: boolean = false;
   // method must know what array needs to work
   serviceGoal: string; // aim service
@@ -289,15 +303,24 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     }, 800);
   }
 
-  /* */
+  /*
+  *   Llamar en funcion de searchOption tiene que ser así porque si el model es Other recibirá una lista distinta para que funcione el filtrado
+  * */
   public restoreMap() {
     this.lg.clearLayers();
-    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',&sorts=');
-    if (this.mapEvents.has('control')) {
+    if (this.boxedPoints) {
+      if (this.searchOption != 'Vivienda') {
+        this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',model@=*Other' + ',&sorts=');
+      } else {
+        this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',&sorts=')
+      }
+    } else {
+      this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+    } if (this.mapEvents.has('control')) {
       this.map3.eachLayer(function (layer) {
         layer.remove();
       });
-      Jawg_Sunny().addTo(this.map3);
+      tileLayerGoogleStreets().addTo(this.map3);
       this.mapEvents.delete('control');
       this.markerHouse.addTo(this.map3);
     }
@@ -328,7 +351,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
           invalidateSize: true,
         }).setView([this.waypointsFrom.lat, this.waypointsFrom.lng], 15);
         //Stadia_OSMBright().addTo(this.map3);
-        Jawg_Sunny().addTo(this.map3);
+        tileLayerGoogleStreets().addTo(this.map3);
         this.markerHouse = new L.marker(this.waypointsFrom, {
           draggable: false,
           icon: homeicon,
@@ -377,7 +400,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       this.map3.eachLayer(function (layer) {
         layer.remove();
       });
-      Jawg_Sunny().addTo(this.map3);
+      tileLayerGoogleStreets().addTo(this.map3);
       this.mapEvents.delete('control');
     }
     var control = L.Routing.control({
@@ -530,13 +553,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       return 'S/O';
     } else if (signal == 'Sur') {
       return 'S';
-    } else {
-      ''
-    }
-  }
-
-  slugUrl(home: Home) {
-    console.log(slug())
+    } else return null;
   }
 
   defineModel(houseType: string): string {
@@ -548,7 +565,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       return 'Room';
     } else if (houseType == 'Proyecto nuevo') {
       return 'NewProject'
-    }
+    } else if (houseType == 'Oficina' || houseType == 'Edificio' || houseType == 'Negocio' || houseType == 'Suelo'
+      || houseType == 'Garage' || houseType == 'Trastero' || houseType == 'Local o nave') {
+      return 'Other'
+    } else if (houseType == 'Vacacional') {
+      return 'HolidayRent';
+    } else return null;
   }
 
   saveService(flag: string) {
@@ -566,7 +588,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       this.map3.eachLayer(function (layer) {
         layer.remove();
       });
-      Jawg_Sunny().addTo(this.map3);
+      tileLayerGoogleStreets().addTo(this.map3);
       this.mapEvents.delete('control');
     }
     this.markerHouse = new L.marker(this.waypointsFrom, {
@@ -691,7 +713,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
 
   // modal bootstrap. Hay que meter una plantilla/componente
   showBsModal() {
-    const modalRef = this.modalServiceBs.show(``);
+    const modalRef = this.modalServiceBs.show(`
+      <div id="map_2"
+          style="width: 100%; height: 25em; ">
+      </div>`);
   }
 
   visiblePricingDrawer: boolean = false;
@@ -716,6 +741,17 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       const value = input.value;
       if (this.carPlaces.indexOf(value) == -1) {
         this.carPlaces = [...this.carPlaces, input.value || `New item ${this.carPlacesIndex++}`];
+      }
+    }
+  }
+
+  addTextIdx = 0;
+  @ViewChild('textOptional') textOptional: ElementRef;
+  addText(input: HTMLInputElement): void {
+    if (this.textOptional.nativeElement.value) {
+      const value = input.value;
+      if (this.badge.indexOf(value) === -1) {
+        this.badge = [...this.badge, input.value || `New item ${this.addTextIdx++}`];
       }
     }
   }
@@ -769,84 +805,81 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
 
   //modal primeng
   mainModal: boolean = false;
-  showDialog() {
-    this.mainModal = true;
+  newOtherModal: boolean = false;
+  showDialog(flag: string) {
+    if (flag == 'map') {
+      this.mainModal = true;
+      this.clickButton('tunedGeosearch');
+    } else if (flag == 'new-other-modal') {
+      this.newOtherModal = true;
+    }
+  }
+
+  @ngLock({
+    maxCall: 1
+  })
+  makeBeautifulGeosearch(e: any) {
     setTimeout(() => {
       var x = this.document.getElementsByClassName('reset')[0]
       x.classList.add('btn');
       x.classList.add('btn-primary');
       x.classList.add('h-100');
       x.classList.add('mb-2');
+      x.classList.add('rounded-0');
+      x.classList.add('rounded-end');
     }, 500);
   }
 
-  closeDialog() {
-    this.mainModal = false;
+  closeDialog(flag: string) {
+    if (flag == 'map') {
+      this.mainModal = false;
+    } else if (flag == 'new-other-modal') {
+      this.newOtherModal = false;
+      this.dropComponent.directiveRef.dropzone().files = [];
+      this.dropComponent.directiveRef.reset();
+    }
   }
 
   showCityResultHome() {
     if (this.homeDto.ciudad == null) {
-      alert('Introduzca la provincia!');
+      Swal.fire({
+        text: "Introduzca la ciudad!",
+        confirmButtonText: "Voy",
+        confirmButtonColor: "#3D3D3D",
+      });
     } else {
-      var x = document.getElementById('provButton');
+      var x = document.getElementsByClassName('provButton')[0];
       $('.is-danger').addClass('is-success');
       $('.is-success').removeClass('is-danger');
       this.homeDto.ciudad = this.homeDto.ciudad.split(' ')[0].replace(',', '');
       x.innerHTML = this.homeDto.ciudad;
-      this.closeDialog();
+      this.closeDialog('map');
     }
   }
 
-  locationMap(houseType: string) {
-    this.showDialog();
-    if (houseType == 'homes') {
-      if (this.map2 == null || this.map2 == undefined) {
-        const search = GeoSearchControl({
-          provider: new OpenStreetMapProvider(),
-          popupFormat: ({ result }) => (this.homeDto.ciudad = result.label),
-          searchLabel: 'Ciudad',
-          resultFormat: ({ result }) => result.label,
-          marker: {
-            icon: grayPointerIcon,
-            draggable: false,
-          },
-        });
-        setTimeout(() => {
-          var x = document.getElementById('map_2');
-          x.style.display = 'flex';
-          this.map2 = L.map('map_2', { renderer: L.canvas() }).setView(
-            [40.4380986, -3.8443428],
-            5
-          );
-          //this.getLocation();
-          Stadia_OSMBright().addTo(this.map2);
-          this.map2.addControl(search);
-        }, 300)
-      }
-    } else if (houseType == 'projects') {
-      if (this.map4 == null || this.map4 == undefined) {
-        const search = GeoSearchControl({
-          provider: new OpenStreetMapProvider(),
-          popupFormat: ({ result }) => (this.homeDto.ciudad = result.label),
-          searchLabel: 'Ciudad',
-          resultFormat: ({ result }) => result.label,
-          marker: {
-            icon: grayPointerIcon,
-            draggable: false,
-          },
-        });
-        setTimeout(() => {
-          var x = document.getElementById('map_4');
-          x.style.display = 'flex';
-          this.map4 = L.map('map_4', { renderer: L.canvas() }).setView(
-            [40.4380986, -3.8443428],
-            5
-          );
-          //this.getLocation();
-          Stadia_OSMBright().addTo(this.map4);
-          this.map4.addControl(search);
-        }, 300)
-      }
+  search: any;
+  protected locationMap(mapId: string) {
+    this.showDialog('map');
+    if (this.map2 == null || this.map2 == undefined) {
+      this.search = GeoSearchControl({
+        provider: new OpenStreetMapProvider(),
+        popupFormat: ({ result }) => (this.homeDto.ciudad = result.label),
+        searchLabel: 'Ciudad',
+        resultFormat: ({ result }) => result.label,
+        marker: {
+          icon: grayPointerIcon,
+          draggable: false,
+        },
+      });
+      setTimeout(() => {
+        this.map2 = L.map(mapId, { renderer: L.canvas() }).setView(
+          [40.4380986, -3.8443428],
+          5
+        );
+        tileLayerGoogleStreets().addTo(this.map2);
+        this.map2.addControl(this.search);
+        this.map2.zoomControl.setPosition('bottomleft');
+      }, 300)
     }
   }
 
@@ -879,7 +912,14 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     //tileLayerWMSSelectIGN().addTo(this.map);
     //Stadia_OSMBright().addTo(this.map);
     if (this.call < 1) {
-      Jawg_Sunny().addTo(this.map);
+      /*var baseLayers = {
+        tileLayerGoogleStreets, cartocdnDarkAll
+      }
+      var overlays = {};
+      L.control.layers(baseLayers, overlays).addTo(this.map);
+      baseLayers['cartocdnDarkAll'].addTo(this.map);*/
+      cartocdnDarkAll().addTo(this.map);
+      //tileLayerGoogleStreets().addTo(this.map);
     }
     //tileLayerHere().addTo(this.map);
     this.subscriptions.push(
@@ -1167,30 +1207,18 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     }
   }
 
-  public segmentedIndex: number = 1;
-  fixSegmentedOption(opt: string) {
-    switch (opt) {
-      case 'Venta':
-        this.segmentedIndex = 1;
-        break;
-      case 'Alquiler':
-        this.segmentedIndex = 0;
-        break;
-      case 'Compartir':
-        this.segmentedIndex = 2;
-        break;
-      case 'Alquiler y venta':
-        this.segmentedIndex = 1;
-        break;
-      default:
-        break;
-    }
-  }
-
   drawPopup(h: Home) {
-    if ((h.model == Model.House || h.model == Model.Flat) && (h.condicion == PropertyTo.Venta)) {
+    // Marca el favorito si el usuario lo tenía guardado
+    if (this.state) {
+      if (h.likeMeForever.includes(this.user.userId)) {
+        $('#cuore' + h.viviendaId).prop("checked", true);
+      }
+    }
+    // Pinta el precio de venta en todos los modelos menos NewProject
+    if ((h.model != Model.NewProject) && (h.condicion == PropertyTo.Venta)) {
       $('.p_2').text(this.formatNumberWithCommas(h.precioFinal) + '€');
-      $('.p_1_2').text('En ' + h.condicion);
+      //$('.p_1_2').text('En ' + h.condicion);
+      // Pinta el precio de venta en NewProject justo con todos sus detalles 
     } else if (h.model == Model.NewProject) {
       setTimeout(() => {
         $('.p_2').append($(`<span class="tagProjectPrice mt-1">Desde</span>`));
@@ -1215,21 +1243,21 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
         var x = document.getElementsByClassName('p_features')[0];
         x.classList.add("mt-2");
       }, 300)
-    }
-
-
-
-    else if (h.condicion == PropertyTo.Alquiler) {
+      // pinta el precio de alquiler
+    } else if (h.condicion == PropertyTo.Alquiler) {
       $('.p_2').text(this.formatNumberWithCommas(h.precioAlquiler) + '€');
       $('.p_1_2').text('En ' + h.condicion);
+      // pinta el precio de alquiler y de venta
     } else if (h.condicion == PropertyTo.AlquiloYvendo) {
       $('<div class="p_2Prices">' + this.formatNumberWithCommas(h.precioFinal) + '€' + '<span style="color:#d9d9d9;">&nbsp;<i class="bi bi-grip-vertical"></i>&nbsp;</span>' + this.formatNumberWithCommas(h.precioAlquiler) + '€</div>').appendTo('.p_2');
       $('.p_1_2').text('En ' + h.condicion);
+      // pinta el precio para compartir
     } else if (h.condicion == PropertyTo.Compartir) {
       $('.p_2').text(this.formatNumberWithCommas(h.precioAlquiler) + '€');
       $('.p_1_2').text(h.condicion + ' vivienda');
     }
-    if (h.model == Model.House || h.model == Model.Flat || h.model == Model.Room) {
+    // Pinto las viviendas
+    if (h.model != Model.NewProject && h.model != Model.Other) {
       $('<div class="popup-features d-flex flex-start" id="popup-features"><ion-icon style="font-size:1em; position:relative;" src="assets/svg/bed-horizontal.svg"></ion-icon>&nbsp;<span class="numbers-font mr-2" style="font-size:0.9em;color:#b4b4b4;">' + h.habitaciones + '</span>' +
         '<ion-icon style="font-size:1em; position:relative;" src="assets/svg/bath_tub.svg"></ion-icon>&nbsp;<span class="numbers-font mr-2" style="font-size:0.9em;color:#b4b4b4;">' + h.aseos + '</span>' +
         '<ion-icon style="font-size:1em; color:#666;" src="assets/svg/size-popup.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.superficie + "m²" + '</span>&nbsp;&nbsp;</div>'
@@ -1243,16 +1271,44 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
             + h.garage + '</span>').appendTo('.p_features');
         }
       }
-    }
-    if (h.piso != null || h.piso != undefined) {
-      $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; position:relative;" src="assets/svg/stairs-tab.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.piso + '</span></div>').appendTo('.popup-features');
-      if (h.ascensor) {
-        $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; position:relative; margin-left:.180em; " src="assets/svg/popup-elevator.svg"></ion-icon></div>').appendTo('.popup-features');
+      if (h.piso != null || h.piso != undefined) {
+        $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; position:relative;" src="assets/svg/stairs-tab.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + h.piso + '</span></div>').appendTo('.popup-features');
+        if (h.ascensor) {
+          $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; position:relative; margin-left:.180em; " src="assets/svg/popup-elevator.svg"></ion-icon></div>').appendTo('.popup-features');
+        }
       }
     }
-    var playa: Beach[] = JSON.parse(h.distanciaAlMar);
-    if (playa[0].distancia.length) {
-      $('<div class="d-flex flex-start">&nbsp;&nbsp;&nbsp;<ion-icon style="font-size:1em; position:relative;" src="assets/svg/sea.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + playa[0].distancia + '</span></div>&nbsp;').appendTo('.p_features');
+    // Pinto Other -> Oficinas; sapphire blue
+    if (h.model == Model.Other && h.tipo == 'Oficina') {
+      $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; color:#0fs2ba;" src="assets/svg/size-popup-office.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#0fs2ba;">' + h.superficie + "m²" + '</span>&nbsp;&nbsp;</div>').appendTo('.ul_features');
+      if (h.aireAcondicionado) {
+        $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; color:#0fs2ba;" src="assets/svg/air-conditioner-office.svg"></ion-icon>&nbsp;</div>').appendTo('.ul_features');
+      }
+      if (h.aparcamientos) {
+        $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; color:#0fs2ba;" src="assets/svg/parking-office-blue.svg"></ion-icon>&nbsp;</div>').appendTo('.ul_features');
+      }
+      if (h.controlDeAccesoPersonal) {
+        $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; color:#0fs2ba;" src="assets/svg/turnstiles-office-blue.svg"></ion-icon>&nbsp;</div>').appendTo('.ul_features');
+      }
+      if (h.falsoTecho) {
+        $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; color:#0fs2ba;" src="assets/svg/ceiling-office-blue.svg"></ion-icon>&nbsp;</div>').appendTo('.ul_features');
+      }
+      // p_features
+      if (h.piso != null || h.piso != undefined) {
+        $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; position:relative;" src="assets/svg/stairs-tab-blue.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#0fs2ba;">' + h.piso + '</span></div>').appendTo('.p_features');
+        if (h.ascensor) {
+          $('<div class="d-flex flex-start"><ion-icon style="font-size:1em; position:relative; margin-left:.180em; " src="assets/svg/popup-elevator-blue.svg"></ion-icon></div>').appendTo('.p_features');
+        }
+      }
+    }
+    // Común
+
+
+    if (h.prototipo == 'Vivienda') {
+      var playa: Beach[] = JSON.parse(h.distanciaAlMar);
+      if (playa[0].distancia.length) {
+        $('<div class="d-flex flex-start">&nbsp;&nbsp;<ion-icon style="font-size:1em; position:relative;" src="assets/svg/sea.svg"></ion-icon>&nbsp;<span class="numbers-font" style="font-size:0.9em;color:#b4b4b4;">' + playa[0].distancia + '</span></div>&nbsp;').appendTo('.p_features');
+      }
     }
 
     if (h.destacar) {
@@ -1297,7 +1353,15 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
   @ngLock()
   fireMapEvents(e: MouseEvent) {
     this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
-    this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',');
+    if (this.boxedPoints) {
+      if (this.searchOption != 'Vivienda') {
+        this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',model@=*Other' + ',&sorts=');
+      } else {
+        this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',&sorts=')
+      }
+    } else {
+      this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
+    }
     if (this.call < 1) {
       setTimeout(() => {
         this.clickButton('leafletEvent');
@@ -1312,7 +1376,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
   /************************************************************/
   ngOnInit(): void {
     initFlowbite();
-    this.map = L.map('map', { renderer: L.canvas(), wheelPxPerZoomLevel: 200 }).setView(
+    this.map = L.map('map', {
+      renderer: L.canvas(),
+      wheelPxPerZoomLevel: 100,
+      zoomSnap: 0.2,
+      wheelDebounceTime: 100,
+    }).setView(
       [39.46975, -0.37739],
       16  // 25
     ).on('zoomend', () => {
@@ -1340,7 +1409,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     }
     this.map.zoomControl.setPosition('bottomleft');
     this.clearMap('full-clear');
-    this.primengConfig.ripple = true;
+    this.primeng.ripple.set(true);
     if (this.state) {
       this.setCardLike();
     }
@@ -1356,8 +1425,9 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
             if (hm.likeMeForever) {
               hm.likeMeForever.forEach(lk => {
                 if (lk == this.user.userId) {
-                  const doc = document.getElementById(hm.viviendaId) as HTMLInputElement;
-                  doc.checked = true;
+                  //const doc = document.getElementById(hm.viviendaId) as HTMLInputElement;
+                  //doc.checked = true;
+                  $('#' + hm.viviendaId).prop("checked", true);
                 }
               })
             }
@@ -1376,7 +1446,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
         this.map.fitBounds([[this.userLocationCoords.lat, this.userLocationCoords.lng]]); // por si acaso..
         this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
         if (this.boxedPoints) {
-          this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',');
+          if (this.searchOption != 'Vivienda') {
+            this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',model@=*Other' + ',&sorts=');
+          } else {
+            this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',&sorts=')
+          }
+        } else {
+          this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
         }
       });
       this.map.on('locationerror', () => {
@@ -1385,7 +1461,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
         this.map.fitBounds([[this.userLocationCoords.lat, this.userLocationCoords.lng]]);
         this.boxedPoints = this.map.getBounds().toBBoxString().split(',');
         if (this.boxedPoints) {
-          this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',');
+          if (this.searchOption != 'Vivienda') {
+            this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',model@=*Other' + ',&sorts=');
+          } else {
+            this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',&sorts=')
+          }
+        } else {
+          this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
         }
       }); // si el usuario no activa la geolocalización
     }
@@ -1400,11 +1482,25 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     console.log('string: ' + e)
   }
 
+  openModalNewProperty() {
+    switch (this.homeDto.prototipo) {
+      case 'Vivienda':
+        $(".modal").toggleClass("is-active");
+        break;
+      case 'Oficina':
+        this.showDialog('new-other-modal');
+        break;
+      default:
+        break;
+    }
+  }
+
   disableMapEvents: boolean = false;
   createLocationMarker() {
     this.disableMapEvents = true;
     this.map.closePopup();
     this.home = new Home();
+    this.homeDto = new HomeDto();
     this.images = new Array<HomeImage>();// new Array(30).fill('');
     this.tempEnergy = null;
     this.lg.clearLayers();
@@ -1417,7 +1513,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     );*/
     this.toastr.success(
       'Arrastra el marcador!',
-      'Mueve el marcador hasta su propiedad!'
+      'Mueve el marcador hasta su ubicación!'
     );
     this.markerPoint = new L.marker(this.map.getCenter(), {
       draggable: true,
@@ -1508,6 +1604,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
   }
   getRentTab(): boolean {
     return this.rentTab.getValue();
+  }
+
+  clearPricesRentOrSale(){
+    this.homeDto.precioFinal=null;
+    this.homeDto.precioAlquiler=null;
   }
 
   tabIndex: number = 0;
@@ -1686,12 +1787,23 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
         'Límite excedido'
       );
       this.dropzone.removeFile(args[0]);
+    } else if (args[1] == "You can't upload files of this type.") {
+      this.toastr.error(
+        'Solo imágenes !',
+        'Aquí no puedes subir archivos de ese tipo.'
+      );
+    } else {
+      this.toastr.error(
+        args[1]
+      );
+      console.log(args)
     }
     //console.log(args);
   }
 
   public onUploadSuccess(args: any): void {
     console.log('onUploadSuccess:', args);
+    $(".dz-image").children("img").addClass("h-100");
     $(document).ready(function () {
       $('[class="dz-remove"]').each(function (index, v) {
         var text = $(v).text();
@@ -1706,7 +1818,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
   }
 
   public dropzoneInit(e: any) {
-    //console.log(e)
+    console.log('Dropzone ready !!')
   }
 
   // energy form new home
@@ -1714,6 +1826,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
   croppedImageEnergy: any = null;
   tempEnergy: File = null;
   tempEnergyTagName: string;
+  // energy new office
+  imageChangedEventEnergyOffice: any = null;
+  croppedImageEnergyOffice: any = null;
+  tempEnergyOffice: File = null;
+  tempEnergyTagNameOffice: string;
   // energy edit form user-pro
   imageChangedEventEnergyUpdate: any = null;
   croppedImageEnergyUpdate: any = null;
@@ -1742,6 +1859,11 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       if (event.target.files[0].name) {
         this.tempEnergyTagNameUpdate = event.target.files[0].name
       }
+    } else if (option === 'energyOffice') {
+      this.imageChangedEventEnergyOffice = event;
+      if (event.target.files[0].name) {
+        this.tempEnergyTagNameOffice = event.target.files[0].name
+      }
     }
   }
 
@@ -1759,11 +1881,15 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     } else if (option === 'energyUpdate') {
       this.croppedImageEnergyUpdate = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
       this.tempEnergyUpdate = new File([event.blob], randomString + '.jpg');
+    } else if (option === 'energyOffice') {
+      this.croppedImageEnergyOffice = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+      this.tempEnergyOffice = new File([event.blob], randomString + '.jpg');
     }
   }
 
   @ViewChild('editUserForm') updateUserForm: NgForm; // edit user pro
   @ViewChild('updateHomeForm') updateHomeForm: NgForm; // edit home pro
+  @ViewChild('newOtherForm') newOtherForm: NgForm;
   imageLoaded(image: LoadedImage, option: string) {
     if (option == 'branding') {
       this.updateUserForm.control.markAsDirty();
@@ -1773,6 +1899,8 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       this.newMarkerForm.control.markAsDirty();
     } else if (option == 'energyUpdate') {
       this.updateHomeForm.control.markAsDirty();
+    } else if (option == 'energyOffice') {
+      this.newOtherForm.control.markAsDirty();
     }
   }
 
@@ -1793,6 +1921,10 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       this.tempEnergyUpdate = null;
       this.imageChangedEventEnergyUpdate = null;
       this.tempEnergyTagNameUpdate = '';
+    } else if (option == 'energyOffice') {
+      this.tempEnergyOffice = null;
+      this.imageChangedEventEnergyOffice = null;
+      this.tempEnergyTagNameOffice = '';
     }
   }
 
@@ -1804,15 +1936,15 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
       this.homeDto.estado = 'Obra nueva';
       this.homeDto.direccionAproximada = 'true';
     } else if (this.adTitle.getValue() == 'Oficina') {
-      this.homeDto.tipo = 'Office';
-    } else if (this.adTitle.getValue() == 'Local') {
-      this.homeDto.tipo = 'Local';
+      this.homeDto.tipo = 'Oficina';
+    } else if (this.adTitle.getValue() == 'Local o nave') {
+      this.homeDto.tipo = 'Negocio';
     } else if (this.adTitle.getValue() == 'Parcela') {
-      this.homeDto.tipo = 'Ground';
+      this.homeDto.tipo = 'Suelo';
     } else if (this.adTitle.getValue() == 'Garage') {
       this.homeDto.tipo = 'Garage';
     } else if (this.adTitle.getValue() == 'Trastero') {
-      this.homeDto.tipo = 'JunkRoom';
+      this.homeDto.tipo = 'Trastero';
     }
     this.showLoading = true;
     const formData = new FormData();
@@ -1874,7 +2006,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     formData.append('cabinaHidromasaje', this.homeDto.cabinaHidromasaje);
     formData.append('direccionAproximada', this.homeDto.direccionAproximada);
     formData.append('politicaPrivacidad', this.homeDto.politicaPrivacidad);
-    //formData.append('destacado', this.homeDto.destacado); ahora es de pago
+    //formData.append('destacado', this.homeDto.destacado); ahora tienen que pagar :)
     //rutas
     formData.append('colegios', JSON.stringify(this.colegio));
     formData.append('universidades', JSON.stringify(this.universidad));
@@ -1884,6 +2016,45 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     formData.append('aeropuerto', JSON.stringify(this.aeropuerto));
     formData.append('distanciaAlMar', JSON.stringify(this.beach));
     formData.append('Model', this.defineModel(this.homeDto.tipo));
+    formData.append('Prototipo', this.homeDto.prototipo);
+    // detalles común Other
+    if (this.homeDto.climatizacion) {
+      formData.append('Climatizacion', this.homeDto.climatizacion);
+      formData.append('aireAcondicionado', 'true');
+    }
+    formData.append('ConAlmacen', this.homeDto.conAlmacen);
+    formData.append('LucesSalidaEmergencia', this.homeDto.lucesSalidaEmergencia);
+    // detalles de oficina
+    if (this.home.prototipo == 'Oficina') {
+      formData.append('Aparcamientos', this.homeDto.aparcamientos);
+      formData.append('Disposicion', this.homeDto.disposicion);
+      formData.append('Distribucion', this.homeDto.distribucion);
+      formData.append('ControlDeAccesoPersonal', this.homeDto.controlDeAccesoPersonal);
+      formData.append('ControlDeAccesoVehiculos', this.homeDto.controlDeAccesoVehiculos);
+      formData.append('FalsoTecho', this.homeDto.falsoTecho);
+      formData.append('SueloTecnico', this.homeDto.sueloTecnico);
+      formData.append('Uso', this.homeDto.uso);
+    } else if (this.home.prototipo == 'Negocio') {
+      // Negocio
+      formData.append('Nave', this.homeDto.nave);
+      formData.append('Local', this.homeDto.local);
+      formData.append('ActividadComercial', this.homeDto.actividadComercial);
+      formData.append('HaceEsquina', this.homeDto.haceEsquina);
+      formData.append('SalidaDeHumos', this.homeDto.salidaDeHumos);
+      formData.append('Traspaso', this.homeDto.traspaso);
+      formData.append('ConOficina', this.homeDto.conOficina);
+      formData.append('Escaparates', this.homeDto.escaparates);
+    } else if (this.home.prototipo == 'Suelo') {
+      formData.append('Urbano', this.homeDto.urbano);
+      formData.append('Urbanizable', this.homeDto.urbanizable);
+      formData.append('NoUrbanizable', this.homeDto.noUrbanizable);
+    } else if (this.home.prototipo == 'Garage') {
+      formData.append('plazaParaCoche', this.homeDto.plazaParaCoche);
+      formData.append('plazaParaMoto', this.homeDto.plazaParaMoto);
+    } else if (this.home.prototipo == 'Edificio') {
+      formData.append('EdificioExclusivoOficinas', this.homeDto.edificioExclusivoOficinas);
+    }
+
     // te guardan un array en un string
     if (this.homeDto.vistasDespejadas) {
       formData.append('vistasDespejadas', JSON.stringify(this.homeDto.vistasDespejadas).split('[').join('').split(']').join('').split('"').join('').split("'").join(''));
@@ -2084,11 +2255,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     },1000);*/
   }
 
-  showFledgedServices(e: any, flag: string) {
-    this.notificationService.notify(NotificationType.INFO, flag + ' ' + this.homeDto.direccionAproximada);
-  }
-
-  // only 4debug
+  // 4debug
   printDate() {
     var onBuy = new Date();
     console.log(onBuy.toISOString())
@@ -2109,6 +2276,7 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
   }
 
   checkBox(param): any {
+    console.log(param)
     //console.log(this.homeDto.porcentajeVendido)
     /*const f = new FormData();
     var a: any = false;
@@ -2131,21 +2299,13 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     localStorage.removeItem('detailFiltersMap');
     // variable para mostrar los select de alquiler/compartir o venta
     // el jquery resetea el multiselect
-    if (flag == 'condicion' && value == '0') {
-      this.filterRentSalePriceFlag = 'Alquiler';
-      this.mapRentSalePriceFlag = 'Alquiler'
-      $(".ant-select-clear").trigger('click');
-    } else if (flag == 'condicion' && value == '1') {
-      this.filterRentSalePriceFlag = 'Venta';
-      this.mapRentSalePriceFlag = 'Venta'
-      $(".ant-select-clear").trigger('click');
-    } else if (flag == 'condicion' && value == '2') {
-      this.filterRentSalePriceFlag = 'Compartir'
-      this.mapRentSalePriceFlag = 'Compartir'
+    if (flag == 'condicion') {
+      this.filterRentSalePriceFlag = value;
+      this.mapRentSalePriceFlag = value;
       $(".ant-select-clear").trigger('click');
     }
     /*
-    * responde a los eventos del multiselect
+    * responde a los eventos de los multiselect: vistas y estado
     */
     if (this.myMap.has(flag) && (flag != 'tipo' && flag != 'vistasDespejadas' && flag != 'estado') && value != null) { // contiene el elemento
       this.myMap.delete(flag);
@@ -2274,16 +2434,20 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
             localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
           }
         }
+        // responde a los radiobutton
       } else if (key == 'habitaciones' || key == 'aseos' || key == 'aseoEnsuite' || key == 'garage') {
         if (value != String(5)) {
           urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
+
         } else {
           urlFilterRequest = key + '>=' + value + ',' + urlFilterRequest;
         }
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
-      } else if (String(value) == 'true') { // switches comodidades true/false
+        // switches comodidades true/false
+      } else if (String(value) == 'true') {
         urlFilterRequest = key + '==' + value + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
+        // procesa los multiselect
       } else if (key == 'tipo') {
         var obj = JSON.parse(value);
         var tipoValues = '';
@@ -2349,14 +2513,12 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
           localStorage.setItem('detailFiltersMap', JSON.stringify([...map]))
         } // segmented
       } else if (key == 'condicion') {
-        if (value == '0') {
-          urlFilterRequest = key + '@=*' + 'Alquiler' + ',' + urlFilterRequest;
-        } else if (value == '1') {
-          urlFilterRequest = key + '@=*' + 'Venta' + ',' + urlFilterRequest;
-        } else if (value == '2') {
-          urlFilterRequest = key + '@=*' + 'Compartir' + ',' + urlFilterRequest;
-        }
+        urlFilterRequest = key + '@=*' + value + ',' + urlFilterRequest;
         localStorage.setItem('detailFiltersMap', JSON.stringify([...map]));
+      } else if (key == 'prototipo') {
+        var model = this.defineModel(value);
+        console.log(model)
+        urlFilterRequest = key + '@=*' + value + ',model@=*' + model + ',' + urlFilterRequest;
       }
     });
     // limpieza multiselect
@@ -2372,38 +2534,47 @@ export class HomeComponent extends UserComponent implements OnInit, OnDestroy, A
     if (urlFilterRequest.includes('vistasDespejadas@=*,')) {
       urlFilterRequest = urlFilterRequest.split('vistasDespejadas@=*,').join('');
     }
-    urlFilterRequest = urlFilterRequest.split(',&sorts=').join(',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',&sorts=')
+    if (this.searchOption != 'Vivienda') {
+      // se añade el model porque hay que tirar de herencia
+      urlFilterRequest = urlFilterRequest.split(',&sorts=').join(',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',model@=*Other' + ',&sorts=');
+    } else {
+      urlFilterRequest = urlFilterRequest.split(',&sorts=').join(',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',&sorts=')
+    }
     console.log(urlFilterRequest);
     this.loadMarkers(urlFilterRequest);
   }
 
-  hideValues4share: boolean = false;
+  // cambio de condición borra el mapa
+  hideValues4share: string = '';
   public clearMap(flag: any) {
     this.myMap = new Map<string, string>(JSON.parse(localStorage.getItem("detailFiltersMap")));
     localStorage.removeItem('detailFiltersMap');
     if (flag == 'full-clear') {
       this.myMap.clear();
-      this.myMap.set('condicion', '1');
-      this.hideValues4share = false;
-    } else if (flag == '0') {
-      this.myMap.set('condicion', '0');
-      this.hideValues4share = false;
-    } else if (flag == '1') {
-      this.myMap.set('condicion', '1');
-      this.hideValues4share = false;
-    } else if (flag == '2') {
-      this.myMap.set('condicion', '2');
-      this.hideValues4share = true;
+      this.myMap.set('condicion', 'Venta');
+      this.hideValues4share = '';
+      /*if (this.searchOption != 'Vivienda') {
+        this.filter(this.searchOption, 'prototipo');
+      }*/
+    } else {
+      this.myMap.set('condicion', flag);
+      this.hideValues4share = '';
     }
     localStorage.setItem('detailFiltersMap', JSON.stringify([...this.myMap]));
     this.wordCount = 0;
     this.homeFiltersRequest.keywords = '';
     if (this.boxedPoints) {
-      this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',&sorts=');
+      if (this.searchOption != 'Vivienda') {
+        this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',model@=*Other' + ',&sorts=');
+      } else {
+        this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag + ',lng>=' + this.boxedPoints[0] + ',lat>=' + this.boxedPoints[1] + ',lng<=' + this.boxedPoints[2] + ',lat<=' + this.boxedPoints[3] + ',prototipo@=*' + this.searchOption + ',&sorts=')
+      }
     } else {
       this.loadMarkers('condicion@=*' + this.mapRentSalePriceFlag);
     }
   }
+
+  // searchOption
 
   wordCount: number;
   public wordCounter() {

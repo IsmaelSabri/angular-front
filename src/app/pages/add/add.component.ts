@@ -1,24 +1,22 @@
+import { NotificationService } from 'src/app/service/notification.service';
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, ChangeDetectorRef, inject, Inject, Renderer2, Input, AfterViewInit, ViewContainerRef, SimpleChanges, TemplateRef, IterableDiffers } from '@angular/core';
-import { UserComponent } from '../../components/user/user.component';
-import { NotificationService } from '../../service/notification.service';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, inject, Inject, Renderer2, AfterViewInit, TemplateRef } from '@angular/core';
 import { AuthenticationService } from '../../service/authentication.service';
 import { UserService } from '../../service/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, HomeImage, Colegio, Visitas } from '../../model/home';
+import { Aeropuerto, Beach, Bus, Home, Metro, Supermercado, Universidad, Colegio } from '../../model/home';
 import { ToastrService } from 'ngx-toastr';
 import { ContactUser } from 'src/app/model/contact-user';
 import { Lightbox } from 'ngx-lightbox';
 import { NotificationType } from 'src/app/class/notification-type.enum';
-import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
 import {
-  tileLayerSelect, tileLayerCP, tileLayerWMSSelect, tileLayerHere, tileLayerWMSSelectIGN, tileLayerTransportes,
-  Stadia_OSMBright, OpenStreetMap_Mapnik, CartoDB_Voyager, Thunderforest_OpenCycleMap, Jawg_Sunny
+  
+  Stadia_OSMBright, Jawg_Sunny
 } from '../../model/maps/functions';
 import {
-  homeicon, beachIcon, airportIcon, marketIcon, subwayIcon,
-  busIcon, schoolIcon, universityIcon, fancyGreen,
+  homeicon
+  ,
 } from '../../model/maps/icons';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
@@ -27,18 +25,17 @@ import intlTelInput from 'intl-tel-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import Swal from 'sweetalert2'
 import { DOCUMENT } from '@angular/common';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ChatService } from 'src/app/service/chat.service';
 import { GestureHandling } from "leaflet-gesture-handling";
-import * as $ from 'jquery';
 import { HomeComponent } from 'src/app/home/home.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/model/user';
 import { CustomHttpResponse } from 'src/app/model/performance/custom-http-response';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { BaseChartDirective } from 'ng2-charts';
-import { Chart, ChartData, ChartType } from 'chart.js';
+import { ChartData, ChartType } from 'chart.js';
 import { ngxLoadingAnimationTypes } from 'ngx-loading';
 import { ImageService } from 'src/app/service/image.service';
 import { EmailService } from 'src/app/service/email.service';
@@ -46,8 +43,8 @@ import { initFlowbite } from 'flowbite';
 import { nzStatus } from 'src/app/class/ant-design.enum';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import _ from 'lodash';
-import { addDays, isAfter, isBefore, parseISO, format, endOfDay } from 'date-fns';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { PrimeNG } from 'primeng/config';
 
 @Component({
   selector: 'app-add',
@@ -110,7 +107,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     toastr: ToastrService,
     homeService: HomeService,
     protected _lightbox: Lightbox,
-    primengConfig: PrimeNGConfig,
+    primeng: PrimeNG,
     messageService: MessageService,
     protected chatService: ChatService,
     sanitizer: DomSanitizer,
@@ -134,7 +131,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       modalServiceBs,
       document,
       renderer2,
-      primengConfig,
+      primeng,
       messageService,
       nzMessage,
       modalService,
@@ -182,7 +179,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
 
   ngOnInit(): void {
     initFlowbite();
-    this.primengConfig.ripple = true;
+    this.primeng.ripple.set(true);
     //$('html').css('overflow', 'hidden');
     // 1-localstorage 2-model
     if (this.homeService.getHomeFromLocalCache()) {
@@ -241,7 +238,8 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       ],
     };
     // guarda la visita
-    setTimeout(() => {
+    console.log(this.home)
+    /*setTimeout(() => {
       var today = format(new Date(), "yyyy-MM-dd")
       if (this.home.visitasAsString) { // no es la primera visita del anuncio
         _.map(this.home.visitas, v => {
@@ -285,10 +283,12 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       this.subscriptions.push(this.homeService.updateHome(this.home).subscribe({
         next: () => {
         },
-        error: () => {
+        error: (err) => {
+          this.notificationService.notify(NotificationType.ERROR,err.value);
+          console.log(err)
         }
       }));
-    }, 1000);
+    }, 1000);*/
 
 
   }
@@ -331,9 +331,9 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
           this.home.images = JSON.parse(this.home.imagesAsString);
           var y = document.getElementById('skeleton-section');
           y.style.display = 'none';
-          for (let i = 0; i < customIndex; i++) {
+          for (let i = 0; i < this.home.images.length; i++) {
             const src = this.home.images[i].imageUrl + i + '.jpg';
-            const caption = i + 1 + ' / ' + customIndex;
+            const caption = i + 1 + ' / ' + this.home.images.length;
             const thumb = this.home.images[i].imageUrl + i + '.jpg';
             const album = {
               src: src,
