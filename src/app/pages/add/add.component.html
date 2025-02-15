@@ -1108,100 +1108,24 @@
                             
                         </section>
 
-                        <section id="fancybox">
+                        <section id="fancybox"> <!-- *ngFor="let appHome of homes;let i=index"-->
                             <h2>Similares en {{this.home.distrito}}</h2>
                             <!--Carousel slick primeng-->
                             <p-carousel [value]="this.homes" [numVisible]="3" [numScroll]="3" [circular]="true" [responsiveOptions]="responsiveOptions" 
-                            class="mx-auto p-1 justify-content-center">
+                            class="mx-auto p-1 justify-content-center" (onPage)="setLikeSlick()">
                                 <ng-template let-home pTemplate="item" let-i="index" class="mx-auto p-1 justify-content-center">
-                                    <div class="col d-flex flex-row my-auto" >
-                                        <div class=" teaser-tile mt-2 mx-2 border" >
-                                            <span class="favorite favorite-need-login" >
-                                              <div class="wrapperDemo">
-                                                <input [checked]="false" (change)="cuoreLikeFeature(home.viviendaId,home,$event)" class="red-heart-checkbox" #redheartcheckboxcard id="{{home.viviendaId}}card" type="checkbox">
-                                                <label for="{{home.viviendaId}}card"></label>
-                                              </div>
-                                            </span>
-                                            <div class="flex-grow-1 " >
-                                                <div class="with-img" style="position: relative;">
-                                                    <p-galleria [(value)]="home.images" [circular]="true" [showIndicators]="false"  [showItemNavigators]="true" [showThumbnails]="false" [responsiveOptions]="responsiveOptions2" [containerStyle]="{ 'max-width': '640px' }">
-                                                        <ng-template pTemplate="item" let-item>
-                                                            <img [src]="item.imageUrl" style="width: 100%; display: block;" />
-                                                        </ng-template>
-                                                    </p-galleria>
-                                                </div>
-                                                <div class="desc">
-                                                    <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span class="text-secondary">{{home.tipo}}</span> </div>
-                                                    <div class="route mx-2">{{home.calle}} <span style="color:#d9d9d9">|</span> {{home.distrito}} <span style="color:#d9d9d9">|</span> {{home.ciudad}}</div>
-                                                    <div class="units mx-2">
-                                                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
-                                                          <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
-                                                            <span style="font-size: 0.8em;">{{home.habitaciones}}</span>
-                                                        </div>
-                                                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
-                                                          <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"  name="expand-outline"></ion-icon>
-                                                            <span style="font-size: 0.8em;">{{home.superficie}}m²</span>
-                                                        </div>
-                                                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="bath">
-                                                          <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-toilet.svg"></ion-icon>
-                                                            <span style="font-size: 0.8em; margin-left: 2px;">{{home.aseos}}</span>
-                                                        </div>
-                                                        <div *ngIf="home.orientacion" class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
-                                                          <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" src="assets/svg/card-facing.svg"></ion-icon>
-                                                            <span style="font-size: 0.8em; margin-left: 2px;">{{home.orientacion}}</span>
-                                                        </div>
-                                                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="card-spaces">
-                                                          <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;" name="car-sport-outline"></ion-icon>
-                                                            <span style="font-size: 0.8em; margin-left: 2px;">{{home.garage}}</span>
-                                                        </div>
-                                                        <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="year">
-                                                          <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;" name="hammer-outline"></ion-icon>
-                                                            <span style="font-size: 0.8em; margin-left: 2px;">{{home.antiguedad}}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="txt h-100p b-none pt-0">
-                                                    <div class="clamp-3" (click)="runAdCard(home,'ad')">{{home.descripcion}}</div><!--onclick="print()"-->
-                                                </div>
-                                                <div class="price">
-                                                    <div class="price-item">
-                                                      {{formatNumberWithCommas(home.precioFinal)+'€'}}
-                                                    </div>
-                                                </div>
-                                                <!--<div class="social-actions">
-                                                    <div class="like-item">
-                                                      <ion-icon name="heart-outline"></ion-icon>
-                                                          <div class="social-counter" data-counter="1">1</div>
-                                                      </div>
-                                                    <div class="superlike-item">
-                                                      <ion-icon name="heart-outline"></ion-icon>
-                                                        <div class="social-counter" data-counter="0"></div>
-                                                    </div>
-                                                    <div class="d-flex flex-grow-1 justify-content-end">
-                                                        <div class="recommend-item" >
-                                                            <div class="social-title">Recommend</div>
-                                                            <ion-icon name="thumbs-up-outline"></ion-icon>
-                                                            <div class="social-counter" data-counter="0"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>-->
-                                              </div>
-                                            <!--<div class="txt color-black b-none pt-4">
-                                                <div class="contacts listing-contacts-block">
-                                                    <div class="buttons">
-                                                        <a class="btn btn-sm w-100p btn-outline-primary">
-                                                          <ion-icon name="thumbs-up-outline"></ion-icon>
-                                                            <span class="text-truncate ml-6">Mensaje</span>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col-auto overflow-hidden">
-                                                      <div class="btn btn-sm w-100p btn-primary show-contacts-btn" >
-                                                        <ion-icon name="call-outline"></ion-icon>
-                                                      </div>
-                                                  </div>
-                                                </div>
-                                            </div>-->
-                                        </div>
+                                    <div class="col d-flex flex-row my-auto mx-1" >
+                                        <app-ad-card 
+                                            [homeCard]="home" 
+                                            [carouselIdx]="i" 
+                                            [user]="this.user"
+                                            [cardSkeletonOn]="this.cardSkeletonOn" 
+                                            [anyPopupOpen]="this.anyPopupOpen"
+                                            [popupOpenViviendaId]="this.popupOpenViviendaId"
+                                            [cardCheckedViviendaId]="this.cardCheckedViviendaId"
+                                            [parent]="'ad'"
+                                            >
+                                        </app-ad-card>
                                     </div>
                                 </ng-template>
                             </p-carousel>

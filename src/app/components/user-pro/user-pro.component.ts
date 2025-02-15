@@ -1,6 +1,6 @@
 import { Visitas } from './../../model/home';
 import { ProfileImage } from './../../model/user';
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnDestroy, OnInit, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnDestroy, OnInit, output, QueryList, Renderer2, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -38,7 +38,7 @@ import * as $ from 'jquery';
 import { homeicon } from '../../model/maps/icons';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
-import { APIKEY } from 'src/environments/environment.prod';
+import { APIKEY } from 'src/environments/environment.key';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import Axios from 'axios-observable';
 import GestureHandling from 'leaflet-gesture-handling';
@@ -68,7 +68,8 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
   selectedUser: User = new User();
   hub: signalR.HubConnection | undefined;
   message: string = "";
-
+  labelProfile = 'imagen de perfil';
+  labelProfileChange = output<string>();
   vistas: string[] = Object.values(Views);
   @ViewChild('sidenav') sidenav: MatSidenav;
   resizeStyleListSidenav = { "max-width": `100vh !important`, };
@@ -144,6 +145,9 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
         this.clickButton(currentState?.extras.state.tab);
       }, 500);
     }
+    setTimeout(() => {
+      this.labelProfileChange.emit('imagen de perfil')
+    }, 2000);
   }
 
   @ViewChild('customLoadingTemplate') customLoadingTemplate: TemplateRef<any>;
@@ -208,11 +212,11 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
             if (this.home.energyCertAsString) {
               this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
             }
-            if (this.imageChangedEventEnergyUpdate) {
-              this.croppedImageEnergyUpdate = null;
-              this.imageChangedEventEnergyUpdate = null;
-              this.tempEnergyUpdate = null;
-              this.tempEnergyTagNameUpdate = null;
+            if (this.imageChangedEvent) {
+              this.croppedImage = null;
+              this.imageChangedEvent = null;
+              this.tempImage = null;
+              this.tempTagName = null;
             }
             if (this.home.aseoEnsuite >= 6) {
               this.homeDto.aseoEnsuite = '5+';
@@ -444,10 +448,10 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
       }
     }
     // certificado energético
-    if (this.tempEnergyUpdate != null) {
+    if (this.tempImage != null) {
       const body = new FormData();
-      body.append('image', this.tempEnergyUpdate);
-      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempEnergyUpdate.name)
+      body.append('image', this.tempImage);
+      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempImage.name)
         .subscribe({
           next: (res: any) => {
             var energyCert: HomeImage = {
@@ -724,6 +728,7 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
     this.homeService.getHomesByQuery('IdCreador@=*' + this.user.userId).subscribe({
       next: (res: Home[]) => {
         if (res) {
+          console.log(res.length)
           this.user.domains = [...res]
           for (let i = 0; i < res.length; i++) {
             this.user.domains[i] = this.homeService.performHome(this.user.domains[i]);
@@ -816,11 +821,11 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
 
   updateUser() {
     this.showLoading = true;
-    if (this.tempBranding != null) {
+    if (this.tempImageBranding != null) {
       const body = new FormData();
       //var randomString = (Math.random() + 1).toString(36).substring(10);
-      body.append('image', this.tempBranding);
-      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempBranding.name)
+      body.append('image', this.tempImageBranding);
+      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempImageBranding.name)
         .subscribe({
           next: (res: any) => {
             this.user.brandImage = {
@@ -839,10 +844,10 @@ export class UserProComponent extends HomeComponent implements OnInit, OnDestroy
         }));
     }
     // user profile file
-    if (this.tempProfile != null) {
+    if (this.tempImageProfile != null) {
       const body = new FormData();
-      body.append('image', this.tempProfile);
-      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempProfile.name,)
+      body.append('image', this.tempImageProfile);
+      this.subscriptions.push(this.imageService.uploadSignature(body, this.tempImageProfile.name,)
         .subscribe({
           next: (res: any) => {
             this.user.profileImage = {

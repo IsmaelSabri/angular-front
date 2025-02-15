@@ -1,6 +1,6 @@
 import { NotificationService } from 'src/app/service/notification.service';
 import { HomeService } from 'src/app/service/home.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, inject, Inject, Renderer2, AfterViewInit, TemplateRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, inject, Inject, Renderer2, AfterViewInit, TemplateRef, output } from '@angular/core';
 import { AuthenticationService } from '../../service/authentication.service';
 import { UserService } from '../../service/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,8 +11,9 @@ import { Lightbox } from 'ngx-lightbox';
 import { NotificationType } from 'src/app/class/notification-type.enum';
 import * as L from 'leaflet';
 import {
-  
-  Stadia_OSMBright, Jawg_Sunny
+
+  Stadia_OSMBright, Jawg_Sunny,
+  tileLayerGoogleStreets
 } from '../../model/maps/functions';
 import {
   homeicon
@@ -20,7 +21,7 @@ import {
 } from '../../model/maps/icons';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine-here';
-import { APIKEY } from 'src/environments/environment.prod';
+import { APIKEY } from 'src/environments/environment.key';
 import intlTelInput from 'intl-tel-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import Swal from 'sweetalert2'
@@ -105,7 +106,7 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     notificationService: NotificationService,
     route: ActivatedRoute,
     toastr: ToastrService,
-    homeService: HomeService,
+    protected homeService: HomeService,
     protected _lightbox: Lightbox,
     primeng: PrimeNG,
     messageService: MessageService,
@@ -140,7 +141,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       breakpointObserver
     );
   }
-
 
   // navbar
   menuValue: boolean = false;
@@ -181,207 +181,260 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
     initFlowbite();
     this.primeng.ripple.set(true);
     //$('html').css('overflow', 'hidden');
-    // 1-localstorage 2-model
-    if (this.homeService.getHomeFromLocalCache()) {
-      this.home = this.homeService.getHomeFromLocalCache();
-      this.getHomeFromUrl();
-    } else if (!this.homeService.getHomeFromLocalCache()) {
-      this.getHomeFromUrl();
-    } else {
-      this.router.navigateByUrl('/home');
-      NotificationType.ERROR, 'El anuncio ' + 'ha caducado o ha sido eliminado!';
-      console.log('1')
-    }
-    if (this.home.colorDestacar) {
-      this.imageBadgeColor = this.sanitizer.bypassSecurityTrustStyle(this.home.colorDestacar);
-    }
-    // get the owner
-    this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
-      next: (res) => {
-        this.propertyOwner = this.userService.performUser(res);
-        if (this.propertyOwner.isPro) {
-          if (this.propertyOwner.color) {
-            this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.propertyOwner.color);
-          }
-          if (this.propertyOwner.brandImage) {
-            this.brandingImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.propertyOwner.brandImage.imageUrl);
-          }
-        }
-      }, error: () => {
-        this.notificationService.notify(
-          NotificationType.ERROR, 'El anuncio ' + this.dto.id + 'ha caducado o ha sido eliminado!',
-        );
-        console.log('2')
-        this.router.navigateByUrl('/home');
-      }
-    }));
-    // do u like?
-    if (this.state) {
-      setTimeout(() => {
-        if (this.home.likeMeForever.includes(this.user.userId)) {
-          const element = document.getElementById(this.home.viviendaId) as HTMLInputElement;
-          element.checked = true;
-        }
-        //this.setCardLike();
-      }, 1000);
-    }
-    //if(Object.keys(this.home).length){
-    // draw donut
-    this.doughnutChartData = {
-      labels: ['Precio de venta', 'Impuestos y gastos', 'Entrada', 'Financiado'],
-      datasets: [
-        {
-          data: [this.home.precioFinal, +this.otherCosts(0).toFixed(0), 0, this.importeFinanciado],
-          backgroundColor: this.getRandomColors(4),
-          borderColor: this.getRandomColors(4),
-        },
-      ],
-    };
-    // guarda la visita
-    console.log(this.home)
-    /*setTimeout(() => {
-      var today = format(new Date(), "yyyy-MM-dd")
-      if (this.home.visitasAsString) { // no es la primera visita del anuncio
-        _.map(this.home.visitas, v => {
-          if (v.date == today) { // no es la primera visita del día 
-            v.count++;
-            if (this.state) { // usuario logueado
-              if (!v.userId.includes(this.user.userId)) {
-                v.userId = this.user.userId + ',' + v.userId;
-              }
-            } else { // usuario anónimo
-              if (!v.userId.includes('unknown')) {
-                v.userId = 'unknown,' + v.userId;
-              }
-            }
-            //this.home.visitas.push(visita);
-          } else { // primera visita del día
-            var visita = new Visitas();
-            visita.count = 1;
-            visita.date = today;
-            if (this.state) {
-              visita.userId = this.user.userId;
-            } else {
-              visita.userId = 'unknown';
-            }
-            this.home.visitas.push(visita);
-          }
-        })
-      } else { // primera visita del anuncio
-        this.home.visitas = []
-        var visita = new Visitas();
-        visita.count = 1;
-        visita.date = today;
-        if (this.state) {
-          visita.userId = this.user.userId;
-        } else {
-          visita.userId = 'unknown';
-        }
-        this.home.visitas.push(visita);
-      }
-      this.home.visitasAsString = JSON.stringify(this.home.visitas).split(',null').join('');
-      this.subscriptions.push(this.homeService.updateHome(this.home).subscribe({
-        next: () => {
-        },
-        error: (err) => {
-          this.notificationService.notify(NotificationType.ERROR,err.value);
-          console.log(err)
-        }
-      }));
-    }, 1000);*/
-
-
+    this.getHomeFromUrl();
   }
 
   getHomeFromUrl() {
     if (this.route.snapshot.paramMap.get('id') && this.route.snapshot.fragment) {
       this.dto.id = this.route.snapshot.paramMap.get('id');
       this.dto.model = this.route.snapshot.fragment;
-    }
-    var homeDto = JSON.stringify(this.dto);
-    this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
-      next: (res) => {
-        this.home = this.homeService.performHome(res);
-        if (this.home.energyCert) {
-          this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
-        }
-        if (this.home.vistasDespejadas) {
-          this.views = this.home.vistasDespejadas.split(',');
-        }
-        if (this.home.tipos) {
-          this.projectFeatures = this.home.tipos.split(',');
-        }
-        if (this.state) {
-          this.user = this.authenticationService.getUserFromLocalCache();
-        }
-        // stardard: 60, pro: 90
-        var customIndex;
-        if (this.propertyOwner) {
-          if (!this.propertyOwner.isPro) {
-            if (this.home.images.length > 60) {
-              customIndex = 60;
-            } else {
-              customIndex = this.home.images.length;
+      var homeDto = JSON.stringify(this.dto);
+      this.subscriptions.push(this.homeService.gethome(this.dto.id, homeDto).subscribe({
+        next: (res) => {
+          this.home = this.homeService.performHome(res);
+          setTimeout(() => {
+            if (this.home.energyCert) {
+              this.energyImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.home.energyCert.imageUrl);
             }
-          } else {
-            customIndex = this.home.images.length;
-          }
-        }
-        setTimeout(() => {
-          this.home.images = JSON.parse(this.home.imagesAsString);
-          var y = document.getElementById('skeleton-section');
-          y.style.display = 'none';
-          for (let i = 0; i < this.home.images.length; i++) {
-            const src = this.home.images[i].imageUrl + i + '.jpg';
-            const caption = i + 1 + ' / ' + this.home.images.length;
-            const thumb = this.home.images[i].imageUrl + i + '.jpg';
-            const album = {
-              src: src,
-              caption: caption,
-              thumb: thumb,
+            if (this.home.vistasDespejadas) {
+              this.views = this.home.vistasDespejadas.split(',');
+            }
+            if (this.home.tipos) {
+              this.projectFeatures = this.home.tipos.split(',');
+            }
+            if (this.state) {
+              this.user = this.authenticationService.getUserFromLocalCache();
+            }
+            // stardard: 60, pro: 90
+            var customIndex;
+            if (this.propertyOwner) {
+              if (!this.propertyOwner.isPro) {
+                if (this.home.images.length > 60) {
+                  customIndex = 60;
+                } else {
+                  customIndex = this.home.images.length;
+                }
+              } else {
+                customIndex = this.home.images.length;
+              }
+            }
+            setTimeout(() => {
+              this.home.images = JSON.parse(this.home.imagesAsString);
+              var y = document.getElementById('skeleton-section');
+              y.style.display = 'none';
+              for (let i = 0; i < this.home.images.length; i++) {
+                const src = this.home.images[i].imageUrl + i + '.jpg';
+                const caption = i + 1 + ' / ' + this.home.images.length;
+                const thumb = this.home.images[i].imageUrl + i + '.jpg';
+                const album = {
+                  src: src,
+                  caption: caption,
+                  thumb: thumb,
+                };
+                this._albums.push(album);
+              }
+            }, 1300);
+            this.setEnergyFeatures(
+              this.home.consumo.substring(0, 1),
+              this.home.emisiones.substring(0, 1)
+            );
+            L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
+            this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
+              [this.home.lat, this.home.lng],
+              17
+            );
+            tileLayerGoogleStreets().addTo(this.mapAdd);
+            this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
+            this.colegio = JSON.parse(this.home.colegios);
+            this.universidad = JSON.parse(this.home.universidades);
+            this.mercados = JSON.parse(this.home.supermercados);
+            this.autobus = JSON.parse(this.home.bus);
+            this.aeropuerto = JSON.parse(this.home.aeropuerto);
+            this.beach = JSON.parse(this.home.distanciaAlMar);
+            this.metro = JSON.parse(this.home.metro);
+            // to clear circle when print any route
+            this.mapEvents.add('circle');
+            this.loadScripts();
+            this.timelineStatus();
+            if (this.home.colorDestacar) {
+              this.imageBadgeColor = this.sanitizer.bypassSecurityTrustStyle(this.home.colorDestacar);
+            }
+            // get the owner
+            this.subscriptions.push(this.userService.getUserByUserId(this.home.idCreador).subscribe({
+              next: (res) => {
+                this.propertyOwner = this.userService.performUser(res);
+                if (this.propertyOwner.isPro) {
+                  if (this.propertyOwner.color) {
+                    this.brandingColor = this.sanitizer.bypassSecurityTrustStyle(this.propertyOwner.color);
+                  }
+                  if (this.propertyOwner.brandImage) {
+                    this.brandingImage = this.sanitizer.bypassSecurityTrustResourceUrl(this.propertyOwner.brandImage.imageUrl);
+                  }
+                }
+                /*
+                *
+                * Fill slick carousel
+                */
+                setTimeout(() => {
+                  // criterio 1: viviendas de ese usuario
+                  this.fillSlick('IdCreador@=*' + this.propertyOwner.userId);
+                  //console.log(checkLenghSlick)
+                  // 2: viviendas por la zona
+                  // 3: viviendas en esa ciudad
+                  // 4: viviendas en los pueblos de alrededores
+                  // 5: viviendas de cualquier tipo
+
+                }, 1000);
+              }, error: () => {
+                this.notificationService.notify(
+                  NotificationType.ERROR, 'El anuncio ' + this.dto.id + 'ha caducado o ha sido eliminado!',
+                );
+                console.log('2')
+                this.router.navigateByUrl('/home');
+              }
+            }));
+            // likes at slick
+            // do u like?
+            if (this.state) {
+              setTimeout(() => {
+                if (this.home.likeMeForever.includes(this.user.userId)) {
+                  const element = document.getElementById(this.home.viviendaId) as HTMLInputElement;
+                  element.checked = true;
+                }
+              }, 1000);
+            }
+            // draw donut
+            this.doughnutChartData = {
+              labels: ['Precio de venta', 'Impuestos y gastos', 'Entrada', 'Financiado'],
+              datasets: [
+                {
+                  data: [this.home.precioFinal, +this.otherCosts(0).toFixed(0), 0, this.importeFinanciado],
+                  backgroundColor: this.getRandomColors(4),
+                  borderColor: this.getRandomColors(4),
+                },
+              ],
             };
-            this._albums.push(album);
-          }
-        }, 1300);
-        this.setEnergyFeatures(
-          this.home.consumo.substring(0, 1),
-          this.home.emisiones.substring(0, 1)
-        );
-        L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
-        this.mapAdd = L.map('mapAdd', { renderer: L.canvas(), gestureHandling: true }).setView(
-          [this.home.lat, this.home.lng],
-          17
-        );
-        Stadia_OSMBright().addTo(this.mapAdd);
-        this.circle = new L.circle([this.home.lat, this.home.lng], { radius: 75, color: '#3a3b3c' }).addTo(this.mapAdd);
-        this.colegio = JSON.parse(this.home.colegios);
-        this.universidad = JSON.parse(this.home.universidades);
-        this.mercados = JSON.parse(this.home.supermercados);
-        this.autobus = JSON.parse(this.home.bus);
-        this.aeropuerto = JSON.parse(this.home.aeropuerto);
-        this.beach = JSON.parse(this.home.distanciaAlMar);
-        this.metro = JSON.parse(this.home.metro);
-        // to clear circle when print any route
-        this.mapEvents.add('circle');
-        this.loadScripts();
-        this.timelineStatus();
-        this.homeService.getHomes().subscribe((data) => {
-          this.homes = data;
-          for (let i = 0; i < this.homes.length; i++) {
-            this.homes[i].images = JSON.parse(this.homes[i].imagesAsString);
-          }
-        })
-      },
-      error: () => {
-        this.notificationService.notify(
-          NotificationType.ERROR, 'El anuncio ' + this.dto.id + ' ha caducado o ha sido eliminado',
-        );
-        console.log('3')
-        this.router.navigateByUrl('/home');
-      }
-    }))
+            // visitas
+          }, 1000);
+
+        },
+        error: () => {
+          this.notificationService.notify(
+            NotificationType.ERROR, 'El anuncio ' + this.dto.id + ' ha caducado o ha sido eliminado',
+          );
+          console.log('3')
+          this.router.navigateByUrl('/home');
+        }
+      }))
+    }
   }
 
+  /* carga el slick con unos  */
+  slickCriteria: string[] = [
+    'distrito@=*' + this.home.distrito,
+    'ciudad@=*' + this.home.ciudad,
+    'tipo@=*' + this.home.tipo,
+    'prototipo@=*' + this.home.prototipo,
+    'condicion@=*' + this.home.condicion,
+  ]
+  slickIndex: number = 0;
+  private fillSlick(url) {
+    this.homes = []
+    this.homeService.getHomesByQuery(url).subscribe({
+      next: (res: Home[]) => {
+        if (res) {
+          _.remove(res, { viviendaId: this.home.viviendaId });
+          _.uniq(res)
+          if (res.length >= 3) {
+            this.homes = [...res];
+            _.map(this.homes, (value, index) => {
+              this.homes[index] = this.homeService.performHome(res[index]);
+            })
+            return;
+          } else {
+            console.log('abcde')
+            if (this.slickIndex == 5) {
+              return;
+            }
+            this.fillSlick(this.slickCriteria[this.slickIndex]);
+            this.slickIndex++;
+          }
+        }
+      },
+      error: (err: any) => {
+        this.notificationService.notify(NotificationType.ERROR, 'Error al cargar las viviendas' + err);
+      }
+    });
+    //console.log(_.size(this.homes))
+  }
+
+  /* llama cada tarjeta por herencia cuando el usuario clika */
+  likeFeature(homeCard: Home) {
+    if (this.state) {
+      var userValue = this.user.userId;
+      if (homeCard.likeMeForever.includes(userValue)) {
+        homeCard.likeMeForever.forEach((item, index) => {
+          if (item == userValue) homeCard.likeMeForever.splice(index, 1);
+        });
+        homeCard.likeMeForeverAsString = homeCard.likeMeForever.toString();
+        _.compact(homeCard.likeMeForever);
+        this.subscriptions.push(this.homeService.updateHome(homeCard).subscribe({
+          next: (res: Home) => {
+            homeCard = this.homeService.performHome(res)
+            _.remove(this.homes, { viviendaId: homeCard.viviendaId });
+            this.homes.push(res);
+            this.createMessage("success", "Borrado desde favoritos");
+          },
+          error: (err: any) => {
+            this.notificationService.notify(NotificationType.ERROR, err);
+          }
+        }));
+      } else {
+        homeCard.likeMeForever.push(userValue);
+        homeCard.likeMeForeverAsString = homeCard.likeMeForever.toString();
+        _.compact(homeCard.likeMeForever);
+        this.subscriptions.push(this.homeService.updateHome(homeCard).subscribe({
+          next: (res: Home) => {
+            homeCard = this.homeService.performHome(res)
+            _.remove(this.homes, { viviendaId: homeCard.viviendaId });
+            this.homes.push(res);
+
+            this.createMessage("success", "Guardado en favoritos");
+          },
+          error: (err: any) => {
+            this.notificationService.notify(NotificationType.ERROR, err);
+          }
+        }));
+      }
+    } else {
+      this.showModal('joinUsModalAd');
+      const element = document.getElementById('ad' + homeCard.viviendaId) as HTMLInputElement;
+      element.checked = false;
+    }
+  }
+
+  /* Marca las viviendas favoritas en el slick escuchando sus eventos */
+  protected setLikeSlick() {
+    setTimeout(() => {
+      if (this.state) {
+        if (this.homes) {
+          this.homes.forEach(hm => {
+            if (hm.likeMeForever) {
+              hm.likeMeForever.forEach(lk => {
+                if (lk == this.user.userId) {
+                  //const doc = document.getElementById(hm.viviendaId) as HTMLInputElement;
+                  //doc.checked = true;
+                  $('#ad' + hm.viviendaId).prop("checked", true);
+                }
+              })
+            }
+          })
+        }
+      }
+    }, 1500);
+  }
+
+  /* Guarda el like en la vivienda cargada en la página */
   cuoreLike(id: string) {
     if (this.state) {
       var selectedHome = this.home;
@@ -395,7 +448,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
           next: (res: Home) => {
             var homeaux = this.homeService.performHome(res);
             this.home.likeMeForever = [...homeaux.likeMeForever]
-            this.homeService.addHomeToLocalCache(this.home);
             this.createMessage("success", "Borrado desde favoritos");
           },
           error: (err: any) => {
@@ -409,7 +461,6 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
           next: (res: Home) => {
             var homeaux = this.homeService.performHome(res);
             this.home.likeMeForever = [...homeaux.likeMeForever]
-            this.homeService.addHomeToLocalCache(this.home);
             this.createMessage("success", "Guardado en favoritos");
           },
           error: (err: any) => {
@@ -541,14 +592,14 @@ export class AddComponent extends HomeComponent implements OnInit, OnDestroy, Af
       this.mapAdd.eachLayer(function (layer) {
         layer.remove();
       });
-      Jawg_Sunny().addTo(this.mapAdd);
+      tileLayerGoogleStreets().addTo(this.mapAdd);
       this.mapEvents.delete('circle');
     }
     if (this.mapEvents.has('control')) {
       this.mapAdd.eachLayer(function (layer) {
         layer.remove();
       });
-      Jawg_Sunny().addTo(this.mapAdd);
+      tileLayerGoogleStreets().addTo(this.mapAdd);
       this.mapEvents.delete('control');
     }
     var control = L.Routing.control({

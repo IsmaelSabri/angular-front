@@ -1,3 +1,14 @@
+<!-- Plantilla para introducir texto en los badges -->
+<ng-template #badgeTextTemplate>
+    <p-divider type="dashed"></p-divider>
+    <div class="container d-flex text-nowrap mt-2">
+        <input class="d-block w-100" id="textOptional" maxlength="25" nz-input #textOptional />
+        <a class="add-item d-block mt-1 mx-auto text-muted" (click)="addText(textOptional)" nzTooltipPlacement="top"
+            nz-tooltip nzTooltipTitle="Puedes añadir un texto adicional">
+            <i class="bi bi-plus"></i><span>Texto</span>
+        </a>
+    </div>
+</ng-template>
 <div class="form-group">
     <!--Destacar anuncio -->
     <div class="card">
@@ -11,8 +22,9 @@
                 anuncio destaca en el listado y en el mapa</p>
         </div>
         <div class="card-footer">
-            <mat-button-toggle (change)="this.remarcado= $event.source.checked;showFledgedServices($event,'destacado')"
-                [checked]="this.remarcado" [value]="this.remarcado">{{this.remarcado ?
+            <mat-button-toggle
+                (change)="this.seleccionDestacado= $event.source.checked;showFledgedServices($event,'destacado')"
+                [checked]="this.seleccionDestacado" [value]="this.seleccionDestacado">{{this.seleccionDestacado ?
                 'Guardado':'Guardar'}}</mat-button-toggle>
             <div class="price-tag float-end ml-auto">
                 <span class="amount">4,95</span>
@@ -42,7 +54,7 @@
                     <label for="location" class="float-start">Ubicación&nbsp;
                         <i nz-tooltip [nzTooltipTrigger]="'click'" nzTooltipTitle="Desea exponer la ubicación? Si selecciona Aprox. no mostraremos
                     la calle ni el número" class="bi bi-info-square"></i></label>
-                    <nz-radio-group [(ngModel)]="this.ubicacionMapa" nzButtonStyle="solid" nzDisabled="true">
+                    <nz-radio-group [(ngModel)]="this.seleccionUbicacionMapa" nzButtonStyle="solid" nzDisabled="true">
                         <label nz-radio-button nzValue=true>Exacta</label>
                         <label nz-radio-button nzValue=false>Aprox.</label>
                     </nz-radio-group>
@@ -51,8 +63,9 @@
         </div>
         <div class="card-footer">
             <mat-button-toggle
-                (change)="this.ubicacionMapa= $event.source.checked;showFledgedServices($event,'location')"
-                [checked]="this.ubicacionMapa" [value]="this.ubicacionMapa">{{this.ubicacionMapa ?
+                (change)="this.seleccionUbicacionMapa= $event.source.checked;showFledgedServices($event,'location')"
+                [checked]="this.seleccionUbicacionMapa"
+                [value]="this.seleccionUbicacionMapa">{{this.seleccionUbicacionMapa ?
                 'Guardado':'Guardar'}}</mat-button-toggle>
             <div class="price-tag float-end ml-auto">
                 <span class="amount">6,95</span>
@@ -76,21 +89,62 @@
                 <span class="badge rounded-pill text-bg-warning text-uppercase mx-1">oportunidad</span>
                 <span class="badge rounded-pill text-bg-info text-uppercase mx-1">exclusiva</span>
                 <span class="badge rounded-pill text-bg-light text-uppercase border mx-1">reformada</span>
-                <span class="badge rounded-pill text-bg-dark text-uppercase">lujo</span>
+                <span class="badge rounded-pill text-bg-dark text-uppercase ml-1">lujo</span>
             </div>
-            <p class="card-text"><ion-icon name="eye-outline" class="mt-3"></ion-icon> Señala un aspecto de hasta 25 caracteres.</p>
+            <p class="card-text"><ion-icon name="eye-outline" class="mt-3"></ion-icon> Señala un aspecto de hasta 25
+                caracteres.</p>
             <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> La nota se mostrará
                 en el listado, el mapa y el anuncio.</p>
             <p class="card-text"><ion-icon src="assets/svg/no-place.svg" class="mt-3"></ion-icon> Personaliza el color
                 de la letra y del fondo de la nota.</p>
             <p class="card-text"><ion-icon name="checkmark-outline" class="text-success mt-3"></ion-icon> Puedes
                 cambiar el texto tantas veces como quieras desde tu área de cliente</p>
+            <div class="row mt-2">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
+                    <label class="d-block" for="badgeTextoDestacar">Texto</label>
+                    <nz-select class="d-block destacarSelectText" #badgeOffice="ngModel" name="badgeTextoDestacar"
+                        nzPlaceHolder="" [nzSize]="sizeM" [nzDropdownRender]="badgeTextTemplate"
+                        [(ngModel)]="this.fraseDestacar" panelWidth="fit-content"
+                        (nzOpenChange)="rotateArrows($event,'destacarSelectText')">
+                        <nz-option *ngFor="let opt of badge" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                    </nz-select>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 d-flex flex-column">
+                    <label for="colorFondoDestacar" class="">Color fondo</label>
+                    <div class="text-center">
+                        <nz-color-picker class="d-block" nzTrigger="hover" name="colorFondoDestacar"
+                            [nzDefaultValue]="'#3a3b3c'" #colorFondoDestacar
+                            [(ngModel)]="this.colorFondoDestacar"></nz-color-picker>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 d-flex flex-column">
+                    <label for="colorTextodestacar" class="">Color texto</label>
+                    <div class="text-center">
+                        <nz-color-picker class="d-block" nzTrigger="hover" name="colorTextoDestacar"
+                            [nzDefaultValue]="'#ccff00'" #colorTextoDestacar
+                            [(ngModel)]="this.colorTextoDestacar"></nz-color-picker>
+                    </div>
+                </div>
+                <div class="row">
 
+                    <ngx-stripe-card-group [formGroup]="stripeTest" [elementsOptions]="elementsOptions">
+                        <input formControlName="name" />
+                        <input formControlName="amount" />
+                        <ngx-stripe-card-number [options]="cardOptions"></ngx-stripe-card-number>
+                        <ngx-stripe-card-expiry [options]="cardOptions"></ngx-stripe-card-expiry>
+                        <ngx-stripe-card-cvc [options]="cardOptions"></ngx-stripe-card-cvc>
+                        <button type="submit" class="btn btn-primary" (click)="pay()">
+                            PAY
+                        </button>
+                    </ngx-stripe-card-group>
+
+
+                </div>
+            </div>
         </div>
         <div class="card-footer">
-            <mat-button-toggle
-                (change)="this.ubicacionMapa= $event.source.checked;showFledgedServices($event,'location')"
-                [checked]="this.ubicacionMapa" [value]="this.ubicacionMapa">{{this.ubicacionMapa ?
+            <mat-button-toggle (change)="this.seleccionNota= $event.source.checked;showFledgedServices($event,'nota')"
+                [checked]="this.seleccionNota" [value]="this.seleccionNota">{{this.seleccionNota ?
                 'Guardado':'Guardar'}}</mat-button-toggle>
             <div class="price-tag float-end ml-auto">
                 <span class="amount">4,95</span>
@@ -98,4 +152,210 @@
             </div>
         </div>
     </div>
-</div>
+        <br>
+        <section class="text-gray-600 body-font overflow-hidden">
+            <div class="container-fluid p-0">
+              <div class="flex flex-col text-center w-full mb-20">
+                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">Pricing</h1>
+                <p class="lg:w-2/3 mx-auto leading-relaxed text-base text-gray-500">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical.</p>
+                <div class="flex mx-auto border-2 border-indigo-500 rounded overflow-hidden mt-6">
+                  <button class="py-1 px-4 bg-indigo-500 text-white focus:outline-none">Monthly</button>
+                  <button class="py-1 px-4 focus:outline-none">Annually</button>
+                </div>
+              </div>
+              <div class="flex flex-wrap -m-4">
+                <div class="p-4 xl:w-1/4 md:w-1/2 w-full">
+                  <div class="h-full p-6 rounded-lg border-2 border-gray-300 flex flex-col relative overflow-hidden">
+                    <h2 class="text-sm tracking-widest title-font mb-1 font-medium">START</h2>
+                    <h1 class="text-5xl text-gray-900 pb-4 mb-4 border-b border-gray-200 leading-none">Free</h1>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Vexillologist pitchfork
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Tumeric plaid portland
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-6">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Mixtape chillwave tumeric
+                    </p>
+                    <button class="flex items-center mt-auto text-white bg-gray-400 border-0 py-2 px-4 w-full focus:outline-none hover:bg-gray-500 rounded">Button
+                      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-auto" viewBox="0 0 24 24">
+                        <path d="M5 12h14M12 5l7 7-7 7"></path>
+                      </svg>
+                    </button>
+                    <p class="text-xs text-gray-500 mt-3">Literally you probably haven't heard of them jean shorts.</p>
+                  </div>
+                </div>
+                <div class="p-4 xl:w-1/4 md:w-1/2 w-full">
+                  <div class="h-full p-6 rounded-lg border-2 border-indigo-500 flex flex-col relative overflow-hidden">
+                    <span class="bg-indigo-500 text-white px-3 py-1 tracking-widest text-xs absolute right-0 top-0 rounded-bl">POPULAR</span>
+                    <h2 class="text-sm tracking-widest title-font mb-1 font-medium">PRO</h2>
+                    <h1 class="text-5xl text-gray-900 leading-none flex items-center pb-4 mb-4 border-b border-gray-200">
+                      <span>$38</span>
+                      <span class="text-lg ml-1 font-normal text-gray-500">/mo</span>
+                    </h1>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Vexillologist pitchfork
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Tumeric plaid portland
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Hexagon neutra unicorn
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-6">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Mixtape chillwave tumeric
+                    </p>
+                    <button class="flex items-center mt-auto text-white bg-indigo-500 border-0 py-2 px-4 w-full focus:outline-none hover:bg-indigo-600 rounded">Button
+                      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-auto" viewBox="0 0 24 24">
+                        <path d="M5 12h14M12 5l7 7-7 7"></path>
+                      </svg>
+                    </button>
+                    <p class="text-xs text-gray-500 mt-3">Literally you probably haven't heard of them jean shorts.</p>
+                  </div>
+                </div>
+                <div class="p-4 xl:w-1/4 md:w-1/2 w-full">
+                  <div class="h-full p-6 rounded-lg border-2 border-gray-300 flex flex-col relative overflow-hidden">
+                    <h2 class="text-sm tracking-widest title-font mb-1 font-medium">BUSINESS</h2>
+                    <h1 class="text-5xl text-gray-900 leading-none flex items-center pb-4 mb-4 border-b border-gray-200">
+                      <span>$56</span>
+                      <span class="text-lg ml-1 font-normal text-gray-500">/mo</span>
+                    </h1>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Vexillologist pitchfork
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Tumeric plaid portland
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Hexagon neutra unicorn
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Vexillologist pitchfork
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-6">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Mixtape chillwave tumeric
+                    </p>
+                    <button class="flex items-center mt-auto text-white bg-gray-400 border-0 py-2 px-4 w-full focus:outline-none hover:bg-gray-500 rounded">Button
+                      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-auto" viewBox="0 0 24 24">
+                        <path d="M5 12h14M12 5l7 7-7 7"></path>
+                      </svg>
+                    </button>
+                    <p class="text-xs text-gray-500 mt-3">Literally you probably haven't heard of them jean shorts.</p>
+                  </div>
+                </div>
+                <div class="p-4 xl:w-1/4 md:w-1/2 w-full">
+                  <div class="h-full p-6 rounded-lg border-2 border-gray-300 flex flex-col relative overflow-hidden">
+                    <h2 class="text-sm tracking-widest title-font mb-1 font-medium">SPECIAL</h2>
+                    <h1 class="text-5xl text-gray-900 leading-none flex items-center pb-4 mb-4 border-b border-gray-200">
+                      <span>$72</span>
+                      <span class="text-lg ml-1 font-normal text-gray-500">/mo</span>
+                    </h1>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Vexillologist pitchfork
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Tumeric plaid portland
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Hexagon neutra unicorn
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-2">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Vexillologist pitchfork
+                    </p>
+                    <p class="flex items-center text-gray-600 mb-6">
+                      <span class="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
+                          <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                      </span>Mixtape chillwave tumeric
+                    </p>
+                    <button class="flex items-center mt-auto text-white bg-gray-400 border-0 py-2 px-4 w-full focus:outline-none hover:bg-gray-500 rounded">Button
+                      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-auto" viewBox="0 0 24 24">
+                        <path d="M5 12h14M12 5l7 7-7 7"></path>
+                      </svg>
+                    </button>
+                    <p class="text-xs text-gray-500 mt-3">Literally you probably haven't heard of them jean shorts.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="container-fluid">
+
+
+            <div role="status" class="max-w-sm animate-pulse">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+                <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+                <span class="sr-only">Loading...</span>
+            </div>
+            
+            
+          </div>

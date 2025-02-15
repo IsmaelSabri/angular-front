@@ -940,11 +940,6 @@ br {
   /* change this to whatever height you want it */
 }
 
-.br-sizeL {
-  /* Margin top between checkboxes */
-  margin-top: 16px;
-}
-
 /* End checkboxes */
 
 /* Start Modal movility */
@@ -2145,6 +2140,14 @@ mat-drawer {
   align-items: center;
   line-height: 18px;
   padding: 0.8em 0.8em 0.8em 0.8em;
+}
+.branding-image-card {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  top: 1em;
+  aspect-ratio: 53/10;
+  padding: 0.3em 0.3em 0.3em 0.3em;
 }
 .like-item {
   -webkit-text-size-adjust: 100%;

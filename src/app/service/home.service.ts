@@ -41,7 +41,7 @@ export class HomeService {
   }
   // update
   public updateHome(home: Home): Observable<Home> {
-    return this.http.put<Home>(`${this.host}/api/home/home`, home);
+    return this.http.put<Home>(`${this.host}/api/home/home`, home, { headers: this.httpHeaders });
   }
 
   public updateFlat(home: Home): Observable<Home> {

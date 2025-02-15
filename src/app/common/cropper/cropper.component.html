@@ -1,0 +1,26 @@
+<div class="row">
+    <image-cropper name="cropperHome" #cropperHome [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="false"
+        [aspectRatio]="16 / 9" format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded($event)"
+        (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+    </image-cropper>
+</div>
+<div class="row">
+    <div class="container-fluid">
+        <div class="file is-small is-light is-boxed mx-auto">
+            <label class="file-label">
+                <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event)"
+                    accept="image/*" />
+                <span class="file-cta">
+                    <span class="badge primary-badge text-nowrap">{{this.tempTagName}}</span>
+                    <span class="file-icon" style="color:#999;">
+                        <i class="fas fa-cloud-upload-alt color-secondary"></i>
+                    </span>
+                    <span class="file-label text-secondary">{{imageLabel}}</span>
+                </span>
+            </label>
+        </div>
+    </div>
+    <div class="col-2">
+        <button *ngIf="this.tempTagName" id="btnbtn" class="my-auto btn-close" (click)="clearEnergySelection()"></button>
+    </div>
+</div>

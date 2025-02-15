@@ -17,17 +17,6 @@
     nzTooltipTitle="Copia y pega el enlace de youtube que aparece arriba en la barra de navegación"
     class="bi bi-info-square"></i>
 </ng-template>
-<!-- Plantilla para introducir texto en los badges -->
-<ng-template #badgeTextTemplate>
-  <p-divider type="dashed"></p-divider>
-  <div class="container d-flex text-nowrap mt-2">
-    <input class="d-block w-100" id="textOptional" maxlength="25" nz-input #textOptional />
-    <a class="add-item d-block mt-1 mx-auto text-muted" (click)="addText(textOptional)" nzTooltipPlacement="top"
-      nz-tooltip nzTooltipTitle="Puedes añadir un texto adicional">
-      <i class="bi bi-plus"></i><span>Texto</span>
-    </a>
-  </div>
-</ng-template>
 <!-- Plantilla para introducir números en los badges -->
 <ng-template #renderTemplate>
   <p-divider type="dashed"></p-divider>
@@ -278,7 +267,7 @@
                 <span class="dropdown__title">Sobre nosotros</span>
                 <ul class="dropdown__list">
                   <li>
-                    <a (click)="showDialog('new-other-modal')" class="dropdown__link">Nuestra misión</a>
+                    <a (click)="showDialog('new-office-modal')" class="dropdown__link">Nuestra misión</a>
                   </li>
                   <li>
                     <a class="dropdown__link">
@@ -393,7 +382,9 @@
                   <li nz-menu-item><a *ngIf='this.state'
                       (click)="createLocationMarker();setAdTitle('Trastero');this.homeDto.prototipo='Trastero';this.homeDto.tipo='Trastero'"><i
                         class="bi bi-door-closed mr-2"></i>&nbsp;Trastero</a></li>
-                  <!--<li nz-menu-item><a *ngIf='this.state' (click)="createLocationMarker();setAdTitle('Alojamiento vacacional')"><i class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>-->
+                  <li nz-menu-item><a *ngIf='this.state'
+                      (click)="createLocationMarker();setAdTitle('Alojamiento vacacional');this.homeDto.prototipo='Vacacional'"><i
+                        class="bi bi-building-fill-add"></i>&nbsp;Alojamiento vacacional</a></li>
                 </ul>
               </li>
               <li nz-menu-item><a *ngIf='this.state' (click)="onLogOut()" routerLink="/home">
@@ -408,17 +399,17 @@
 </header>
 <!--<ng-progress ngProgressHttp></ng-progress>-->
 
-<!---->
-<p-dialog [modal]="true" [(visible)]="newOtherModal" *ngIf="adTitleAction$ | async as title" [header]="title"
+<!-- office modal -->
+<p-dialog [modal]="true" [(visible)]="newOfficeModal" *ngIf="adTitleAction$ | async as title" [header]="title"
   [breakpoints]="{ '2199px': '42vw','1335px':'50vw','1199px':'52vw','991px':'60vw','767px':'72vw' ,'575px': '100vw' }"
-  (onHide)="closeDialog('new-other-modal')" class="p-0">
+  (onHide)="closeDialog('new-office-modal')" class="p-0">
   <!-- Modal body -->
   <div class="modal-card-body p-0">
     <!--<ng-scrollbar trackClass="vertical">-->
-    <mat-tab-group class="p-0 w-100">
-      <form #newOtherForm="ngForm" (ngSubmit)="newHome()" id="newOtherForm" class="p-0">
+    <mat-tab-group class="p-0 w-100" [dynamicHeight]='true'>
+      <form #newOfficeForm="ngForm" (ngSubmit)="newHome()" id="newOfficeForm" class="p-0">
         <!-- Tabs para oficina -->
-        <mat-tab label="General" class="p-0"> <!--*ngIf="this.adTitle.getValue()=='Oficina'"-->
+        <mat-tab label="General" class="p-0">
           <!-- Tipo de vía, nombre y número -->
           <div class="form-group row mx-2 mt-2">
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
@@ -474,30 +465,33 @@
               <nz-select panelWidth="fit-content" style=" display:block; flex-direction: column;" #disposicionOffice
                 name="disposicionOffice" class="form-control disposicionOffice" nzPlaceHolder="Ubicación"
                 [nzSize]="sizeM" [(ngModel)]="this.homeDto.disposicion" required
-                (nzOpenChange)="rotateArrows($event,'disposicionOffice')">
+                (nzOpenChange)="rotateArrows($event,'disposicionOffice');this.homeDto.piso=null;this.homeDto.plantaMasAlta=null">
                 <nz-option *ngFor="let opt of disposicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
               </nz-select>
             </div>
-            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12" *ngIf="this.homeDto.disposicion=='Piso'">
-              <label for="pisoOffice">Piso</label>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label *ngIf="this.homeDto.disposicion=='Piso'" for="pisoOffice">Piso</label>
+              <label *ngIf="this.homeDto.disposicion!='Piso'" style="color:#999;" for="pisoOffice">Piso</label>
               <nz-input-group>
                 <div nz-row>
                   <div nz-col nzSpan="10" class="float-start">
                     <input nz-input #pisoOffice placeholder="Piso" ngModel pattern="\d*" maxlength="4"
-                      (keypress)="numberOnly($event)" name="pisoOffice" [(ngModel)]="this.homeDto.piso" />
+                      [disabled]="this.homeDto.disposicion!='Piso'" (keypress)="numberOnly($event)" name="pisoOffice"
+                      [(ngModel)]="this.homeDto.piso" />
                   </div>
                   <div nz-col nzSpan="4" class="text-center">
-                    <label class="mt-1">de</label>
+                    <label class="mt-1" *ngIf="this.homeDto.disposicion=='Piso'">de</label>
+                    <label class="mt-1" style="color:#999;" *ngIf="this.homeDto.disposicion!='Piso'">de</label>
                   </div>
                   <div nz-col nzSpan="10" class="float-end">
                     <input nz-input #plantaMasAltaOffice ngModel pattern="\d*" maxlength="4"
-                      (keypress)="numberOnly($event)" name="plantaMasAltaOffice"
-                      [(ngModel)]="this.homeDto.plantaMasAlta" />
+                      [disabled]="this.homeDto.disposicion!='Piso'" (keypress)="numberOnly($event)"
+                      name="plantaMasAltaOffice" [(ngModel)]="this.homeDto.plantaMasAlta" />
                   </div>
                 </div>
               </nz-input-group>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column d-flex">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column d-flex">
               <div class="row px-3 d-flex flex-column">
                 <label for="cityOffice" class="required d-flex pl-0">Ciudad</label>
                 <button name="cityOffice" class="button is-danger is-outlined is-small provButton" type="button"
@@ -510,7 +504,7 @@
           <!-- Alquiler/Venta, precio de venta, precio/mes -->
           <div class="form-group row mx-2 mt-2">
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
-              <label class="required d-block" for="optionInputOffice">Alquiler - Venta ...</label>
+              <label class="required text-nowrap" for="optionInputOffice">Alquiler - Venta ...</label>
               <nz-select #optionInputOffice class="d-block flex-column optionInputOffice" name="optionInputOffice"
                 nzPlaceHolder="Alquiler - venta" [nzSize]="sizeM" [(ngModel)]="this.homeDto.condicion"
                 (nzOpenChange)="rotateArrows($event,'optionInputOffice')" (ngModelChange)="clearPricesRentOrSale()">
@@ -518,7 +512,7 @@
               </nz-select>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-              <label for="precioFinalOffice">Precio de venta</label>
+              <label class="text-nowrap" for="precioFinalOffice">Precio de venta</label>
               <nz-input-group>
                 <input nz-input placeholder="€" [(ngModel)]="this.homeDto.precioFinal" ngModel pattern="\d*"
                   maxlength="8" #precioFinalOffice (keypress)="numberOnly($event)" name="precioFinalOffice"
@@ -526,7 +520,7 @@
               </nz-input-group>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-              <label for="precioAlquilerOffice">Precio/mes</label>
+              <label class="text-nowrap" for="precioAlquilerOffice">Precio/mes</label>
               <nz-input-group>
                 <input nz-input placeholder="€/mes" [(ngModel)]="this.homeDto.precioAlquiler" ngModel pattern="\d*"
                   maxlength="5" #precioAlquilerOffice (keypress)="numberOnly($event)" class="form-control"
@@ -545,25 +539,6 @@
                 <nz-option *ngFor="let opt of orientacion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
               </nz-select>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
-              <label class="d-block" for="badgeOffice">Destacar</label>
-              <nz-select class="d-block destacarSelectOffice" #badgeOffice="ngModel" name="badgeOffice" nzPlaceHolder=""
-                [nzSize]="sizeM" [nzDropdownRender]="badgeTextTemplate" [(ngModel)]="this.homeDto.destacar"
-                panelWidth="fit-content" (nzOpenChange)="rotateArrows($event,'destacarSelectOffice')">
-                <nz-option *ngFor="let opt of badge" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-              </nz-select>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 d-flex flex-column">
-              <label for="colorDestacarOffice" class="">Color Destacar</label>
-              <div class="text-center">
-                <nz-color-picker class="form-control" nzTrigger="hover" name="colorDestacarOffice"
-                  [nzDefaultValue]="'#3a3b3c'" (nzOnChange)="checkBox($event)" #colorDestacarOffice
-                  [(ngModel)]="this.homeDto.colorDestacar"></nz-color-picker>
-              </div>
-            </div>
-          </div>
-          <!-- Estado, Distribución, antiguedad -->
-          <div class="form-group row mx-2 mt-2">
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
               <label class="required d-block" for="stateInputOffice">Estado</label>
               <nz-select #stateInputOffice="ngModel" class="d-block flex-column form-control estadoSelectOffice"
@@ -580,11 +555,24 @@
                 <nz-option *ngFor="let opt of distribucionOficina" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
               </nz-select>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column d-flex">
-              <label for="yearBuildOffice" class="required">Antiguedad</label>
+          </div>
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column d-flex">
+              <label for="yearBuildOffice" class="required text-nowrap">Antiguedad</label>
               <nz-date-picker id="yearBuildOffice" placeholder="Año" #yearBuildOffice nzMode="year" nzFormat="yyyy"
                 class="d-block flex-column form-control" name="yearBuildOffice" [(ngModel)]="this.homeDto.antiguedad"
                 required [nzDisabledDate]="disabledDatePost"></nz-date-picker>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 align-self-start">
+              <label for="aparcamientosOffice" class="required text-nowrap">Aparcamientos</label>
+              <input nz-input #aparcamientosOffice ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                name="aparcamientosOffice" class="form-control" [(ngModel)]="this.homeDto.aparcamientos"
+                placeholder="" />
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 align-self-start">
+              <label for="ascensoresOffice" class="required text-nowrap">Ascensores</label>
+              <input nz-input #ascensoresOffice ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                name="ascensoresOficce" class="form-control" [(ngModel)]="this.homeDto.ascensores" placeholder="0" />
             </div>
           </div>
           <!-- Descripción -->
@@ -602,9 +590,8 @@
             <!-- Seguridad -->
             <div class="row row-cols-2 mt-3">
               <div class="col">
-                <label class="filterLabel mx-3" style="text-overflow: ellipsis;white-space: nowrap;">Seguridad</label>
+                <label class="filterLabel pl-3" style="text-overflow: ellipsis;white-space: nowrap;">Seguridad</label>
               </div>
-              <div class="col"></div>
             </div>
             <div class="row mt-3 mx-3">
               <div class="col-12 ">
@@ -657,17 +644,11 @@
             <!-- Edificio -->
             <div class="row row-cols-2 mt-3">
               <div class="col">
-                <label class="filterLabel mx-3" style="text-overflow: ellipsis;white-space: nowrap;">Edificio</label>
+                <label class="filterLabel pl-3" style="text-overflow: ellipsis;white-space: nowrap;">Edificio</label>
               </div>
-              <div class="col"></div>
             </div>
             <div class="row mt-3 mx-3">
               <div class="col-12 ">
-                <mat-button-toggle (change)="this.homeDto.aparcamientos= $event.source.checked"
-                  name="aparcamientosOffice" [checked]="this.homeDto.aparcamientos" [value]="this.homeDto.aparcamientos"
-                  class="mx-1 my-1 ">
-                  Aparcamientos
-                </mat-button-toggle>
                 <mat-button-toggle (change)="this.homeDto.falsoTecho= $event.source.checked" name="falsoTechoOffice"
                   [checked]="this.homeDto.falsoTecho" [value]="this.homeDto.falsoTecho" class="mx-1 my-1 ">
                   Falso techo
@@ -679,10 +660,6 @@
                 <mat-button-toggle (change)="this.homeDto.amueblado= $event.source.checked" name="amuebladoOffice"
                   [checked]="this.homeDto.amueblado" [value]="this.homeDto.amueblado" class="mx-1 my-1 ">
                   Con mobiliario
-                </mat-button-toggle>
-                <mat-button-toggle (change)="this.homeDto.ascensor= $event.source.checked" name="ascensorOffice"
-                  [checked]="this.homeDto.ascensor" [value]="this.homeDto.ascensor" class="mx-1 my-1 ">
-                  Ascensor
                 </mat-button-toggle>
                 <mat-button-toggle (change)="this.homeDto.dobleAcristalamiento= $event.source.checked"
                   name="dobleAcristalamientoOffice" [checked]="this.homeDto.dobleAcristalamiento"
@@ -699,16 +676,16 @@
             <!-- Energía y climatización -->
             <div class="row row-cols-2 mt-4">
               <div class="col">
-                <label class="filterLabel mx-3" style="text-overflow: ellipsis;white-space: nowrap;">Energía y
+                <label class="filterLabel pl-3" style="text-overflow: ellipsis;white-space: nowrap;">Energía y
                   climatización</label>
               </div>
-              <div class="col"></div>
             </div>
             <div class="row mt-3 mx-3 form-group">
               <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <label for="climaOffice">Climatización</label>
-                <nz-select class="w-100" [nzPlaceHolder]="'Climatización'" name="climaOffice" [nzSize]="sizeM"
-                  (ngModelChange)="printSelect($event)" [(ngModel)]="this.homeDto.climatizacion">
+                <nz-select class="w-100 climaOffice" [nzPlaceHolder]="'Climatización'" name="climaOffice"
+                  [nzSize]="sizeM" (ngModelChange)="printSelect($event)" [(ngModel)]="this.homeDto.climatizacion"
+                  (nzOpenChange)="rotateArrows($event,'climaOffice')">
                   <ng-container>
                     <nz-option *ngFor="let opt of climatizacion" [nzLabel]="opt" [nzValue]="opt"></nz-option>
                   </ng-container>
@@ -716,35 +693,10 @@
               </div>
               <!--certificado-->
               <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="row">
-                  <image-cropper name="cropperOffice" #cropperOffice [imageChangedEvent]="imageChangedEventEnergyOffice"
-                    [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
-                    (imageCropped)="imageCropped($event,'energyOffice')"
-                    (imageLoaded)="imageLoaded($event,'energyOffice')" (cropperReady)="cropperReady()"
-                    (loadImageFailed)="loadImageFailed()">
-                  </image-cropper>
-                </div>
-                <div class="row">
-                  <div class="col-10">
-                    <div class="file is-small is-light is-boxed">
-                      <label class="file-label">
-                        <input class="file-input" type="file" name="resume"
-                          (change)="fileChangeEvent($event,'energyOffice')" accept="image/*" />
-                        <span class="file-cta">
-                          <span class="badge primary-badge text-nowrap">{{this.tempEnergyTagNameOffice}}</span>
-                          <span class="file-icon" style="color:#999;">
-                            <i class="fas fa-cloud-upload-alt color-secondary"></i>
-                          </span>
-                          <span class="file-label text-secondary">Certificado energético</span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-2">
-                    <button *ngIf="this.tempEnergyTagNameOffice" class="my-auto btn-close"
-                      (click)="clearEnergySelection('energyOffice')"></button>
-                  </div>
-                </div>
+                <app-cropper (ngModelchange)="newOfficeForm.form.markAsDirty()"
+                  [(imageChangedEvent)]="this.imageChangedEvent" [(croppedImage)]="this.croppedImage"
+                  [(tempImage)]="this.tempImage" [(tempTagName)]="this.tempTagName" [(master)]="this.labelCropperHome">
+                </app-cropper>
               </div>
               <!--Emisiones y consumo-->
               <div class="row mt-3 mb-3 align-items-center form-group">
@@ -784,7 +736,7 @@
                     <label for="videoOffice">Video</label>
                     <nz-input-group [nzPrefix]="youtubePrefix" [nzSuffix]="youtubeSuffix">
                       <input style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
-      width:100%" nz-input #videoOffice [(ngModel)]="this.homeDto.video" name="videoOffice"
+                    width:100%" nz-input #videoOffice [(ngModel)]="this.homeDto.video" name="videoOffice"
                         placeholder="https://www.youtube.com/watch?v=HHP5MKgK0o8" />
                     </nz-input-group>
                   </div>
@@ -796,9 +748,8 @@
         <mat-tab label="Publicar">
           <div class="container-fluid mt-3">
             <!--Pricing cards-->
-            <app-pricing-card 
-              [(remarcado)]="this.homeDto.destacado.featured" 
-              [(ubicacionMapa)]="this.homeDto.direccionAproximada">
+            <app-pricing-card [(seleccionDestacado)]="this.homeDto.destacado.featured"
+              [(seleccionUbicacionMapa)]="this.homeDto.direccionAproximada">
             </app-pricing-card>
             <div class="form-group my-4">
               <ng-container>
@@ -822,8 +773,8 @@
   </div>
   <ng-template #footer>
     <div class="d-flex ">
-      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newOtherForm.valid||showLoading"
-        severity="contrast" (click)="newOtherForm.ngSubmit.emit()">
+      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newOfficeForm.valid||showLoading"
+        severity="contrast" (click)="newOfficeForm.ngSubmit.emit()">
         <span *ngIf="showLoading" class="spinner-border text-light" role="status"
           style="width: 1.5rem; height: 1.5rem; ">
         </span>
@@ -832,7 +783,746 @@
     </div>
   </ng-template>
 </p-dialog>
-<!-- End primeng modal -->
+<!-- End office modal -->
+
+<!-- business modal -->
+<p-dialog [modal]="true" [(visible)]="newBusinessModal" *ngIf="adTitleAction$ | async as title" [header]="title"
+  [breakpoints]="{ '2199px': '42vw','1335px':'50vw','1199px':'52vw','991px':'60vw','767px':'72vw' ,'575px': '100vw' }"
+  (onHide)="closeDialog('new-business-modal')" class="p-0">
+  <div class="modal-card-body p-0">
+    <mat-tab-group class="p-0 w-100" [dynamicHeight]='true'>
+      <form #newBusinessForm="ngForm" (ngSubmit)="newHome()" id="newBusinessForm" class="p-0">
+        <mat-tab label="General" class="p-0">
+          <!-- Tipo de vía, nombre y número -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="tipodeviaBusiness" class="required text-nowrap">Tipo de vía</label>
+              <nz-select panelWidth="fit-content" style=" display:block; flex-direction: column;" #tipodeviaBusiness
+                name="tipodeviaBusiness" class="form-control viaSelectBusiness" nzPlaceHolder="Calle, avenida, plaza..."
+                [nzSize]="sizeM" [(ngModel)]="this.homeDto.tipoDeVia" required
+                (nzOpenChange)="rotateArrows($event,'viaSelectBusiness')">
+                <nz-option *ngFor="let opt of tipo_de_via" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <label for="calleBusiness" class="required">Nombre</label>
+              <input #calleBusiness nz-input placeholder="Nombre de la vía p. ej. Paseo de la Castellana..."
+                [(ngModel)]="this.homeDto.calle" name="calleBusiness" class="form-control" required />
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <label for="numeroBusiness" class="required text-nowrap">Numero</label>
+              <input nz-input #numeroBusiness placeholder="Número" class="form-control p-1" ngModel pattern="\d*"
+                maxlength="6" (keypress)="numberOnly($event)" name="numeroBusiness" [(ngModel)]="this.homeDto.numero"
+                required />
+            </div>
+          </div>
+          <!-- Código postal, distrito, superficie y baños -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <label for="cpBusiness" class="required">CP</label>
+              <input nz-input #cpBusiness placeholder="Código postal" ngModel pattern="\d*" maxlength="5"
+                (keypress)="numberOnly($event)" name="cpBusiness" class="form-control p-1" [(ngModel)]="this.homeDto.cp"
+                required />
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="distritoBusiness" class="required">Distrito</label>
+              <input nz-input #distritoBusiness placeholder="Distrito" [(ngModel)]="this.homeDto.distrito"
+                name="distritoBusiness" class="form-control" required />
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 align-self-start">
+              <label for="superficieBusiness" class="required">Superficie</label>
+              <input #superficieBusiness nz-input ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)"
+                name="superficieBusiness" class="form-control" [(ngModel)]="this.homeDto.superficie" required
+                placeholder="M²" />
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 align-self-start">
+              <label for="banyosBusiness" class="required text-nowrap">Aseos</label>
+              <input nz-input #banyosBusiness ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                name="banyosBusiness" class="form-control" [(ngModel)]="this.homeDto.aseos" required placeholder="0" />
+            </div>
+          </div>
+          <!-- Disposición, piso y ciudad -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="disposicionBusiness" class="text-nowrap">Disposición</label>
+              <nz-select panelWidth="fit-content" style=" display:block; flex-direction: column;" #disposicionBusiness
+                name="disposicionBusiness" class="form-control disposicionBusiness" nzPlaceHolder="Ubicación"
+                [nzSize]="sizeM" [(ngModel)]="this.homeDto.disposicion" required
+                (nzOpenChange)="rotateArrows($event,'disposicionBusiness');this.homeDto.piso=null;this.homeDto.plantaMasAlta=null">
+                <nz-option *ngFor="let opt of disposicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label *ngIf="this.homeDto.disposicion=='Piso'" for="pisoBusiness">Piso</label>
+              <label *ngIf="this.homeDto.disposicion!='Piso'" style="color:#999;" for="pisoBusiness">Piso</label>
+              <nz-input-group>
+                <div nz-row>
+                  <div nz-col nzSpan="10" class="float-start">
+                    <input nz-input #pisoBusiness placeholder="Piso" ngModel pattern="\d*" maxlength="4"
+                      [disabled]="this.homeDto.disposicion!='Piso'" (keypress)="numberOnly($event)" name="pisoBusiness"
+                      [(ngModel)]="this.homeDto.piso" />
+                  </div>
+                  <div nz-col nzSpan="4" class="text-center">
+                    <label class="mt-1" *ngIf="this.homeDto.disposicion=='Piso'">de</label>
+                    <label class="mt-1" style="color:#999;" *ngIf="this.homeDto.disposicion!='Piso'">de</label>
+                  </div>
+                  <div nz-col nzSpan="10" class="float-end">
+                    <input nz-input #plantaMasAltaBusiness ngModel pattern="\d*" maxlength="4"
+                      [disabled]="this.homeDto.disposicion!='Piso'" (keypress)="numberOnly($event)"
+                      name="plantaMasAltaBusiness" [(ngModel)]="this.homeDto.plantaMasAlta" />
+                  </div>
+                </div>
+              </nz-input-group>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-xs-12 flex-column d-flex">
+              <div class="row px-3 d-flex flex-column">
+                <label for="cityBusiness" class="required d-flex pl-0">Ciudad</label>
+                <button name="cityBusiness" class="button is-danger is-outlined is-small provButton" type="button"
+                  (click)="locationMap('map_2')">Ciudad</button>
+                <input #ciudadBusiness nz-input ngModel name="ciudadBusiness" class="form-control"
+                  [(ngModel)]="this.homeDto.ciudad" style="display:none;" required>
+              </div>
+            </div>
+          </div>
+          <!-- Alquiler/Venta, precio de venta, precio/mes -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
+              <label class="required d-block" for="optionInputBusiness">Alquiler - Venta ...</label>
+              <nz-select #optionInputBusiness class="d-block flex-column optionInputBusiness" name="optionInputBusiness"
+                nzPlaceHolder="Alquiler - venta" [nzSize]="sizeM" [(ngModel)]="this.homeDto.condicion"
+                (nzOpenChange)="rotateArrows($event,'optionInputBusiness')" (ngModelChange)="clearPricesRentOrSale()">
+                <nz-option *ngFor="let opt of condicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="precioFinalBusiness">Precio de venta</label>
+              <nz-input-group>
+                <input nz-input placeholder="€" [(ngModel)]="this.homeDto.precioFinal" ngModel pattern="\d*"
+                  maxlength="8" #precioFinalBusiness (keypress)="numberOnly($event)" name="precioFinalBusiness"
+                  class="form-control" [disabled]="this.homeDto.condicion=='Alquiler'" />
+              </nz-input-group>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="precioAlquilerBusiness">Precio/mes</label>
+              <nz-input-group>
+                <input nz-input placeholder="€/mes" [(ngModel)]="this.homeDto.precioAlquiler" ngModel pattern="\d*"
+                  maxlength="5" #precioAlquilerBusiness (keypress)="numberOnly($event)" class="form-control"
+                  name="precioAlquilerBusiness" [disabled]="this.homeDto.condicion=='Venta'" />
+              </nz-input-group>
+            </div>
+
+          </div>
+          <!-- aparcamientos, estado, actividad comercial -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-xl-4 col-lg-4 col-md-2 col-sm-6 align-self-start">
+              <label for="aparcamientosBusiness" class="required text-nowrap">Aparcamientos</label>
+              <input nz-input #aparcamientosBusiness ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                name="aparcamientosBusiness" class="form-control" [(ngModel)]="this.homeDto.aparcamientos" required
+                placeholder="0" />
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label class="required d-block" for="stateInputBusiness">Estado</label>
+              <nz-select #stateInputBusiness="ngModel" class="d-block flex-column form-control estadoSelectBusiness"
+                name="stateInputBusiness" nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM"
+                [(ngModel)]="this.homeDto.estado" required (nzOpenChange)="rotateArrows($event,'estadoSelectBusiness')">
+                <nz-option *ngFor="let opt of propertyState" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <label for="actividadBusiness" class="required text-nowrap">Actividad comercial</label>
+              <input #actividadBusiness nz-input placeholder="Fábrica, concesionario, tienda..."
+                [(ngModel)]="this.homeDto.actividadComercial" name="actividadOffice" class="form-control" />
+            </div>
+          </div>
+          <!-- Orientación, antiguedad, escaparates,  -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column d-flex">
+              <label for="OrientacionBusiness" class="required">Orientación</label>
+              <nz-select #OrientacionBusiness="ngModel" name="OrientacionBusiness" nzPlaceHolder=""
+                panelWidth="fit-content" class="d-block flex-column form-control orientacionSelectBusiness"
+                (nzOpenChange)="rotateArrows($event,'orientacionSelectBusiness')" required [nzSize]="sizeM"
+                [(ngModel)]="this.homeDto.orientacion">
+                <nz-option *ngFor="let opt of orientacion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
+              <label for="yearBuildBusiness" class="required">Antiguedad</label>
+              <nz-date-picker id="yearBuildBusiness" placeholder="Año" #yearBuildBusiness nzMode="year" nzFormat="yyyy"
+                class="d-block flex-column form-control" name="yearBuildBusiness" [(ngModel)]="this.homeDto.antiguedad"
+                required [nzDisabledDate]="disabledDatePost"></nz-date-picker>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 align-self-start">
+              <label for="escaparatesInput">Escaparates</label>
+              <nz-select #escaparatesInput name="escaparatesInput" class="d-block flex-column escaparatesSelect"
+                nzPlaceHolder="0" [nzSize]="sizeM" [(ngModel)]="this.homeDto.escaparates"
+                (nzOpenChange)="rotateArrows($event,'escaparatesSelect')">
+                <nz-option *ngFor="let opt of escaparates" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+              </nz-select>
+            </div>
+
+          </div>
+          <!-- Descripcion -->
+          <div class="form-group row mx-2 mt-2">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
+              <label for="descripcionBusiness" class="required">Descripción</label>
+              <textarea rows="4" name="descripcionBusiness" class="form-control mb-3" required nz-input
+                [(ngModel)]="this.homeDto.descripcion"></textarea>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Acabados">
+          <div class=" container-fluid  ">
+            <!-- Detalles -->
+            <div class="row row-cols-2 mt-3">
+              <div class="col">
+                <label class="filterLabel mx-3" style="text-overflow: ellipsis;white-space: nowrap;">Detalles</label>
+              </div>
+              <div class="col"></div>
+            </div>
+            <div class="row mt-3 mx-3 ">
+              <div class="col-12 form-group">
+                <mat-button-toggle (change)="this.homeDto.nave= $event.source.checked" name="naveBusiness"
+                  [checked]="this.homeDto.nave" [value]="this.homeDto.nave" class="mx-1 my-1 ">
+                  Nave
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.local= $event.source.checked" name="localBusiness"
+                  [checked]="this.homeDto.local" [value]="this.homeDto.local" class="mx-1 my-1 ">
+                  Local
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.haceEsquina= $event.source.checked" name="haceEsquinaBusiness"
+                  [checked]="this.homeDto.haceEsquina" [value]="this.homeDto.haceEsquina" class="mx-1 my-1 ">
+                  Hace Esquina
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.salidaDeHumos= $event.source.checked"
+                  name="salidaDeHumosBusiness" [checked]="this.homeDto.salidaDeHumos"
+                  [value]="this.homeDto.salidaDeHumos" class="mx-1 my-1 ">
+                  Salida de humos
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.traspaso= $event.source.checked" name="traspasoBusiness"
+                  [checked]="this.homeDto.traspaso" [value]="this.homeDto.traspaso" class="mx-1 my-1 ">
+                  Se traspasa<i class="ml-1 bi bi-shop-window"></i>
+                </mat-button-toggle>
+              </div>
+            </div>
+            <div class="row row-cols-2 mt-3">
+              <div class="col">
+                <label class="filterLabel mx-3"
+                  style="text-overflow: ellipsis;white-space: nowrap;">Equipamiento</label>
+              </div>
+              <div class="col"></div>
+            </div>
+            <div class="row mt-3 mx-3">
+              <div class="col-12 form-group">
+                <mat-button-toggle (change)="this.homeDto.amueblado= $event.source.checked" name="amuebladoBusiness"
+                  [checked]="this.homeDto.amueblado" [value]="this.homeDto.amueblado" class="mx-1 my-1 ">
+                  Amueblado
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.conOficina= $event.source.checked" name="conOficinaBusiness"
+                  [checked]="this.homeDto.conOficina" [value]="this.homeDto.conOficina" class="mx-1 my-1 ">
+                  Con oficina
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.conAlmacen= $event.source.checked" name="conAlmacenBusiness"
+                  [checked]="this.homeDto.conAlmacen" [value]="this.homeDto.conAlmacen" class="mx-1 my-1 ">
+                  Con almacen
+                </mat-button-toggle>
+              </div>
+            </div>
+          </div>
+          <!-- Energía y climatización -->
+          <div class="row row-cols-2 mt-4">
+            <div class="col">
+              <label class="filterLabel mx-3" style="text-overflow: ellipsis;white-space: nowrap;">Energía y
+                climatización</label>
+            </div>
+            <div class="col"></div>
+          </div>
+          <div class="row mt-3 mx-3 form-group">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <label for="climaBusiness">Climatización</label>
+              <nz-select class="w-100 climaBusiness" [nzPlaceHolder]="'Climatización'" name="climaBusiness"
+                [nzSize]="sizeM" (ngModelChange)="printSelect($event)" [(ngModel)]="this.homeDto.climatizacion"
+                (nzOpenChange)="rotateArrows($event,'climaBusiness')">
+                <ng-container>
+                  <nz-option *ngFor="let opt of climatizacion" [nzLabel]="opt" [nzValue]="opt"></nz-option>
+                </ng-container>
+              </nz-select>
+            </div>
+            <!--certificado-->
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <app-cropper (ngModelchange)="newBusinessForm.form.markAsDirty()"
+                [(imageChangedEvent)]="this.imageChangedEvent" [(croppedImage)]="this.croppedImage"
+                [(tempImage)]="this.tempImage" [(tempTagName)]="this.tempTagName" [(master)]="this.labelCropperHome">
+              </app-cropper>
+            </div>
+            <!--Emisiones y consumo-->
+            <div class="row mt-3 mb-3 align-items-center form-group">
+              <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 text-center">
+                <nz-select class="nzSelectL w-100 emisionesSelectBusiness" nzPlaceHolder="Emisiones" [nzSize]="sizeM"
+                  name="emisionesBusiness" [(ngModel)]="this.homeDto.emisiones"
+                  (nzOpenChange)="rotateArrows($event,'emisionesSelectBusiness')">
+                  <nz-option *ngFor="let opt of calificacion_emisiones" [nzValue]=opt
+                    [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+                <nz-select class="nzSelectL w-100 consumoSelectBusiness mt-3" nzPlaceHolder="Consumo" [nzSize]="sizeM"
+                  [(ngModel)]="this.homeDto.consumo" (nzOpenChange)="rotateArrows($event,'consumoSelectBusiness')"
+                  name="consumoBusiness">
+                  <nz-option *ngFor="let opt of calificacion_consumo" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 ">
+                <img class="energyImage float-start mb-2" src="assets/svg/eco/Escala_Certificacion.png"
+                  style="width: 50px; height: 58px;" alt="">
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Multimedia">
+          <div class="container-fluid">
+            <!-- Fotos -->
+            <dropzone [config]="config" [message]="'Pulse o arrastre sus imágenes para subirlas'" required class="mt-3"
+              (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (removedFile)="onRemove($event)">
+            </dropzone>
+            <!-- Video para youtube -->
+            <div class="form-group">
+              <ng-container>
+                <div class="row mb-3">
+                  <div class="col-12 ">
+                    <label for="videoBusiness">Video</label>
+                    <nz-input-group [nzPrefix]="youtubePrefix" [nzSuffix]="youtubeSuffix">
+                      <input style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
+                    width:100%" nz-input #videoBusiness [(ngModel)]="this.homeDto.video" name="videoBusiness"
+                        placeholder="https://www.youtube.com/watch?v=HHP5MKgK0o8" />
+                    </nz-input-group>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Publicar">
+          <div class="container-fluid mt-3">
+            <!--Pricing cards-->
+            <app-pricing-card [(seleccionDestacado)]="this.homeDto.destacado.featured"
+              [(seleccionUbicacionMapa)]="this.homeDto.direccionAproximada">
+            </app-pricing-card>
+            <div class="form-group my-4">
+              <ng-container>
+                <div class="row mt-3">
+                  <div class="form__privacy ">
+                    <input class="chkprivacy form-control" [(ngModel)]="this.homeDto.politicaPrivacidad"
+                      id="chkprivacyBuilding" name="chkprivacyBuilding"
+                      (change)="checkBox(this.homeDto.politicaPrivacidad?true:false)" type="checkbox" required>
+                    <label class="labelprivacy" for="chkprivacyBuilding">Acepto los <a style="color:#7ce800;"
+                        class="aprivacy" (click)="showModal('privatePolicy')">términos de privacidad</a> de
+                      spainestate.</label>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div><!-- container-fluid -->
+        </mat-tab>
+      </form>
+    </mat-tab-group>
+  </div>
+  <ng-template #footer>
+    <div class="d-flex ">
+      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newBusinessForm.valid||showLoading"
+        severity="contrast" (click)="newBusinessForm.ngSubmit.emit()">
+        <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+          style="width: 1.5rem; height: 1.5rem; ">
+        </span>
+        <span pButtonLabel style="font-weight: 600; letter-spacing: .4px;" *ngIf="!showLoading">Crear</span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+<!-- end business modal -->
+
+<!-- building modal -->
+<p-dialog [modal]="true" [(visible)]="newBuildingModal" *ngIf="adTitleAction$ | async as title" [header]="title"
+  [breakpoints]="{ '2199px': '42vw','1335px':'50vw','1199px':'52vw','991px':'60vw','767px':'72vw' ,'575px': '100vw' }"
+  (onHide)="closeDialog('new-building-modal')" class="p-0">
+  <div class="modal-card-body p-0">
+    <mat-tab-group class="p-0 w-100" [dynamicHeight]='true'>
+      <form #newBuildingForm="ngForm" (ngSubmit)="newHome()" id="newBuildingForm" class="p-0">
+        <mat-tab label="General" class="p-0">
+          <div class="container-fluid">
+            <div class="form-group row mx-2 mt-2">
+              <!-- tipo de vía, nombre, número -->
+              <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label for="tipodeviaBuilding" class="required text-nowrap">Tipo de vía</label>
+                <nz-select panelWidth="fit-content" style=" display:block; flex-direction: column;" #tipodeviaBuilding
+                  name="tipodeviaBuilding" class="form-control viaSelectBuilding"
+                  nzPlaceHolder="Calle, avenida, plaza..." [nzSize]="sizeM" [(ngModel)]="this.homeDto.tipoDeVia"
+                  required (nzOpenChange)="rotateArrows($event,'viaSelectBuilding')">
+                  <nz-option *ngFor="let opt of tipo_de_via" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label for="calleBuilding" class="required">Nombre</label>
+                <input #calleBuilding nz-input placeholder="Nombre de la vía p. ej. Paseo de la Castellana..."
+                  [(ngModel)]="this.homeDto.calle" name="calleBuilding" class="form-control" required />
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                <label for="numeroBuilding" class="required text-nowrap">Numero</label>
+                <input nz-input #numeroBuilding placeholder="Número" class="form-control p-1" ngModel pattern="\d*"
+                  maxlength="6" (keypress)="numberOnly($event)" name="numeroBuilding" [(ngModel)]="this.homeDto.numero"
+                  required />
+              </div>
+            </div>
+            <!-- código postal, distrito, superficie, alturas -->
+            <div class="form-group row mx-2 mt-2">
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label for="cpBuilding" class="required">CP</label>
+                <input nz-input #cpBuilding placeholder="Código postal" ngModel pattern="\d*" maxlength="5"
+                  (keypress)="numberOnly($event)" name="cpBuilding" class="form-control p-1"
+                  [(ngModel)]="this.homeDto.cp" required />
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label for="distritoBuilding" class="required">Distrito</label>
+                <input nz-input #distritoBuilding placeholder="Distrito" [(ngModel)]="this.homeDto.distrito"
+                  name="distritoBuilding" class="form-control" required />
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 align-self-start">
+                <label for="superficieBuilding" class="required">Superficie</label>
+                <input #superficieBuilding nz-input ngModel pattern="\d*" maxlength="20" (keypress)="numberOnly($event)"
+                  name="superficieBuilding" class="form-control" [(ngModel)]="this.homeDto.superficie" required
+                  placeholder="M²" />
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 align-self-start">
+                <label for="pisosBuilding" class="required text-nowrap">Pisos</label>
+                <input nz-input #pisosBuilding ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                  name="pisosBuilding" class="form-control" [(ngModel)]="this.homeDto.piso" required placeholder="0" />
+              </div>
+            </div>
+            <!-- ciudad, estado, antiguedad  -->
+            <div class="form-group row mx-2 mt-2">
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-xs-12 flex-column d-flex">
+                <div class="row px-3 d-flex flex-column">
+                  <label for="cityBuilding" class="required d-flex pl-0">Ciudad</label>
+                  <button name="cityBuilding" class="button is-danger is-outlined is-small provButton" type="button"
+                    (click)="locationMap('map_2')">Ciudad</button>
+                  <input #ciudadBuilding nz-input ngModel name="ciudadBuilding" class="form-control"
+                    [(ngModel)]="this.homeDto.ciudad" style="display:none;" required>
+                </div>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label class="required d-block" for="stateInputBuilding">Estado</label>
+                <nz-select #stateInputBuilding="ngModel" class="d-block flex-column form-control estadoSelectBuilding"
+                  name="stateInputBuilding" nzPlaceHolder="Seleccione" panelClass="example-panel" [nzSize]="sizeM"
+                  [(ngModel)]="this.homeDto.estado" required
+                  (nzOpenChange)="rotateArrows($event,'estadoSelectBuilding')">
+                  <nz-option *ngFor="let opt of propertyState" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
+                <label for="yearBuildBuilding" class="required">Antiguedad</label>
+                <nz-date-picker id="yearBuildBuilding" placeholder="Año" #yearBuildBuilding nzMode="year"
+                  nzFormat="yyyy" class="d-block flex-column form-control" name="yearBuildBuilding"
+                  [(ngModel)]="this.homeDto.antiguedad" required [nzDisabledDate]="disabledDatePost"></nz-date-picker>
+              </div>
+            </div>
+            <!-- ascensores, aparcamientos, viviendas -->
+            <div class="form-group row mx-2 mt-2">
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 align-self-start">
+                <label for="ascensoresBuilding" class="required text-nowrap">Ascensores</label>
+                <input nz-input #ascensoresBuilding ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                  name="ascensoresBuilding" class="form-control" [(ngModel)]="this.homeDto.ascensores" required
+                  placeholder="0" />
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 align-self-start">
+                <label for="aparcamientosBuilding" class="required text-nowrap">Aparcamientos</label>
+                <input nz-input #aparcamientosBuilding ngModel pattern="\d*" maxlength="1"
+                  (keypress)="numberOnly($event)" name="aparcamientosBuilding" class="form-control"
+                  [(ngModel)]="this.homeDto.aparcamientos" required placeholder="0" />
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 align-self-start">
+                <label for="viviendasBuilding" class="required text-nowrap">Viviendas</label>
+                <input nz-input #viviendasBuilding ngModel pattern="\d*" maxlength="1" (keypress)="numberOnly($event)"
+                  name="viviendasBuilding" class="form-control" [(ngModel)]="this.homeDto.totalViviendasConstruidas"
+                  required placeholder="0" />
+              </div>
+            </div>
+            <!-- alquiler-venta, precio de alquiler, precio de venta -->
+            <div class="form-group row mx-2 mt-2">
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12 flex-column">
+                <label class="required d-block" for="optionInputBuilding">Alquiler - Venta ...</label>
+                <nz-select #optionInputBuilding class="d-block flex-column optionInputBuilding"
+                  name="optionInputBuilding" nzPlaceHolder="Alquiler - venta" [nzSize]="sizeM"
+                  [(ngModel)]="this.homeDto.condicion" (nzOpenChange)="rotateArrows($event,'optionInputBuilding')"
+                  (ngModelChange)="clearPricesRentOrSale()">
+                  <nz-option *ngFor="let opt of condicion" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
+                </nz-select>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label for="precioFinalBuilding">Precio de venta</label>
+                <nz-input-group>
+                  <input nz-input placeholder="€" [(ngModel)]="this.homeDto.precioFinal" ngModel pattern="\d*"
+                    maxlength="8" #precioFinalBuilding (keypress)="numberOnly($event)" name="precioFinalBuilding"
+                    class="form-control" [disabled]="this.homeDto.condicion=='Alquiler'" />
+                </nz-input-group>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <label for="precioAlquilerBuilding">Precio/mes</label>
+                <nz-input-group>
+                  <input nz-input placeholder="€/mes" [(ngModel)]="this.homeDto.precioAlquiler" ngModel pattern="\d*"
+                    maxlength="5" #precioAlquilerBuilding (keypress)="numberOnly($event)" class="form-control"
+                    name="precioAlquilerBuilding" [disabled]="this.homeDto.condicion=='Venta'" />
+                </nz-input-group>
+              </div>
+            </div>
+            <div class="form-group row mx-2 mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 d-flex flex-column">
+                <label for="descripcionBusiness" class="required">Descripción</label>
+                <textarea rows="4" name="descripcionBusiness" class="form-control mb-3" required nz-input
+                  [(ngModel)]="this.homeDto.descripcion"></textarea>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Acabados">
+          <div class="container-fluid">
+            <!-- Detalles -->
+            <div class="row row-cols-2 mt-3">
+              <div class="col">
+                <label class="filterLabel pl-3" style="text-overflow: ellipsis;white-space: nowrap;">Detalles</label>
+              </div>
+            </div>
+            <div class="row mt-3 mx-3 ">
+              <div class="col-12 form-group">
+                <mat-button-toggle (change)="this.homeDto.usoResidencial= $event.source.checked"
+                  name="usoResidencialBuilding" [checked]="this.homeDto.usoResidencial"
+                  [value]="this.homeDto.usoResidencial" class="mx-1 my-1 ">
+                  Uso Residencial
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.usoComercial= $event.source.checked"
+                  name="usoComercialBuilding" [checked]="this.homeDto.usoComercial" [value]="this.homeDto.usoComercial"
+                  class="mx-1 my-1 ">
+                  Uso comercial
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.usoOficinas= $event.source.checked" name="usoOficinasBuilding"
+                  [checked]="this.homeDto.usoOficinas" [value]="this.homeDto.usoOficinas" class="mx-1 my-1 ">
+                  Uso oficinas
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.usoHotelero= $event.source.checked" name="usoHoteleroBuilding"
+                  [checked]="this.homeDto.usoHotelero" [value]="this.homeDto.usoHotelero" class="mx-1 my-1 ">
+                  Uso hotelero
+                </mat-button-toggle>
+                <mat-button-toggle (change)="this.homeDto.inquilino= $event.source.checked" name="inquilinoBuilding"
+                  [checked]="this.homeDto.inquilino" [value]="this.homeDto.inquilino" class="mx-1 my-1 ">
+                  Con inquilino
+                </mat-button-toggle>
+              </div>
+            </div>
+            <!-- Energía y climatización -->
+            <div class="row row-cols-2 mt-4">
+              <div class="col">
+                <label class="filterLabel pl-3" style="text-overflow: ellipsis;white-space: nowrap;">Emisiones y
+                  consumo</label>
+              </div>
+            </div>
+            <div class="row my-3 mx-3 form-group">
+              <!--Emisiones y consumo-->
+              <div class="row mt-3 mb-3 align-items-center form-group">
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 text-center">
+                  <nz-select class="nzSelectL w-100 emisionesSelectBuilding" nzPlaceHolder="Emisiones" [nzSize]="sizeM"
+                    name="emisionesBuilding" [(ngModel)]="this.homeDto.emisiones" [nzDisabled]="this.homeDto.edificioExento"
+                    (nzOpenChange)="rotateArrows($event,'emisionesSelectBuilding')">
+                    <nz-option *ngFor="let opt of calificacion_emisiones" [nzValue]=opt
+                      [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
+                  <nz-select class="nzSelectL w-100 consumoSelectBuilding mt-3" nzPlaceHolder="Consumo" [nzSize]="sizeM"
+                    [(ngModel)]="this.homeDto.consumo" (nzOpenChange)="rotateArrows($event,'consumoSelectBuilding')" [nzDisabled]="this.homeDto.edificioExento"
+                    name="consumoBuilding">
+                    <nz-option *ngFor="let opt of calificacion_consumo" [nzValue]=opt
+                      [nzLabel]="opt">{{opt}}</nz-option>
+                  </nz-select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 ">
+                  <img class="energyImage float-start mb-2" src="assets/svg/eco/Escala_Certificacion.png"
+                    style="width: 50px; height: 58px;" alt="">
+                </div>
+              </div>
+              <!--certificado-->
+              <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                  <app-cropper (ngModelchange)="newBuildingForm.form.markAsDirty()"
+                    [(imageChangedEvent)]="this.imageChangedEvent" [(croppedImage)]="this.croppedImage"
+                    [(tempImage)]="this.tempImage" [(tempTagName)]="this.tempTagName"
+                    [(master)]="this.labelCropperHome">
+                  </app-cropper>
+                </div>
+                <div class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-xs-12">
+                  <mat-button-toggle (change)="this.homeDto.edificioExento= $event.source.checked;this.homeDto.emisiones=null;this.homeDto.consumo=null" name="edificioExentoBuilding"
+                  [checked]="this.homeDto.edificioExento" [value]="this.homeDto.edificioExento" class="mx-1 my-auto ">
+                  Edificio exento de certificado energético
+                </mat-button-toggle>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Multimedia">
+          <div class="container-fluid">
+            <!-- Fotos -->
+            <dropzone [config]="config" [message]="'Pulse o arrastre sus imágenes para subirlas'" required class="mt-3"
+              (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (removedFile)="onRemove($event)">
+            </dropzone>
+            <!-- Video para youtube -->
+            <div class="form-group">
+              <ng-container>
+                <div class="row mb-3">
+                  <div class="col-12 ">
+                    <label for="videoBuilding">Video</label>
+                    <nz-input-group [nzPrefix]="youtubePrefix" [nzSuffix]="youtubeSuffix">
+                      <input style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
+                    width:100%" nz-input #videoBuilding [(ngModel)]="this.homeDto.video" name="videoBuilding"
+                        placeholder="https://www.youtube.com/watch?v=HHP5MKgK0o8" />
+                    </nz-input-group>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Publicar">
+          <div class="container-fluid mt-3">
+            <!--Pricing cards-->
+            <app-pricing-card [(seleccionDestacado)]="this.homeDto.destacado.featured"
+              [(seleccionUbicacionMapa)]="this.homeDto.direccionAproximada">
+            </app-pricing-card>
+            <div class="form-group my-4">
+              <ng-container>
+                <div class="row mt-3">
+                  <div class="form__privacy ">
+                    <input class="chkprivacy form-control" [(ngModel)]="this.homeDto.politicaPrivacidad"
+                      id="chkprivacyBuilding" name="chkprivacyBuilding"
+                      (change)="checkBox(this.homeDto.politicaPrivacidad?true:false)" type="checkbox" required>
+                    <label class="labelprivacy" for="chkprivacyBuilding">Acepto los <a style="color:#7ce800;"
+                        class="aprivacy" (click)="showModal('privatePolicy')">términos de privacidad</a> de
+                      myhouse.</label>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div><!-- container-fluid -->
+        </mat-tab>
+      </form>
+    </mat-tab-group>
+  </div>
+  <ng-template #footer>
+    <div class="d-flex ">
+      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newBuildingForm.valid||showLoading"
+        severity="contrast" (click)="newBuildingForm.ngSubmit.emit()">
+        <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+          style="width: 1.5rem; height: 1.5rem; ">
+        </span>
+        <span pButtonLabel style="font-weight: 600; letter-spacing: .4px;" *ngIf="!showLoading">Crear</span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+<!-- end building modal -->
+
+<!-- ground modal -->
+<p-dialog [modal]="true" [(visible)]="newGroundModal" *ngIf="adTitleAction$ | async as title" [header]="title"
+  [breakpoints]="{ '2199px': '42vw','1335px':'50vw','1199px':'52vw','991px':'60vw','767px':'72vw' ,'575px': '100vw' }"
+  (onHide)="closeDialog('new-ground-modal')" class="p-0">
+  <div class="modal-card-body p-0">
+    <mat-tab-group class="p-0 w-100" [dynamicHeight]='true'>
+      <form #newGroundForm="ngForm" (ngSubmit)="newHome()" id="newGroundForm" class="p-0">
+
+      </form>
+    </mat-tab-group>
+  </div>
+  <ng-template #footer>
+    <div class="d-flex ">
+      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newGroundForm.valid||showLoading"
+        severity="contrast" (click)="newGroundForm.ngSubmit.emit()">
+        <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+          style="width: 1.5rem; height: 1.5rem;">
+        </span>
+        <span pButtonLabel style="font-weight: 600; letter-spacing: .4px;" *ngIf="!showLoading">Crear</span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+<!-- end ground modal -->
+
+<!-- garage modal -->
+<p-dialog [modal]="true" [(visible)]="newGarageModal" *ngIf="adTitleAction$ | async as title" [header]="title"
+  [breakpoints]="{ '2199px': '42vw','1335px':'50vw','1199px':'52vw','991px':'60vw','767px':'72vw' ,'575px': '100vw' }"
+  (onHide)="closeDialog('new-garage-modal')" class="p-0">
+  <div class="modal-card-body p-0">
+    <mat-tab-group class="p-0 w-100" [dynamicHeight]='true'>
+      <form #newGarageForm="ngForm" (ngSubmit)="newHome()" id="newGarageForm" class="p-0">
+
+      </form>
+    </mat-tab-group>
+  </div>
+  <ng-template #footer>
+    <div class="d-flex ">
+      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newGarageForm.valid||showLoading"
+        severity="contrast" (click)="newGarageForm.ngSubmit.emit()">
+        <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+          style="width: 1.5rem; height: 1.5rem; ">
+        </span>
+        <span pButtonLabel style="font-weight: 600; letter-spacing: .4px;" *ngIf="!showLoading">Crear</span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+<!-- end garage modal -->
+
+<!-- junkroom modal -->
+<p-dialog [modal]="true" [(visible)]="newJunkroomModal" *ngIf="adTitleAction$ | async as title" [header]="title"
+  [breakpoints]="{ '2199px': '42vw','1335px':'50vw','1199px':'52vw','991px':'60vw','767px':'72vw' ,'575px': '100vw' }"
+  (onHide)="closeDialog('new-junkroom-modal')" class="p-0">
+  <div class="modal-card-body p-0">
+    <mat-tab-group class="p-0 w-100" [dynamicHeight]='true'>
+      <form #newJunkroomForm="ngForm" (ngSubmit)="newHome()" id="newJunkroomForm" class="p-0">
+
+      </form>
+    </mat-tab-group>
+  </div>
+  <ng-template #footer>
+    <div class="d-flex ">
+      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newBusinessForm.valid||showLoading"
+        severity="contrast" (click)="newJunkroomForm.ngSubmit.emit()">
+        <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+          style="width: 1.5rem; height: 1.5rem; ">
+        </span>
+        <span pButtonLabel style="font-weight: 600; letter-spacing: .4px;" *ngIf="!showLoading">Crear</span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+<!-- end junkroom modal -->
+
+<!-- holidayrent modal -->
+<p-dialog [modal]="true" [(visible)]="newHolidayrentModal" *ngIf="adTitleAction$ | async as title" [header]="title"
+  [breakpoints]="{ '2199px': '42vw','1335px':'50vw','1199px':'52vw','991px':'60vw','767px':'72vw' ,'575px': '100vw' }"
+  (onHide)="closeDialog('new-holidayrent-modal')" class="p-0">
+  <div class="modal-card-body p-0">
+    <mat-tab-group class="p-0 w-100" [dynamicHeight]='true'>
+      <form #newHolidayrentForm="ngForm" (ngSubmit)="newHome()" id="newHolidayrentForm" class="p-0">
+
+      </form>
+    </mat-tab-group>
+  </div>
+  <ng-template #footer>
+    <div class="d-flex ">
+      <button class="float-start my-auto mr-2" pButton pRipple [disabled]="!newHolidayrentForm.valid||showLoading"
+        severity="contrast" (click)="newHolidayrentForm.ngSubmit.emit()">
+        <span *ngIf="showLoading" class="spinner-border text-light" role="status"
+          style="width: 1.5rem; height: 1.5rem; ">
+        </span>
+        <span pButtonLabel style="font-weight: 600; letter-spacing: .4px;" *ngIf="!showLoading">Crear</span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+<!-- end holidayrent modal -->
 
 <!--Bulma modal-->
 <div *ngIf="this.state" class="container-fluid">
@@ -842,7 +1532,7 @@
       <header class="modal-card-head border-bottom">
         <p class="modal-card-title text-center text-secondary mt-n1" *ngIf="adTitleAction$ | async as title">{{ title
           }}</p> <!-- Llamo para vaciar el dropzone -->
-        <button class="btn-close" onclick="closeModal()" (click)="closeDialog('new-other-modal')"
+        <button class="btn-close" onclick="closeModal()" (click)="closeDialog('new-office-modal')"
           aria-label="close"></button>
       </header>
       <section class="modal-card-body pt-1">
@@ -1004,7 +1694,7 @@
                 <input nz-input [(ngModel)]="this.homeDto.condicion" ngModel #kondicion name="kondicion"
                   class="form-control" required style="display:none;" />
               </div>
-              <!--Precio de venta y alquiler-->
+              <!--Precio de venta, de alquiler y antiguedad-->
               <div class="form-group row mt-3">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                   <label for="precioFinal">Precio de venta</label>
@@ -1023,35 +1713,13 @@
                   </nz-input-group>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column">
-                  <label class="d-block" for="badge">Destacar</label>
-                  <nz-select class="d-block destacarSelect" #badgeInput="ngModel" name="badgeInput" nzPlaceHolder=""
-                    [nzSize]="sizeM" [nzDropdownRender]="badgeTextTemplate" [(ngModel)]="this.homeDto.destacar"
-                    panelWidth="fit-content" (nzOpenChange)="rotateArrows($event,'destacarSelect')">
-                    <nz-option *ngFor="let opt of badge" [nzValue]=opt [nzLabel]="opt">{{opt}}</nz-option>
-                  </nz-select>
-                </div>
-              </div>
-              <!--Vistas, ubicacionExacta, antiguedad-->
-              <div class="form-group row mt-3">
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column">
-                  <label for="colorDestacar" class="">Color Destacar</label>
-                  <div class="text-center">
-                    <nz-color-picker class="form-control" nzTrigger="hover" name="colorDestacar"
-                      [nzDefaultValue]="'#3a3b3c'" (nzOnChange)="checkBox($event)"
-                      [(ngModel)]="this.homeDto.colorDestacar"></nz-color-picker>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center flex-column d-flex">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column d-flex">
                   <label for="yearBuild" class="required">Antiguedad</label>
                   <nz-date-picker id="yearBuild" placeholder="Año" #yearBuild nzMode="year" nzFormat="yyyy"
                     class="d-block flex-column form-control" name="yearBuild" [(ngModel)]="this.homeDto.antiguedad"
                     required [nzDisabledDate]="disabledDatePost"></nz-date-picker>
                 </div>
-                <!---->
               </div>
+              <!--Orientación, garage y ciudad-->
               <div class="form-group row mt-3">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 flex-column d-flex">
                   <label for="Orientacion" class="required">Orientación</label>
@@ -1364,40 +2032,17 @@
                     <br>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <div class="row">
-                      <image-cropper name="cropperHome" #cropperHome [imageChangedEvent]="imageChangedEventEnergy"
-                        [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
-                        (imageCropped)="imageCropped($event,'energy')" (imageLoaded)="imageLoaded($event,'energy')"
-                        (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
-                      </image-cropper>
-                    </div>
-                    <div class="row">
-                      <div class="col-10">
-                        <div class="file is-small is-light is-boxed">
-                          <label class="file-label">
-                            <input class="file-input" type="file" name="resume"
-                              (change)="fileChangeEvent($event,'energy')" accept="image/*" />
-                            <span class="file-cta">
-                              <span class="badge primary-badge text-nowrap">{{this.tempEnergyTagName}}</span>
-                              <span class="file-icon" style="color:#999;">
-                                <i class="fas fa-cloud-upload-alt color-secondary"></i>
-                              </span>
-                              <span class="file-label text-secondary">Certificado energético</span>
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <button *ngIf="this.tempEnergyTagName" class="my-auto btn-close"
-                          (click)="clearEnergySelection('energy')"></button>
-                      </div>
-                    </div>
+                    <app-cropper (ngModelchange)="newMarkerForm.form.markAsDirty()"
+                      [(imageChangedEvent)]="this.imageChangedEvent" [(croppedImage)]="this.croppedImage"
+                      [(tempImage)]="this.tempImage" [(tempTagName)]="this.tempTagName"
+                      [(master)]="this.labelCropperHome">
+                    </app-cropper>
                   </div>
                   <br>
                 </div>
                 <!--Emisiones y consumo-->
-                <div class="row p-2 align-items-center form-group" style="border-bottom: 1px solid rgb(206, 203, 203);">
-                  <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 text-center">
+                <div class="row p-2 align-items-center form-group border-bottom">
+                  <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 text-center mb-3">
                     <nz-select class="nzSelectL w-100 emisionesSelect" nzPlaceHolder="Emisiones" [nzSize]="size"
                       name="emisionesHome" [(ngModel)]="this.homeDto.emisiones"
                       (nzOpenChange)="rotateArrows($event,'emisionesSelect')">
@@ -1412,11 +2057,10 @@
                         [nzLabel]="opt">{{opt}}</nz-option>
                     </nz-select>
                   </div>
-                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 ">
+                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mb-3">
                     <img class="energyImage float-start mb-2" src="assets/svg/eco/Escala_Certificacion.png"
                       style="width: 50px; height: 58px;" alt="">
                   </div>
-
                 </div>
                 <!-- Comunidad -->
                 <div class="row row-cols-2 mt-3">
@@ -1464,7 +2108,7 @@
                     </label>
                     <br>
                   </div>
-                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mb-2">
                     <label class="c-material-che">
                       <input type="checkbox" name="saunaHome" [(ngModel)]="this.homeDto.sauna"
                         class="c-material-che__hidden form-check-input" />
@@ -1501,7 +2145,6 @@
                       <span class="c-material-che__label" for="columpiosHome">Zona infantil</span>
                     </label>
                   </div>
-                  <br class="br-sizeL">
                 </div>
 
                 <!-- Seguridad -->
@@ -1541,7 +2184,7 @@
                     </label>
                     <br>
                   </div>
-                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mb-2">
                     <label class="c-material-che">
                       <input type="checkbox" name="extintoresHome" [(ngModel)]="this.homeDto.extintores"
                         class="c-material-che__hidden form-check-input" />
@@ -1572,7 +2215,6 @@
                         accesible</span>
                     </label>
                   </div>
-                  <br class="br-sizeL">
                 </div>
 
                 <!-- Extras -->
@@ -2452,11 +3094,10 @@
             </nz-tab>
             <!-- Publicar -->
             <nz-tab nzTitle=Publicar nz-col nzSpan="8" (nzClick)="whatTab('Publicar')">
-            <!-- Pricing cards -->
-            <app-pricing-card 
-              [(remarcado)]="this.homeDto.destacado.featured" 
-              [(ubicacionMapa)]="this.homeDto.direccionAproximada">
-            </app-pricing-card>
+              <!-- Pricing cards -->
+              <app-pricing-card [(seleccionDestacado)]="this.homeDto.destacado.featured"
+                [(seleccionUbicacionMapa)]="this.homeDto.direccionAproximada">
+              </app-pricing-card>
               <div class="form-group">
                 <ng-container>
                   <div class="row mt-3">
@@ -2517,243 +3158,15 @@
 <!-- Leaflet map -->
 <mat-sidenav-container class="example-container">
   <mat-sidenav #sidenav class="example-sidenav overflow-hidden" mode="side" [ngStyle]="this.resizeStyleListSidenav">
-    <div class="container-fluid mt-2 mb-5 pb-2 ">
-      <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 p-0 sidebox-cards" style="width: 49vw;">
-        <!--row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 p-0-->
+    <div class="container-fluid mt-2 mb-5 pb-2">
+      <div class="row row-cols-xl-3 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 p-0 sidebox-cards align-items-center"
+        style="width: 50vw;">
         <div class="col p-0"
           *ngFor="let appHome of (homes | orderBy: 'destacado.featured':true) | paginate: { itemsPerPage: 40, currentPage: page }; let i =index">
-          <div *ngFor="let appHomeP of (newProjects | orderBy: 'destacado.featured':true); let j =index" class="w-100">
-            <div class=" teaser-tile mt-2 border " id="teaserTile{{appHome.viviendaId}}">
-              <span class="favorite favorite-need-login" data-id="1935922" data-type="estate"
-                *ngIf="this.cardSkeletonOn==false">
-                <div class="wrapperDemo" #wrapperDemo>
-                  <input [checked]="false" (change)="cuoreLikeFeature(appHome.viviendaId, appHome, $event)"
-                    class="red-heart-checkbox" #redheartcheckbox id="{{appHome.viviendaId}}" type="checkbox">
-                  <label for="{{appHome.viviendaId}}"></label>
-                </div>
-              </span>
-              <div class="flex-grow-1 px-0 "> <!-- Es el sidenav -->
-                <div class="with-img" style="position: relative;" *ngIf="this.cardSkeletonOn==false">
-                  <div id="carouselExample{{this.idIndex[i]}}" class="carousel slide" data-bs-interval="false">
-                    <div class="carousel-inner">
-                      <div class="carousel-item " *ngFor="let data of appHome.images; let j=index"
-                        [ngClass]="(j === 0) ? 'active' : ''">
-                        <img style="aspect-ratio:16/9;" src={{data.imageUrl}} alt="First slide">
-                      </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button"
-                      [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button"
-                      [attr.data-bs-target]="'#carouselExample'+this.idIndex[i]" data-bs-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Next</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="with-img" style="position: relative;" *ngIf="this.cardSkeletonOn==true">
-                  <ngx-skeleton-loader
-                    [theme]="{height: '9.9em', background: '#e2e8f0', width: '100%', display:'flex'}" />
-                </div>
-                <div class="container"
-                  *ngIf="(appHome.proColor!=null || appHome.proColor!=undefined) && this.cardSkeletonOn==true">
-                  <ngx-skeleton-loader
-                    [theme]="{height: '1.2em', background: '#e2e8f0', width: '20%', display: 'flex', margin: '.7em', float: 'right'}" />
-                </div>
-                <div class="desc" *ngIf="this.cardSkeletonOn==true">
-                  <ngx-skeleton-loader
-                    [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
-                  <ngx-skeleton-loader
-                    [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
-                  <ngx-skeleton-loader
-                    [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
-                  <ngx-skeleton-loader
-                    [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
-                </div>
-                <div class="branding-actions"
-                  *ngIf="(appHome.proColor!=null || appHome.proColor!=undefined) && this.cardSkeletonOn==true">
-
-                </div>
-                <div class="txt" *ngIf="this.cardSkeletonOn==true">
-
-                </div>
-                <div class="price" *ngIf="this.cardSkeletonOn==true" style="max-height: 3em;">
-                  <ngx-skeleton-loader
-                    [theme]="{height: '1em', background: '#e2e8f0', width: '6em', display: 'flex', margin: '.1em'}" />
-                </div>
-                <!--Card branding-->
-                <div class="branding-actions"
-                  *ngIf='(appHome.proColor!=null || appHome.proColor!=undefined) && this.cardSkeletonOn==false'
-                  [style.background-color]="appHome.proColor" style="height:2.1em;">
-                  <!--User brand color-->
-                  <div class="d-flex flex-grow-1 justify-content-end">
-                    <picture *ngIf='appHome.proImage!=null || appHome.proImage!=undefined'>
-                      <img class="branding-image-card" src={{appHome.proImage.imageUrl}} alt="">
-                    </picture>
-                  </div>
-                </div>
-                <!-- Home models-->
-                <div class="desc" *ngIf="this.tipo.includes(appHome.tipo) && this.cardSkeletonOn==false">
-                  <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
-                      class="text-secondary">{{appHome.tipo}}</span> </div>
-                  <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}}
-                    <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}
-                  </div>
-                  <div class="units mx-2">
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
-                      <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
-                      <span style="font-size: 0.8em;">{{appHome.habitaciones}}</span>
-                    </div>
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
-                      <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
-                        name="expand-outline"></ion-icon>
-                      <span style="font-size: 0.8em;">{{appHome.superficie}}m²</span>
-                    </div>
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="bath">
-                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
-                        src="assets/svg/card-toilet.svg"></ion-icon>
-                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.aseos}}</span>
-                    </div>
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
-                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
-                        src="assets/svg/card-facing.svg"></ion-icon>
-                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.orientacion}}</span>
-                    </div>
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="card-spaces"
-                      *ngIf="appHome.garage">
-                      <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
-                        name="car-sport-outline"></ion-icon>
-                      <span *ngIf="appHome.garage<=5"
-                        style="font-size: 0.8em; margin-left: 2px;">{{appHome.garage}}</span>
-                      <span *ngIf="appHome.garage==6" style="font-size: 0.8em; margin-left: 2px;">+5 </span>
-                      <span *ngIf="appHome.garage>6"
-                        style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">+{{this.formatNumberWithCommas(appHome.garage)}}€</span>
-                    </div>
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="year">
-                      <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
-                        name="hammer-outline"></ion-icon>
-                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.antiguedad}}</span>
-                    </div>
-                    <div class="unit-item mx-1" *ngIf="appHome.beach[0].distancia" data-toggle="tooltip"
-                      data-placement="top" title="beach-card-distance">
-                      <ion-icon style="font-size: 0.750em; position:relative; color:#98a3b2; top:-1px;"
-                        src="assets/svg/sea.svg"></ion-icon>
-                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHome.beach[0].distancia}}</span>
-                    </div>
-                  </div>
-                </div>
-                <!-- New project models -->
-                <div class="desc"
-                  *ngIf="appHomeP.tipo=='Proyecto nuevo' && (appHomeP.viviendaId==appHome.viviendaId && this.cardSkeletonOn==false)">
-                  <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
-                      class="text-secondary">{{appHome.tipo}}</span> </div>
-                  <div class="route mx-2">{{appHome.calle}} <span style="color:#d9d9d9">|</span> {{appHome.distrito}}
-                    <span style="color:#d9d9d9">|</span> {{appHome.ciudad}}
-                  </div>
-                  <div class="units mx-2">
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
-                      <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
-                      <span
-                        style="font-size: 0.8em;">{{appHomeP.habitacionesDesde+'-'+appHomeP.habitacionesHasta}}</span>
-                    </div>
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
-                      <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
-                        name="expand-outline"></ion-icon>
-                      <span style="font-size: 0.8em;">{{appHomeP.superficieDesde+'-'+appHomeP.superficieHasta}}m²</span>
-                    </div>
-                    <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="itemsP">
-                      <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
-                        src="assets/svg/project-card-units.svg"></ion-icon>
-                      <span style="font-size: 0.8em; margin-left: 2px;">{{appHomeP.totalViviendasConstruidas}}</span>
-                    </div>
-                    <!--En curso-->
-                    <div class="unit-item mx-1 my-auto"
-                      *ngIf="(appHomeP.estadoConstruccion=='EnCurso' && appHomeP.finDeObra)" data-toggle="tooltip"
-                      data-placement="top" title="waitingP">
-                      <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"
-                        name="key-outline"></ion-icon>
-                      <span style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">{{appHomeP.finDeObra}}</span>
-                    </div>
-                    <!--Terminado-->
-                    <div class="unit-item mx-1 my-auto" *ngIf="(appHomeP.estadoConstruccion=='Terminado')"
-                      data-toggle="tooltip" data-placement="top" title="finishedP">
-                      <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"
-                        name="key-outline"></ion-icon>
-                      <span style="font-size: 0.8em; margin-left: 2px; color:dodgerblue;">Disponible</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="txt h-100p b-none pt-0" *ngIf="this.cardSkeletonOn==false">
-                  <div class="clamp-3" (click)="runAdCard(appHome,'homeList')">{{appHome.descripcion}}</div>
-                </div>
-                <div class="price"
-                  *ngIf="(appHome.condicion=='Venta' && appHome.precioFinal>0) && this.cardSkeletonOn==false">
-                  <div class="price-item">
-                    <!--NewProject tag-->
-                    <span class="text-uppercase" style="font-size:.7em;letter-spacing: .5px;"
-                      *ngIf="appHome.tipo=='Proyecto nuevo'&&appHome.condicion=='Venta'">desde</span>
-                    {{formatNumberWithCommas(appHome.precioFinal)+'€'}}
-                    <span *ngIf="appHome.precioInicial>appHome.precioFinal"
-                      class="price-value text-decoration-line-through old-price textFont ml-1"
-                      style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(appHome.precioInicial)+'€'}}</span>
-                    <span class="ml-1 textFont" *ngIf="appHome.precioInicial>appHome.precioFinal"
-                      style="color:#8dca3f; font-size: .675em;">-{{this.discount(''+appHome.precioInicial,''+appHome.precioFinal)}}%</span>
-                  </div>
-
-                </div>
-
-                <div class="price"
-                  *ngIf="(appHome.condicion=='Alquiler' || appHome.condicion=='Compartir') && (appHome.precioAlquiler!=0 && this.cardSkeletonOn==false)">
-                  {{formatNumberWithCommas(appHome.precioAlquiler)+'€'}}
-                  <span *ngIf="appHome.precioAlquilerInicial>appHome.precioAlquiler"
-                    class="price-value text-decoration-line-through old-price textFont ml-1"
-                    style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(appHome.precioAlquilerInicial)+'€'}}</span>
-                  <span class="ml-1 textFont" *ngIf="appHome.precioAlquilerInicial>appHome.precioAlquiler"
-                    style="color:#8dca3f; font-size: .675em;">-{{this.discount(''+appHome.precioAlquilerInicial,''+appHome.precioAlquiler)}}%</span><!--&& this.home.model!='NewProject'-->
-                </div>
-                <!-- Alquiler y venta -->
-                <div class="price" *ngIf="appHome.condicion=='Alquiler y venta' && this.cardSkeletonOn==false">
-                  {{formatNumberWithCommas(appHome.precioFinal)+'€'}}
-                  <nz-divider nzType="vertical" style="background:#007aa2;"></nz-divider>
-                  {{formatNumberWithCommas(appHome.precioAlquiler)+'€'}}
-                </div>
-                <!--<div class="social-actions">
-                    <div class="like-item">
-                      <ion-icon name="heart-outline"></ion-icon>
-                          <div class="social-counter" data-counter="1">1</div>
-                      </div>
-                    <div class="superlike-item">
-                      <ion-icon name="heart-outline"></ion-icon>
-                        <div class="social-counter" data-counter="0"></div>
-                    </div>
-                    <div class="d-flex flex-grow-1 justify-content-end">
-                        <div class="recommend-item">
-                            <div class="social-title">Recommend</div>
-                            <ion-icon name="thumbs-up-outline"></ion-icon>
-                            <div class="social-counter" data-counter="0"></div>
-                        </div>
-                    </div>
-                </div>-->
-              </div>
-              <!--<div class="txt color-black b-none pt-4">
-                <div class="contacts listing-contacts-block">
-                    <div class="buttons">
-                        <a href="" class="btn btn-sm w-100p btn-outline-primary">
-                          <ion-icon name="thumbs-up-outline"></ion-icon>
-                            <span class="text-truncate ml-6">Mensaje</span>
-                        </a>
-                    </div>
-                    <div class="col-auto overflow-hidden">
-                      <div class="btn btn-sm w-100p btn-primary show-contacts-btn">
-                        <ion-icon name="call-outline"></ion-icon>
-                      </div>
-                  </div>
-                </div>
-            </div>-->
-            </div>
-          </div>
+          <app-ad-card [homeCard]="appHome" [carouselIdx]="i" [user]="this.user" [cardSkeletonOn]="this.cardSkeletonOn"
+            [anyPopupOpen]="this.anyPopupOpen" [popupOpenViviendaId]="this.popupOpenViviendaId"
+            [cardCheckedViviendaId]="this.cardCheckedViviendaId" [parent]="'home'">
+          </app-ad-card>
         </div>
       </div>
       <pagination-controls *ngIf="this.homes.length>40" class="my-pagination mt-3 d-flex align-items-center"

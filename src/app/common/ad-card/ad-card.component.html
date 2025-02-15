@@ -1,0 +1,270 @@
+<div class=" teaser-tile mt-2 border " id="teaserTile{{this.homeCard.viviendaId}}">
+    <span class="favorite favorite-need-login" data-id="1935922" data-type="estate"
+        *ngIf="this.cardSkeletonOn==false && parent=='home'">
+        <div class="wrapperDemo" #wrapperDemo>
+            <input [checked]="false" (change)="cuoreLikeFeature(this.homeCard.viviendaId, this.homeCard, $event)"
+                class="red-heart-checkbox" #redheartcheckbox id="{{this.homeCard.viviendaId}}" type="checkbox">
+            <label for="{{this.homeCard.viviendaId}}"></label>
+        </div>
+    </span>
+    <span class="favorite favorite-need-login"
+        *ngIf="this.cardSkeletonOn==false && parent=='ad'"><!--slick-->
+        <div class="wrapperDemo" #wrapperDemo2>
+            <input [checked]="false" (change)="likeFeature(this.homeCard)" class="red-heart-checkbox" #redheartcheckbox2
+                id="ad{{this.homeCard.viviendaId}}" type="checkbox">
+            <label for="ad{{this.homeCard.viviendaId}}"></label>
+        </div>
+    </span>
+    <div class="flex-grow-1 px-0 "> <!-- Es el sidenav -->
+        <div class="with-img" style="position: relative;" *ngIf="this.cardSkeletonOn==false">
+            <p-galleria [(value)]="homeCard.images" [circular]="true" [showIndicators]="false"
+                [showItemNavigators]="true" [showThumbnails]="false" [responsiveOptions]="responsiveOptions2"
+                [containerStyle]="{ 'max-width': '640px' }">
+                <ng-template pTemplate="item" let-item>
+                    <img [src]="item.imageUrl" class="p-0 w-100" style="aspect-ratio: 16/9;" />
+                </ng-template>
+            </p-galleria>
+        </div>
+        <div class="with-img" style="position: relative;" *ngIf="this.cardSkeletonOn==true">
+            <ngx-skeleton-loader [theme]="{height: '9.9em', background: '#e2e8f0', width: '100%', display:'flex'}" />
+        </div>
+        <div class="container"
+            *ngIf="(this.homeCard.proColor!=null || this.homeCard.proColor!=undefined) && this.cardSkeletonOn==true">
+            <ngx-skeleton-loader
+                [theme]="{height: '1.2em', background: '#e2e8f0', width: '20%', display: 'flex', margin: '.7em', float: 'right'}" />
+        </div>
+        <div class="desc" *ngIf="this.cardSkeletonOn==true">
+            <ngx-skeleton-loader
+                [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
+            <ngx-skeleton-loader
+                [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
+            <ngx-skeleton-loader
+                [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
+            <ngx-skeleton-loader
+                [theme]="{height: '1em', background: '#e2e8f0', width: '12em', display: 'flex', margin: '.7em'}" />
+        </div>
+        <div class="branding-actions"
+            *ngIf="(this.homeCard.proColor!=null || this.homeCard.proColor!=undefined) && this.cardSkeletonOn==true">
+
+        </div>
+        <div class="txt" *ngIf="this.cardSkeletonOn==true">
+
+        </div>
+        <div class="price" *ngIf="this.cardSkeletonOn==true" style="max-height: 3em;">
+            <ngx-skeleton-loader
+                [theme]="{height: '1em', background: '#e2e8f0', width: '6em', display: 'flex', margin: '.1em'}" />
+        </div>
+        <!--Card branding-->
+        <div class="branding-actions"
+            *ngIf='(this.homeCard.proColor!=null || this.homeCard.proColor!=undefined) && this.cardSkeletonOn==false'
+            [style.background-color]="this.homeCard.proColor">
+            <!--User brand color-->
+            <div class="d-flex flex-grow-1 justify-content-end">
+                <picture *ngIf='this.homeCard.proImage!=null || this.homeCard.proImage!=undefined'>
+                    <img class="branding-image-card" src={{this.homeCard.proImage.imageUrl}} alt="">
+                </picture>
+            </div>
+        </div>
+        <!-- Home models-->
+        <div class="desc" *ngIf="this.tipo.includes(this.homeCard.tipo) && this.cardSkeletonOn==false">
+            <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
+                    class="text-secondary">{{this.homeCard.tipo}}</span> </div>
+            <div class="route mx-2">{{this.homeCard.calle}} <span style="color:#d9d9d9">|</span>
+                {{this.homeCard.distrito}}
+                <span style="color:#d9d9d9">|</span> {{this.homeCard.ciudad}}
+            </div>
+            <div class="units mx-2">
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
+                    <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
+                    <span style="font-size: 0.8em;">{{this.homeCard.habitaciones}}</span>
+                </div>
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
+                    <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
+                        name="expand-outline"></ion-icon>
+                    <span style="font-size: 0.8em;">{{this.homeCard.superficie}}m²</span>
+                </div>
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="bath">
+                    <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
+                        src="assets/svg/card-toilet.svg"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px;">{{this.homeCard.aseos}}</span>
+                </div>
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="facing">
+                    <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
+                        src="assets/svg/card-facing.svg"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px;">{{this.homeCard.orientacion}}</span>
+                </div>
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="card-spaces"
+                    *ngIf="this.homeCard.garage">
+                    <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
+                        name="car-sport-outline"></ion-icon>
+                    <span *ngIf="this.homeCard.garage<=5"
+                        style="font-size: 0.8em; margin-left: 2px;">{{this.homeCard.garage}}</span>
+                    <span *ngIf="this.homeCard.garage==6" style="font-size: 0.8em; margin-left: 2px;">+5 </span>
+                    <span *ngIf="this.homeCard.garage>6"
+                        style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">+{{this.formatNumberWithCommas(this.homeCard.garage)}}€</span>
+                </div>
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="year">
+                    <ion-icon style="font-size: 0.7em; position:relative; color:#98a3b2; top:-1px;"
+                        name="hammer-outline"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px;">{{this.homeCard.antiguedad}}</span>
+                </div>
+                <div class="unit-item mx-1" *ngIf="this.homeCard.beach[0].distancia" data-toggle="tooltip"
+                    data-placement="top" title="beach-card-distance">
+                    <ion-icon style="font-size: 0.750em; position:relative; color:#98a3b2; top:-1px;"
+                        src="assets/svg/sea.svg"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px;">{{this.homeCard.beach[0].distancia}}</span>
+                </div>
+            </div>
+        </div>
+        <!-- New project models -->
+        <div class="desc"
+            *ngIf="(homeCard.tipo=='Proyecto nuevo') && (this.cardSkeletonOn==false)">
+            <div class="teaser-title fs-base color-info mt-1 mx-3 d-flex flex-row-reverse"> <span
+                    class="text-secondary">{{this.homeCard.tipo}}</span> </div>
+            <div class="route mx-2">{{this.homeCard.calle}} <span style="color:#d9d9d9">|</span>
+                {{this.homeCard.distrito}}
+                <span style="color:#d9d9d9">|</span> {{this.homeCard.ciudad}}
+            </div>
+            <div class="units mx-2">
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="beds">
+                    <ion-icon style="font-size: 1em; position:relative; color:#98a3b2;" name="bed-outline"></ion-icon>
+                    <span style="font-size: 0.8em;">{{homeCard.habitacionesDesde+'-'+homeCard.habitacionesHasta}}</span>
+                </div>
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="area">
+                    <ion-icon style="font-size: 0.8em; position:relative; color:#98a3b2; top:-2px;"
+                        name="expand-outline"></ion-icon>
+                    <span style="font-size: 0.8em;">{{homeCard.superficieDesde+'-'+homeCard.superficieHasta}}m²</span>
+                </div>
+                <div class="unit-item mx-1" data-toggle="tooltip" data-placement="top" title="itemsP">
+                    <ion-icon style="font-size: 0.9em; position:relative; color:#98a3b2; top:-1px;"
+                        src="assets/svg/project-card-units.svg"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px;">{{homeCard.totalViviendasConstruidas}}</span>
+                </div>
+                <!--En curso-->
+                <div class="unit-item mx-1 my-auto"
+                    *ngIf="(homeCard.estadoConstruccion=='EnCurso' && homeCard.finDeObra)" data-toggle="tooltip"
+                    data-placement="top" title="waitingP">
+                    <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"
+                        name="key-outline"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px; color:#7ce800;">{{homeCard.finDeObra}}</span>
+                </div>
+                <!--Terminado-->
+                <div class="unit-item mx-1 my-auto" *ngIf="(homeCard.estadoConstruccion=='Terminado')"
+                    data-toggle="tooltip" data-placement="top" title="finishedP">
+                    <ion-icon style="font-size: 0.75em; position:relative; color:#98a3b2; top:-1px;"
+                        name="key-outline"></ion-icon>
+                    <span style="font-size: 0.8em; margin-left: 2px; color:dodgerblue;">Disponible</span>
+                </div>
+            </div>
+        </div>
+        <div class="txt h-100p b-none pt-0" *ngIf="this.cardSkeletonOn==false">
+            <div class="clamp-3" (click)="runAdCard(this.homeCard)">{{this.homeCard.descripcion}}</div>
+        </div>
+        <div class="price"
+            *ngIf="(this.homeCard.condicion=='Venta' && this.homeCard.precioFinal>0) && this.cardSkeletonOn==false">
+            <div class="price-item">
+                <!--NewProject tag-->
+                <span class="text-uppercase" style="font-size:.7em;letter-spacing: .5px;"
+                    *ngIf="this.homeCard.tipo=='Proyecto nuevo'&&this.homeCard.condicion=='Venta'">desde</span>
+                {{formatNumberWithCommas(this.homeCard.precioFinal)+'€'}}
+                <span *ngIf="this.homeCard.precioInicial>this.homeCard.precioFinal"
+                    class="price-value text-decoration-line-through old-price textFont ml-1"
+                    style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(this.homeCard.precioInicial)+'€'}}</span>
+                <span class="ml-1 textFont" *ngIf="this.homeCard.precioInicial>this.homeCard.precioFinal"
+                    style="color:#8dca3f; font-size: .675em;">-{{this.discount(''+this.homeCard.precioInicial,''+this.homeCard.precioFinal)}}%</span>
+            </div>
+
+        </div>
+
+        <div class="price"
+            *ngIf="(this.homeCard.condicion=='Alquiler' || this.homeCard.condicion=='Compartir') && (this.homeCard.precioAlquiler!=0 && this.cardSkeletonOn==false)">
+            {{formatNumberWithCommas(this.homeCard.precioAlquiler)+'€'}}
+            <span *ngIf="this.homeCard.precioAlquilerInicial>this.homeCard.precioAlquiler"
+                class="price-value text-decoration-line-through old-price textFont ml-1"
+                style="font-size: .675em; color: #007aa2;">{{formatNumberWithCommas(this.homeCard.precioAlquilerInicial)+'€'}}</span>
+            <span class="ml-1 textFont" *ngIf="this.homeCard.precioAlquilerInicial>this.homeCard.precioAlquiler"
+                style="color:#8dca3f; font-size: .675em;">-{{this.discount(''+this.homeCard.precioAlquilerInicial,''+this.homeCard.precioAlquiler)}}%</span><!--&& this.homeCard.model!='NewProject'-->
+        </div>
+        <!-- Alquiler y venta -->
+        <div class="price" *ngIf="this.homeCard.condicion=='Alquiler y venta' && this.cardSkeletonOn==false">
+            {{formatNumberWithCommas(this.homeCard.precioFinal)+'€'}}
+            <nz-divider nzType="vertical" style="background:#007aa2;"></nz-divider>
+            {{formatNumberWithCommas(this.homeCard.precioAlquiler)+'€'}}
+        </div>
+        <!--<div class="social-actions">
+          <div class="like-item">
+            <ion-icon name="heart-outline"></ion-icon>
+                <div class="social-counter" data-counter="1">1</div>
+            </div>
+          <div class="superlike-item">
+            <ion-icon name="heart-outline"></ion-icon>
+              <div class="social-counter" data-counter="0"></div>
+          </div>
+          <div class="d-flex flex-grow-1 justify-content-end">
+              <div class="recommend-item">
+                  <div class="social-title">Recommend</div>
+                  <ion-icon name="thumbs-up-outline"></ion-icon>
+                  <div class="social-counter" data-counter="0"></div>
+              </div>
+          </div>
+      </div>-->
+    </div>
+    <!--<div class="txt color-black b-none pt-4">
+      <div class="contacts listing-contacts-block">
+          <div class="buttons">
+              <a href="" class="btn btn-sm w-100p btn-outline-primary">
+                <ion-icon name="thumbs-up-outline"></ion-icon>
+                  <span class="text-truncate ml-6">Mensaje</span>
+              </a>
+          </div>
+          <div class="col-auto overflow-hidden">
+            <div class="btn btn-sm w-100p btn-primary show-contacts-btn">
+              <ion-icon name="call-outline"></ion-icon>
+            </div>
+        </div>
+      </div>
+  </div>-->
+</div>
+
+<!-- Join us modal -->
+<nz-modal nzDraggable nzCentered [(nzVisible)]="joinUsModalAd" (nzOnCancel)="handleCancel('joinUsModalAd')"
+    (nzOnOk)="handleOk('joinUsModalAd')" [(nzFooter)]="modalFooterNull">
+    <ng-container *nzModalContent>
+        <div class="restricted-message">
+            <div class="body">
+                <div class="advertisement mx-auto">
+                    <!--<div class="image">
+                    <img src="https://i.ibb.co/6YkD164/unknown-house.png" alt="Para disfrutar del chat en tiempo real cree un cuenta" />
+                    <div class="text"><h4>Todo a un click</h4></div>
+                </div>-->
+                    <div class="padded">
+                        <div class="heading">Crear cuenta</div>
+                        <p>Acceda o registrese para guardar búsquedas y favoritos</p>
+                        <button tabindex="0" routerLink="/login" class="login only-one-button " pRipple><span
+                                class="readmore-button-label">ENTRAR</span></button>
+                        <button tabindex="0" routerLink="/register" class="register only-one-button " pRipple><span
+                                class="readmore-button-label">REGISTRARSE</span></button>
+                        <p class="privacy">
+                            Al continuar acepta nuestra política de privacidad <a (click)="showModal('privatePolicy')">
+                                Política de privacidad</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</nz-modal>
+
+<!-- Private policy modal -->
+<nz-modal [(nzVisible)]="policyModal" nzTitle="Términos y preferencias" (nzOnCancel)="handleCancel('privatePolicy')"
+    (nzOnOk)="handleOk('privatePolicy')" [nzOkLoading]="isOkLoading" [(nzFooter)]="modalFooterNull">
+    <p *nzModalContent>Recopilaremos y utilizaremos su información personal (que puede incluir cookies
+        que recopilamos a través de su uso de myhouse.com y nuestros otros sitios web) para
+        brindarle una experiencia de usuario personalizada (por ejemplo, si está anunciando
+        una propiedad, podemos recomendarle ofrecerle productos para optimizar el rendimiento
+        de su búsqueda o, si está buscando una propiedad, podemos recomendarle propiedades
+        que puedan interesarle). También podemos comunicarnos con usted para promocionar nuestros
+        servicios o los de terceros. Nuestra Política de Privacidad explica con más detalle cómo
+        recopilamos, utilizamos y divulgamos información personal y cómo acceder, corregir o
+        presentar quejas sobre el manejo de información personal.</p>
+</nz-modal>

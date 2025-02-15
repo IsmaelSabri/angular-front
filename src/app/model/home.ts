@@ -79,6 +79,7 @@ export class Home {
   jacuzzi: boolean = false;
   visitas = new Array<Visitas>();
   prototipo: string; // prototipo:vivienda||oficina||garage||trastero||......
+  colorTextoDestacar: any = '#ccff00';
 
   // House profile
   alarma: boolean = false;
@@ -175,7 +176,7 @@ export class Home {
   starRatingAverage: number;
 
   // Oficina profile
-  aparcamientos: boolean = false;
+  aparcamientos: number = 0;
   climatizacion: string;
   disposicion: string; // a pie de calle, entresuelo, piso, centro comercial, sótano... 
   distribucion: string; // diáfana, tabicada, mamparas, tabicada, tabiques móviles...
@@ -188,11 +189,18 @@ export class Home {
   *   -aireAcondicionado
   *   -amueblado
   *   -recepción24_7
-  *   -ascensor
+  *   -ascensores
   */
 
   // Edificio profile
   edificioExclusivoOficinas: boolean = false;
+  ascensores: number = 0;
+  inquilino: boolean = false;
+  usoResidencial: boolean = false;
+  usoComercial: boolean = false;
+  usoOficinas: boolean = false;
+  usoHotelero: boolean = false;
+  edificioExento: boolean = false;
 
   //  Negocio Home
   nave: boolean = false;
@@ -204,7 +212,7 @@ export class Home {
   conAlmacen: boolean = false;
   conOficina: boolean = false;
   lucesSalidaEmergencia: boolean = false;
-  escaparates: number;
+  escaparates: number = 0;
 
   //  Suelo profile
   urbano: boolean = false;

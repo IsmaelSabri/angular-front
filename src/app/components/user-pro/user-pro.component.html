@@ -572,38 +572,14 @@
               </div>
               <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 mx-auto">
                 <label for="consumo" class="my-auto">Certificado energético</label>
-                <div class="container" *ngIf="this.home.energyCertAsString && !this.imageChangedEventEnergyUpdate">
+                <div class="container" *ngIf="this.home.energyCertAsString && !this.imageChangedEvent">
                   <img [src]="this.energyImage" style="aspect-ratio: 16/9;" alt="">
                 </div>
                 <div class="container">
-                  <div class="row">
-                    <image-cropper [imageChangedEvent]="imageChangedEventEnergyUpdate" [maintainAspectRatio]="false"
-                      [aspectRatio]="16 / 9" format="png" (imageCropped)="imageCropped($event,'energyUpdate')"
-                      (imageLoaded)="imageLoaded($event,'energyUpdate')" (cropperReady)="cropperReady()"
-                      (loadImageFailed)="loadImageFailed()">
-                    </image-cropper>
-                  </div>
-                  <div class="row">
-                    <div class="col-10">
-                      <div class="file is-small is-light is-boxed">
-                        <label class="file-label">
-                          <input class="file-input" type="file" name="resume"
-                            (change)="fileChangeEvent($event,'energyUpdate')" accept="image/*" />
-                          <span class="file-cta">
-                            <c-badge color="success text-nowrap">{{this.tempEnergyTagNameUpdate}}</c-badge>
-                            <span class="file-icon" style="color:#999;">
-                              <i class="fas fa-cloud-upload-alt color-secondary"></i>
-                            </span>
-                            <span class="file-label text-secondary">Etiqueta</span>
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="col-2">
-                      <button *ngIf="this.tempEnergyTagNameUpdate" class="my-auto btn-close"
-                        (click)="clearEnergySelection('energyUpdate')"></button>
-                    </div>
-                  </div>
+                  <app-cropper (ngModelchange)="updateHomeForm.form.markAsDirty()"
+                  [(imageChangedEvent)]="this.imageChangedEvent" [(croppedImage)]="this.croppedImage"
+                  [(tempImage)]="this.tempImage" [(tempTagName)]="this.tempTagName" [(master)]="this.labelCropperHome">
+                </app-cropper>
                 </div>
               </div>
             </div>
@@ -1331,18 +1307,18 @@
             <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0 bg-white">
               <div class="main-navbar__search w-100 d-none d-md-flex d-lg-flex" *ngIf='this.brandingColor'
                 [style.background-color]="this.brandingColor">
-                <div class="mx-auto order-0 d-flex" *ngIf="this.tempBranding==null && this.user.brandImageAsString">
+                <div class="mx-auto order-0 d-flex" *ngIf="this.tempImageBranding==null && this.user.brandImageAsString">
                   <a class="navbar-brand d-none d-md-block">
                     <img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">
                   </a>
                 </div>
                 <div class="mx-auto order-0"
-                  *ngIf="this.tempBranding==null && (this.user.brandImageAsString==undefined || this.user.brandImageAsString==null)">
+                  *ngIf="this.tempImageBranding==null && (this.user.brandImageAsString==undefined || this.user.brandImageAsString==null)">
                   <a class="navbar-brand d-none d-md-block">
                     <!--<img class="brandImage" [src]="this.user.brandImage.imageUrl" alt="">-->
                   </a>
                 </div>
-                <div class="mx-auto order-0 d-flex" *ngIf="this.tempBranding!=null">
+                <div class="mx-auto order-0 d-flex" *ngIf="this.tempImageBranding!=null">
                   <a class="navbar-brand d-none d-md-block">
                     <img class="brandImage" [src]="this.croppedImageBranding" alt="">
                   </a>
@@ -1714,10 +1690,10 @@
                 <div class="col-lg-4">
                   <div class="card card-small mb-4 pt-3">
                     <div class="profile-container">
-                      <div class="img-container" *ngIf="this.tempProfile==null">
+                      <div class="img-container" *ngIf="this.tempImageProfile==null">
                         <img [src]="this.user.profileImage.imageUrl" alt="profile image">
                       </div>
-                      <div class="img-container" *ngIf="this.tempProfile!=null">
+                      <div class="img-container" *ngIf="this.tempImageProfile!=null">
                         <img [src]="this.croppedImageProfile" alt="profile image">
                       </div>
                       <p class="info full-name">{{this.user.username}}</p>
@@ -1822,45 +1798,19 @@
 
                               <div class="form-group row">
                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column align-items-center">
-                                  <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventBranding"
-                                    [maintainAspectRatio]="false" [aspectRatio]="16 / 9" format="png"
-                                    (imageCropped)="imageCropped($event,'branding')"
-                                    (imageLoaded)="imageLoaded($event,'branding')" (cropperReady)="cropperReady()"
-                                    (loadImageFailed)="loadImageFailed()">
-                                  </image-cropper>
-                                  <div class="file is-small is-boxed">
-                                    <label class="file-label">
-                                      <input class="file-input" type="file" name="resume"
-                                        (change)="fileChangeEvent($event,'branding')" accept="image/*" />
-                                      <span class="file-cta">
-                                        <span class="file-icon">
-                                          <i class="fas fa-upload"></i>
-                                        </span>
-                                        <span class="file-label">Imagen corporativa</span>
-                                      </span>
-                                    </label>
-                                  </div>
+                                  <label for="cropper-branding">Imagen corporativa</label>
+                                  <app-cropper name="cropper-branding" (change)="editUserForm.control.markAsDirty()"
+                                    [(imageChangedEvent)]="this.imageChangedEventBranding" [(croppedImage)]="this.croppedImageBranding"
+                                    [(tempImage)]="this.tempImageBranding" [(tempTagName)]="this.tempTagNameBranding" [(imageLabel)]="this.labelCropperBranding">
+                                  </app-cropper>
                                 </div>
                                 <div
                                   class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex flex-column align-items-center">
-                                  <image-cropper class="mt-1" [imageChangedEvent]="imageChangedEventProfile"
-                                    [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png" roundCropper="true"
-                                    (imageCropped)="imageCropped($event,'profile')"
-                                    (imageLoaded)="imageLoaded($event,'profile')" (cropperReady)="cropperReady()"
-                                    (loadImageFailed)="loadImageFailed()">
-                                  </image-cropper>
-                                  <div class="file is-small is-boxed">
-                                    <label class="file-label">
-                                      <input class="file-input" type="file" name="resume"
-                                        (change)="fileChangeEvent($event,'profile')" accept="image/*" />
-                                      <span class="file-cta">
-                                        <span class="file-icon">
-                                          <i class="fas fa-upload"></i>
-                                        </span>
-                                        <span class="file-label">Imagen de perfil</span>
-                                      </span>
-                                    </label>
-                                  </div>
+                                  <label for="cropper-profile">Imagen de perfil</label>
+                                  <app-cropper name="cropper-profile" (change)="editUserForm.control.markAsDirty()"
+                                    [(imageChangedEvent)]="this.imageChangedEventProfile" [(croppedImage)]="this.croppedImageProfile"
+                                    [(tempImage)]="this.tempImageProfile" [(tempTagName)]="this.tempTagNameProfile" [(imageLabel)]="this.labelCropperProfile">
+                                  </app-cropper>
                                 </div>
                                 <div class=" col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center my-auto">
                                   <button type="submit" [disabled]="!editUserForm.dirty " class="button is-success"

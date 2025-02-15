@@ -737,25 +737,33 @@
 
   font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
-  top: -6.9em;
-  /*color: var(--ck-textPrimary);
+  top: -7.0em;
+  /*font-size: 1rem;
+  font-weight: 400;
+  margin: 0px;
+  display: flex;
+  line-height: 1rem;*/
+}
+
+.x_features {
+  color: var(--ck-textPrimary);
   user-select: none;
   cursor: url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default;
-  list-style: none;
   box-sizing: border-box;
+  margin: 0;
   padding: 0;
   border: 0;
   font: inherit;
   vertical-align: baseline;
-  font-size: 1rem;
-  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 400;
-  margin: 0px;
+  list-style: none;
   display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  line-height: 1rem;*/
+  flex-direction: row;
+
+  font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: relative;
+  top: -7.0em;
 }
+
 .numbers-font {
   font-family: Lufga-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -944,15 +952,6 @@
   width: 100%;
   object-fit: contain;
   aspect-ratio: 29/4;
-}
-
-.branding-image-card {
-  height: 100%;
-  width: 100%;
-  object-fit: contain;
-  top: 1em;
-  aspect-ratio: 53/10;
-  padding: 0.3em 0.3em 0.3em 0.3em;
 }
 
 .chip-popup {

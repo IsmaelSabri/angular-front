@@ -8,9 +8,7 @@
 /*@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';*/
 /*@import "@coreui/coreui/scss/coreui.scss"; // está por cdn ahora*/
 /*tailwind*/
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import 'tailwindcss';
 
 /* Gelion */
 @font-face {

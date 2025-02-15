@@ -2,7 +2,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Axios } from 'axios-observable';
 import { Observable } from 'rxjs';
-import { APIKEY } from 'src/environments/environment.prod';
+import { APIKEY } from 'src/environments/environment.key';
 
 @Injectable({
   providedIn: 'root'

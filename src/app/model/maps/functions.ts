@@ -1,7 +1,7 @@
 import { IPropertiesOptions } from './propiedades.interface';
 import { tileLayers, tileLayersWMS } from './data';
 import { tileLayer } from 'leaflet';
-import { APIKEY } from 'src/environments/environment.prod';
+import { APIKEY } from 'src/environments/environment.key';
 import * as L from 'leaflet';
 
 export const tileLayerSelect: L.tileLayer = (

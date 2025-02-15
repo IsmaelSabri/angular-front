@@ -166,14 +166,16 @@ import {
   ModalTitleDirective, ThemeDirective
 } from '@coreui/angular';
 import { ChartService } from './service/chart.service';
-import { ApplicationConfig } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { DrawerModule } from 'primeng/drawer';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PricingCardComponent } from './common/pricing-card/pricing-card.component';
-
+import { NgxStripeModule } from 'ngx-stripe';
+import { APIKEY } from 'src/environments/environment.key';
+import { CropperComponent } from './common/cropper/cropper.component';
+import { AdCardComponent } from './common/ad-card/ad-card.component';
 export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
   url: 'https://httpbin.org/post',
@@ -194,6 +196,8 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     AdminComponent,
     UserProComponent,
     PricingCardComponent,
+    CropperComponent,
+    AdCardComponent,
   ],
   imports: [
     NgProgressbar,
@@ -333,6 +337,7 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ThemeDirective,
     DrawerModule,
     MatTabsModule,
+    NgxStripeModule.forRoot(APIKEY.stripePublicKey),
   ],
   exports: [
     // to get component in another modules
@@ -341,6 +346,8 @@ export const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ListComponent,
     AdminComponent,
     PricingCardComponent,
+    CropperComponent,
+    AdCardComponent,
   ],
   providers: [
     NotificationService,

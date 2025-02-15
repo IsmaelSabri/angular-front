@@ -142,6 +142,16 @@ export enum CarPlaces {
   masCinco = '5+'
 }
 
+export enum Escaparates {
+  cero = '0',
+  uno = '1',
+  dos = '2',
+  tres = '3',
+  cuatro = '4',
+  cinco = '5',
+  masCinco = '5+'
+}
+
 export enum Views {
   Ciudad = 'Ciudad',
   Jardines = 'Jardines',
@@ -507,7 +517,16 @@ export enum Superficie {
   doskM = '2,000m²',
 }
 
-export enum Disposicion {
+export enum DisposicionOficina {
+  plantaBaja = 'Planta baja',
+  entresuelo = 'Entresuelo',
+  piso = 'Piso',
+  edificio = 'Edificio',
+  sotano = 'Sótano',
+  otro = 'Otro'
+}
+
+export enum DisposicionNegocio {
   aPieDecalle = 'A pie de calle',
   entresuelo = 'Entresuelo',
   piso = 'Piso',

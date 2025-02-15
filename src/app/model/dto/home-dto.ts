@@ -35,6 +35,7 @@ export class HomeDto {
     comentario: any;
     destacar: any;
     colorDestacar: any = '#3a3b3c';
+    colorTextoDestacar: any = '#ccff00';
     destacado = new Featured();
     underPriceMarket: any;
     underPriceMarketAsString: any;
@@ -169,10 +170,10 @@ export class HomeDto {
     prototipo: any; // model:'other'; prototipo:oficina||garage||trastero||......
 
     // Oficina profile
-    aparcamientos: any = false;
+    aparcamientos: any;
     climatizacion: string;
-    disposicion: string;  // a pie de calle, entresuelo, piso, centro comercial, sótano... 
-    distribucion: string;  // diáfana, tabicada, mamparas, tabicada, tabiques móviles...
+    disposicion: any;  // a pie de calle, entresuelo, piso, centro comercial, sótano... 
+    distribucion: any;  // diáfana, tabicada, mamparas, tabicada, tabiques móviles...
     controlDeAccesoPersonal: any = false;
     controlDeAccesoVehiculos: any = false;
     falsoTecho: any = false;
@@ -187,6 +188,17 @@ export class HomeDto {
 
     // Edificio profile
     edificioExclusivoOficinas: any = false;
+    ascensores: any;
+    inquilino:any=false;
+    usoResidencial: any = false;
+    usoComercial: any = false;
+    usoOficinas: any = false;
+    usoHotelero: any = false;
+    edificioExento: any = false;
+    /* desde herencia
+    * -piso: pisos del edificio
+    * -viviendas(desde NewProject) cantidad de viviendas del edificio 
+    */
 
     //  Negocio Home
     nave: any = false;
